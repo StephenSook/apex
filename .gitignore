@@ -1,0 +1,122 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.Spotlight-V100
+.Trashes
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+.venv/
+venv/
+ENV/
+env/
+.python-version
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+
+# Node
+node_modules/
+.next/
+.nuxt/
+.cache/
+.parcel-cache/
+out/
+dist/
+.eslintcache
+.npm
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+.yarn-integrity
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.cursor/
+
+# Secrets and env
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+secrets.json
+
+# HuggingFace + IBM caches
+.cache/huggingface/
+huggingface_hub/
+~/.cache/huggingface/
+ibm_cache/
+.ibm/
+.watsonx/
+
+# Model weights and large fixtures
+*.gguf
+*.bin
+*.safetensors
+*.onnx
+*.pt
+*.pth
+*.ckpt
+*.h5
+*.tflite
+fixtures/large/
+
+# Build outputs
+*.tsbuildinfo
+.turbo/
+*.tgz
+
+# Logs (keep daily build logs, ignore noisy runtime logs)
+*.log
+!logs/day-*.md
+runtime-*.log
+
+# Playwright + test artifacts
+playwright-report/
+playwright/.cache/
+test-results/
+
+# Misc local scratch
+scratch/
+.scratch/
+TODO.local.md
