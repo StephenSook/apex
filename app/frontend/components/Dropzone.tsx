@@ -42,8 +42,7 @@ import {
   type ReactNode,
 } from "react";
 
-const SLOT_KEYS = ["telemetry", "coa"] as const;
-type SlotKey = (typeof SLOT_KEYS)[number];
+type SlotKey = "telemetry" | "coa";
 
 const MIN_TELEMETRY_BYTES = 1024;
 const MAX_TELEMETRY_BYTES = 50 * 1024 * 1024;

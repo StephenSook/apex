@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import Dropzone from "../../components/Dropzone";
 
 export const metadata = {
@@ -25,9 +27,9 @@ function Breadcrumb() {
     >
       <ol className="mx-auto flex max-w-6xl items-center gap-2 px-6 py-4 font-mono text-xs uppercase tracking-wider text-muted lg:px-10">
         <li>
-          <a href="/" className="hover:text-racing-green underline-offset-4 hover:underline">
+          <Link href="/" className="hover:text-racing-green underline-offset-4 hover:underline">
             APEX
-          </a>
+          </Link>
         </li>
         <li aria-hidden="true">/</li>
         <li className="text-ink">Analyze</li>
