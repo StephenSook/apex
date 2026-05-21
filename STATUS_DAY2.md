@@ -30,13 +30,17 @@
 - [ ] **Run Gate G4 spike (parallel to G1):** TTM zero-shot vs seasonal-naive on 5 FastF1 holdout circuits. Commit `logs/day-02-ttm-vs-naive.md` with RMSE per holdout. If TTM loses on 3+ of 5: invoke `docs/apex-lite-contingency.md` Lite mode.
 - [ ] **If G1 + G4 both pass:** Start Phase 1 task 1.1 = Granite-Docling parse of FIA COA fixture PDF into structured JSON.
 - [ ] **Pydantic mirror of `app/shared/types.ts`** in `app/backend/apex/schemas.py`. Specifically: `TelemetryRow`, `TelemetryChannels`, `MiniSectorTensor`, `FIACoa`, `CoachingReport`, `AnalyzeRequestPayload` (multipart), `HealthResponse`. Sign conventions and field names MUST match the TypeScript exactly. Any breaking change = `⚠️ CONTRACT` commit-prefix per PLAN.md §Coordination Protocol rule 10.
+- [ ] **Validate OpenRouter API key + sample Granite 4.1 8B call.** Discord intel 2026-05-20: V.L. + BeMyApp confirmed OpenRouter as approved Granite host. Free tier, no credit card. `openrouter.ai/ibm-granite/granite-4.1-8b`. Use as primary inference path on HF Space Day 9 deploy. Backup: watsonx.ai (free account, IBM ID required). Skip Replicate (CC required) + HF inference endpoints (Granite not publicly hosted).
+- [ ] **Fork IBM-SkillsBuild Learning Lab repo + run TORCS lab + record one entry in RESULTS.md.** Discord intel 2026-05-20: BeMyApp pinned the Lab as public at `https://github.com/IBM-SkillsBuild-AI-Builders-Challenge/hands-on-labs` and mentioned "one of the required lab steps." Conservative read: complete one step minimum. Time-boxed 30 min. Do not let the lab consume G1 + G4 budget.
 
 ### Stephen (parallel to Vinh)
 
 - [ ] **Repair ESLint env** (`LazyLoadingRuleMap is not a constructor`). Options: pin ESLint to 9.34.x, or migrate to `next lint`. Pre-mortem row 26 carries the residual.
 - [ ] **Q&A Card 2 (Kinetic Hallucination) drill 3x cold.** Memorize the verbatim card from `~/.claude/projects/-Users-stephensookra-Desktop-IBM-May/memory/project_apex_qa_killshots.md`. Target: < 30 s per delivery.
 - [ ] **Check stakeholder inbox for Phase 1+2 replies.** 5 emails sent Day 0 (2026-05-19). Reply window 7-14 business days. Any reply triggers consent-revert sweep on the named-operator surfaces.
+- [ ] **Audit README.md against the BeMyApp pinned 3-question structure.** Discord intel 2026-05-20: submission README must explain (a) the problem, (b) the AI approach, (c) why it matters in racing. APEX README has all 3 implicitly. Day 2 task: surface each as an explicit section heading or anchor.
 - [ ] **Wire Dropzone into landing page top nav.** Add `Analyze` link in the primary nav on `/`. Currently only reachable by direct URL `/analyze`.
+- [ ] **Watch the BeMyApp hosting webinar + submission walkthrough video** (links in `reference_discord_intel_day_1.md` memory). Note any submission-form fields not covered by `deliverables/bemyapp-submission-payload.md`.
 - [ ] **Run `bash scripts/pre-submit-checks.sh`** at noon ET and EOD. Verify HARD-FAIL count stays at 1 (uncommitted files; expected mid-day).
 - [ ] **Pre-mortem.md daily entry** for Day 2 observations.
 - [ ] **Daily BeMyApp devlog** evening send per template at `docs/outreach-drafts/bemyapp-devlog-day-1.md` Day-2 fork.
@@ -44,6 +48,7 @@
 ### Joint
 
 - [ ] **Noon ET Lite trigger check.** If Vinh has not accepted the invite by 2026-05-21 12:00 ET, evaluate `docs/apex-lite-contingency.md` per Codex critique #3. Default expectation: invite accepted; Lite not invoked.
+- [ ] **Team registration on BeMyApp portal.** Discord intel 2026-05-20: another participant asked "How do we link the team and members there was no option to register teams" — no public answer surfaced. Check the BeMyApp portal Day 2 to see if there is an explicit team-registration field. If yes: register Vinh. If no: GitHub collaborator status is the team-evidence.
 
 ---
 
