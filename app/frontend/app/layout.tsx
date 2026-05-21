@@ -57,8 +57,8 @@ export const metadata: Metadata = {
     images: [
       {
         url: "/og-architecture.png",
-        width: 1919,
-        height: 1374,
+        width: 784,
+        height: 805,
         alt: "APEX architecture diagram: driver inputs through the three-layer PhysicsTTM pipeline to coaching outputs",
       },
     ],
