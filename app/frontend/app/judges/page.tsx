@@ -17,19 +17,19 @@ const RESOURCES: ReadonlyArray<ResourceLink> = [
   },
   {
     label: "3-minute submission video",
-    href: "https://www.youtube.com/results?search_query=apex+ibm+skillsbuild+may+2026",
+    href: null,
     detail: "YouTube unlisted URL lands Day 10 (2026-05-29) production take.",
     badge: "pending",
   },
   {
     label: "30-second highlight clip",
-    href: "https://www.youtube.com/results?search_query=apex+ibm+skillsbuild+may+2026",
+    href: null,
     detail: "Cut from the 3-min video for judges who only watch 30s. Lands Day 10.",
     badge: "pending",
   },
   {
     label: "Pitch deck PDF",
-    href: "https://github.com/StephenSook/apex/blob/main/docs/deck.pdf",
+    href: null,
     detail: "Playwright HTML→PDF render Day 11. Editorial-paddock palette throughout.",
     badge: "pending",
   },
@@ -237,28 +237,36 @@ export default function JudgesPage() {
 
 interface ResourceLink {
   readonly label: string;
-  readonly href: string;
+  readonly href: string | null;
   readonly detail: string;
   readonly badge: "live" | "pending";
 }
 
 function ResourceTile({ resource }: { resource: ResourceLink }) {
-  const isInternal = resource.href.startsWith("/");
-  const inner = (
+  const tile = (
     <article className="flex h-full flex-col gap-2 rounded-sm border border-rule bg-paper p-5 transition-colors hover:border-racing-green">
       <header className="flex items-baseline justify-between gap-3">
         <h3 className="font-display text-xl text-ink">{resource.label}</h3>
         <BadgeChip badge={resource.badge} />
       </header>
       <p className="text-sm leading-relaxed text-ink-soft">{resource.detail}</p>
-      <p className="font-mono text-xs text-muted break-all">{resource.href}</p>
+      {resource.href && (
+        <p className="font-mono text-xs text-muted break-all">{resource.href}</p>
+      )}
+      {!resource.href && (
+        <p className="font-mono text-xs italic text-muted">URL pending</p>
+      )}
     </article>
   );
 
-  if (isInternal) {
+  if (!resource.href) {
+    return tile;
+  }
+
+  if (resource.href.startsWith("/")) {
     return (
       <Link href={resource.href} className="block focus-visible:outline-none">
-        {inner}
+        {tile}
       </Link>
     );
   }
@@ -269,7 +277,7 @@ function ResourceTile({ resource }: { resource: ResourceLink }) {
       rel="noopener noreferrer"
       className="block focus-visible:outline-none"
     >
-      {inner}
+      {tile}
     </Link>
   );
 }
