@@ -42,16 +42,24 @@ May Challenge
 https://github.com/StephenSook/apex
 ```
 
-### The Issue (2-3 sentences)
+### The Issue (3 paragraphs, ~140 words; depth-matched to NeuroPit's panel)
 
 ```
-A professional race engineer costs hundreds of pounds per day. Adaptive racers, veterans, and grassroots competitors cannot afford one, and existing AI race-engineer tools assume able-bodied physics that misdiagnose adaptive driving as driver error. Post-race coaching has become a luxury good for the drivers who need it most.
+A professional race engineer costs £400 to £500 per day. Every Formula 1 driver has one. Most adaptive racers, veteran motorsport rehabilitation programme drivers, and grassroots competitors do not. The FIA lifted its single-seater ban on disabled drivers in December 2017. The regulatory barrier dropped. **The economic barrier stayed.**
+
+Existing AI race-engineer tools assume able-bodied physics. They encode `throttle * brake = 0` because no able-bodied driver presses both at once. Adaptive drivers running hand-control systems often do, when their FIA Certificate of Adaptations permits the simultaneity their equipment was built for. **Existing tools read the adapted technique as driver error and prescribe corrections the driver physically cannot execute.**
+
+The category of AI race engineering exists. The drivers who need it most have no product that respects the binding regulatory document they carry. **The gap is identity-aware coaching.**
 ```
 
-### Our Magic Solution (2-3 sentences)
+### Our Magic Solution (3 paragraphs, ~190 words; depth-matched to NeuroPit's panel)
 
 ```
-APEX is the IBM Granite-stack race engineer for drivers who do not have one. A frozen Granite TimeSeries TTM forecaster, audited by Granite Guardian and constrained by a differentiable physics-projection layer, reads each driver's FIA Certificate of Adaptations at the tensor level. The same coaching pipeline produces accurate, COA-compliant recommendations for adaptive, veteran, and grassroots racers without retraining, without per-driver fine-tuning, and without able-bodied bias.
+APEX is the IBM Granite-stack AI race engineer for adaptive racers, veteran-team drivers, and grassroots competitors. It reads each driver's FIA Certificate of Adaptations at the tensor level, so adaptive driving stops being misdiagnosed as driver error.
+
+The pipeline runs three layers. **Layer 1**: a frozen Granite TimeSeries TTM forecaster from NeurIPS 2024 turns 1-Hz mini-sector telemetry into a next-session pace envelope without retraining. **Layer 2**: a differentiable physics-projection layer enforces the friction ellipse, the bicycle model, the forward-Euler kinematic step, the jerk bound, and the COA-parameterized brake-throttle simultaneity gate on every forecast step. **Layer 3**: Granite Guardian 4.1 audits the structured text log of every physics correction under custom Bring-Your-Own-Classifier rules. Granite 4.1 8B Instruct narrates the coaching report in race-engineer voice.
+
+Eight IBM tools, all load-bearing. Granite-Docling, Granite Vision, Granite TimeSeries TTM, Granite 4.1 Instruct, Granite Guardian, Langflow, the Docling library, and IBM Bob per the Scuderia Ferrari precedent. **Three firsts**: first pretrained time-series foundation model on motorsport telemetry, first integrated workflow for adaptive hand-controls, first COA-parameterized brake-throttle simultaneity gate. Every coaching claim cites a specific COA section and a specific FIA Article. Provenance is on every line. **Audit first, always.**
 ```
 
 ### Presentation Video Link (YouTube or public platform)
@@ -155,18 +163,13 @@ Vinh Le. Backend, ML pipeline, FastAPI, Langflow, infrastructure (Computer Scien
 APEX is the first integrated workflow for adaptive hand-controls. First AI race engineer that reads the FIA Certificate of Adaptations at the tensor level and lets it govern the physics-projection layer's COA simultaneity flag. Existing tools assume able-bodied physics. Adaptive drivers' COAs explicitly permit simultaneity the equipment was built for. APEX permits it when the COA permits it. That single architectural choice (COA-parameterized brake-throttle simultaneity) closes the most significant misdiagnosis pattern across the entire AI race-engineer category. Combined with the differentiable physics-projection layer that catches kinetic hallucinations from a non-physics-pretrained foundation model, and the Guardian text-audit gate on every recommendation, APEX is the IBM-Consulting reference architecture for governed foundation-model deployment on safety-critical sensor data.
 ```
 
-## Track entries (tick every eligible box)
+## Track entries
 
 ```
-[ ] Main May Challenge prize (Grand Prize Day 1 default)
-[ ] Most Innovative
-[ ] Best Use of Technology
-[ ] Grand Prize (across May + June, if applicable)
-[ ] Any sponsor-specific track (Granite Open Track, Watson TTS Track, etc.; verify at submit time)
-[ ] Community-voted / popularity track (if any)
+NO opt-in tracks. ONE submission per team. Judges decide the per-challenge categories.
 ```
 
-Per global hackathon-project-flow multi-track strategy: every unchecked box is a forfeited entry. Tick all eligible.
+Resolved 2026-05-21 night via Discord answer from `Lucas-BMA`: "You're submitting 1 project and prizes such as best use of technology are decided by the judges!" The four per-challenge awards (1st Place, Runner-up, Best Use of Technology, Most Innovative) are juried on the single submission. Grand Prize is awarded across both May + June challenges to one standout project. Our work falls back to: build the best single submission across all four official judging criteria (Technical Execution / Innovation / Challenge Fit / Implementation & Feasibility). Cross-reference: `~/.claude/projects/-Users-stephensookra-Desktop-IBM-May/memory/reference_competitors_calibration.md`.
 
 ---
 
