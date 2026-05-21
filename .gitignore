@@ -125,3 +125,17 @@ app/frontend/.next/
 scratch/
 .scratch/
 TODO.local.md
+
+# Research recon PDFs (model recon Day 0; contain operator names + emails,
+# moved to private memory + Obsidian Imports for preservation, deleted from
+# public HEAD per pr-review-toolkit wave-5 + Codex wave-11 BLOCKERs).
+# Official IBM source PDFs (ibm-rules.pdf + may-challenge-ibm.pdf) stay tracked.
+research/chatgpt-greenflag-scoring-archive.pdf
+research/claude-pit-wall.pdf
+research/deepseek-ibm-may.pdf
+research/gemini-ibm-may.pdf
+research/groq-ibm-may.pdf
+research/kimi-hostile-pitch-review.pdf
+research/new-chatgpt-ibm-may.pdf
+research/perplexity-pit-wall-may-2026.pdf
+research/pit-wall-physics-constrained-foundation-models.pdf
