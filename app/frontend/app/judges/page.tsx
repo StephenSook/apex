@@ -17,6 +17,12 @@ const RESOURCES: ReadonlyArray<ResourceLink> = [
     badge: "live",
   },
   {
+    label: "Live sim-rig stream",
+    href: "/sim-rig",
+    detail: "20 Hz adaptive-controls telemetry tile. Synthetic Sarah Reynolds Donington lap today; live WebSocket Day 9.",
+    badge: "live",
+  },
+  {
     label: "3-minute submission video",
     href: null,
     detail: "YouTube unlisted URL lands Day 10 (2026-05-29) production take.",
