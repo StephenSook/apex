@@ -155,7 +155,7 @@ See `PLAN.md` §Pre-submit Checklist for the 20-item gate. All 20 items must be 
    - Tick every eligible track checkbox.
    - Submit.
 3. Submission timestamp recorded in `logs/day-12-2026-05-31.md`.
-4. **Submitted by 21:00 ET to leave a 3-hour buffer to the hard 23:59 deadline.**
+4. **Submitted by 21:00 ET to leave a 3-hour buffer to the hard 11:59 PM ET deadline.**
 
 ---
 

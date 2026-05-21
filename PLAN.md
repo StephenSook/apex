@@ -35,7 +35,7 @@ This snapshot is the at-a-glance reality check for anyone reading PLAN.md fresh.
 
 **Phase 6 - Submission package (Day 11, both):** ⬜ pending. Judges page + status page + methodology + pre-mortem + cost audit + NeurIPS workshop paper draft + all §17 external-tool passes. Gate G11.
 
-**Phase 7 - Submit (Day 12, both):** ⬜ pending. Multi-track BeMyApp form + IBM Consulting cold email + retrospective. HARD DEADLINE 23:59 ET.
+**Phase 7 - Submit (Day 12, both):** ⬜ pending. Multi-track BeMyApp form + IBM Consulting cold email + retrospective. HARD DEADLINE 11:59 PM ET.
 
 **Critical-path Vinh deps still open:**
 1. Accept collaborator invite
@@ -258,7 +258,7 @@ Legend: ✅ done · 🟡 in progress · ⬜ not started · ⛔ blocked · ✂️
 | 7.3 | Devpost cross-post if applicable | submission proof | Stephen | ⬜ | 7.2 | Afternoon |
 | 7.4 | IBM Consulting cold email referencing Scuderia Ferrari case study | sent log | Stephen | ⬜ | - | Afternoon |
 | 7.5 | Post-submission Claude Memory write + engineering-retro | obsidian + docs | Stephen | ⬜ | 7.2 | Evening |
-| 7.6 | Submitted by 21:00 ET (3-hour buffer to hard 23:59 deadline) | submission timestamp | Stephen | ⬜ | 7.2 | **HARD DEADLINE** |
+| 7.6 | Submitted by 21:00 ET (3-hour buffer to hard 11:59 PM ET deadline) | submission timestamp | Stephen | ⬜ | 7.2 | **HARD DEADLINE** |
 
 ---
 

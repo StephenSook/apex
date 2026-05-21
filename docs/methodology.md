@@ -72,7 +72,7 @@ The Sookra Methodology v3.3 is the personal process Stephen Sookra has developed
 
 ### Phase 7 - Submission (2026-05-31)
 
-**Method:** Submit by 21:00 ET to leave a three-hour buffer to the hard 23:59 deadline. Tick every eligible track checkbox per global hackathon multi-track strategy. IBM Consulting cold email Day 12 afternoon. Post-submission engineering-retro committed to the repo Day 12 evening.
+**Method:** Submit by 21:00 ET to leave a three-hour buffer to the hard 11:59 PM ET deadline. Tick every eligible track checkbox per global hackathon multi-track strategy. IBM Consulting cold email Day 12 afternoon. Post-submission engineering-retro committed to the repo Day 12 evening.
 
 ---
 
