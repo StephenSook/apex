@@ -261,10 +261,11 @@ function SarahMoment() {
             What the driver brings to APEX.
           </h2>
           <p className="text-base text-ink-soft leading-relaxed">
-            Sarah Reynolds. Thirty-four. RAF veteran. Left-leg amputee from a 2021
-            service incident. Britcar Trophy 2026, #34 BMW M240i with leading UK adaptive hand-control supplier
-            electronic hand-controls and FIA Article 18.3 Certificate of Adaptations
-            on file. Donington Park GP. Saturday qualifying. Lap 17 of 19.
+            Britcar Trophy 2026 grid. #34 BMW M240i. Sarah Reynolds, first full
+            season, chasing two tenths at Donington Park GP, Lap 17 of 19 of
+            Saturday qualifying. Electronic hand-controls (supplier name pending
+            per-surface consent). FIA Article 18.3 Certificate of Adaptations on
+            file. Veteran. Left-leg amputee from a 2021 service incident.
           </p>
           <p className="pt-4 font-mono text-xs uppercase tracking-wider text-muted">
             Persona is fictional by design. No real driver named without consent.
