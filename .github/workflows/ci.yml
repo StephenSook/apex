@@ -51,31 +51,7 @@ jobs:
       - name: Next.js production build
         run: pnpm build
 
-  backend:
-    name: Backend (ruff + pytest with coverage gate)
-    runs-on: ubuntu-latest
-    if: hashFiles('app/backend/pyproject.toml') != ''
-    defaults:
-      run:
-        working-directory: app/backend
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Python 3.12
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-          cache: pip
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -e ".[dev]"
-
-      - name: Ruff
-        run: ruff check .
-
-      - name: Pytest with coverage
-        run: pytest --cov=apex --cov-fail-under=70 -q
+  # Backend job intentionally omitted until Vinh scaffolds `app/backend/pyproject.toml`.
+  # `hashFiles` is not allowed in job-level `if:` (workflow-validator rejects it).
+  # When Vinh ships the backend, add a second job (no top-level `if:`) running
+  # ruff + pytest --cov=apex --cov-fail-under=70.
