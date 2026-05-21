@@ -53,14 +53,30 @@ describe("GuardianAudit", () => {
     expect(screen.getByText(/Reasoning trace \(1 step\)/i)).toBeInTheDocument();
   });
 
-  it("renders role=alert when reasoning_trace is empty (Codex wave-15 MED guard)", () => {
+  it("renders role=alert when reasoning_trace is empty on approve verdict", () => {
     const audit: GuardianAuditType = {
       verdict: "approve",
       reasoning_trace: [],
-      audit_id: "audit-empty-trace",
+      audit_id: "audit-empty-trace-approve",
     };
     render(<GuardianAudit audit={audit} />);
-    expect(screen.getByRole("alert")).toHaveTextContent(/Reasoning trace is empty/i);
+    const alert = screen.getByRole("alert");
+    expect(alert).toHaveTextContent(/approve verdict without recorded steps/i);
+    expect(alert).toHaveTextContent(/Re-run the session/i);
     expect(screen.queryByText(/Reasoning trace \(0 step/i)).not.toBeInTheDocument();
+  });
+
+  it("renders verdict-specific hard-block wording on reject + empty trace", () => {
+    const audit: GuardianAuditType = {
+      verdict: "reject",
+      reasoning_trace: [],
+      blocked_recommendations: ["Increase brake force by 200%"],
+      audit_id: "audit-empty-trace-reject",
+    };
+    render(<GuardianAudit audit={audit} />);
+    const alerts = screen.getAllByRole("alert");
+    const empty = alerts.find((el) => el.textContent?.includes("rejected this recommendation"));
+    expect(empty).toBeDefined();
+    expect(empty).toHaveTextContent(/Do not surface the blocked recommendation/i);
   });
 });
