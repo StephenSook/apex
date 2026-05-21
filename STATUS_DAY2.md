@@ -48,7 +48,7 @@
 ### Joint
 
 - [ ] **Noon ET Lite trigger check.** If Vinh has not accepted the invite by 2026-05-21 12:00 ET, evaluate `docs/apex-lite-contingency.md` per Codex critique #3. Default expectation: invite accepted; Lite not invoked.
-- [ ] **Team registration on BeMyApp portal.** Discord intel 2026-05-20: another participant asked "How do we link the team and members there was no option to register teams" — no public answer surfaced. Check the BeMyApp portal Day 2 to see if there is an explicit team-registration field. If yes: register Vinh. If no: GitHub collaborator status is the team-evidence.
+- [ ] **Team registration on BeMyApp portal.** Discord intel 2026-05-20: another participant asked "How do we link the team and members there was no option to register teams." No public answer surfaced. Check the BeMyApp portal Day 2 to see if there is an explicit team-registration field. If yes: register Vinh. If no: GitHub collaborator status is the team-evidence.
 
 ---
 
