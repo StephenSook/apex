@@ -10,7 +10,7 @@
 
 ## What got done today
 
-Day 1 bootstrap day. 50+ atomic commits pushed to https://github.com/StephenSook/apex.
+Day 1 bootstrap day. 77+ atomic commits pushed to https://github.com/StephenSook/apex.
 
 ### Task 0.1-0.5 - repo setup + folder reorg
 
@@ -44,7 +44,7 @@ Anchor `<Link href="#X">` → `<a href="#X">` (M2), CSS-var pattern `as React.CS
 - `docs/pre-mortem.md` started (PLAN task 1.7, was Day 2)
 - `docs/sarah-reynolds-persona.md` written (PLAN task 3.3, was Day 6 - Stephen narrative only; engineering data files reserved for your lane)
 - `docs/3-min-pitch-script.md` v0 (PLAN task 4.4, was Day 7)
-- `docs/outreach-drafts/mme-motorsport-consent.md` (per Q-006, sent Day 1 PM)
+- `docs/outreach-drafts/adaptive-supplier-consent-day-1.md` (per Q-006, anonymized filename, sent Day 1 PM)
 - `docs/apex-lite-contingency.md` (Codex critique #3 - written contingency if you cannot accept the invite by Day 2 noon ET; **DO NOT EXECUTE unless trigger fires**)
 - `docs/methodology.md` v0 (PLAN task 6.4 / Core 6 C4)
 - `docs/stakeholder-outreach-log.md` (referenced in `project_apex_stephen_lane.md`)
@@ -71,13 +71,13 @@ Anchor `<Link href="#X">` → `<a href="#X">` (M2), CSS-var pattern `as React.CS
 | `a796d1a` | fix(pitch): Beat 3 achievement-led + paddock voice (S7+S8) |
 | `86bd20b` | chore(plan): Day 1 EOD status update |
 | `55bc41a` | docs: 3-min pitch script v0 |
-| `3f1ee24` | docs(outreach): adaptive-supplier consent email draft |
+| `3f1ee24` | docs(outreach): adaptive-supplier per-surface consent email draft (anonymized filename, supplier name kept in private memory only) |
 | `cd80680` | docs: Sarah Reynolds persona narrative |
 | `4e83f0e` | docs: start pre-mortem.md |
 | `78c5b03` | docs(readme): mark forward-looking docs explicitly |
 | `bc5a570` | fix(frontend): polish wave (M2 + M4 + aria-label) |
 
-Full log via `git log --oneline main`. **65+ atomic commits Day 1, all pushed.**
+Full log via `git log --oneline main`. **77+ atomic commits Day 1, all pushed.**
 
 ---
 
@@ -185,4 +185,4 @@ Full rationale: `docs/decision-log.md`.
 
 ---
 
-_Last updated: 2026-05-20 Day 1 EOD by Stephen. 50+ commits. Tree clean. Remote synced. Ready for Day 2 Vinh-side ramp._
+_Last updated: 2026-05-20 Day 1 EOD by Stephen. 77+ commits. Tree clean. Remote synced. Ready for Day 2 Vinh-side ramp._
