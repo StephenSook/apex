@@ -54,12 +54,21 @@ export const metadata: Metadata = {
       "The same IBM Granite stack that ships to Scuderia Ferrari's fan app, pointed at the drivers who need a race engineer most.",
     siteName: "APEX",
     type: "website",
+    images: [
+      {
+        url: "/og-architecture.png",
+        width: 1919,
+        height: 1374,
+        alt: "APEX architecture diagram: driver inputs through the three-layer PhysicsTTM pipeline to coaching outputs",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "APEX | AI race engineer for adaptive racers",
     description:
       "AI race engineer for adaptive racers. Built on IBM Granite for IBM SkillsBuild May Challenge 2026.",
+    images: ["/og-architecture.png"],
   },
   robots: { index: true, follow: true },
 };
