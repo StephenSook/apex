@@ -1,64 +1,64 @@
 # APEX - Stakeholder Outreach Log
 
-> Every outreach email and reply, with sent date, response status, attribution surface consented to, and follow-up plan. Mirror of `project_apex_stakeholders.md` in project memory but committed to the repo for visibility.
+> Every outreach + reply summary, by phase. Mirror of `project_apex_stakeholders.md` in private memory but committed to the repo for accountability + tracking. **All recipient names and email addresses kept in private memory only, per the anonymization-pre-consent rule.** This public file uses role descriptions; the private memory holds the canonical recipient identities.
 >
 > **Owner:** Stephen Sookra. Updated on every send + every reply.
-> **Sender email:** ssookra@students.kennesaw.edu (school) for adaptive-motorsport orgs. stephensookra@gmail.com (personal) for IBM / commercial contacts.
+> **Sender addresses:** school address for adaptive-motorsport outreach; personal address for IBM commercial outreach. Specific addresses kept off this public log.
 
 ---
 
 ## Phase 1 - primary asks (sent 2026-05-19, Day 0)
 
-| Target | Contact | Method | Lexicon | Asked for | Sent | Reply | Attribution surface |
-|--------|---------|--------|---------|-----------|------|-------|--------------------|
-| Mission 44 | Jason Arthur (`media@mission44.org`) | Email from school address | IBM Synergy (Hamilton Commission, IBM × Mission 44 Oct 2025) | One-sentence endorsement | 2026-05-19 | PENDING | TBD on reply |
-| a UK adaptive racing programme | Al Locke (`al@teambrit.co.uk`) | Email from school address | Level Playing Field (engineering specifics, no charity language) | One-sentence endorsement, reference his Sept 2025 Aston Martin GT4 work | 2026-05-19 | PENDING | TBD on reply |
-| Spinal Track | Andrew operations (`andrew@spinaltrack.co.uk`) | Email from school address | FIA legislative (Nathalie McGloin DAA Commission downstream) | One-sentence endorsement | 2026-05-19 | PENDING | TBD on reply |
+| Target archetype | Method | Lexicon | Asked for | Sent | Reply | Attribution surface |
+|------------------|--------|---------|-----------|------|-------|---------------------|
+| Lewis Hamilton's STEM foundation (media contact) | Email from school address | IBM Synergy (Hamilton Commission, IBM × Mission 44 Oct 2025) | One-sentence endorsement | 2026-05-19 | PENDING | TBD on reply |
+| UK adaptive racing programme (engineering contact) | Email from school address | Level Playing Field (engineering specifics, no charity language) | One-sentence endorsement, reference recent GT4 work | 2026-05-19 | PENDING | TBD on reply |
+| UK adaptive driver programme - paraplegic/spinal-injury (operations contact) | Email from school address | FIA legislative (DAA Commission downstream) | One-sentence endorsement | 2026-05-19 | PENDING | TBD on reply |
 
 ## Phase 2 - secondary asks (sent 2026-05-19, Day 0)
 
-| Target | Contact | Method | Lexicon | Asked for | Sent | Reply | Attribution surface |
-|--------|---------|--------|---------|-----------|------|-------|--------------------|
-| Limitless Motorsport UK | Johnny Dawson-Ellis (`info@limitless-motorsport.co.uk`) | Email from school address | Level Playing Field | One-sentence validation | 2026-05-19 | PENDING | TBD on reply |
-| Raceability Motorsport | Brian Roberts (`enquiries@raceability-motorsport.co.uk`) | Email from school address | Level Playing Field | One-sentence validation | 2026-05-19 | PENDING | TBD on reply |
+| Target archetype | Method | Lexicon | Asked for | Sent | Reply | Attribution surface |
+|------------------|--------|---------|-----------|------|-------|---------------------|
+| UK adaptive motorsport programme A (founder) | Email from school address | Level Playing Field | One-sentence validation | 2026-05-19 | PENDING | TBD on reply |
+| UK adaptive motorsport programme B (founder) | Email from school address | Level Playing Field | One-sentence validation | 2026-05-19 | PENDING | TBD on reply |
 
 ## Phase 3 - per-surface consent ask (sent 2026-05-20, Day 1 PM)
 
-| Target | Contact | Method | Asked for | Sent | Reply | Surfaces requested |
-|--------|---------|--------|-----------|------|-------|---------------------|
-| leading UK adaptive hand-control supplier | `info@mme-motorsport.com` (verify before send) | Email from school address per `docs/outreach-drafts/mme-motorsport-consent.md` | Per-surface consent for naming as Sarah Reynolds' hand-control supplier | 2026-05-20 | PENDING | Landing page, README, BeMyApp Story block, 3-min demo video |
+| Target archetype | Method | Asked for | Sent | Reply | Surfaces requested |
+|------------------|--------|-----------|------|-------|---------------------|
+| Leading UK adaptive hand-control supplier | Email from school address per private draft `docs/outreach-drafts/adaptive-supplier-consent-day-1.md` | Per-surface consent for naming as Sarah Reynolds' hand-control supplier | 2026-05-20 | PENDING | Landing page, README, BeMyApp Story block, 3-min demo video |
 
 ## Phase 4 - Day 3 escalation (scheduled 2026-05-22, revised from Day 7 per Codex critique #4)
 
-> Driver names omitted from this public log until the drivers have personally consented to per-surface attribution. Internal names live only in stephensookra@gmail.com Drafts folder + the LinkedIn DM compose window. Per the L52 rule below.
+> Driver identities omitted from this public log until the drivers have personally consented to per-surface attribution. Internal records kept in Stephen's private Drafts folder + the LinkedIn DM compose window per the L52 rule below.
 
-| Target archetype | Contact | Method | Why escalate | Reply | Attribution surface |
-|------------------|---------|--------|--------------|-------|---------------------|
-| Adaptive-driver UK championship competitor (driver A) | LinkedIn DM | DM with 60-second video pitch | Real adaptive driver endorsement; UK charity response window is 7-14 days so Day 7 first escalation was too late | PENDING | TBD on consent |
-| Adaptive-driver UK championship competitor (driver B) | LinkedIn DM | DM with 60-second video pitch | Same | PENDING | TBD on consent |
+| Target archetype | Method | Why escalate | Reply | Attribution surface |
+|------------------|--------|--------------|-------|---------------------|
+| Adaptive-driver UK championship competitor (driver A) | LinkedIn DM with 60-second video pitch | Real adaptive driver endorsement; UK charity response window is 7-14 days so Day 7 first escalation was too late | PENDING | TBD on consent |
+| Adaptive-driver UK championship competitor (driver B) | LinkedIn DM with 60-second video pitch | Same | PENDING | TBD on consent |
 
 ## Phase 5 - Day 5 follow-ups (scheduled 2026-05-24)
 
-Re-email Phase 1+2 non-responders (Mission 44, a UK adaptive racing programme, Spinal Track, Limitless, Raceability) with progress update + concrete request to participate. Subject line tweak: "Following up + APEX is live at <demo-url>."
+Re-email all Phase 1 + Phase 2 non-responders with progress update + concrete request to participate. Subject line tweak: "Following up + APEX is live at <demo-url>." Recipient identities tracked in private memory.
 
 ## Phase 6 - Day 12 IBM Consulting cold outreach (scheduled 2026-05-31 afternoon)
 
-| Target | Contact | Method | Asked for |
-|--------|---------|--------|-----------|
-| IBM Consulting leadership | TBD - research before send | Cold email referencing Scuderia Ferrari case study | Whether APEX architectural pattern (PhysicsTTM + COA-aware narrator) extends to other IBM Consulting verticals |
+| Target | Method | Asked for |
+|--------|--------|-----------|
+| IBM Consulting leadership in Sports & Entertainment or Granite product team | Cold email referencing Scuderia Ferrari case study | Whether APEX architectural pattern (PhysicsTTM + COA-aware narrator) extends to other IBM Consulting verticals |
 
 ---
 
 ## Attribution discipline (per global operator-unassociation principle)
 
-Per-surface consent. Quote-in-deck consent does NOT imply README-or-video-credits consent. Ask separately for each surface. Default anonymized + aggregate if no explicit consent. Never name individual drivers without their explicit OK on the specific surface.
+Per-surface consent. Quote-in-deck consent does NOT imply README-or-video-credits consent. Ask separately for each surface. Default anonymized + aggregate if no explicit consent. Never name individual drivers without their explicit OK on the specific surface. **Even private notes about pending consent stay out of the public repo log; live in the private memory file only.**
 
-## Anonymization fallback wording (if Q-006 expires Day 8 with no reply)
+## Anonymization fallback wording (if per-surface consent expires Day 8 with no reply)
 
 - "electronic hand-controls (supplier naming pending per-surface consent)" → "a leading UK adaptive hand-control supplier"
 - "Sarah Reynolds is a fictional persona" stays unchanged (the fictional disclaimer protects the architecture claim)
-- "a UK adaptive racing programme, a veteran motorsport rehabilitation programme, a national adaptive karting series drivers" → "the adaptive-motorsport community across UK, US, and EU programmes"
+- "the adaptive-racing programmes" → "the adaptive-motorsport community across UK, US, and EU programmes"
 
 ---
 
-_Last updated: 2026-05-20 Day 1 PM by Stephen. MME consent email sent 2026-05-20 PM (Day 1, NOT Day 2 as the draft scaffold said). Day 3 sends: 2 adaptive-driver LinkedIn DMs (names omitted pre-consent)._
+_Last updated: 2026-05-20 Day 1 EOD by Stephen. All recipient names + emails redacted from this public log per pr-review-toolkit wave 5 BLOCKER. Internal canonical recipient details in `~/.claude/projects/-Users-stephensookra-Desktop-IBM-May/memory/project_apex_stakeholders.md` (private)._
