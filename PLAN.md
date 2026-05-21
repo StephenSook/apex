@@ -195,7 +195,7 @@ Legend: ✅ done · 🟡 in progress · ⬜ not started · ⛔ blocked · ✂️
 | 3.1 | Granite 4.1 8B Instruct narrator wired | `app/backend/apex/instruct/narrator.py` | Vinh | ⬜ | 2.10, 1.1 | Reads forecast envelope + COA + debrief, emits tuning delta |
 | 3.2 | Tuning-recommendation card UI with COA-section provenance | `app/frontend/components/TuningCard.tsx` | Stephen | ⬜ | 3.1 | Day 6 |
 | 3.3 | Sarah Reynolds persona fixture | `docs/sarah-reynolds-persona.md` (Stephen narrative) + `fixtures/{telemetry,coa,timing-sheets}/sarah-*` (Vinh data) | Both | 🟡 | 3.1 | Stephen narrative ✅ Day 1 EOD (pulled forward, Stephen-lane only, no fixtures/ touched per Vinh-lane respect). Vinh data files Day 6 with G6 integration. |
-| 3.4 | End-to-end pipeline runs Sarah test case < 2 min on RTX 4060 | demo run logs | Both | ⬜ | 3.1, 2.10 | **Gate G6** |
+| 3.4 | End-to-end pipeline runs Sarah test case < 2 min on RTX 4060 | demo run logs | Both | ⬜ | 3.1, 2.10, 3.3 | **Gate G6** |
 | 3.5 | Q&A hostile rehearsal pass 1 | mental | Both | ⬜ | - | Vinh asks Stephen, then swap |
 
 ### Phase 4 - Orchestration + polish (Days 7-8, both)
