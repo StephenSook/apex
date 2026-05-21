@@ -42,7 +42,7 @@ Inputs: telemetry CSV, FIA Certificate of Adaptations PDF, written debrief.
 
 Outputs: corner-by-corner coaching report, tuning recommendation with COA section citation, next-session lap-pace envelope forecast, Granite Guardian safety stamp.
 
-The pipeline: Granite-Docling parses the COA into structured JSON. Granite Vision parses the timing sheet. A 1-Hz mini-sector aggregator preps a tensor for Granite TimeSeries TTM r2.1, a frozen pretrained time-series foundation model. The forecast passes through a differentiable physics-projection layer (CvxpyLayers QP) that enforces the friction ellipse, the bicycle model, a forward-Euler kinematic step, a jerk bound, and the COA-flagged brake-throttle simultaneity envelope. Granite Guardian 4.1 audits the projection's text log with custom BYOC rules. Granite 4.1 Instruct writes the coaching report in a race-engineer voice. Langflow renders the orchestration graph for the demo.
+The pipeline: Granite-Docling parses the COA into structured JSON. Granite Vision parses the timing sheet. A 1-Hz mini-sector aggregator preps a tensor for Granite TimeSeries TTM r2.1, a frozen pretrained time-series foundation model. The forecast passes through a differentiable physics-projection layer (CvxpyLayers QP) that enforces the friction ellipse, the bicycle model, a forward-Euler kinematic step, a jerk bound, and the COA-flagged brake-throttle simultaneity envelope. Granite Guardian 4.1 audits the projection's text log with custom BYOC rules. Granite 4.1 8B Instruct writes the coaching report in a race-engineer voice. Langflow renders the orchestration graph for the demo.
 
 ### How we built it
 

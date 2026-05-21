@@ -27,7 +27,7 @@ This snapshot is the at-a-glance reality check for anyone reading PLAN.md fresh.
 
 **Phase 2 - Physics layer (Days 3-5, Vinh):** ⬜ pending. NumPy validator V1 → CvxpyLayer QP V2 → Granite Guardian BYOC + Convergence-14 serializer unit-test suite. Gates G3, G4, G5.
 
-**Phase 3 - Narrator (Day 6, Vinh):** ⬜ pending. Granite 4.1 Instruct + COA simultaneity flag. Gate G6.
+**Phase 3 - Narrator (Day 6, Vinh):** ⬜ pending. Granite 4.1 8B Instruct + COA simultaneity flag. Gate G6.
 
 **Phase 4 - Orchestration + polish (Days 7-8, both):** ⬜ pending. Langflow export + latency closure + June Challenge bridge + LinkedIn DM beta-tester escalation. Gates G7, G8.
 
@@ -83,7 +83,7 @@ Stephen completed the bootstrap. Repo, scaffold, memory, Obsidian, plan, briefin
    pip install granite-tsfm transformers torch fastf1
    python -c "from tsfm_public.toolkit import TinyTimeMixerForPrediction; m = TinyTimeMixerForPrediction.from_pretrained('ibm-granite/granite-timeseries-ttm-r2'); print(m)"
    ```
-   Commit `logs/day-01-ttm-smoke.md` documenting: load time, inference latency on a 6000x8 telemetry slice, output tensor shape. Pass criterion: TTM loads + 1Hz inference returns within 60s on your machine. If it does not, switch to APEX Lite contingency (drop TTM, keep Granite Instruct + Guardian on regulatory-only product) and ping Stephen.
+   Commit `logs/day-01-ttm-smoke.md` documenting: load time, inference latency on a 6000x8 telemetry slice, output tensor shape. Pass criterion: TTM loads + 1Hz inference returns within 60s on your machine. If it does not, switch to APEX Lite contingency (drop TTM, keep Granite 4.1 8B Instruct + Guardian on regulatory-only product) and ping Stephen.
 
 ### What Stephen has done + planned next work (parallel to yours)
 
@@ -186,7 +186,7 @@ Legend: ✅ done · 🟡 in progress · ⬜ not started · ⛔ blocked · ✂️
 
 | # | Component | File(s) | Owner | Status | Deps | Notes |
 |---|-----------|---------|-------|--------|------|-------|
-| 3.1 | Granite 4.1 Instruct narrator wired | `app/backend/apex/instruct/narrator.py` | Vinh | ⬜ | 2.10, 1.1 | Reads forecast envelope + COA + debrief, emits tuning delta |
+| 3.1 | Granite 4.1 8B Instruct narrator wired | `app/backend/apex/instruct/narrator.py` | Vinh | ⬜ | 2.10, 1.1 | Reads forecast envelope + COA + debrief, emits tuning delta |
 | 3.2 | Tuning-recommendation card UI with COA-section provenance | `app/frontend/components/TuningCard.tsx` | Stephen | ⬜ | 3.1 | Day 6 |
 | 3.3 | Sarah Reynolds persona fixture | `fixtures/personas/sarah-reynolds.md` + telemetry + COA | Both | ⬜ | 3.1 | Story-grade case |
 | 3.4 | End-to-end pipeline runs Sarah test case < 2 min on RTX 4060 | demo run logs | Both | ⬜ | 3.1, 2.10 | **Gate G6** |

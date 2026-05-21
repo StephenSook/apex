@@ -27,7 +27,7 @@ debrief text    │  │                                  │
                 │  │  Granite Guardian 4.1 BYOC     ──┤   next-session envelope
                 │  │  (text audit + reasoning trace)   │   forecast chart
                 │  │                                  │
-                │  │  Granite 4.1 Instruct 8B       ──┤   Guardian safety stamp
+                │  │  Granite 4.1 8B Instruct       ──┤   Guardian safety stamp
                 │  │  (race-engineer narrator)         │   + reasoning trace
                 │  │                                  │
                 │  └─ Langflow (visible orchestration)─┘

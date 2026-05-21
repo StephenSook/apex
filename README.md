@@ -211,7 +211,7 @@ python -m apex.cli analyze \
 | 0 - Bootstrap | Day 1 (2026-05-20) | 🟡 IN PROGRESS |
 | 1 - Document parsing (Docling + Vision) | Day 2 | ⬜ pending |
 | 2 - Physics layer (NumPy V1 → CvxpyLayer V2 + Guardian) | Days 3-5 | ⬜ pending |
-| 3 - Narrator (Granite Instruct + COA flag) | Day 6 | ⬜ pending |
+| 3 - Narrator (Granite 4.1 8B Instruct + COA flag) | Day 6 | ⬜ pending |
 | 4 - Orchestration + polish (Langflow + caching + June bridge) | Days 7-8 | ⬜ pending |
 | 5 - Demo + deploy (HF + Colab + sim-rig + video) | Days 9-10 | ⬜ pending |
 | 6 - Submission package (judges page + methodology + NeurIPS draft) | Day 11 | ⬜ pending |
