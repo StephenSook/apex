@@ -9,11 +9,11 @@
 
 ---
 
-## Status snapshot (last sync 2026-05-20 PM, Day 1)
+## Status snapshot (last sync 2026-05-21 PM, Day 2)
 
 This snapshot is the at-a-glance reality check for anyone reading PLAN.md fresh.
 
-**Phase 0 - Bootstrap:** 🟡 IN PROGRESS (Day 1).
+**Phase 0 - Bootstrap:** 🟡 IN PROGRESS (Day 2, Vinh side only).
 - D0.1 Lock APEX name (rename from PIT WALL): ✅ DONE
 - D0.2a Init GitHub monorepo: ✅ DONE (https://github.com/StephenSook/apex live)
 - D0.2b Invite Vinh as collaborator: ✅ DONE (Stephen confirmed invite sent, Vinh has been texted, waiting on accept)
@@ -21,35 +21,39 @@ This snapshot is the at-a-glance reality check for anyone reading PLAN.md fresh.
 - D0.4 Project memory folder + 15 seed files: ✅ DONE
 - D0.5 Reorganize `Desktop/IBM May/` per §Repo layout: ✅ DONE (13 atomic commits, all pushed)
 - D0.6 Hand Vinh the briefing PDF + repo URL: ✅ DONE (committed at `docs/briefing-for-vinh.pdf`)
-- D0.7 Vinh TTM smoke test (Gate G1): ⬜ pending (Vinh-side, once he accepts repo invite)
+- D0.7 Vinh TTM smoke test (Gate G1): ⬜ pending (Vinh-side, once he accepts repo invite). APEX Lite EARLY trigger Q-007 active at Day 2 noon ET if Vinh-unresponsive.
 
-**Phase 1 - Document parsing (Day 2, Vinh):** ⬜ pending. Granite-Docling on FIA COA + Granite Vision on SRO timing-sheet. Gate G2.
+**Phase 1 - Document parsing (Day 2, Vinh):** ⬜ pending Vinh side. Stephen-lane Dropzone UI + /analyze route + pre-mortem.md all pulled forward to Day 1 EOD per galaxy-tier rule and now live.
 
-**Phase 2 - Physics layer (Days 3-5, Vinh):** ⬜ pending. NumPy validator V1 → CvxpyLayer QP V2 → Granite Guardian BYOC + Convergence-14 serializer unit-test suite. Gates G3, G4, G5.
+**Phase 2 - Physics layer (Days 3-5, Vinh):** ⬜ pending Vinh side. CoachingReport + GuardianAudit + TuningCard frontend components all pulled forward to Days 1-2 and shipped against shared/types.ts contracts. Gate G4 bumped to Day 2 parallel spike per Codex critique #2.
 
-**Phase 3 - Narrator (Day 6, Vinh):** ⬜ pending. Granite 4.1 8B Instruct + COA simultaneity flag. Gate G6.
+**Phase 3 - Narrator (Day 6, Vinh):** 🟡 partial. Sarah Reynolds persona narrative ✅ (Day 1 EOD pull-forward, Stephen-lane). Vinh data fixtures + integration Day 6.
 
-**Phase 4 - Orchestration + polish (Days 7-8, both):** ⬜ pending. Langflow export + latency closure + June Challenge bridge + LinkedIn DM beta-tester escalation. Gates G7, G8.
+**Phase 4 - Orchestration + polish (Days 7-8, both):** 🟡 partial. 3-min pitch script v0 ✅ Day 1 EOD pull-forward; 4 of 5 remaining Phase 4.5 mandatory edits applied wave-19 evening. Langflow export + Convergence-14 + 60s latency Vinh-side Day 7-8.
 
-**Phase 5 - Demo + deploy (Days 9-10, both):** ⬜ pending. HF Space + Colab + sim-rig + production video + 30s clip + Lite contingency. Gates G9, G10.
+**Phase 5 - Demo + deploy (Days 9-10, both):** 🟡 partial. Vercel config + runbook ✅ Day 2 PM pull-forward. Colab notebook skeleton ✅ Day 2 PM (Stretch S4). Sim-rig frontend scaffold + /sim-rig route ✅ Day 2 PM (Stretch S1 frontend slice). Demo video storyboard ✅ Day 2 PM. HF Space + sim-rig WebSocket backend + production video take Day 9-10.
 
-**Phase 6 - Submission package (Day 11, both):** ⬜ pending. Judges page + status page + methodology + pre-mortem + cost audit + NeurIPS workshop paper draft + all §17 external-tool passes. Gate G11.
+**Phase 6 - Submission package (Day 11, both):** 🟡 partial. /judges + /status routes ✅ Day 1 EOD pull-forward. methodology.md Phase 6+7 expansion + cross-references ✅ Day 2 PM. pre-mortem.md ✅ live with 40+ entries (Day 11 final polish remains). NeurIPS paper outline ✅ Day 2 PM (S10 skeleton; Day 11 readable-draft expansion remains). External-tool passes Day 11.
 
 **Phase 7 - Submit (Day 12, both):** ⬜ pending. Multi-track BeMyApp form + IBM Consulting cold email + retrospective. HARD DEADLINE 11:59 PM ET.
 
 **Critical-path Vinh deps still open:**
 1. Accept collaborator invite
 2. Clone repo + `pip install granite-tsfm` + Gate G1 TTM smoke test
-3. Day 2 Granite-Docling + Granite Vision pipeline
+3. Gate G4 Day-2 parallel spike (zero-shot TTM vs seasonal-naive on FastF1 holdouts)
+4. Day 2 Granite-Docling + Granite Vision pipeline
 
-**Critical-path Stephen ops still open (Day 2 morning):**
+**Critical-path Stephen ops still open (Day 2 evening + Day 3):**
 1. Day 3 LinkedIn DM drafts (escalation moved from Day 7 per Codex critique #4)
-2. Phase 1+2+3 stakeholder reply check (6 emails sent across Day 0+1, 0 returned so far, 11 days remaining)
-3. Q&A Card 1 memorization (Deep Dynamics defense)
-4. Frontend dropzone UI (PLAN task 1.6)
+2. Phase 1+2+3 stakeholder reply check (6 emails sent across Day 0+1, 0 returned so far, 10 days remaining)
+3. Q&A Card 2 memorization (Kinetic Hallucination defense) drilled 3x cold
+4. Daily BeMyApp community devlog Day 2 evening send
 5. Pre-mortem.md daily Day-2 entry
+6. Monitor for Vinh GitHub-invite-accept; APEX Lite EARLY trigger Q-007 evaluation at noon ET if no response
 
 **Calibration ceiling (NotebookLM Phase 5 pass):** 90% top-3 / 96% Best Use of Technology / 88% Most Innovative. Working planning numbers: 75/85/75.
+
+**Commits Day 1 + Day 2 PM:** 165+ atomic commits, all pushed, CI green per push (concurrency block dropped wave-18 to prevent middle-queue cancel cascade).
 
 ---
 
@@ -180,12 +184,12 @@ Legend: ✅ done · 🟡 in progress · ⬜ not started · ⛔ blocked · ✂️
 | 2.4 | Q&A Card 3 memorization (Serialization) | mental | Both | ⬜ | - | Drill 3x |
 | 2.5 | TTM → NumPy validator → text log end-to-end | `app/backend/apex/ttm/forecast.py` + integration | Vinh | ⬜ | 2.1, 0.13 | Day 4 |
 | 2.6 | Beats seasonal-naive baseline on 3 of 5 holdout circuits | `app/backend/tests/test_ttm_vs_naive.py` | Vinh | ⬜ | 0.13 (NOT 2.5) | **Gate G4 - BUMPED TO DAY 2 PARALLEL SPIKE per Codex critique #2 BLOCKER.** Run alongside G1 smoke. 3-4 hour spike using FastF1 holdout circuits. Pass criterion: TTM zero-shot RMSE beats seasonal-naive on 3 of 5 holdouts. If FAIL: immediate invoke APEX Lite contingency (`docs/apex-lite-contingency.md`) OR reframe pitch from "TTM forecasts pace" to "physics-constrained envelope generator + COA-aware narrator" (drop TTM as the headline novelty, keep COA + physics layer). Day-2 timing buys 9 days for pivot vs. Day-4 timing buying 7. |
-| 2.7 | Coaching-report React component (corner-by-corner cards) | `app/frontend/components/CoachingReport.tsx` | Stephen | ⬜ | - | Day 4 |
+| 2.7 | Coaching-report React component (corner-by-corner cards) | `app/frontend/components/CoachingReport.tsx` | Stephen | ✅ | - | Day 4 pull-forward to Day 1 EOD. Renders CornerInsight ReadonlyArray with Citation provenance per shared/types.ts contract. Vitest suite covers happy-path + empty-corners edge. |
 | 2.8 | Q&A Card 4 memorization (COA Simultaneity) | mental | Both | ⬜ | - | Drill 3x |
 | 2.9 | CvxpyLayer QP V2 replaces NumPy validator | `app/backend/apex/physics/projection.py` | Vinh | ⬜ | 2.5 | Day 5 |
 | 2.10 | Granite Guardian 4.1 BYOC custom rules audit text log | `app/backend/apex/guardian/audit.py` | Vinh | ⬜ | 2.9 | Day 5 |
 | 2.11 | Guardian catches the same 5 impossibilities the validator catches | `app/backend/tests/test_guardian_audit.py` | Vinh | ⬜ | 2.10 | **Gate G5** |
-| 2.12 | Guardian-verdict UI panel with reasoning trace surfaced | `app/frontend/components/GuardianAudit.tsx` | Stephen | ⬜ | - | Day 5 |
+| 2.12 | Guardian-verdict UI panel with reasoning trace surfaced | `app/frontend/components/GuardianAudit.tsx` | Stephen | ✅ | - | Day 5 pull-forward to Day 1 EOD. Discriminated-union GuardianAudit handler approve/flag/reject + reasoning-trace `<details>` + empty-trace role=alert fallback. 6 vitest tests covering all verdicts + empty-trace edge. |
 | 2.13 | Q&A Card 5 memorization (Latency) | mental | Both | ⬜ | - | Drill 3x |
 
 ### Phase 3 - Narrator (Day 6, Vinh)
@@ -193,7 +197,7 @@ Legend: ✅ done · 🟡 in progress · ⬜ not started · ⛔ blocked · ✂️
 | # | Component | File(s) | Owner | Status | Deps | Notes |
 |---|-----------|---------|-------|--------|------|-------|
 | 3.1 | Granite 4.1 8B Instruct narrator wired | `app/backend/apex/instruct/narrator.py` | Vinh | ⬜ | 2.10, 1.1 | Reads forecast envelope + COA + debrief, emits tuning delta |
-| 3.2 | Tuning-recommendation card UI with COA-section provenance | `app/frontend/components/TuningCard.tsx` | Stephen | ⬜ | 3.1 | Day 6 |
+| 3.2 | Tuning-recommendation card UI with COA-section provenance | `app/frontend/components/TuningCard.tsx` | Stephen | ✅ | 3.1 | Day 6 pull-forward to Day 1 EOD. Renders TuningDelta + parameter/current/recommended/unit + COA section Citation per shared/types.ts. Vitest suite asserts citation rendering invariant. |
 | 3.3 | Sarah Reynolds persona fixture | `docs/sarah-reynolds-persona.md` (Stephen narrative) + `fixtures/{telemetry,coa,timing-sheets}/sarah-*` (Vinh data) | Both | 🟡 | 3.1 | Stephen narrative ✅ Day 1 EOD (pulled forward, Stephen-lane only, no fixtures/ touched per Vinh-lane respect). Vinh data files Day 6 with G6 integration. |
 | 3.4 | End-to-end pipeline runs Sarah test case < 2 min on RTX 4060 | demo run logs | Both | ⬜ | 3.1, 2.10, 3.3 | **Gate G6** |
 | 3.5 | Q&A hostile rehearsal pass 1 | mental | Both | ⬜ | - | Vinh asks Stephen, then swap |
@@ -218,31 +222,31 @@ Legend: ✅ done · 🟡 in progress · ⬜ not started · ⛔ blocked · ✂️
 
 | # | Component | File(s) | Owner | Status | Deps | Notes |
 |---|-----------|---------|-------|--------|------|-------|
-| 5.1 | HF Space deploy (free tier) + cold-start fallback | `app/backend/Dockerfile`, HF Space config | Vinh | ⬜ | 4.7, 4.1 | Day 9 |
-| 5.2 | `deliverables/apex-demo.ipynb` Colab notebook | deliverables/ | Vinh | ⬜ | 5.1 | Zero-install browser-side demo |
-| 5.3 | Sim-rig WebSocket bridge for iRacing/ACC live telemetry | `app/backend/apex/sim_bridge.py` | Stephen + Vinh | ⬜ | 5.1 | Day 9 - galaxy commitment |
+| 5.1 | HF Space deploy (free tier) + cold-start fallback | `app/backend/Dockerfile`, HF Space config | Vinh | ⬜ | 4.7, 4.1 | Day 9. **Rollback path:** if HF free tier rejects the model footprint, fall back to OpenRouter Granite endpoint (Discord intel 2026-05-20: openrouter.ai/ibm-granite/granite-4.1-8b free tier no CC) or watsonx.ai free account; both already on the architecture-spec contingency ladder. Last resort: Colab notebook (row 5.2) becomes the demo URL. |
+| 5.2 | `deliverables/apex-demo.ipynb` Colab notebook | deliverables/ | Stephen | ✅ | 5.1 | Pull-forward Day 9 → Day 2 PM. Skeleton ships canned Sarah Reynolds mock CoachingReport so layout reviewable end-to-end. Day 9 swap: live HF Space call + file pickers (google.colab.files.upload). **Rollback path:** if HF Space cold-start fails Day 9 dress-rehearsal, the canned cells stay in place and the notebook ships as a static demonstration (does not block submission). |
+| 5.3 | Sim-rig WebSocket bridge for iRacing/ACC live telemetry | `app/backend/apex/sim_bridge.py` + `app/frontend/components/SimRigStream.tsx` | Stephen + Vinh | 🟡 | 5.1 | Frontend slice + /sim-rig route ✅ Day 2 PM (Stephen, simulated mode, ring-buffer reducer + exponential reconnect). Vinh-side `app/backend/apex/sim_bridge.py` Day 9. **Rollback path:** if Vinh-side WebSocket slips Day 9, frontend stays in simulated mode for the demo video (the render path is identical between simulated and live modes per SimRigStream.tsx). |
 | 5.4 | Demo video v0 (raw screen capture) + pitch script locked | `deliverables/demo-video-v0.mp4`, `docs/3-min-pitch-script.md` | Stephen | ⬜ | 4.9 | Day 9 |
 | 5.5 | Dress rehearsal 1 (3-min pitch + 5-min hostile Q&A) | recorded | Both | ⬜ | 5.4 | Day 9 |
 | 5.6 | v0 plays + HF loads < 90s + Colab executes + sim-rig streams | gates checklist | Both | ⬜ | 5.1-5.5 | **Gate G9** |
 | 5.7 | Reproducibility metadata footer on every demo output | `app/frontend/components/ProvenanceFooter.tsx` | Vinh | ⬜ | 3.1 | Model versions + COA section IDs + Guardian audit ID + commit SHA |
-| 5.8 | Vercel frontend deploy | `app/frontend/Dockerfile` or Vercel config | Stephen | ⬜ | 0.14 | Day 9 |
+| 5.8 | Vercel frontend deploy | `vercel.json` + `docs/vercel-deploy-runbook.md` | Stephen | 🟡 | 0.14 | Pull-forward Day 9 → Day 2 PM. `vercel.json` config + iad1 region + security headers ✅. `docs/vercel-deploy-runbook.md` first-time setup + Day 9 dress + Day 11 apex.race domain swap + rollback + env-var inventory ✅. **Rollback path:** `vercel rollback <deployment-url>` or dashboard Promote-to-Production on any prior green; metadataBase fallback in `app/layout.tsx` covers domain swap failure. Day 9 manual deploy: `vercel --prod` browser-OAuth from Stephen's machine. |
 | 5.9 | Demo video v1 production take + voiceover + thumbnail | `deliverables/demo-video.mp4`, `deliverables/thumbnail.png` | Stephen | ⬜ | 5.5 | Day 10 |
 | 5.10 | 30-second highlight clip | `deliverables/demo-video-30s.mp4` | Stephen | ⬜ | 5.9 | Day 10 |
 | 5.11 | Dress rehearsal 2 with hostile Q&A using live sim-rig | recorded | Both | ⬜ | 5.9 | Day 10 |
 | 5.12 | v1 video <= 3:00, audio clean, 1080p, sim-rig stable | gates checklist | Both | ⬜ | 5.9-5.11 | **Gate G10** |
-| 5.13 | APEX Lite contingency decision (default: NO, ship full) | `docs/decision-log.md` D-Lite | Both | ⬜ | 5.6 | Day 10 morning |
+| 5.13 | APEX Lite contingency decision (default: NO, ship full) | `docs/decision-log.md` D-Lite + `docs/apex-lite-contingency.md` | Both | ⬜ | 5.6 | Day 10 morning. **Coupling:** this row is the LATE trigger (Day-9 dress-rehearsal failure on 2+ Gate G9 items per Q-004). The EARLY trigger (Day-2 noon ET, Vinh-unresponsive scenario) is Q-007 with the same execution path. Both reference `docs/apex-lite-contingency.md` for the Lite scope (drop sim-rig + Colab live mode; keep core PhysicsTTM loop + Sarah Reynolds canned demo + frontend coaching UI + Guardian audit). |
 
 ### Phase 6 - Submission package (Day 11, both)
 
 | # | Component | File(s) | Owner | Status | Deps | Notes |
 |---|-----------|---------|-------|--------|------|-------|
 | 6.1 | Final deck PDF rendered via Playwright HTML to PDF | `docs/deck.pdf` | Stephen | ⬜ | 4.9 | Day 11 |
-| 6.2 | `apex.race/judges` one-page judges-tour landing | `app/frontend/app/judges/page.tsx` | Stephen | ⬜ | 5.8 | TOC: live demo URL + video + Colab + deck + GitHub + Q&A + IBM stack + team bios |
-| 6.3 | `apex.race/status` live demo status dashboard | `app/frontend/app/status/page.tsx` | Stephen | ⬜ | 5.1, 5.8 | Uptime + commit SHA + HF Space health + last green CI |
-| 6.4 | `docs/methodology.md` (Sookra Methodology trace) | docs/ | Stephen | ⬜ | - | seven phases: P1 recon → P2 murder-board + judge-sim → P3 concept-lock → P4 deep-research → P5 PhysicsTTM mitigation → P6 build → P7 submission |
-| 6.5 | `docs/pre-mortem.md` final polish | docs/ | Both | ⬜ | 1.7 | Every failure mode + mitigation |
-| 6.6 | `docs/cost-audit-2026-05-30.md` (usage-audit skill run) | docs/ | Stephen | ⬜ | - | Session cost + token spend |
-| 6.7 | `paper/apex-neurips-workshop-2026.md` DRAFT (readable quality) | paper/ | Vinh | ⬜ | 4.2, 5.7 | Abstract + intro + method + experiments + related + limitations |
+| 6.2 | `apex.race/judges` one-page judges-tour landing | `app/frontend/app/judges/page.tsx` | Stephen | ✅ | 5.8 | Pull-forward Day 11 → Day 1 EOD. TOC: /analyze + /sim-rig + 3-min video + 30s clip + deck + GitHub + methodology trace + architecture-spec + pre-mortem + 8-tool IBM stack grid + Q&A 5 cards + team. Wave-19 added /sim-rig resource tile. |
+| 6.3 | `apex.race/status` live demo status dashboard | `app/frontend/app/status/page.tsx` | Stephen | ✅ | 5.1, 5.8 | Pull-forward Day 11 → Day 1 EOD. Hero + StatusLiveIndicator (GitHub Actions API polling, ApiError ErrorKind discriminator, 403/429 rate-limit branch, Retry button) + static signals + pending-indicator placeholders for Day 9 HF Space + Day 11 Vercel + Day 10 demo video. |
+| 6.4 | `docs/methodology.md` (Sookra Methodology trace) | docs/ | Stephen | 🟡 | - | seven phases: P1 recon → P2 murder-board + judge-sim → P3 concept-lock → P4 deep-research → P5 PhysicsTTM mitigation → P6 build → P7 submission. Phase 6+7 expansion + Claude-Memory cross-references ✅ Day 2 PM. **Acceptance criterion:** Day 11 final lock requires (a) every phase has dated artifact list, (b) every gate G1-G11 has pass/fail trace, (c) cross-references to all Claude Memory session notes from waves 1-N+1, (d) AI-tone sweep clean. |
+| 6.5 | `docs/pre-mortem.md` final polish | docs/ | Both | 🟡 | 1.7 | Live with 40+ entries (15+ ✅ mitigations, 3 accepted residual risks, row 45 📘 galaxy-tier compounding lesson). Day 11 final polish remains. **Acceptance criterion:** Day 11 final lock requires (a) every entry has Type/Trigger/Mitigation/Status fields filled, (b) every ✅ entry cites a commit SHA or doc path proving the mitigation shipped, (c) every 🟡 entry has a Day-11 close-out plan or explicit residual-risk acceptance. |
+| 6.6 | `docs/cost-audit-2026-05-30.md` (usage-audit skill run) | docs/ | Stephen | ⬜ | - | Session cost + token spend. **Acceptance criterion:** Day 11 evening run via `codeburn status` + `codeburn optimize` outputs committed verbatim; if any single project line exceeds $20/day, surface as a pre-mortem entry. |
+| 6.7 | `paper/apex-neurips-workshop-2026.md` DRAFT (readable quality) | paper/ | Stephen + Vinh | 🟡 | 4.2, 5.7 | Outline + 6-page scaffold + LaTeX physics equations + Abstract ≤250 words ✅ Day 2 PM (Stretch S10 pull-forward, Stephen drafted on Vinh's behalf). Vinh fills §4 Experiments Day 9-10 once benchmarks land. **Acceptance criterion:** Day 11 final draft is readable by an external researcher in one pass; passes (a) Abstract <=250 words, (b) §3 Method has Layer 1+2+3 math equations, (c) §4 Experiments has at least one benchmark (TTM-zero-shot RMSE vs seasonal-naive on at least 1 FastF1 holdout), (d) §5 Limitations honest about COA fixture synthesis + retraining-free claim scope, (e) References has at least 10 cited works including the Granite-TTM NeurIPS 2024 paper. |
 | 6.8 | README.md final polish | repo root | Stephen | ⬜ | 5.8 | Demo URL + Mermaid arch + Cloud Run links + IBM stack |
 | 6.9 | AI-tone sweep (`scripts/ai-tone-sweep.sh`) | scripts/ | Stephen | ⬜ | 6.1, 6.8 | Zero em-dash + zero blocklist hits across README, deck, video transcript, emails |
 | 6.10 | All §17 external-tool passes | logs | Both | ⬜ | - | pre-landing-review, claude-council, three-brain (Codex + Gemini), architecture-reviewer, repo-sentinel, NotebookLM gap pass 2 |
@@ -356,13 +360,13 @@ Cuts are logged in `docs/decision-log.md` as dated entries. No silent removal.
 - [ ] **Q-005 - June Challenge entry:** start parallel June build between Day 12 + June Challenge deadline? Default: NO, focus retro week. **Owner: Stephen, Day 12.**
 - [ ] **Q-006 - per-surface consent for adaptive-supplier + adaptive-racing-programme naming:** APEX positioning materials previously named the supplier + racing programme without explicit per-surface consent. Codex critique wave 2 (Day 1 EOD) flagged as BLOCKER. **Resolution underway:** (a) Adaptive-hand-control supplier consent email sent 2026-05-20 PM (Day 1, not Day 2 as the draft scaffold said) via school address. Recipient address kept private in the consent-draft file (sanitized to remove operator name from filename + body per pr-review-toolkit wave 5 BLOCKER). (b) Pre-emptively anonymized 14 public-repo files Day 1 EOD to role descriptions. On per-surface consent reply, revert names per the consent grants. (c) If declined or no reply by Day 10, ship anonymized. **Owner: Stephen, monitor through Day 10.**
 
-- [ ] **Q-007 - APEX Lite EARLY trigger (Day 2 noon, Vinh-unresponsive scenario):** Distinct from Q-004's LATE Day-10 trigger (Day 9 dress-rehearsal failure). Day-2 trigger fires if any of: Vinh has not accepted the GitHub invite, Vinh has not cloned the repo, Vinh has not responded in 24h, or Vinh ran Gate G1+G4 and failed. **Action:** Trigger evaluation 2026-05-21 12:00 noon ET. Execution per `docs/apex-lite-contingency.md`. **Owner: Stephen, Day 2 noon ET.**
+- [ ] **Q-007 - APEX Lite EARLY trigger (Day 2 noon, Vinh-unresponsive scenario):** Distinct from Q-004's LATE Day-10 trigger (Day 9 dress-rehearsal failure). Day-2 trigger fires if any of: Vinh has not accepted the GitHub invite, Vinh has not cloned the repo, Vinh has not responded in 24h, or Vinh ran Gate G1+G4 and failed. **Action:** Trigger evaluation 2026-05-21 12:00 noon ET. Execution per `docs/apex-lite-contingency.md`. **Owner: Stephen, Day 2 noon ET.** **Acceptance criterion (decision rule):** if at noon ET 2026-05-21 ANY of {invite not accepted, repo not cloned, no Vinh reply in 24h} holds, Stephen invokes APEX Lite per the contingency doc and logs the decision in `docs/decision-log.md` as `D-Lite-EARLY`. If all three Vinh-side states are green and no Gate G1/G4 fail has been reported, Lite EARLY is NOT triggered and project continues full-scope. Re-evaluation cadence: every 12 hours through Day 4 EOD; after Day 5 the trigger window collapses into Q-004 only.
 
 ---
 
 ## Pre-submit Checklist (Day 11 gate G11)
 
-Run `scripts/pre-submit-checks.sh`. All 20 items must pass. Fail = no submission tomorrow.
+Run `scripts/pre-submit-checks.sh` (default mode = Day-2-through-10 regression). Day 11 strict: `--final`. All 21 items must pass. Fail = no submission tomorrow.
 
 1. [ ] Em-dash sweep on README + PLAN.md + docs + deck + video transcript = zero hits in prose
 2. [ ] AI-tone blocklist sweep ("delve into / leverage / seamless / robust / etc") = zero hits
@@ -384,6 +388,7 @@ Run `scripts/pre-submit-checks.sh`. All 20 items must pass. Fail = no submission
 18. [ ] Q&A flashcards memorized: both members deliver all 5 cards < 30s each from cold
 19. [ ] Multi-track entries verified: every eligible track checkbox ticked on BeMyApp form
 20. [ ] Stakeholder quotes attributed only with explicit per-surface consent (or omitted)
+21. [ ] BeMyApp submission payload checkboxes ticked: `grep "^\[ \]" deliverables/bemyapp-submission-payload.md` returns nothing (WARN in default mode; HARD-FAIL in `--final` mode). Added wave-18 silent-failure-hunter H-3.
 
 ---
 
@@ -484,4 +489,4 @@ The original `~/.claude/plans/all-right-i-want-rippling-moon.md` (also mirrored 
 
 ---
 
-_Last updated: 2026-05-20 EOD by Stephen after 7 review waves. **77+ atomic commits pushed Day 1.** Phase 0 ✅ except 0.11-0.13 (Vinh-side). Day 2 + Day 5 + Day 7 + Day 8 + Day 11 + Day 12 task drafts pulled forward into Day 1 per galaxy-tier rule. Pre-consent operator-attribution anonymized across 14+ public files. Privacy hardening pass Day 1 EOD: recipient names + emails redacted from `docs/stakeholder-outreach-log.md` + PLAN.md + STATUS_DAY1.md (pr-review-toolkit wave 5 BLOCKER). Day 2 morning queue + APEX Lite trigger evaluation at noon ET active per Q-007._
+_Last updated: 2026-05-21 PM by Stephen after 19 review waves + wave-19 mega-batch (doc expansion + open-source convention + paper outline + sim-rig frontend + Colab notebook + storyboard + Vercel deploy + plan-gap-scanner sweep). **165+ atomic commits pushed across Day 1 + Day 2.** Phase 0 ✅ except 0.11-0.13 (Vinh-side). Day 2 + Day 4 + Day 5 + Day 6 + Day 7 + Day 8 + Day 9 + Day 10 + Day 11 task drafts pulled forward to Day 2 PM per galaxy-tier rule (Core 6 + Stretch S1 + S4 + S5 + S6 + S10 all have at least a 70% draft committed). Pre-consent operator-attribution anonymized across 14+ public files. Privacy hardening pass Day 1 EOD: recipient names + emails redacted from `docs/stakeholder-outreach-log.md` + PLAN.md + STATUS_DAY1.md (pr-review-toolkit wave 5 BLOCKER). Day 2 morning queue + APEX Lite EARLY trigger evaluation at noon ET active per Q-007 decision rule. plan-gap-scanner Day 2 PM returned 21 gaps (6 BLOCKER / 10 WARN / 5 NIT) and this commit closes the BLOCKERs (status-snapshot sync + 5.13 coupling + Q-007 acceptance criterion + rollback paths on 5.1 + 5.3 + 5.8 + 6.7 acceptance criterion). WARN + NIT close-out passes scheduled Day 3-5._
