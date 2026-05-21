@@ -75,4 +75,4 @@ The architectural claim (COA-aware physics) does not depend on the supplier name
 
 ---
 
-_Last updated: 2026-05-20 PM by Stephen (Day 1 EOD draft, send Day 2 AM). Filename anonymized per pr-review-toolkit wave 5 BLOCKER — canonical supplier identity in `project_apex_stakeholders.md` private memory only._
+_Last updated: 2026-05-20 PM by Stephen (Day 1 EOD draft, send Day 2 AM). Filename anonymized per pr-review-toolkit wave 5 BLOCKER. Canonical supplier identity in `project_apex_stakeholders.md` private memory only._
