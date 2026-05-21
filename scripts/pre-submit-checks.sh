@@ -2,8 +2,9 @@
 # APEX pre-submit checklist runner (PLAN.md §8).
 # Runs every check Day 11 (final gate) AND on demand during Day 2-10 (regression catcher).
 # Usage:
-#   bash scripts/pre-submit-checks.sh                  # run all, exit non-zero on any HARD-FAIL
+#   bash scripts/pre-submit-checks.sh                  # default (Day 2-10 regression mode)
 #   bash scripts/pre-submit-checks.sh --soft           # treat Vinh-pending gates as WARN not FAIL
+#   bash scripts/pre-submit-checks.sh --final          # Day 11 strict mode: video/coverage/HF must be GREEN
 #   bash scripts/pre-submit-checks.sh --only=1,2,5     # run a subset
 
 set -u
@@ -14,11 +15,13 @@ HARD_FAIL=0
 SOFT_FAIL=0
 MANUAL_PENDING=0
 SOFT_MODE=0
+FINAL_MODE=0
 ONLY_FILTER=""
 
 for arg in "$@"; do
   case "$arg" in
     --soft) SOFT_MODE=1 ;;
+    --final) FINAL_MODE=1 ;;
     --only=*) ONLY_FILTER="${arg#--only=}" ;;
   esac
 done
@@ -38,8 +41,13 @@ fail()    { printf "${RED}[%2d] FAIL${RESET} %s\n" "$1" "$2"; HARD_FAIL=$((HARD_
 warn()    { printf "${YELLOW}[%2d] WARN${RESET} %s\n" "$1" "$2"; SOFT_FAIL=$((SOFT_FAIL+1)); }
 manual()  { printf "${BLUE}[%2d] MANUAL${RESET} %s\n" "$1" "$2"; MANUAL_PENDING=$((MANUAL_PENDING+1)); }
 soft_or_fail() { if (( SOFT_MODE )); then warn "$1" "$2"; else fail "$1" "$2"; fi; }
+final_or_warn() { if (( FINAL_MODE )); then fail "$1" "$2"; else warn "$1" "$2"; fi; }
 
-PROSE_PATHS=(README.md PLAN.md CLAUDE.md SUBMISSION.md STATUS_DAY1.md STATUS_TEMPLATE.md docs/ app/frontend/app/ app/frontend/components/)
+PROSE_PATHS=(
+  README.md PLAN.md CLAUDE.md SUBMISSION.md STATUS_DAY1.md STATUS_TEMPLATE.md
+  docs/ app/frontend/app/ app/frontend/components/
+  paper/ deliverables/ bob-sessions/
+)
 
 echo -e "${BOLD}APEX pre-submit checklist${RESET} ($(date -u +%Y-%m-%dT%H:%M:%SZ))"
 echo "Repo: $(git rev-parse --show-toplevel 2>/dev/null || echo .)"
@@ -49,10 +57,10 @@ echo ""
 
 # Check 1 — em-dash sweep (excludes meta-policy refs in CLAUDE.md + pre-mortem.md self-references)
 if run_check 1; then
-  hits=$(grep -rn "—" "${PROSE_PATHS[@]}" 2>/dev/null \
-    | grep -v "node_modules" \
-    | grep -v ".next" \
-    | grep -v "research/" \
+  hits=$(grep -rn "—" \
+      --include="*.md" --include="*.ts" --include="*.tsx" --include="*.mdx" --include="*.txt" \
+      --exclude-dir=node_modules --exclude-dir=.next --exclude-dir=research --exclude-dir=dist \
+      "${PROSE_PATHS[@]}" 2>/dev/null \
     | grep -v "CLAUDE.md.*No em-dash" \
     | grep -v "pre-mortem.md.*Em-dash in prose" \
     | grep -v "decision-log.md.*em-dash" \
@@ -61,42 +69,46 @@ if run_check 1; then
   else fail 1 "em-dash found in prose:"; echo "$hits" | sed 's/^/    /'; fi
 fi
 
-# Check 2 — AI-tone blocklist (12 words). Allow rule-definition contexts.
+# Check 2 — AI-tone blocklist. Word-boundary + case-insensitive. Synced with CLAUDE.md global list.
+# Restricted to prose files (*.md/*.mdx/*.txt). Code files (*.ts/*.tsx) excluded because Tailwind
+# utility class names like "transition-transform" or "transform" are not marketing prose.
+# Allowlist: rule-definition contexts, Python lib names ("transformers" is HF), technical compounds.
 if run_check 2; then
-  blocklist='delve into|leverage |seamless|robust |comprehensive|unlock|cutting-edge|revolutionary|streamline|ecosystem |easily|simply '
-  hits=$(grep -rEn "$blocklist" "${PROSE_PATHS[@]}" 2>/dev/null \
-    | grep -v "node_modules" \
-    | grep -v ".next" \
-    | grep -v "research/" \
+  blocklist='\bdelve into\b|\bleverage\b|\bseamless\w*|\brobust\w*|\bcomprehensive\w*|\bunlock\w*|\bcutting-edge\b|\brevolutionary\w*|\bstreamline\w*|\becosystem\w*|\beasily\b|\bsimply\b|\belevate\w*|\bempower\w*|\bintuitive\w*|\btransform[a-z]*\b|\bsophisticated\w*|\bpowerful\w*|\bamazing\w*|\beffortless\w*'
+  hits=$(grep -riEn "$blocklist" \
+      --include="*.md" --include="*.mdx" --include="*.txt" \
+      --exclude-dir=node_modules --exclude-dir=.next --exclude-dir=research --exclude-dir=dist \
+      "${PROSE_PATHS[@]}" 2>/dev/null \
     | grep -v "pnpm-lock" \
-    | grep -vE "(blocklist|No AI-tone|AI-blocklist|three-brain|leverage layers|lower-leverage)" \
+    | grep -vE "(blocklist|No AI-tone|AI-blocklist|three-brain|leverage layers|lower-leverage|leverage tools|transformers|granite-tsfm|tsfm)" \
+    | grep -vE "transformer\b" \
     || true)
-  if [[ -z "$hits" ]]; then pass 2 "AI-tone blocklist sweep clean"
-  else fail 2 "AI-tone blocklist hits in prose:"; echo "$hits" | sed 's/^/    /'; fi
+  if [[ -z "$hits" ]]; then pass 2 "AI-tone blocklist sweep clean (case-insensitive, word-boundary, prose-only)"
+  else fail 2 "AI-tone blocklist hits in prose:"; echo "$hits" | head -20 | sed 's/^/    /'; fi
 fi
 
 # Check 3 — en-dash + smart-quote sweep
 if run_check 3; then
-  smart=$(grep -rEn $'[–‘’“”]' "${PROSE_PATHS[@]}" 2>/dev/null \
-    | grep -v "node_modules" \
-    | grep -v ".next" \
-    | grep -v "research/" \
+  smart=$(grep -rEn $'[–‘’“”]' \
+      --include="*.md" --include="*.ts" --include="*.tsx" --include="*.mdx" --include="*.txt" \
+      --exclude-dir=node_modules --exclude-dir=.next --exclude-dir=research --exclude-dir=dist \
+      "${PROSE_PATHS[@]}" 2>/dev/null \
     || true)
   if [[ -z "$smart" ]]; then pass 3 "en-dash + smart-quote sweep clean"
   else fail 3 "non-ASCII typographic chars found:"; echo "$smart" | sed 's/^/    /'; fi
 fi
 
-# Check 4 — operator-attribution sweep (named operators in public files)
+# Check 4 — operator-attribution sweep (named operators + personal contact info in public files)
 if run_check 4; then
-  named=$(grep -rEn "Jason Arthur|Al Locke|Johnny Dawson-Ellis|Brian Roberts|Aaron Morgan|Bobby Trundley|MME Motorsport|mme-motorsport|MME_Motorsport" \
-    README.md PLAN.md SUBMISSION.md STATUS_DAY1.md docs/ app/frontend/app/ app/frontend/components/ 2>/dev/null \
-    | grep -v "node_modules" \
-    | grep -v ".next" \
-    | grep -v "research/" \
+  named=$(grep -rEn "Jason Arthur|Al Locke|Johnny Dawson-Ellis|Brian Roberts|Aaron Morgan|Bobby Trundley|MME Motorsport|mme-motorsport|MME_Motorsport|stephensookra@gmail|ssookra@students" \
+      --include="*.md" --include="*.ts" --include="*.tsx" --include="*.mdx" \
+      --exclude-dir=node_modules --exclude-dir=.next --exclude-dir=research --exclude-dir=dist \
+      README.md PLAN.md SUBMISSION.md STATUS_DAY1.md docs/ app/frontend/app/ app/frontend/components/ 2>/dev/null \
     | grep -v "private memory" \
+    | grep -v "kept private" \
     || true)
-  if [[ -z "$named" ]]; then pass 4 "no named operators in public files (pre-consent rule honored)"
-  else fail 4 "named operators in public files (operator-unassociation violation):"; echo "$named" | sed 's/^/    /'; fi
+  if [[ -z "$named" ]]; then pass 4 "no named operators or personal contact info in public files (pre-consent rule honored)"
+  else fail 4 "named operators or personal contact info in public files (operator-unassociation violation):"; echo "$named" | sed 's/^/    /'; fi
 fi
 
 # Check 5 — em-dash in commit subjects
@@ -106,17 +118,21 @@ if run_check 5; then
   else fail 5 "em-dash in commit subjects:"; echo "$subjects" | sed 's/^/    /'; fi
 fi
 
-# Check 6 — CI green on main (GitHub Actions). Soft-fail if gh CLI unavailable.
+# Check 6 — CI green on main (GitHub Actions). PER-JOB check (PLAN.md §8 explicit).
 if run_check 6; then
   if command -v gh >/dev/null 2>&1; then
-    status=$(gh run list --branch main --limit 1 --json conclusion --jq '.[0].conclusion' 2>/dev/null || echo "unknown")
-    case "$status" in
-      success) pass 6 "latest GitHub Actions run on main: success" ;;
-      failure|cancelled|timed_out|action_required) fail 6 "latest GH Actions run on main: $status" ;;
-      ""|null|unknown) warn 6 "no GH Actions runs found yet (workflow not added until Vinh Day 2)" ;;
-      *) warn 6 "GH Actions latest status: $status (treat as in-progress)" ;;
-    esac
-  else warn 6 "gh CLI unavailable, CI status skipped"; fi
+    run_id=$(gh run list --branch main --limit 1 --json databaseId --jq '.[0].databaseId' 2>/dev/null)
+    if [[ -z "$run_id" || "$run_id" == "null" ]]; then
+      final_or_warn 6 "no GH Actions runs found yet (workflow added Day 2 by Vinh)"
+    else
+      jobs_json=$(gh run view "$run_id" --json jobs 2>/dev/null || echo '{"jobs":[]}')
+      failing=$(echo "$jobs_json" | jq -r '.jobs[] | select(.conclusion!="success" and .conclusion!=null) | "\(.name): \(.conclusion)"' 2>/dev/null || echo "")
+      pending=$(echo "$jobs_json" | jq -r '.jobs[] | select(.conclusion==null) | "\(.name): in_progress"' 2>/dev/null || echo "")
+      if [[ -n "$failing" ]]; then fail 6 "CI per-job not green:"; echo "$failing" | sed 's/^/    /'
+      elif [[ -n "$pending" ]]; then warn 6 "CI per-job has in-progress jobs:"; echo "$pending" | sed 's/^/    /'
+      else pass 6 "CI per-job green on main run $run_id"; fi
+    fi
+  else final_or_warn 6 "gh CLI unavailable, CI status unverifiable"; fi
 fi
 
 # Check 7 — TypeScript clean
@@ -143,7 +159,7 @@ if run_check 8; then
   else fail 8 "lint errors"; fi
 fi
 
-# Check 9 — Tests pass (vitest frontend + pytest backend)
+# Check 9 — Tests pass (vitest frontend + pytest backend). Final mode: enforce 70% backend coverage.
 if run_check 9; then
   test_fail=0
   any_run=0
@@ -154,18 +170,20 @@ if run_check 9; then
   fi
   if [[ -d app/backend/tests ]] && [[ -f app/backend/pyproject.toml ]]; then
     any_run=1
-    if (cd app/backend && pytest -q) >/tmp/apex-pytest.log 2>&1; then :
+    pytest_args="-q"
+    if (( FINAL_MODE )); then pytest_args="-q --cov=apex --cov-fail-under=70"; fi
+    if (cd app/backend && pytest $pytest_args) >/tmp/apex-pytest.log 2>&1; then :
     else test_fail=1; printf "    pytest failed (see /tmp/apex-pytest.log)\n"; fi
   fi
-  if (( any_run == 0 )); then warn 9 "no test suites yet (Vinh adds Convergence 14 Day 5-7)"
-  elif (( test_fail == 0 )); then pass 9 "tests pass"
+  if (( any_run == 0 )); then final_or_warn 9 "no test suites yet (Vinh adds Convergence 14 Day 5-7)"
+  elif (( test_fail == 0 )); then pass 9 "tests pass$([[ $FINAL_MODE == 1 ]] && echo ', coverage ≥ 70% enforced')"
   else fail 9 "test failures (see /tmp logs)"; fi
 fi
 
-# Check 10 — Hugging Face Space healthy
+# Check 10 — Hugging Face Space healthy. Final mode: required.
 if run_check 10; then
   hf_url="${APEX_HF_URL:-}"
-  if [[ -z "$hf_url" ]]; then warn 10 "HF Space URL not yet set (Vinh Day 9 deploy)"
+  if [[ -z "$hf_url" ]]; then final_or_warn 10 "HF Space URL not yet set (Vinh Day 9 deploy). Set APEX_HF_URL env var."
   else
     code=$(curl -s -o /dev/null -w "%{http_code}" "$hf_url/health" --max-time 30 || echo "000")
     case "$code" in
@@ -175,7 +193,7 @@ if run_check 10; then
   fi
 fi
 
-# Check 11 — Demo video length ≤ 3:00
+# Check 11 — Demo video length ≤ 3:00. Final mode: required + ffprobe required.
 if run_check 11; then
   vid="deliverables/demo-video.mp4"
   if [[ -f "$vid" ]]; then
@@ -183,14 +201,29 @@ if run_check 11; then
       dur=$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$vid" 2>/dev/null | cut -d. -f1)
       if [[ -n "$dur" && "$dur" -le 180 ]]; then pass 11 "demo video duration ${dur}s ≤ 180s"
       else fail 11 "demo video duration ${dur}s > 180s"; fi
-    else warn 11 "ffprobe unavailable, video duration unchecked"; fi
-  else warn 11 "deliverables/demo-video.mp4 not yet recorded (Day 10)"; fi
+    else final_or_warn 11 "ffprobe unavailable, video duration unchecked (install ffmpeg)"; fi
+  else final_or_warn 11 "deliverables/demo-video.mp4 not yet recorded (Day 10)"; fi
 fi
 
-# Check 12 — Backup demo video exists
+# Check 11b — 30-second highlight clip exists (PLAN §16.4 + Stretch S7).
+if run_check 11; then
+  clip="deliverables/demo-video-30s.mp4"
+  if [[ -f "$clip" ]]; then
+    if command -v ffprobe >/dev/null 2>&1; then
+      dur=$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$clip" 2>/dev/null | cut -d. -f1)
+      if [[ -n "$dur" && "$dur" -ge 25 && "$dur" -le 35 ]]; then printf "${GREEN}[11b] PASS${RESET} 30-second highlight clip duration ${dur}s (target 30s)\n"
+      else fail 11 "30-second highlight clip duration ${dur}s (target 25-35s)"; fi
+    else printf "${YELLOW}[11b] WARN${RESET} ffprobe unavailable, 30s clip duration unchecked\n"; SOFT_FAIL=$((SOFT_FAIL+1)); fi
+  else
+    if (( FINAL_MODE )); then fail 11 "deliverables/demo-video-30s.mp4 missing (PLAN §16.4, Stretch S7 Day 10)"
+    else printf "${YELLOW}[11b] WARN${RESET} deliverables/demo-video-30s.mp4 not yet recorded (Day 10)\n"; SOFT_FAIL=$((SOFT_FAIL+1)); fi
+  fi
+fi
+
+# Check 12 — Backup demo video exists. Final mode: required.
 if run_check 12; then
   if [[ -f "deliverables/demo-video-backup.mp4" ]]; then pass 12 "backup demo video present"
-  else warn 12 "deliverables/demo-video-backup.mp4 not yet present (Day 10)"; fi
+  else final_or_warn 12 "deliverables/demo-video-backup.mp4 not yet present (Day 10)"; fi
 fi
 
 # Check 13 — Deck PDF renders
