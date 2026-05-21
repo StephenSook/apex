@@ -83,10 +83,20 @@ Status legend: 🟡 actively mitigating · ✅ mitigation shipped · ⚠ accepte
 
 ---
 
+## Day 2 night (2026-05-21) - additions
+
+| # | Surface | Failure mode | Why it happens | Mitigation | Status |
+|---|---------|--------------|----------------|------------|--------|
+| 46 | BeMyApp banner default-placeholder risk | Submitting with the default BeMyApp "EXAMPLE PROJECT NAME, Recommended Banner Size 1920 x 600" placeholder reads as "did not ship a banner" (observed: RaceMind AI in the live gallery shipped the default placeholder, which contradicts their otherwise polished dashboard mockup) | Default-placeholder slot is non-blocking on the submission form, so projects ship without uploading a custom 1920x600 | Shipped editorial-magazine-cover banner Day 2 night-late via Next.js ImageResponse renderer at `app/frontend/lib/bemyapp-banner.tsx` + route handler at `app/bemyapp-banner/route.ts` + brand brief at `docs/banner-brand-brief.md` + final PNG at `deliverables/bemyapp-banner-1920x600.png`. Warm cream + Fraunces italic deliberately contrasts the universal dark-cinematic competitor banner aesthetic. | ✅ |
+| 47 | Google Fonts CDN unavailability at render time | The banner renderer fetches Fraunces + IBM Plex Sans + IBM Plex Mono from `fonts.googleapis.com` at render time. If the build environment (Vercel runtime or local dev) lacks network access, the route handler 500s | Externalized font fetch keeps binary font files out of the repo (~500kb saved) but introduces a runtime dependency on Google Fonts CDN | The committed `deliverables/bemyapp-banner-1920x600.png` is the canonical artifact uploaded to BeMyApp at submission time; the route handler is iteration-only. Submission-time PNG availability does not depend on Google Fonts being reachable. | ⚠ accepted residual risk for iteration; not for submission |
+| 48 | BeMyApp panel depth under-shipping vs competitor benchmark | The BeMyApp form's "What to write" prompt says "In 2-3 sentences"; an inexperienced author treats this as a constraint and ships a thin Issue + Magic Solution panel. NeuroPit + PitWall + RaceMind shipped 3-paragraph / 120-300-word panels and visibly land more weight on the judge-visible page | The form's example text is read as the requirement floor, not the example floor | Wave-21 rewrote the locked draft copy in `deliverables/bemyapp-submission-payload.md` to the NeuroPit-depth standard (~140 words Issue, ~190 words Magic Solution) with bold-key-phrase emphasis + layer-by-layer technical breakdown + "audit first, always" payoff. Canonical reference: `reference_bemyapp_submission_template.md` panel-budget guidance section. | ✅ |
+
+---
+
 ## Pre-Q&A defense cross-reference
 
 Every BLOCKER + HIGH residual risk has a corresponding Q&A flashcard or rehearsed answer. See `~/.claude/projects/-Users-stephensookra-Desktop-IBM-May/memory/project_apex_qa_killshots.md` for the 5 cards. Update both this journal and the killshots memory in lockstep.
 
 ---
 
-_Last updated: 2026-05-20 EOD by Stephen (Day 1 EOD initial draft + wave 7/8/9 observed-failure additions, Codex wave-8 review integrated)._
+_Last updated: 2026-05-21 night-late by Stephen (wave-22 BeMyApp banner asset row 46 added + row 47 Google Fonts dependency residual-risk noted + row 48 panel depth under-shipping mitigated)._
