@@ -24,6 +24,12 @@ Status legend: 🟡 actively mitigating · ✅ mitigation shipped · ⚠ accepte
 | 4 | Version drift | "Next.js 15" referenced 3 places, actual is 16.2.6 | PLAN.md written before `create-next-app` ran; never updated post-scaffold | Grep-and-replace across README + PLAN | ✅ |
 | 5 | Code review lane | First attempt was Claude reviewing Claude's own frontend | Forgot the global three-brain HARD RULE on self-review | Routed to `codex:codex-rescue` + `pr-review-toolkit:code-reviewer` parallel | ✅ |
 | 6 | Vinh-lane interference | About to scaffold `app/backend/` Python without Vinh's input | Galaxy-tier "everything ships" reflex overrode ownership table | Stephen flagged "don't interfere with Vinh" → backed off backend, kept to Stephen-lane only (frontend polish + docs + narrative + outreach) | ✅ |
+| 21 | Filename privacy leak | `docs/outreach-drafts/mme-motorsport-consent.md` named operator in the filename itself; body-only sweeps did not catch it | Sweep tooling only inspected file contents, not paths | Renamed to `adaptive-supplier-consent-day-1.md` + body sanitized. Added explicit operator-name + path check in `scripts/pre-submit-checks.sh` Check 4. | ✅ |
+| 22 | Operator deducibility from context | Public consent draft still narrowed supplier to a tiny set via "simultaneity-permitting hand-control technology you ship" | Anonymization swept the proper noun but not the unique capability description that fingerprints the supplier | Codex wave-8 review caught it. Replaced with generic "adaptive hand-controls of the class you supply." | ✅ |
+| 23 | Personal email leak in public draft | `docs/outreach-drafts/ibm-consulting-cold-email-day-12.md` carried `stephensookra@gmail.com` in three slots; LinkedIn DM drafts carried `ssookra@students.kennesaw.edu` in signature | Anonymization protocol applied to recipient identities but not to sender identities | Redacted to `[personal email kept private]` / `[school address kept private]`. Canonical sender addresses now in private memory only. | ✅ |
+| 24 | Commit-count claim drift | `STATUS_DAY1.md` said 77+ atomic commits while `git log --oneline | wc -l` returned 87 | Sweeps updated the claim without re-counting from git | Codex wave-8 review caught it. Bumped to 87+. Added implicit lesson: regenerate counts from `git log` each time. | ✅ |
+| 25 | AI-tone regex false negatives | First-pass `pre-submit-checks.sh` regex was trailing-space-anchored + case-sensitive + missing the wider blocklist (empower, intuitive, elevate, transform, etc.) | Initial regex used the literal CLAUDE.md row order without word-boundary anchors | Rewrote to case-insensitive `\b…\w*` patterns. Scoped to prose files only so Tailwind classes like `transition-transform` no longer false-positive. | ✅ |
+| 26 | ESLint environmental break | `pnpm exec eslint` throws `TypeError: LazyLoadingRuleMap is not a constructor` after Node 22.22.2 reinstall | Likely Node module-resolution caching + ESLint 9.39 internal API drift | `tsc --noEmit` + `next build` continue to gate correctness. Lint check soft-failed in pre-submit-checks.sh for now. Day 2 task: pin ESLint version or migrate to `next lint` once Vercel ships the canonical Next 16 lint config. | 🟡 |
 
 ## Forward-looking failure modes (anticipated)
 
@@ -44,6 +50,9 @@ Status legend: 🟡 actively mitigating · ✅ mitigation shipped · ⚠ accepte
 | 18 | 12 | BeMyApp form submission rejected (wrong field format / missing field) | Form validation rules not fully known until submission attempt | Submission portal idiosyncrasies | Submit Day 12 14:00 ET (7-hour buffer before 23:59 deadline) leaves time for fixup |
 | 19 | 12 | Hostile Q&A question outside the 5 prepared flashcards | Judges may ask something unanticipated | Q&A is high-variance | Flashcard #6 (catch-all): "We deliberately scope-limited APEX V1 to the COA + TTM + physics layer pattern. The question you're asking is genuinely open and a great Day 13 conversation - happy to dig in." |
 | 20 | 12 evening | Submission timestamp on BeMyApp form differs from intended (timezone confusion) | BeMyApp portal may display UTC vs ET | Timezone math | Verify on Day 11 dress rehearsal; screenshot submission timestamp |
+| 27 | 2 | Dropzone CSV parse fails on FastF1 channel naming | FastF1 column names vary by year + provider; my Dropzone assumes 8 channels exactly | Channel-mapping mismatch between FastF1 export + Vinh's TTM input adapter | Day 2: agree column-mapping table with Vinh in `app/shared/types.ts` comment; Day 3: add CSV-header preview row before submit. Until then the Dropzone accepts any CSV shape and defers schema validation to backend. |
+| 28 | 2 | Tab-order regression in `/analyze` when Vinh's coaching report mounts below the form | Once the backend returns and a report renders, focus may jump back to top of page | React reconciler default behavior | Day 5-6: scroll-into-view + focus management on result mount (move focus to result heading, not body top). Currently Day 1 EOD ships dropzone only. |
+| 29 | 2-10 | Per-submit-checks.sh false positives or false negatives drift as the prose surface grows | Adding new doc files without updating allowlist | Allowlist is conservative; new patterns slip through grep | Re-run script after every wave; Codex review on the script itself before Day 11 final pass. Pattern proven Day 1 EOD where Codex wave-8 caught 7 bugs in the initial 215-line script. |
 
 ## Accepted residual risks (ship with these on Day 12)
 
@@ -59,4 +68,4 @@ Every BLOCKER + HIGH residual risk has a corresponding Q&A flashcard or rehearse
 
 ---
 
-_Last updated: 2026-05-20 PM by Stephen (Day 1 EOD initial draft)._
+_Last updated: 2026-05-20 EOD by Stephen (Day 1 EOD initial draft + wave 7/8/9 observed-failure additions, Codex wave-8 review integrated)._
