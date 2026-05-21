@@ -31,8 +31,8 @@ flowchart TB
 
     TEL --> AGG
     COA --> DOCLING
+    DOCLING -. "COA flag<br/>(9th channel)" .-> AGG
     AGG --> TTM
-    DOCLING -. COA flag .-> PROJ
     TTM --> PROJ
     PROJ --> GUARD
     DBR --> INSTR
