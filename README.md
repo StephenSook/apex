@@ -49,7 +49,7 @@ APEX changes that.
 
 What makes APEX different from the existing AI race-engineer category (Track Titan, Trophi.ai, the Deep Dynamics PINN line):
 
-### 1. First pretrained time-series foundation model on motorsport telemetry
+### 1. First application of a pretrained time-series foundation model to adaptive motorsport telemetry
 
 We do not retrain. We take a frozen Granite TimeSeries TTM r2.1 forecaster, aggregate raw 50 Hz telemetry to 1-Hz mini-sector tensors that fit the model's published support envelope, and wrap the outputs in a differentiable physics-projection layer. To our knowledge no prior published work applies a non-physics TSFM to vehicle dynamics without retraining it from scratch (vs Deep Dynamics, which trains a bespoke PINN; vs Chronos-on-car-following, which uses a different forecaster on different inputs).
 
