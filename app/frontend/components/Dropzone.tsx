@@ -42,23 +42,23 @@ import {
   type ReactNode,
 } from "react";
 
-type SlotKey = "telemetry" | "coa";
+export type SlotKey = "telemetry" | "coa";
 
-const MIN_TELEMETRY_BYTES = 1024;
-const MAX_TELEMETRY_BYTES = 50 * 1024 * 1024;
-const MAX_COA_BYTES = 10 * 1024 * 1024;
-const MAX_DEBRIEF_CHARS = 1000;
+export const MIN_TELEMETRY_BYTES = 1024;
+export const MAX_TELEMETRY_BYTES = 50 * 1024 * 1024;
+export const MAX_COA_BYTES = 10 * 1024 * 1024;
+export const MAX_DEBRIEF_CHARS = 1000;
 
 const TELEMETRY_ACCEPT = ".csv,text/csv";
 const COA_ACCEPT = ".pdf,application/pdf";
 
-type SlotState =
+export type SlotState =
   | { readonly status: "idle" }
   | { readonly status: "drag" }
   | { readonly status: "filled"; readonly file: File }
   | { readonly status: "error"; readonly error: string };
 
-type DropzoneState = {
+export type DropzoneState = {
   readonly telemetry: SlotState;
   readonly coa: SlotState;
   readonly debrief: string;
@@ -66,7 +66,7 @@ type DropzoneState = {
   readonly driverId: string;
 };
 
-type Action =
+export type Action =
   | { type: "setFile"; slot: SlotKey; file: File }
   | { type: "clearFile"; slot: SlotKey }
   | { type: "setError"; slot: SlotKey; error: string }
@@ -75,9 +75,9 @@ type Action =
   | { type: "setDriverId"; value: string }
   | { type: "resetForm" };
 
-const idleSlot: SlotState = { status: "idle" };
+export const idleSlot: SlotState = { status: "idle" };
 
-const initialState: DropzoneState = {
+export const initialState: DropzoneState = {
   telemetry: idleSlot,
   coa: idleSlot,
   debrief: "",
@@ -85,7 +85,7 @@ const initialState: DropzoneState = {
   driverId: "",
 };
 
-function reducer(state: DropzoneState, action: Action): DropzoneState {
+export function reducer(state: DropzoneState, action: Action): DropzoneState {
   switch (action.type) {
     case "setFile":
       return { ...state, [action.slot]: { status: "filled", file: action.file } satisfies SlotState };
@@ -121,17 +121,17 @@ function reducer(state: DropzoneState, action: Action): DropzoneState {
   }
 }
 
-function slotLabel(slot: SlotKey): string {
+export function slotLabel(slot: SlotKey): string {
   return slot === "telemetry" ? "telemetry CSV" : "FIA COA PDF";
 }
 
-function formatBytes(bytes: number): string {
+export function formatBytes(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
-function validateTelemetry(file: File): string | null {
+export function validateTelemetry(file: File): string | null {
   if (file.size === 0) {
     return "File is empty (0 B). Re-export from your data logger and try again.";
   }
@@ -152,7 +152,7 @@ function validateTelemetry(file: File): string | null {
   return null;
 }
 
-function validateCoa(file: File): string | null {
+export function validateCoa(file: File): string | null {
   if (file.size === 0) {
     return "File is empty (0 B). Re-export from the FIA portal or your NSA and try again.";
   }
