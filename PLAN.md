@@ -200,7 +200,7 @@ Legend: ✅ done · 🟡 in progress · ⬜ not started · ⛔ blocked · ✂️
 | 4.2 | **Convergence-14 serializer unit-test suite** | `app/backend/tests/test_serializer.py` | Vinh | ⬜ | 2.10 | Every kinematic violation type has a fixture + verified Guardian verdict |
 | 4.3 | Langflow renders at 1920x1080 | screenshot | Vinh | ⬜ | 4.1 | **Gate G7** |
 | 4.4 | Deck draft v0 (3-min pitch script + storyboard) | `docs/3-min-pitch-script.md`, `docs/deck/storyboard.md` | **Stephen** | 🟡 | — | Pitch script v0 ✅ Day 1 EOD (pulled forward, 8-beat structure, 2:58 target, 13 mandatory edits roadmap). Deck storyboard pending Day 7. |
-| 4.5 | LinkedIn DMs to Aaron Morgan + Bobby Trundley (Team BRIT drivers) | DM log | Stephen | ⬜ | — | Day 7 escalation, 60-second video pitch attached |
+| 4.5 | LinkedIn DMs to Aaron Morgan + Bobby Trundley (Team BRIT drivers) | DM log | Stephen | ⬜ | — | **MOVED to Day 3** per Codex critique #4 + self-critique S4. UK charity response window is 7-14 business days; Day 7 was too late as first escalation. Day 3 send leaves 8 days for reply + integration. |
 | 4.6 | Day-7 follow-up emails to Phase 1+2 non-responders | DM log | Stephen | ⬜ | — | Day 7 |
 | 4.7 | Cache COA + timing-sheet parses at onboarding | `app/backend/apex/intake/cache.py` | Vinh | ⬜ | 1.1, 1.2 | Day 8 |
 | 4.8 | Demo loop fits 60s on RTX 4060 | latency log | Vinh | ⬜ | 4.7 | **Gate G8** |
@@ -321,7 +321,7 @@ Legend: ✅ done · 🟡 in progress · ⬜ not started · ⛔ blocked · ✂️
 > Decisions that need sign-off before work can proceed. Tag the person who needs to decide.
 
 - [ ] **Q-001 - Vinh's git config email:** which email does Vinh's GitHub account use as primary or noreply? Needed so green-squares attribute correctly. **Owner: Vinh.** Resolves at Day 1 EOD when Vinh clones.
-- [ ] **Q-002 - Stakeholder reply by Day 7:** if 0 of 5 Phase 1+2 emails reply by EOD Day 6, escalate to LinkedIn DMs of Aaron Morgan + Bobby Trundley per plan §16.2. **Owner: Stephen.**
+- [ ] **Q-002 - Stakeholder reply by Day 3 (revised from Day 7):** UK charity response window is 7-14 business days. Day 7 escalation was too late for first contingency. Revised: LinkedIn DMs to Aaron Morgan + Bobby Trundley shipped Day 3 morning regardless of Phase 1+2 reply state. Day 5 second-pass follow-up emails to non-responders. Day 8 anonymization decision if zero replies. **Owner: Stephen.**
 - [ ] **Q-003 - Live sim-rig hardware:** which sim title runs on which laptop for Day 9 recording? Default: iRacing on Stephen's machine, fallback to ACC. **Owner: Stephen + Vinh, EOD Day 8.**
 - [ ] **Q-004 - APEX Lite trigger:** invoke Lite (drop sim-rig + Colab, keep core PhysicsTTM loop) if Day 9 Gate G9 fails on 2+ items. Default: NO Lite, ship full. **Owner: both, Day 10 morning.**
 - [ ] **Q-005 - June Challenge entry:** start parallel June build between Day 12 + June Challenge deadline? Default: NO, focus retro week. **Owner: Stephen, Day 12.**
