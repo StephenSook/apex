@@ -104,15 +104,14 @@ Gemini under-counted (179 vs claimed 165; 57 tests counted correctly by code-rev
 ### H7. bemyapp-banner.tsx names competitor projects verbatim in checked-in source
 **Source:** comment-analyzer H4.
 **Location:** `app/frontend/lib/bemyapp-banner.tsx:8-9`.
-**Content:** `Deliberate contrast with the universal dark-cinematic competitor banner aesthetic (NeuroPit + PitWall + AI Race Strategist + RaceMind AI all dark; see reference_competitors_calibration.md in private memory).`
-**Risk:** Mod-tool attribution principle in global CLAUDE.md applies by analogy: naming competing teams in our public repo without their consent is asymmetric. The calibration source is explicitly private memory; the comment leaks the operator-association cost we deliberately avoid in marketing copy.
-**Fix:** Soften to "Deliberate contrast with the universal dark-cinematic banner aesthetic observed across competing projects in the BeMyApp gallery (calibration source private)."
+**Issue:** Top-of-file JSDoc named four competing teams in the live BeMyApp gallery to motivate the editorial-magazine-cover direction. The mod-tool attribution principle in global CLAUDE.md applies by analogy: naming competing teams in our public repo without their per-surface consent is asymmetric. The calibration source is explicitly private memory; the comment leaked the operator-association we deliberately avoid in marketing copy.
+**Fix:** Softened to "Deliberate contrast with the universal dark-cinematic banner aesthetic observed across competing projects in the BeMyApp gallery (calibration source kept in private memory per the project's operator-attribution rule)."
 
-### H8. pre-mortem.md row 46 names RaceMind AI in public file
+### H8. pre-mortem.md row 46 named a competing team in a public file
 **Source:** comment-analyzer M6 (tier up given anonymization-pre-consent rule).
 **Location:** `docs/pre-mortem.md:90`.
-**Content:** `(observed: RaceMind AI in the live gallery shipped the default placeholder, which contradicts their otherwise polished dashboard mockup)`.
-**Fix:** "(observed: at least one project in the live gallery shipped the default placeholder)."
+**Issue:** Row 46 named a specific competing team and critiqued their banner choice. Same operator-attribution rule applies: critiquing a competing team's submission design in our own public submission's pre-mortem is asymmetric.
+**Fix:** Softened to "(observed: at least one project in the live BeMyApp gallery shipped the default placeholder despite having an otherwise polished page)."
 
 ### H9. og-card.tsx silently falls back to default Satori font
 **Source:** silent-failure-hunter H3.

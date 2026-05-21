@@ -4,9 +4,9 @@ import { ImageResponse } from "next/og";
  * BeMyApp 1920x600 banner renderer.
  *
  * Editorial magazine cover, typography-first, warm cream paper. Deliberate
- * contrast with the universal dark-cinematic competitor banner aesthetic
- * (NeuroPit + PitWall + AI Race Strategist + RaceMind AI all dark; see
- * `reference_competitors_calibration.md` in private memory).
+ * contrast with the universal dark-cinematic banner aesthetic observed
+ * across competing projects in the BeMyApp gallery (calibration source
+ * kept in private memory per the project's operator-attribution rule).
  *
  * Fonts fetched from Google Fonts CDN at render time so binary font files
  * stay out of the repo. The rendered PNG is committed once to
