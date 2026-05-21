@@ -300,6 +300,29 @@ Legend: ✅ done · 🟡 in progress · ⬜ not started · ⛔ blocked · ✂️
 
 ---
 
+## Scope tiering (Core 6 + Stretch 10, re-tiered Day 1 EOD)
+
+Original "Galaxy-Tier Inclusions" 16-item list was re-tiered after Codex independent plan-critique flagged the D-003 / D-007 contradiction. Core 6 are ship-blockers at 95% quality. Stretch 10 ship at 70% if Core is green; cut without ceremony if Core slips.
+
+**Core 6** (ship-blocker, 95% quality):
+
+1. **C1** End-to-end Sarah Reynolds canned demo (Gate G6, Day 6, Both)
+2. **C2** 3-minute submission video with mocked-or-live fallback path (Day 10, Stephen)
+3. **C3** `docs/pre-mortem.md` running journal (Day 1 EOD ✅ started, Day 11 polish, Stephen)
+4. **C4** `docs/methodology.md` Sookra trace (Day 11, Stephen)
+5. **C5** Multi-track BeMyApp submission (Day 12 afternoon, Stephen)
+6. **C6** All §17 external-tool passes (Day 11, Both)
+
+**Stretch 10** (70% quality, cut without ceremony if Core slips):
+
+S1 live sim-rig in video (Day 9-10), S2 real beta-tester quote (Day 3 DM escalation now, Day 8 anonymize fallback), S3 June Challenge bridge slide (Day 8), S4 Colab notebook (Day 9), S5 `/judges` landing page (Day 11), S6 `/status` dashboard (Day 11), S7 30s highlight clip (Day 10), S8 reproducibility metadata footer (Day 10), S9 cost-audit doc (Day 11), S10 NeurIPS Workshop paper draft (Day 11, Vinh).
+
+**Always-ship trivials:** IBM Consulting cold email (Day 12, Stephen, <30 min), daily BeMyApp community devlog (every evening, Stephen, 90 sec).
+
+Cuts are logged in `docs/decision-log.md` as dated entries. No silent removal.
+
+---
+
 ## Decisions (locked)
 
 > Reference by D-### in commits and code comments. Do not re-litigate without escalation. Full rationale: `docs/decision-log.md`.
