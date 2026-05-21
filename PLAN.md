@@ -161,7 +161,7 @@ Legend: ✅ done · 🟡 in progress · ⬜ not started · ⛔ blocked · ✂️
 | 1.4 | Tests for intake + vision parsers | `app/backend/tests/test_intake.py`, `test_vision.py` | Vinh | ⬜ | 1.3 | Schema fixtures |
 | 1.5 | **Gate G2 - COA parse coverage** | logs entry | Vinh | ⬜ | 1.1 | Pass: JSON contains all 9 adaptation domains + section IDs |
 | 1.6 | File-upload UI dropzone + WCAG keyboard/screen-reader | `app/frontend/components/Dropzone.tsx` | Stephen | ⬜ | 0.14 | Day 2 PM |
-| 1.7 | `docs/pre-mortem.md` started | docs/ | Stephen | ⬜ | — | Failure-mode journal, every Phase 1+ failure recorded |
+| 1.7 | `docs/pre-mortem.md` started | docs/ | **Stephen** | ✅ | — | Pulled forward to Day 1 EOD per galaxy-tier rule. 6 Day-1 failures logged + 14 forward-looking modes + 3 accepted residual risks. Daily updates start Day 2 morning. |
 | 1.8 | Q&A Card 2 memorization (Kinetic Hallucination) | mental | Both | ⬜ | — | Drill 3x |
 
 ### Phase 2 - Physics layer (Days 3-5, Vinh)
@@ -188,7 +188,7 @@ Legend: ✅ done · 🟡 in progress · ⬜ not started · ⛔ blocked · ✂️
 |---|-----------|---------|-------|--------|------|-------|
 | 3.1 | Granite 4.1 8B Instruct narrator wired | `app/backend/apex/instruct/narrator.py` | Vinh | ⬜ | 2.10, 1.1 | Reads forecast envelope + COA + debrief, emits tuning delta |
 | 3.2 | Tuning-recommendation card UI with COA-section provenance | `app/frontend/components/TuningCard.tsx` | Stephen | ⬜ | 3.1 | Day 6 |
-| 3.3 | Sarah Reynolds persona fixture | `fixtures/personas/sarah-reynolds.md` + telemetry + COA | Both | ⬜ | 3.1 | Story-grade case |
+| 3.3 | Sarah Reynolds persona fixture | `docs/sarah-reynolds-persona.md` (Stephen narrative) + `fixtures/{telemetry,coa,timing-sheets}/sarah-*` (Vinh data) | Both | 🟡 | 3.1 | Stephen narrative ✅ Day 1 EOD (pulled forward, Stephen-lane only, no fixtures/ touched per Vinh-lane respect). Vinh data files Day 6 with G6 integration. |
 | 3.4 | End-to-end pipeline runs Sarah test case < 2 min on RTX 4060 | demo run logs | Both | ⬜ | 3.1, 2.10 | **Gate G6** |
 | 3.5 | Q&A hostile rehearsal pass 1 | mental | Both | ⬜ | — | Vinh asks Stephen, then swap |
 
@@ -199,7 +199,7 @@ Legend: ✅ done · 🟡 in progress · ⬜ not started · ⛔ blocked · ✂️
 | 4.1 | Langflow graph export of full pipeline | `app/backend/apex/langflow/graph.json` + screenshot | Vinh | ⬜ | 3.1 | Day 7 |
 | 4.2 | **Convergence-14 serializer unit-test suite** | `app/backend/tests/test_serializer.py` | Vinh | ⬜ | 2.10 | Every kinematic violation type has a fixture + verified Guardian verdict |
 | 4.3 | Langflow renders at 1920x1080 | screenshot | Vinh | ⬜ | 4.1 | **Gate G7** |
-| 4.4 | Deck draft v0 (3-min pitch script + storyboard) | `docs/3-min-pitch-script.md`, `docs/deck/storyboard.md` | Stephen | ⬜ | — | Day 7 |
+| 4.4 | Deck draft v0 (3-min pitch script + storyboard) | `docs/3-min-pitch-script.md`, `docs/deck/storyboard.md` | **Stephen** | 🟡 | — | Pitch script v0 ✅ Day 1 EOD (pulled forward, 8-beat structure, 2:58 target, 13 mandatory edits roadmap). Deck storyboard pending Day 7. |
 | 4.5 | LinkedIn DMs to Aaron Morgan + Bobby Trundley (Team BRIT drivers) | DM log | Stephen | ⬜ | — | Day 7 escalation, 60-second video pitch attached |
 | 4.6 | Day-7 follow-up emails to Phase 1+2 non-responders | DM log | Stephen | ⬜ | — | Day 7 |
 | 4.7 | Cache COA + timing-sheet parses at onboarding | `app/backend/apex/intake/cache.py` | Vinh | ⬜ | 1.1, 1.2 | Day 8 |
@@ -453,4 +453,4 @@ The original `~/.claude/plans/all-right-i-want-rippling-moon.md` (also mirrored 
 
 ---
 
-_Last updated: 2026-05-20 PM by Stephen (Day 1 bootstrap + frontend scaffold + landing page + project CLAUDE.md + architecture-spec v0 + SUBMISSION v0 all shipped, 23+ atomic commits pushed, Phase 0 task 0.13 G1 TTM smoke pending Vinh accept of collaborator invite)._
+_Last updated: 2026-05-20 PM (Day 1 EOD) by Stephen. **40 atomic commits pushed.** Phase 0 ✅ except 0.11-0.13 (Vinh-side). Day 2 tasks pulled forward into Day 1 per galaxy-tier rule: task 1.7 pre-mortem.md ✅, task 4.4 pitch-script v0 ✅, task 3.3 Sarah persona narrative ✅. MME Motorsport per-surface consent email drafted (Q-006), send Day 2 AM. Code-review wave (pr-review-toolkit + self-grep) shipped 8 fix commits (B1, B2, H1-H4, M1, M3, M5 + polish wave M2 + M4 + aria-label nits). Codex adversarial review still in-flight (agentId aac8e272a7a117463), findings integrate Day 2 morning._
