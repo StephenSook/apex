@@ -26,10 +26,9 @@ import TuningCard from "./TuningCard";
 
 export interface CoachingReportProps {
   readonly report: CoachingReportType;
-  readonly driverId: string;
 }
 
-export default function CoachingReport({ report, driverId }: CoachingReportProps) {
+export default function CoachingReport({ report }: CoachingReportProps) {
   return (
     <section
       id="coaching-report"
@@ -47,7 +46,7 @@ export default function CoachingReport({ report, driverId }: CoachingReportProps
           </h2>
           <p className="max-w-2xl text-base leading-relaxed text-ink-soft">
             Generated for{" "}
-            <span className="font-mono text-sm text-ink">{driverId}</span>.
+            <span className="font-mono text-sm text-ink">{report.driver_id}</span>.
             Sixty seconds end to end on Granite. Every recommendation cites the
             specific FIA Appendix L Article and COA section that authorises it.
           </p>
@@ -134,11 +133,38 @@ function ForecastChart({ forecast }: { forecast: NextSessionForecast }) {
     );
   }
 
+  // Invariant check: every forecast point must be finite + low<=mean<=high.
+  // CvxpyLayer QP infeasibility + serializer bugs (Convergence 14) can leak
+  // malformed points; rendering a geometrically-invalid envelope would lie
+  // about the physics to judges actually reading the chart.
+  const invalid = forecast.find(
+    (point) =>
+      !Number.isFinite(point.mean) ||
+      !Number.isFinite(point.low) ||
+      !Number.isFinite(point.high) ||
+      point.low > point.high ||
+      point.mean < point.low ||
+      point.mean > point.high,
+  );
+  if (invalid) {
+    return (
+      <div
+        role="alert"
+        className="rounded-sm border-2 border-accent bg-paper p-5 text-sm leading-relaxed text-accent"
+      >
+        Forecast envelope invalid for mini-sector {invalid.sector_idx}. Physics projection failed the
+        low {String(invalid.low)} / mean {String(invalid.mean)} / high {String(invalid.high)}{" "}
+        consistency check. Re-run the session.
+      </div>
+    );
+  }
+
   const means = forecast.map((point) => point.mean);
   const highs = forecast.map((point) => point.high);
   const lows = forecast.map((point) => point.low);
   const yMin = Math.min(...lows);
   const yMax = Math.max(...highs);
+  const isDegenerate = yMax === yMin;
   const yRange = yMax - yMin || 1;
 
   const W = 600;
@@ -146,6 +172,11 @@ function ForecastChart({ forecast }: { forecast: NextSessionForecast }) {
   const PAD = 32;
   const xFor = (idx: number) => PAD + (idx * (W - 2 * PAD)) / Math.max(1, forecast.length - 1);
   const yFor = (val: number) => H - PAD - ((val - yMin) / yRange) * (H - 2 * PAD);
+
+  const meanLow = Math.min(...means).toFixed(2);
+  const meanHigh = Math.max(...means).toFixed(2);
+
+  const isSinglePoint = forecast.length === 1;
 
   const envelopePath = forecast
     .map((point, idx) => `${idx === 0 ? "M" : "L"} ${xFor(idx)} ${yFor(point.high)}`)
@@ -162,28 +193,62 @@ function ForecastChart({ forecast }: { forecast: NextSessionForecast }) {
     .map((point, idx) => `${idx === 0 ? "M" : "L"} ${xFor(idx)} ${yFor(point.mean)}`)
     .join(" ");
 
-  const meanLow = Math.min(...means).toFixed(2);
-  const meanHigh = Math.max(...means).toFixed(2);
-
   return (
     <div className="flex flex-col gap-3 rounded-sm border border-rule bg-paper-warm p-5">
       <h3 className="font-display text-2xl tracking-tight text-ink">
         Next-session forecast envelope
       </h3>
       <p className="font-mono text-xs leading-relaxed text-muted">
-        Mean projection {meanLow} s to {meanHigh} s across {forecast.length} mini-sectors. Envelope is
-        the 90 percent confidence band after physics projection.
+        Mean projection {meanLow} s to {meanHigh} s across {forecast.length} mini-sector
+        {forecast.length === 1 ? "" : "s"}. Envelope is the 90 percent confidence band after physics
+        projection.
       </p>
+      {isDegenerate && (
+        <p className="font-mono text-xs leading-relaxed text-amber">
+          Note: forecast envelope is flat. Zero variance across mini-sectors is unusual; verify the
+          projection.
+        </p>
+      )}
       <svg
         role="img"
-        aria-label={`Next-session forecast across ${forecast.length} mini-sectors`}
+        aria-label={`Next-session forecast across ${forecast.length} mini-sector${forecast.length === 1 ? "" : "s"}`}
         viewBox={`0 0 ${W} ${H}`}
         className="h-56 w-full"
       >
-        <path d={envelopePath} fill="#C1492C" fillOpacity="0.18" />
-        <path d={meanPath} fill="none" stroke="#0A2818" strokeWidth="2.5" strokeLinecap="round" />
-        <line x1={PAD} y1={H - PAD} x2={W - PAD} y2={H - PAD} stroke="#D9CEB8" strokeWidth="1" />
-        <text x={PAD} y={H - 8} fontFamily="ui-monospace, monospace" fontSize="10" fill="#5C5346">
+        {isSinglePoint ? (
+          <circle
+            cx={xFor(0)}
+            cy={yFor(forecast[0].mean)}
+            r="5"
+            fill="var(--racing-green)"
+          />
+        ) : (
+          <>
+            <path d={envelopePath} fill="var(--accent)" fillOpacity="0.18" />
+            <path
+              d={meanPath}
+              fill="none"
+              stroke="var(--racing-green)"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+            />
+          </>
+        )}
+        <line
+          x1={PAD}
+          y1={H - PAD}
+          x2={W - PAD}
+          y2={H - PAD}
+          stroke="var(--rule)"
+          strokeWidth="1"
+        />
+        <text
+          x={PAD}
+          y={H - 8}
+          fontFamily="ui-monospace, monospace"
+          fontSize="10"
+          fill="var(--muted)"
+        >
           Mini-sector 0
         </text>
         <text
@@ -191,7 +256,7 @@ function ForecastChart({ forecast }: { forecast: NextSessionForecast }) {
           y={H - 8}
           fontFamily="ui-monospace, monospace"
           fontSize="10"
-          fill="#5C5346"
+          fill="var(--muted)"
           textAnchor="end"
         >
           Mini-sector {forecast.length - 1}

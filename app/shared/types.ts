@@ -271,6 +271,8 @@ export interface ProvenanceFooter {
 }
 
 export interface CoachingReport {
+  /** Driver identifier echoed back from `AnalyzeRequestPayload.driver_id`. Lives on the report so the rendered output never drifts from the persona whose telemetry was analyzed. */
+  readonly driver_id: string;
   readonly corners: ReadonlyArray<CornerInsight>;
   readonly tuning_delta: TuningDelta;
   readonly forecast: NextSessionForecast;
