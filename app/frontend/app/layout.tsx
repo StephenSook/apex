@@ -25,7 +25,11 @@ const fraunces = Fraunces({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://apex.race"),
+  // Default to a known-resolvable Vercel URL until apex.race is registered + DNS configured (Q-007).
+  // Flip to "https://apex.race" once domain is live in production.
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://apex-race.vercel.app",
+  ),
   title: {
     default: "APEX | AI race engineer for adaptive racers",
     template: "%s | APEX",
