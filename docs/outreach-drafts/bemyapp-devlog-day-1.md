@@ -13,7 +13,7 @@ Day 1 done on APEX. AI race engineer for adaptive racers, on the IBM Granite sta
 
 Pipeline: telemetry + FIA Certificate of Adaptations + driver debrief into a frozen Granite TimeSeries TTM r2.1 forecaster, wrapped in a differentiable physics-projection layer, audited by Granite Guardian 4.1, narrated by Granite 4.1 8B Instruct.
 
-Repo public Day 1: https://github.com/StephenSook/apex (Apache 2.0). 70+ atomic commits, Mermaid architecture in the README.
+Repo public Day 1: https://github.com/StephenSook/apex (Apache 2.0). 77+ atomic commits, Mermaid architecture in the README.
 
 11 days to go.
 ```
