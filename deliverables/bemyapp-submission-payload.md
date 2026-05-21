@@ -1,4 +1,4 @@
-# BeMyApp Submission Payload — APEX
+# BeMyApp Submission Payload, APEX
 
 > Verbatim copy for each field on the BeMyApp submission form for IBM SkillsBuild AI Builders Challenge May 2026. Draft Day 2 from the wave-15 state; refine Day 10-11 with the live demo URL + recorded video link.
 >
@@ -41,27 +41,27 @@ APEX is a three-layer PhysicsTTM architecture: a frozen Granite TimeSeries TTM r
 ## Why it matters in racing (BeMyApp pinned rubric Q3)
 
 ```
-Three constituencies share one product gap. Adaptive racers running hand-control rigs in Britcar Trophy, the adaptive-driver UK championships, and FFSA Handikart. Veteran-team drivers competing through programmes like Operation Motorsport with combat-injury-driven adaptations. Grassroots clubman and amateur racers in SRO regional series and Britcar endurance. Their FIA Certificate of Adaptations (governed by Appendix L of the International Sporting Code) is a binding document. APEX reads it at the tensor level. When the COA permits simultaneous brake-throttle inputs, the physics layer permits them. When the COA does not, the constraint enforces. Same coaching pipeline, different output, depending on what the driver's COA actually says they are allowed to do. The Scuderia Ferrari precedent matters because IBM already shipped this stack to a Formula One team; APEX takes the same architecture and points it at the drivers who need it most.
+Three constituencies share one product gap. Adaptive racers running hand-control rigs in Britcar Trophy, the adaptive-driver UK championships, and FFSA Handikart. Veteran-team drivers competing through veteran motorsport rehabilitation programmes with combat-injury-driven adaptations. Grassroots clubman and amateur racers in SRO regional series and Britcar endurance. Their FIA Certificate of Adaptations (governed by Appendix L of the International Sporting Code) is a binding document. APEX reads it at the tensor level. When the COA permits simultaneous brake-throttle inputs, the physics layer permits them. When the COA does not, the constraint enforces. Same coaching pipeline, different output, depending on what the driver's COA actually says they are allowed to do. The Scuderia Ferrari precedent matters because IBM already shipped this stack to a Formula One team; APEX takes the same architecture and points it at the drivers who need it most.
 ```
 
 ## IBM tools used (every load-bearing slot)
 
 ```
-1. Granite-Docling 258M model — parses the driver's FIA Certificate of Adaptations PDF into structured JSON. Preserves Appendix L section IDs and the nine adaptation domain headings.
+1. Granite-Docling 258M model. Parses the driver's FIA Certificate of Adaptations PDF into structured JSON. Preserves Appendix L section IDs and the nine adaptation domain headings.
 
-2. Docling library — open-source IBM Docling conversion + table-extraction Python library, the conversion layer behind Granite-Docling's vision pass.
+2. Docling library. Open-source IBM Docling conversion plus table-extraction Python library, the conversion layer behind Granite-Docling's vision pass.
 
-3. Granite Vision 4.1 4B — parses official SRO + Britcar timing-sheet PDFs into CSV. Charts and tables only.
+3. Granite Vision 4.1 4B. Parses official SRO and Britcar timing-sheet PDFs into CSV. Charts and tables only.
 
-4. Granite TimeSeries TTM r2.1 — frozen pretrained Tiny Time Mixer (NeurIPS 2024). Aggregated 1-Hz mini-sector tensor input. We do not retrain.
+4. Granite TimeSeries TTM r2.1. Frozen pretrained Tiny Time Mixer (NeurIPS 2024). Aggregated 1-Hz mini-sector tensor input. We do not retrain.
 
-5. Granite 4.1 8B Instruct — race-engineer narrator. Reads forecast envelope + COA + debrief, emits the coaching report in a paddock voice.
+5. Granite 4.1 8B Instruct. Race-engineer narrator. Reads forecast envelope, COA, and debrief, emits the coaching report in a paddock voice.
 
-6. Granite Guardian 4.1 8B — Bring-Your-Own-Classifier custom rules. Audits the serialized text log of every physics-projection correction. Reasoning trace surfaces in the UI.
+6. Granite Guardian 4.1 8B. Bring-Your-Own-Classifier custom rules. Audits the serialized text log of every physics-projection correction. Reasoning trace surfaces in the UI.
 
-7. Langflow — visible orchestration graph export. Day 7 screenshot lands in the deck.
+7. Langflow. Visible orchestration graph export. Day 7 screenshot lands in the deck.
 
-8. IBM Bob — build accelerator, per the IBM x Scuderia Ferrari case-study precedent. Session logs committed to `bob-sessions/` in the repo.
+8. IBM Bob. Build accelerator, per the IBM x Scuderia Ferrari case-study precedent. Session logs committed to `bob-sessions/` in the repo.
 ```
 
 ## Demo video link
@@ -89,14 +89,14 @@ Judges' tour single page at `/judges`. Live status dashboard at `/status`. Uploa
 ## Team
 
 ```
-Stephen Sookra — frontend, pitch, project architecture, narrative, stakeholder outreach (Computer Science, Kennesaw State University).
-Vinh Le — backend, ML pipeline, FastAPI, Langflow, infrastructure (Computer Science, Kennesaw State University).
+Stephen Sookra. Frontend, pitch, project architecture, narrative, stakeholder outreach (Computer Science, Kennesaw State University).
+Vinh Le. Backend, ML pipeline, FastAPI, Langflow, infrastructure (Computer Science, Kennesaw State University).
 ```
 
 ## What makes this innovative or impactful (video beat 4 mirror)
 
 ```
-APEX is the first integrated workflow for adaptive hand-controls — the first AI race engineer that reads the FIA Certificate of Adaptations at the tensor level and lets it govern the physics-projection layer's COA simultaneity flag. Existing tools assume able-bodied physics. Adaptive drivers' COAs explicitly permit simultaneity the equipment was built for. APEX permits it when the COA permits it. That single architectural choice (COA-parameterized brake-throttle simultaneity) closes the most significant misdiagnosis pattern across the entire AI race-engineer category. Combined with the differentiable physics-projection layer that catches kinetic hallucinations from a non-physics-pretrained foundation model, and the Guardian text-audit gate on every recommendation, APEX is the IBM-Consulting reference architecture for governed foundation-model deployment on safety-critical sensor data.
+APEX is the first integrated workflow for adaptive hand-controls. First AI race engineer that reads the FIA Certificate of Adaptations at the tensor level and lets it govern the physics-projection layer's COA simultaneity flag. Existing tools assume able-bodied physics. Adaptive drivers' COAs explicitly permit simultaneity the equipment was built for. APEX permits it when the COA permits it. That single architectural choice (COA-parameterized brake-throttle simultaneity) closes the most significant misdiagnosis pattern across the entire AI race-engineer category. Combined with the differentiable physics-projection layer that catches kinetic hallucinations from a non-physics-pretrained foundation model, and the Guardian text-audit gate on every recommendation, APEX is the IBM-Consulting reference architecture for governed foundation-model deployment on safety-critical sensor data.
 ```
 
 ## Track entries (tick every eligible box)
@@ -106,7 +106,7 @@ APEX is the first integrated workflow for adaptive hand-controls — the first A
 [ ] Most Innovative
 [ ] Best Use of Technology
 [ ] Grand Prize (across May + June, if applicable)
-[ ] Any sponsor-specific track (Granite Open Track, Watson TTS Track, etc. — verify at submit time)
+[ ] Any sponsor-specific track (Granite Open Track, Watson TTS Track, etc.; verify at submit time)
 [ ] Community-voted / popularity track (if any)
 ```
 
