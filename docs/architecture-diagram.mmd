@@ -1,0 +1,61 @@
+flowchart TB
+    subgraph In["Driver inputs"]
+        direction LR
+        TEL["Telemetry CSV<br/>50 Hz x 8 channels"]
+        COA["FIA Certificate of<br/>Adaptations PDF"]
+        DBR["Written debrief"]
+    end
+
+    subgraph OB["One-time at onboarding (cached for the live loop)"]
+        direction LR
+        DOCLING["Granite-Docling 258M model<br/>+ Docling library conversion layer<br/>COA to structured JSON"]
+        VISION["Granite Vision 4.1 4B<br/>Timing sheet to CSV"]
+    end
+
+    subgraph LL["60-second post-race coaching loop"]
+        direction TB
+        AGG["1-Hz mini-sector aggregator"]
+        TTM["Granite TimeSeries TTM r2.1<br/>(frozen, channel-independent)"]
+        PROJ["Differentiable physics-projection layer<br/>friction ellipse + bicycle model<br/>+ COA simultaneity flag<br/>+ jerk bound + circuit-conditional mu"]
+        GUARD["Granite Guardian 4.1 8B<br/>BYOC text audit on violation log"]
+        INSTR["Granite 4.1 8B Instruct<br/>race-engineer narrator"]
+    end
+
+    subgraph Out["Output to driver"]
+        direction LR
+        REPORT["Corner-by-corner<br/>coaching report"]
+        TUNE["Tuning recommendation<br/>+ COA section citation"]
+        FCST["Next-session<br/>envelope chart"]
+        STAMP["Guardian safety stamp<br/>+ reasoning trace"]
+    end
+
+    TEL --> AGG
+    COA --> DOCLING
+    AGG --> TTM
+    DOCLING -. COA flag .-> PROJ
+    TTM --> PROJ
+    PROJ --> GUARD
+    DBR --> INSTR
+    GUARD --> INSTR
+    DOCLING --> INSTR
+    VISION --> INSTR
+    INSTR --> REPORT
+    INSTR --> TUNE
+    PROJ --> FCST
+    GUARD --> STAMP
+
+    LF["Langflow visible<br/>orchestration graph"]
+    LL -. visualizes .- LF
+
+    BOB["IBM Bob<br/>build accelerator"]
+    BOB -.->|drives code dev<br/>per Ferrari case study| LL
+
+    classDef ibm fill:#dde7ff,stroke:#052fad,stroke-width:2px,color:#000
+    classDef physics fill:#f3e5f5,stroke:#7b1fa2,stroke-width:3px,color:#000
+    classDef input fill:#e3f2fd,stroke:#1976d2,color:#000
+    classDef output fill:#e8f5e9,stroke:#388e3c,color:#000
+
+    class TEL,COA,DBR input
+    class REPORT,TUNE,FCST,STAMP output
+    class DOCLING,VISION,TTM,GUARD,INSTR,LF,BOB ibm
+    class PROJ,AGG physics
