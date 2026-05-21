@@ -121,7 +121,7 @@ flowchart TB
     class PROJ,AGG physics
 ```
 
-Full architecture spec: `docs/architecture-spec.md` (Day 2). SVG export: `docs/architecture.svg` (Day 11).
+Full architecture spec: [`docs/architecture-spec.md`](./docs/architecture-spec.md) (v0 live, Day 2 expansion). SVG export at `docs/architecture.svg` lands Day 11.
 
 ---
 
@@ -160,7 +160,7 @@ Full architecture spec: `docs/architecture-spec.md` (Day 2). SVG export: `docs/a
 
 ## Hard compliance rules
 
-- No em-dash in prose, commits, deck, video transcript, emails. Single most reliable AI-tone tell. Substitutes per `docs/ai-tone-policy.md` (Day 2).
+- No em-dash in prose, commits, deck, video transcript, emails. Single most reliable AI-tone tell. Substitutes per global CLAUDE.md em-dash table (`docs/ai-tone-policy.md` Day 2 carve-out forthcoming).
 - No invented FIA Article numbers. Verify via FIA.com or `research/` PDFs.
 - No named operators (Team BRIT drivers, charity contacts) without explicit per-surface consent. Defaults to anonymous and aggregate descriptions.
 - No NIL violations. Sarah Reynolds is a fictional persona by design.
