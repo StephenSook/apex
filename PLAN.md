@@ -162,9 +162,13 @@ Legend: ✅ done · 🟡 in progress · ⬜ not started · ⛔ blocked · ✂️
 | 1.3 | Fixture COA + timing-sheet committed | `fixtures/coa/`, `fixtures/timing-sheets/` | Vinh | ⬜ | 1.1, 1.2 | Public FIA + SRO examples |
 | 1.4 | Tests for intake + vision parsers | `app/backend/tests/test_intake.py`, `test_vision.py` | Vinh | ⬜ | 1.3 | Schema fixtures |
 | 1.5 | **Gate G2 - COA parse coverage** | logs entry | Vinh | ⬜ | 1.1 | Pass: JSON contains all 9 adaptation domains + section IDs |
-| 1.6 | File-upload UI dropzone + WCAG keyboard/screen-reader | `app/frontend/components/Dropzone.tsx` | Stephen | ⬜ | 0.14 | Day 2 PM |
-| 1.7 | `docs/pre-mortem.md` started | docs/ | **Stephen** | ✅ | - | Pulled forward to Day 1 EOD per galaxy-tier rule. 6 Day-1 failures logged + 14 forward-looking modes + 3 accepted residual risks. Daily updates start Day 2 morning. |
+| 1.6 | File-upload UI dropzone + WCAG keyboard/screen-reader | `app/frontend/components/Dropzone.tsx` | Stephen | ✅ | 0.14 | Pulled forward to Day 1 EOD per galaxy-tier rule. 641-line component + `/analyze` route + Playwright a11y snapshot verified. Day-2 task = wire `Analyze` link into landing-page nav. |
+| 1.7 | `docs/pre-mortem.md` started | docs/ | **Stephen** | ✅ | - | Pulled forward to Day 1 EOD per galaxy-tier rule. 12 Day-1 failures logged (incl. wave 7/8/9 observed) + 17 forward-looking modes + 3 accepted residual risks. Daily updates start Day 2 morning. |
 | 1.8 | Q&A Card 2 memorization (Kinetic Hallucination) | mental | Both | ⬜ | - | Drill 3x |
+| 1.9 | OpenRouter API key + Granite 4.1 8B sample call (Discord intel 2026-05-20: OpenRouter approved, free tier, no CC required, `openrouter.ai/ibm-granite/granite-4.1-8b`) | logs entry + `.env.example` | Vinh | ⬜ | 0.13 | Primary inference path for HF Space deploy Day 9. Backup = watsonx.ai (free account, IBM ID). Skip Replicate (CC required) + HF inference endpoints (Granite not publicly hosted). |
+| 1.10 | Fork IBM-SkillsBuild Learning Lab repo + run TORCS lab + record 1 RESULTS.md entry | `https://github.com/IBM-SkillsBuild-AI-Builders-Challenge/hands-on-labs` | Vinh | ⬜ | - | Discord intel 2026-05-20 BeMyApp pinned: lab is now public; conservative read says "one of the required lab steps" must be completed for submission eligibility. Time-boxed 30 min Day 2. Do NOT let lab consume G1 + G4 budget. |
+| 1.11 | README structure audit (explicit problem / AI approach / racing relevance per BeMyApp pinned 2026-05-20) | `README.md` | Stephen | ⬜ | - | Currently has all 3 implicitly under "The opening stat" + "What makes it different." Day 2 task: surface as explicit section headings to match makenna's pinned submission requirements. |
+| 1.12 | Watch BeMyApp hosting webinar + submission walkthrough video, log any submission-form field deltas | `deliverables/bemyapp-submission-payload.md` | Stephen | ⬜ | - | URLs in `reference_discord_intel_day_1.md` private memory. Day 2 task. |
 
 ### Phase 2 - Physics layer (Days 3-5, Vinh)
 
