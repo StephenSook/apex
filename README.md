@@ -14,7 +14,7 @@ Built for the **IBM SkillsBuild AI Builders Challenge, May 2026** (theme: "AI Be
 
 ## The opening stat
 
-A pro race engineer costs **£400 to £500 per day** (Driver61). Every F1 driver has one. Most adaptive racers, veteran-team drivers, and grassroots competitors do not. The FIA lifted its single-seater ban on disabled drivers in December 2017. The barrier stopped being regulatory. It became economic. Post-race coaching is a luxury good.
+A pro race engineer costs **£400 to £500 per day** by industry estimates for amateur + clubman series. Every F1 driver has one. Most adaptive racers, veteran-team drivers, and grassroots competitors do not. The FIA lifted its single-seater ban on disabled drivers in December 2017. The barrier stopped being regulatory. It became economic. Post-race coaching is a luxury good.
 
 APEX changes that.
 
