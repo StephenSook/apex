@@ -1,0 +1,17 @@
+# APEX private denylist EXAMPLE for pre-submit-checks.sh Check 4.
+#
+# Copy to `scripts/private-denylist.txt` (gitignored) and add the operator names,
+# email addresses, supplier proper-nouns, and any other patterns the public repo
+# should NOT carry pre-consent.
+#
+# Format:
+#   - One pattern per line.
+#   - Lines starting with # are comments (skipped).
+#   - Empty lines skipped.
+#   - Patterns used as fixed strings (grep -F), so no regex special chars.
+#
+# Example patterns (replace with your actual private values):
+# First Last
+# org-handle
+# user@personal.example
+# user@school.example

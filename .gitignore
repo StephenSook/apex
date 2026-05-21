@@ -139,3 +139,8 @@ research/kimi-hostile-pitch-review.pdf
 research/new-chatgpt-ibm-may.pdf
 research/perplexity-pit-wall-may-2026.pdf
 research/pit-wall-physics-constrained-foundation-models.pdf
+
+# Private denylist for pre-submit-checks.sh Check 4. Holds operator + email
+# patterns the script greps for; lives outside the public repo so the watchlist
+# is not itself a public artifact (Codex wave-11 BLOCKER #3).
+scripts/private-denylist.txt

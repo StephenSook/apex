@@ -98,21 +98,30 @@ if run_check 3; then
   else fail 3 "non-ASCII typographic chars found:"; echo "$smart" | sed 's/^/    /'; fi
 fi
 
-# Check 4 — operator-attribution sweep (named operators + personal contact info in public files)
-# Allowlist: pre-mortem self-references that document the wave-7 fix, MEMORY.md index entries
-# describing what was redacted, project files that explicitly say "kept private" or "private memory".
+# Check 4 — operator-attribution sweep (named operators + personal contact info in public files).
+# Patterns live in a gitignored private file so the watchlist is not itself a public artifact
+# (Codex wave-11 BLOCKER #3). Override path with APEX_PRIVATE_DENYLIST env var.
+# Allowlist: files that explicitly say "kept private" or "private memory" (deliberate references).
 if run_check 4; then
-  named=$(grep -rEn "Jason Arthur|Al Locke|Johnny Dawson-Ellis|Brian Roberts|Aaron Morgan|Bobby Trundley|MME Motorsport|mme-motorsport|MME_Motorsport|stephensookra@gmail|ssookra@students" \
-      --include="*.md" --include="*.ts" --include="*.tsx" --include="*.mdx" \
-      --exclude-dir=node_modules --exclude-dir=.next --exclude-dir=research --exclude-dir=dist \
-      README.md PLAN.md SUBMISSION.md STATUS_DAY1.md docs/ app/frontend/app/ app/frontend/components/ 2>/dev/null \
-    | grep -v "private memory" \
-    | grep -v "kept private" \
-    | grep -v "pre-mortem.md.*Filename privacy leak" \
-    | grep -v "pre-mortem.md.*body-only sweeps did not catch" \
-    || true)
-  if [[ -z "$named" ]]; then pass 4 "no named operators or personal contact info in public files (pre-consent rule honored)"
-  else fail 4 "named operators or personal contact info in public files (operator-unassociation violation):"; echo "$named" | sed 's/^/    /'; fi
+  denylist_file="${APEX_PRIVATE_DENYLIST:-scripts/private-denylist.txt}"
+  if [[ ! -f "$denylist_file" ]]; then
+    final_or_warn 4 "private denylist file '$denylist_file' missing. Create it (one pattern per line) or set APEX_PRIVATE_DENYLIST. See scripts/private-denylist.txt.example."
+  else
+    patterns=$(grep -v '^#' "$denylist_file" | grep -v '^$' || true)
+    if [[ -z "$patterns" ]]; then
+      warn 4 "private denylist '$denylist_file' is empty (no patterns to sweep)"
+    else
+      named=$(echo "$patterns" | grep -rF -f - \
+          --include="*.md" --include="*.ts" --include="*.tsx" --include="*.mdx" \
+          --exclude-dir=node_modules --exclude-dir=.next --exclude-dir=research --exclude-dir=dist \
+          README.md PLAN.md SUBMISSION.md STATUS_DAY1.md STATUS_DAY2.md docs/ app/frontend/app/ app/frontend/components/ 2>/dev/null \
+        | grep -v "private memory" \
+        | grep -v "kept private" \
+        || true)
+      if [[ -z "$named" ]]; then pass 4 "no named operators or personal contact info in public files (pre-consent rule honored)"
+      else fail 4 "named operators or personal contact info in public files (operator-unassociation violation):"; echo "$named" | sed 's/^/    /'; fi
+    fi
+  fi
 fi
 
 # Check 5 — em-dash in commit subjects
