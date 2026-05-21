@@ -26,12 +26,13 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 10.33.0
+          version: 10
+          run_install: false
 
       - name: Setup Node 22
         uses: actions/setup-node@v4
         with:
-          node-version: 22.22.2
+          node-version: "22"
           cache: pnpm
           cache-dependency-path: app/frontend/pnpm-lock.yaml
 
