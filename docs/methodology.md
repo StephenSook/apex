@@ -64,11 +64,13 @@ The Sookra Methodology v3.3 is the personal process Stephen Sookra has developed
 
 ### Phase 6 - Build (2026-05-20 to 2026-05-30, in progress)
 
-**Method:** Twelve-day hackathon execution. Manual coordination via `PLAN.md` mirroring the Hometown-Pathway-Atlas + Trace convention (status snapshot, phase tables, coordination protocol, shared contracts, decisions, open questions, pre-submit checklist). No git hooks. Atomic-commit discipline. Push immediately. Quality over speed.
+**Method:** Twelve-day hackathon execution. Manual coordination via `PLAN.md` mirroring the Hometown-Pathway-Atlas + Trace convention (status snapshot, phase tables, coordination protocol, shared contracts, decisions, open questions, pre-submit checklist). No git hooks. Atomic-commit discipline. Push immediately. Quality over speed. Three-brain HARD RULE on every wave: Codex adversarial + pr-review-toolkit lens + Gemini long-context cold review before "done."
 
-**Artifacts (Day 1 EOD):** This repo. 50+ atomic commits. Next.js 16 + Tailwind v4 + IBM Plex + Fraunces editorial-paddock landing page. Project-local CLAUDE.md, architecture-spec, SUBMISSION draft, pre-mortem, Sarah Reynolds persona narrative, 3-min pitch script v0, leading UK adaptive hand-control supplier consent email, APEX Lite contingency, this methodology trace, full PLAN coordination doc, shared TypeScript schemas. 16 project memory files. 9 Obsidian project notes. 2 Claude Memory session anchors.
+**Wave discipline:** Each wave ships an atomic-commit cluster + a Codex + multi-agent cold review + a fix-wave for the findings + a session memory write. 18 waves shipped through 2026-05-21 evening covering bootstrap, frontend scaffold, 7 review-and-fix waves Day 1, 4 cold-review iterations Day 2.
 
-**Phase 4.5 synthesis re-tiered Day 1 EOD** per Codex independent plan-critique: Core 6 ship-blockers at 95% quality + Stretch 10 at 70% quality + always-ship trivials. See PLAN.md §Scope tiering.
+**Artifacts (current state through wave-18):** 155 atomic commits + 4 production routes (`/`, `/analyze`, `/judges`, `/status`) + 52 vitest tests + GitHub Actions CI workflow (frontend tsc + lint + vitest + Next build, green on main) + Playwright e2e against the live `/analyze` flow + StatusLiveIndicator with typed errors + GhConclusion literal-union exhaustiveness guard + OG / Twitter Card metadata on all routes + BeMyApp submission payload draft v0 + pre-submit-checks.sh 21-gate runner with --final mode + the ⚠️ CONTRACT `driver_id` field added to `CoachingReport` for Vinh's Pydantic mirror Day 5-6 + the editorial-paddock palette (cream + racing-green + clay + amber + ink) across every route + Next.js 16 + Tailwind v4 + IBM Plex + Fraunces. Project-local CLAUDE.md, this methodology trace expanded, architecture-spec, SUBMISSION draft, pre-mortem (45 rows), Sarah Reynolds persona narrative with three-corner deep-dive + telemetry annotation + COA Section 3(c) excerpt, 3-min pitch script v0 with 12 of 13 Phase 4.5 mandatory edits applied, adaptive hand-control supplier consent email, APEX Lite contingency, full PLAN coordination doc, shared TypeScript contracts. 18+ project memory files. 11 Obsidian project notes. 4 Claude Memory session anchors.
+
+**Phase 4.5 synthesis re-tiered Day 1 EOD** per Codex independent plan-critique: Core 6 ship-blockers at 95% quality + Stretch 10 at 70% quality + always-ship trivials. See PLAN.md §Scope tiering. Stretch S5 (`/judges`) + S6 (`/status`) pulled forward to Day 2 per the galaxy-tier compounding rule (pre-mortem row 45 📘): each Day-N feature shipped early becomes a Day-N+1 regression-catcher surface.
 
 ### Phase 7 - Submission (2026-05-31)
 
@@ -98,10 +100,19 @@ The hackathon would lose 1-2 days of build to do the methodology if started cold
 
 ## What's next
 
-- **Day 11:** Final polish of this document. Run `humanize` skill across it. Confirm zero AI-tone blocklist hits via `scripts/ai-tone-sweep.sh`.
+- **Day 11:** Final polish of this document. Run `humanize` skill across it. Confirm zero AI-tone blocklist hits via `scripts/pre-submit-checks.sh --only=2`. Re-run `bash scripts/pre-submit-checks.sh --final` to verify every Day-11 gate (CI per-job green, demo video duration, 30-second highlight clip, deck PDF, demo URL, IBM tool citations, submission-payload checkboxes ticked).
 - **Day 12 evening:** Post-submission engineering-retro committed alongside this trace, mirroring the Hometown-Pathway-Atlas precedent.
 - **Post-submission:** NeurIPS Time-Series Foundation Models Workshop paper draft (if Stretch S10 ships) cites this trace as the methodological context for the PhysicsTTM contribution.
 
 ---
 
-_Last updated: 2026-05-20 Day 1 EOD by Stephen. v0 draft pulled forward per galaxy-tier rule._
+## Cross-references to the wave artifacts
+
+- **Wave 1-12 (Day 1):** bootstrap + frontend scaffold + Dropzone + 14 review waves of privacy + AI-tone hardening + architecture diagram fixes + Sarah-pace consistency. See `Claude Memory/Session - 2026-05-20 EOD - apex-day-1-wave-11-12-five-agent-review.md`.
+- **Wave 13-15 (Day 2 morning):** ESLint env repair + README structure audit + CoachingReport + TuningCard + GuardianAudit + AnalyzeFlow + ⚠️ CONTRACT driver_id + ForecastChart hardening + vitest 50-test suite + GitHub Actions CI + Playwright e2e + /judges route. See `Claude Memory/Session - 2026-05-21 morning - apex-day-2-wave-15-vitest-judges-ci-e2e.md`.
+- **Wave 16-17 (Day 2 afternoon):** 4-agent cold review iteration + /status route + OG meta + Twitter Card + BeMyApp submission payload draft. See `Claude Memory/Session - 2026-05-21 afternoon - apex-day-2-waves-16-17.md`.
+- **Wave 17 closure + Wave 18 (Day 2 evening):** Codex wave-17 review fixes + 4-agent cold review on wave-17 + Codex wave-15 MED backfill (AnalyzeFlow error-path tests) + StatusLiveIndicator full refactor + pre-submit Check 21 + concurrency block drop. See `Claude Memory/Session - 2026-05-21 evening - apex-waves-17-18-cold-review-iteration.md`.
+
+---
+
+_Last updated: 2026-05-21 evening by Stephen (wave-19 expansion: Phase 6 + Phase 7 + new "Cross-references to the wave artifacts" section reflecting 155-commit state through wave-18)._
