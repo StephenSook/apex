@@ -87,10 +87,6 @@ The Scuderia Ferrari precedent matters because IBM already shipped the same Gran
 
 ## Architecture
 
-![APEX architecture: driver inputs through PhysicsTTM three-layer pipeline (TTM forecaster, differentiable physics projection, Granite Guardian audit) to coaching outputs](./docs/architecture.png)
-
-Mermaid source below (renders on GitHub; static fallback above for renderers that do not support Mermaid):
-
 ```mermaid
 flowchart TB
     subgraph In["Driver inputs"]
