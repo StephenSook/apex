@@ -47,6 +47,12 @@ function SiteHeader() {
             Build status
           </a>
           <Link
+            href="/analyze"
+            className="rounded-sm bg-accent px-3 py-1.5 font-mono text-xs uppercase tracking-wider text-paper hover:bg-racing-green transition-colors"
+          >
+            Analyze
+          </Link>
+          <Link
             href="https://github.com/StephenSook/apex"
             target="_blank"
             rel="noopener noreferrer"
