@@ -56,7 +56,7 @@ export default function GuardianAudit({ audit }: GuardianAuditProps) {
         />
       )}
 
-      <details className="group">
+      <details className="group" open={audit.verdict === "approve"}>
         <summary className="cursor-pointer font-mono text-xs uppercase tracking-wider text-ink-soft hover:text-racing-green">
           Reasoning trace ({audit.reasoning_trace.length} step
           {audit.reasoning_trace.length === 1 ? "" : "s"})
