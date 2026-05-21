@@ -48,9 +48,9 @@ The Sookra Methodology v3.3 is the personal process Stephen Sookra has developed
 
 **Method:** Six-prompt fan-out to the same six models, each with a distinct specialization: (a) ChatGPT technical adversarial review of Granite TimeSeries TTM claims, (b) Perplexity hidden-competitor sweep, (c) Gemini stakeholder intelligence, (d) DeepSeek engineering risk audit, (e) Kimi hostile pitch review, (f) Groq strategic positioning + IBM judge psychology.
 
-**Artifacts:** Six standalone research reports committed in `research/{new-chatgpt,perplexity,gemini,deepseek,kimi,groq}-ibm-may.pdf` plus the Phase 4 cross-model synthesis identifying 13 mandatory pitch refinements + 5 hidden competitors (PACETEQ, Red Bull + Oracle AI Protest Tool, SRO Motorsports AWS Scrutineering, FIA Digital Licensing Platform, UCL × IBM F1-Jarvis-Granite).
+**Artifacts:** Six standalone research reports committed in `research/` (specific filenames: `new-chatgpt-ibm-may.pdf`, `perplexity-pit-wall-may-2026.pdf`, `gemini-ibm-may.pdf`, `deepseek-ibm-may.pdf`, `kimi-hostile-pitch-review.pdf`, `groq-ibm-may.pdf`) plus the Phase 4.5 NotebookLM-verified cross-model synthesis identifying 13 mandatory pitch refinements + 5 hidden competitors (PACETEQ, Red Bull + Oracle AI Protest Tool, SRO Motorsports AWS Scrutineering, FIA Digital Licensing Platform, UCL × IBM F1-Jarvis-Granite).
 
-**Outcome:** PIT WALL hardened with 13 mandatory pitch edits + confirmed five firsts (later reduced to three independently-verifiable firsts after triple-lock analysis).
+**Outcome:** PIT WALL hardened with 13 mandatory pitch edits (the "Phase 4.5 synthesis" referenced throughout decision-log + pitch script) + confirmed five firsts (later reduced to three independently-verifiable firsts after triple-lock analysis).
 
 ### Phase 5 - NotebookLM gap analysis + PhysicsTTM mitigation (2026-05-19)
 
