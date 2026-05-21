@@ -50,24 +50,34 @@ Anchor `<Link href="#X">` → `<a href="#X">` (M2), CSS-var pattern `as React.CS
 - `docs/stakeholder-outreach-log.md` (referenced in `project_apex_stephen_lane.md`)
 - `app/shared/types.ts` (shared API contracts in TypeScript; mirror in your Pydantic `app/backend/apex/schemas.py` Day 2-3)
 
-### Atomic commits pushed (most recent first)
+### Atomic commits pushed (Day 1 EOD, newest first)
 
 | SHA | Subject |
 |---|---|
-| (this commit) | docs: STATUS_DAY1.md daily handoff |
-| `ceadbd8` | docs: APEX Lite contingency plan |
-| `08d0821` | fix(pitch): Beat 6 add mocked-UI fallback path (Codex #14) |
+| `fc35c14` | fix(compliance): anonymize operator names across 14 public files (Codex wave 2 BLOCKER) |
+| `b4e87d1` | refactor(shared): type-design analyzer HIGH fixes on types.ts |
+| `b1f32e0` | fix(compliance): purge 60+ em-dashes from new wave docs |
+| `645c3bf` | docs: STATUS_DAY1.md daily handoff for Vinh |
+| `dcd0043` | docs: methodology trace v0 (Core 6 C4) |
+| `6aa27bd` | docs: stakeholder outreach log committed |
+| `caab9fc` | docs(readme): PNG architecture fallback above Mermaid |
+| `abdb03e` | docs: Mermaid architecture rendered to PNG + SVG (Codex #10) |
+| `f7da960` | feat(shared): TypeScript API contracts initial draft |
+| `ceadbd8` | docs: APEX Lite contingency plan (Codex #3, Day 2 noon trigger) |
+| `08d0821` | fix(pitch): Beat 6 mocked-UI fallback path (Codex #14) |
 | `0d80465` | plan: re-tier Galaxy-Tier into Core 6 + Stretch 10 (Codex #1) |
 | `70b687a` | plan: move LinkedIn DM escalation Day 7 → Day 3 (Codex #4) |
-| `0c1d99e` | fix(frontend): metadataBase apex-race.vercel.app fallback (Codex #11) |
+| `0c1d99e` | fix(frontend): metadataBase Vercel fallback (Codex #11) |
 | `a796d1a` | fix(pitch): Beat 3 achievement-led + paddock voice (S7+S8) |
 | `86bd20b` | chore(plan): Day 1 EOD status update |
 | `55bc41a` | docs: 3-min pitch script v0 |
-| `3f1ee24` | docs(outreach): leading UK adaptive hand-control supplier consent email draft |
+| `3f1ee24` | docs(outreach): adaptive-supplier consent email draft |
 | `cd80680` | docs: Sarah Reynolds persona narrative |
 | `4e83f0e` | docs: start pre-mortem.md |
 | `78c5b03` | docs(readme): mark forward-looking docs explicitly |
 | `bc5a570` | fix(frontend): polish wave (M2 + M4 + aria-label) |
+
+Full log via `git log --oneline main`. **65+ atomic commits Day 1, all pushed.**
 
 ---
 

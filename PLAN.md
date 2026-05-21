@@ -42,10 +42,12 @@ This snapshot is the at-a-glance reality check for anyone reading PLAN.md fresh.
 2. Clone repo + `pip install granite-tsfm` + Gate G1 TTM smoke test
 3. Day 2 Granite-Docling + Granite Vision pipeline
 
-**Critical-path Stephen ops still open:**
-1. Next.js 16 + Tailwind + Plex + Fraunces scaffold in `app/frontend/`
-2. Phase 1+2 stakeholder reply check (5 emails sent 2026-05-19, 0 returned so far, 12 days remaining)
+**Critical-path Stephen ops still open (Day 2 morning):**
+1. Day 3 LinkedIn DM drafts (escalation moved from Day 7 per Codex critique #4)
+2. Phase 1+2+3 stakeholder reply check (6 emails sent across Day 0+1, 0 returned so far, 11 days remaining)
 3. Q&A Card 1 memorization (Deep Dynamics defense)
+4. Frontend dropzone UI (PLAN task 1.6)
+5. Pre-mortem.md daily Day-2 entry
 
 **Calibration ceiling (NotebookLM Phase 5 pass):** 90% top-3 / 96% Best Use of Technology / 88% Most Innovative. Working planning numbers: 75/85/75.
 
@@ -335,7 +337,7 @@ Cuts are logged in `docs/decision-log.md` as dated entries. No silent removal.
 - **D-006 (2026-05-20):** No git hooks. Manual coordination only (mirrors Trace + Hometown). `.git/hooks/` stays defaults-only.
 - **D-007 (2026-05-20):** Quality over speed. Tool-inventory audit BLOCKING before any non-trivial task. Use every available skill + agent + MCP + connector.
 - **D-A (2026-05-19, carried in from PIT WALL):** PhysicsTTM three-layer architecture (frozen TTM → CvxpyLayer QP projection → Guardian BYOC text audit). Convergence 14 (serializer unit-test suite) is load-bearing.
-- **D-B (2026-05-19, carried in from PIT WALL):** Hero pitch headline = "First integrated workflow for adaptive hand-controls." Q&A killshot reserved = COA-parameterized brake-throttle simultaneity.
+- **D-B (refined Day 1 PM 2026-05-20):** Dual-layer pitch headline. Emotional Hero (h1 + 3-min video lead) = "The race engineer for the drivers who don't have one." Technical positioning (Differentiator #1) = "First integrated workflow for adaptive hand-controls." Q&A killshot reserved = COA-parameterized brake-throttle simultaneity. Full rationale: `docs/decision-log.md` D-B.
 
 ---
 
@@ -348,7 +350,9 @@ Cuts are logged in `docs/decision-log.md` as dated entries. No silent removal.
 - [ ] **Q-003 - Live sim-rig hardware:** which sim title runs on which laptop for Day 9 recording? Default: iRacing on Stephen's machine, fallback to ACC. **Owner: Stephen + Vinh, EOD Day 8.**
 - [ ] **Q-004 - APEX Lite trigger:** invoke Lite (drop sim-rig + Colab, keep core PhysicsTTM loop) if Day 9 Gate G9 fails on 2+ items. Default: NO Lite, ship full. **Owner: both, Day 10 morning.**
 - [ ] **Q-005 - June Challenge entry:** start parallel June build between Day 12 + June Challenge deadline? Default: NO, focus retro week. **Owner: Stephen, Day 12.**
-- [ ] **Q-006 - leading UK adaptive hand-control supplier + a UK adaptive racing programme per-surface consent:** APEX positioning materials currently name leading UK adaptive hand-control supplier (electronic hand-controls supplier) and a UK adaptive racing programme (charity racing team) without explicit per-surface consent. Per global CLAUDE.md operator-unassociation principle, suppliers and adaptive-motorsport operators get anonymous + aggregate descriptions unless explicit consent is granted per surface (deck vs README vs video vs landing page). **Action:** (a) when a UK adaptive racing programme replies to the Day-0 Phase-1 email, ask explicitly for per-surface attribution permission. (b) Email leading UK adaptive hand-control supplier `info@mme-motorsport.com` Day 2 with same per-surface ask. (c) If either declines or does not reply by Day 10, anonymize to "leading UK adaptive-hand-control supplier" + "a national adaptive racing team." Surfaces affected: `README.md`, `app/frontend/app/page.tsx` Sarah persona block, `SUBMISSION.md` Inspiration block, `docs/briefing-for-vinh.pdf` (legacy artifact, lower risk). **Owner: Stephen, EOD Day 10.**
+- [ ] **Q-006 - per-surface consent for adaptive-supplier + adaptive-racing-programme naming:** APEX positioning materials previously named the supplier + racing programme without explicit per-surface consent. Codex critique wave 2 (Day 1 EOD) flagged as BLOCKER. **Resolution underway:** (a) MME Motorsport consent email sent 2026-05-20 PM (NOT Day 2, sent Day 1) via ssookra@students.kennesaw.edu to info@mme-motorsport.com. (b) Pre-emptively anonymized 14 public-repo files Day 1 EOD to role descriptions ("leading UK adaptive hand-control supplier" + "a UK adaptive racing programme"). On consent reply, revert names per `docs/outreach-drafts/mme-motorsport-consent.md` consent grants. (c) If declined or no reply by Day 10, ship anonymized. **Owner: Stephen, monitor through Day 10.**
+
+- [ ] **Q-007 - APEX Lite EARLY trigger (Day 2 noon, Vinh-unresponsive scenario):** Distinct from Q-004's LATE Day-10 trigger (Day 9 dress-rehearsal failure). Day-2 trigger fires if any of: Vinh has not accepted the GitHub invite, Vinh has not cloned the repo, Vinh has not responded in 24h, or Vinh ran Gate G1+G4 and failed. **Action:** Trigger evaluation 2026-05-21 12:00 noon ET. Execution per `docs/apex-lite-contingency.md`. **Owner: Stephen, Day 2 noon ET.**
 
 ---
 
