@@ -54,6 +54,26 @@ Every locked decision with rationale + date + scope. Newest first.
 
 ---
 
+## 2026-05-20 D-006: No git hooks, manual coordination only
+
+**Decision.** `.git/hooks/` contains only the 14 `.sample` defaults that git ships with. No Husky, no lefthook, no pre-commit, no commit-msg validators, no CLI wrappers. Coordination is manual via PLAN.md edits.
+
+**Rationale.** Stephen and Vinh have shipped Trace, Hometown-Pathway-Atlas, Compass, and Nest using the same manual-coordination convention (Hometown PLAN.md task 0.4 verbatim: "Coordination is manual (mirrors Trace) - no hooks, no CLI"). Hooks introduce three failure modes the 12-day hackathon cannot afford: commit-blocking on lint glitches when a hotfix is needed mid-incident, hook divergence across the two laptops, and silent-bypass-via-`--no-verify` that defeats the gate anyway. CI on push to main is the quality gate that replaces hooks.
+
+**Affected.** All commits Day 1-12. Verified Day 1 PM via `ls -la .git/hooks/`: only `*.sample` files present.
+
+---
+
+## 2026-05-20 D-007: Quality over speed, tool-inventory audit BLOCKING
+
+**Decision.** Before any non-trivial task (commit-worthy work, design decision, deck section, outreach email, demo recording, paper draft), the operator (Claude or Stephen) runs a tool-inventory audit and names at least 5 candidate skills / agents / MCPs / connectors from the available inventory that could elevate the result. Pick the top 1-2. Use them. Save findings to memory.
+
+**Rationale.** Stephen explicit on Day 1 (2026-05-20): "Quality over speed. Do not rush things. Make sure you're going through every single skill, every single superpower, every single plugin, every single MCP, every single connector." This rule is the operational implementation of the global hackathon-project-flow Phase 1 principle ("tool-inventory audit BLOCKING before non-trivial tasks"). The project will be won by depth, not by velocity. A 70%-quality feature shipped at Day 11 beats a 90%-quality feature deferred to a hypothetical v2 only when the 70%-quality feature is the ONLY surface that exists; for tasks with quality variance, the rule is "use the leverage tools."
+
+**Affected.** Every non-trivial Claude tool-use sequence for the 12-day build. Memory rule installed at `~/.claude/projects/-Users-stephensookra-Desktop-IBM-May/memory/feedback_quality_over_speed.md`. Codex independent review wave 2 Day 1 EOD applied this principle (BLOCKER findings B1 + B2 surfaced because the manual-grep-and-fix sweep was lower-leverage than the Codex adversarial review).
+
+---
+
 ## 2026-05-19 D-A: PhysicsTTM three-layer architecture (locked pre-rename, carried into APEX)
 
 **Decision.** Three-layer architecture: frozen Granite TimeSeries TTM forecaster → differentiable physics-projection layer (CvxpyLayer QP with friction ellipse, bicycle model, COA-flagged simultaneity) → Granite Guardian BYOC text audit on serialized violation log.
