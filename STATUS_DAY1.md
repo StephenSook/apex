@@ -10,7 +10,7 @@
 
 ## What got done today
 
-Day 1 bootstrap day. 77+ atomic commits pushed to https://github.com/StephenSook/apex.
+Day 1 bootstrap day. 87+ atomic commits pushed to https://github.com/StephenSook/apex.
 
 ### Task 0.1-0.5 - repo setup + folder reorg
 
@@ -77,7 +77,7 @@ Anchor `<Link href="#X">` → `<a href="#X">` (M2), CSS-var pattern `as React.CS
 | `78c5b03` | docs(readme): mark forward-looking docs explicitly |
 | `bc5a570` | fix(frontend): polish wave (M2 + M4 + aria-label) |
 
-Full log via `git log --oneline main`. **77+ atomic commits Day 1, all pushed.**
+Full log via `git log --oneline main`. **87+ atomic commits Day 1, all pushed.**
 
 ---
 
@@ -185,4 +185,4 @@ Full rationale: `docs/decision-log.md`.
 
 ---
 
-_Last updated: 2026-05-20 Day 1 EOD by Stephen. 77+ commits. Tree clean. Remote synced. Ready for Day 2 Vinh-side ramp._
+_Last updated: 2026-05-20 Day 1 EOD by Stephen. 87+ commits. Tree clean. Remote synced. Ready for Day 2 Vinh-side ramp._
