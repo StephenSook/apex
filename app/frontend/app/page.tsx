@@ -36,16 +36,16 @@ function SiteHeader() {
             .race
           </span>
         </Link>
-        <nav aria-label="Primary" className="hidden md:flex items-center gap-8 font-sans text-sm text-ink-soft">
-          <Link href="#hero" className="hover:text-racing-green underline-offset-4 hover:underline">
+        <nav aria-label="Primary navigation" className="hidden md:flex items-center gap-8 font-sans text-sm text-ink-soft">
+          <a href="#hero" className="hover:text-racing-green underline-offset-4 hover:underline">
             What it is
-          </Link>
-          <Link href="#architecture" className="hover:text-racing-green underline-offset-4 hover:underline">
+          </a>
+          <a href="#architecture" className="hover:text-racing-green underline-offset-4 hover:underline">
             Architecture
-          </Link>
-          <Link href="#status" className="hover:text-racing-green underline-offset-4 hover:underline">
+          </a>
+          <a href="#status" className="hover:text-racing-green underline-offset-4 hover:underline">
             Build status
-          </Link>
+          </a>
           <Link
             href="https://github.com/StephenSook/apex"
             target="_blank"
@@ -72,20 +72,20 @@ function Hero() {
     >
       <div className="mx-auto grid max-w-6xl gap-12 px-6 py-20 lg:grid-cols-12 lg:gap-16 lg:px-10 lg:py-28">
         <div className="lg:col-span-7 flex flex-col gap-6">
-          <p className="apex-eyebrow apex-rise" style={{ ["--apex-delay" as string]: "0ms" }}>
+          <p className="apex-eyebrow apex-rise" style={{ "--apex-delay": "0ms" } as React.CSSProperties}>
             IBM SkillsBuild · May Challenge 2026 · Day 1 of 12
           </p>
           <h1
             id="hero-title"
             className="font-display text-5xl leading-[1.05] tracking-tight text-ink sm:text-6xl lg:text-7xl apex-rise"
-            style={{ ["--apex-delay" as string]: "120ms" }}
+            style={{ "--apex-delay": "120ms" } as React.CSSProperties}
           >
             The race engineer for the drivers who{" "}
             <em className="font-display italic text-accent">don&rsquo;t have one.</em>
           </h1>
           <p
             className="max-w-xl text-lg leading-relaxed text-ink-soft apex-rise"
-            style={{ ["--apex-delay" as string]: "240ms" }}
+            style={{ "--apex-delay": "240ms" } as React.CSSProperties}
           >
             A pro race engineer costs roughly{" "}
             <span className="font-mono text-base text-ink">£400 to £500</span> a day.
@@ -96,15 +96,15 @@ function Hero() {
           </p>
           <div
             className="flex flex-wrap gap-3 pt-2 apex-rise"
-            style={{ ["--apex-delay" as string]: "360ms" }}
+            style={{ "--apex-delay": "360ms" } as React.CSSProperties}
           >
-            <Link
+            <a
               href="#sarah"
               className="inline-flex items-center gap-2 rounded-sm bg-racing-green px-5 py-3 font-mono text-xs uppercase tracking-wider text-paper transition-transform hover:translate-y-[-1px] hover:bg-racing-green-deep"
             >
               See the demo case
               <span aria-hidden="true">↓</span>
-            </Link>
+            </a>
             <Link
               href="https://github.com/StephenSook/apex/blob/main/PLAN.md"
               target="_blank"
@@ -116,7 +116,7 @@ function Hero() {
           </div>
           <p
             className="pt-4 font-mono text-xs text-muted apex-rise"
-            style={{ ["--apex-delay" as string]: "480ms" }}
+            style={{ "--apex-delay": "480ms" } as React.CSSProperties}
           >
             Submission deadline 2026-05-31 · IBM Granite + watsonx + Bob · Apache 2.0
           </p>
@@ -126,7 +126,7 @@ function Hero() {
             apex point. Editorial paddock note, not a generic AI illustration. */}
         <figure
           className="lg:col-span-5 self-center apex-rise"
-          style={{ ["--apex-delay" as string]: "600ms" }}
+          style={{ "--apex-delay": "600ms" } as React.CSSProperties}
           aria-label="A racing line through a corner with the apex point marked"
         >
           <svg
@@ -366,7 +366,7 @@ function Architecture() {
             <li
               key={l.n}
               className="apex-rise flex flex-col gap-4 rounded-sm border border-rule bg-paper-warm p-6 lg:p-7"
-              style={{ ["--apex-delay" as string]: `${i * 100}ms` }}
+              style={{ "--apex-delay": `${i * 100}ms` } as React.CSSProperties}
             >
               <div className="flex items-baseline justify-between">
                 <span className="font-display text-5xl italic text-accent">
@@ -461,7 +461,7 @@ function Differentiators() {
             <li
               key={it.n}
               className="apex-rise flex flex-col gap-3 bg-racing-green p-6 lg:p-7"
-              style={{ ["--apex-delay" as string]: `${i * 80}ms` }}
+              style={{ "--apex-delay": `${i * 80}ms` } as React.CSSProperties}
             >
               <span className="font-display text-3xl italic text-amber">
                 {it.n}
@@ -654,7 +654,7 @@ function SiteFooter() {
               Apache 2.0 · Submission 2026-05-31
             </p>
           </div>
-          <nav aria-label="Footer" className="flex flex-col gap-3 text-sm">
+          <nav aria-label="Footer navigation" className="flex flex-col gap-3 text-sm">
             <p className="apex-eyebrow text-paper/45">Project</p>
             <Link href="https://github.com/StephenSook/apex" target="_blank" rel="noopener noreferrer" className="hover:text-amber underline-offset-4 hover:underline">
               GitHub
