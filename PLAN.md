@@ -111,7 +111,7 @@ Stephen completed the bootstrap. Repo, scaffold, memory, Obsidian, plan, briefin
 ## Sources of truth (priority order)
 
 1. **`~/.claude/projects/-Users-stephensookra-Desktop-IBM-May/memory/`** - persistent context Claude Code reads every session. Locked rules + facts live here. If anything in PLAN.md drifts from a memory file, fix the drift in PLAN.md.
-2. **`docs/architecture-spec.md`** (TODO Day 2) - full system design carved out from the design-blueprint plan. Master reference for stack roles, physics-projection layer math, COA section IDs, FIA Article references.
+2. **`docs/architecture-spec.md`** (v0 Day 1, expansion Day 2) - full system design. Master reference for stack roles, physics-projection layer math, COA section IDs, FIA Article references.
 3. **This file (`PLAN.md`)** - authoritative for task ownership, status, decisions, contracts.
 4. **`docs/briefing-for-vinh.pdf`** - operational guide for Vinh's Days 1-6.
 5. **`docs/decision-log.md`** - every locked decision with rationale + date + scope.
@@ -144,10 +144,12 @@ Legend: ✅ done · 🟡 in progress · ⬜ not started · ⛔ blocked · ✂️
 | 0.11 | Vinh's git config matches GitHub account | Vinh's local | Vinh | ⬜ | `git config user.email <your-github-email>` |
 | 0.12 | Vinh accept invite + clone repo | Vinh's local | Vinh | ⬜ | Blocker for parallel build |
 | 0.13 | **Gate G1 - TTM smoke test** | `logs/day-01-ttm-smoke.md` | Vinh | ⬜ | Pass: TTM loads + 1Hz inference within 60s on M2 or RTX 4060 |
-| 0.14 | Next.js 15 + Tailwind + Plex + Fraunces scaffold | `app/frontend/` | Stephen | ⬜ | Day 1 evening / Day 2 AM. WCAG 2.1 AA baseline. |
-| 0.15 | Mermaid architecture diagram in README + SVG export to docs/ | README.md, docs/architecture.svg | Stephen | ⬜ | Day 2 |
-| 0.16 | Project-local `CLAUDE.md` (refers to global + memory) | repo root | Stephen | ⬜ | Day 2 |
+| 0.14 | Next.js 16 + Tailwind v4 + Plex + Fraunces scaffold | `app/frontend/` | **Stephen** | ✅ | Day 1 PM. Editorial-paddock palette, WCAG 2.1 AA baseline (skip link, focus ring, prefers-reduced-motion), full APEX landing page with hero + Sarah moment + PhysicsTTM 3-layer + 5 differentiators + build status + stack badges + footer. Build + lint + SSR smoke all green. |
+| 0.15 | Mermaid architecture diagram in README + SVG export to docs/ | README.md, docs/architecture.svg | **Stephen** | ✅ | Mermaid in README live; SVG export Day 11. |
+| 0.16 | Project-local `CLAUDE.md` (refers to global + memory) | repo root | **Stephen** | ✅ | 79 lines. Locked decisions D-001 through D-007, hard compliance, editorial-paddock identity. |
 | 0.17 | `STATUS_TEMPLATE.md` for daily handoffs | repo root | Stephen | ✅ | Mirrors Hometown convention |
+| 0.18 | `docs/architecture-spec.md` v0 skeleton | docs/ | **Stephen** | ✅ | Day 1 PM. Component spec for PhysicsTTM 3 layers + intake + vision + narrator + Langflow + Bob. Day 2 expansion fills physics math + COA schema + API contracts. |
+| 0.19 | `SUBMISSION.md` v0 BeMyApp form draft | repo root | **Stephen** | ✅ | Day 1 PM. 7-block story + tech tags + multi-track checklist + Day-12 submission sequence. |
 
 ### Phase 1 - Document parsing (Day 2, Vinh)
 
@@ -450,4 +452,4 @@ The original `~/.claude/plans/all-right-i-want-rippling-moon.md` (also mirrored 
 
 ---
 
-_Last updated: 2026-05-20 by Stephen (Day 1 bootstrap complete, 13+ atomic commits pushed, Phase 0 task 0.13 G1 TTM smoke pending Vinh)._
+_Last updated: 2026-05-20 PM by Stephen (Day 1 bootstrap + frontend scaffold + landing page + project CLAUDE.md + architecture-spec v0 + SUBMISSION v0 all shipped, 23+ atomic commits pushed, Phase 0 task 0.13 G1 TTM smoke pending Vinh accept of collaborator invite)._
