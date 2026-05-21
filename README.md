@@ -12,7 +12,19 @@ Built for the **IBM SkillsBuild AI Builders Challenge, May 2026** (theme: "AI Be
 
 ---
 
-## The opening stat
+## The three IBM-SkillsBuild submission answers
+
+Per the BeMyApp pinned submission rubric, every project must clearly answer three questions in its README. APEX's answers below, with deep-links into the relevant sections.
+
+- **The problem.** A professional race engineer costs hundreds of pounds per day, well beyond the budget of most adaptive racers, veteran-team drivers, and grassroots competitors. See [The problem](#the-problem).
+- **The AI approach.** A frozen Granite TimeSeries TTM forecaster wrapped in a differentiable physics-projection layer audited by Granite Guardian, with COA-aware physics constraints as the architectural novelty. See [The AI approach](#the-ai-approach).
+- **Why it matters in racing.** The FIA lifted its single-seater ban on disabled drivers in December 2017, but the regulatory barrier was replaced by an economic one. Adaptive racing is a real audience that current AI race-engineer tools systematically misdiagnose because they assume able-bodied physics. See [Why it matters in racing](#why-it-matters-in-racing).
+
+---
+
+<a id="the-problem"></a>
+
+## The problem
 
 A professional race engineer can cost **in the low-to-mid hundreds of pounds per day** for amateur and clubman series, by industry estimates we are still cross-checking against primary sources. Every F1 driver has one. Most adaptive racers, veteran-team drivers, and grassroots competitors do not. The FIA lifted its single-seater ban on disabled drivers in December 2017. The barrier stopped being regulatory. It became economic. Post-race coaching is a luxury good.
 
@@ -31,7 +43,11 @@ APEX changes that.
 
 ---
 
-## What makes it different
+<a id="the-ai-approach"></a>
+
+## The AI approach
+
+What makes APEX different from the existing AI race-engineer category (Track Titan, Trophi.ai, the Deep Dynamics PINN line):
 
 ### 1. First pretrained time-series foundation model on motorsport telemetry
 
@@ -52,6 +68,20 @@ Every physics-corrected forecast and recommendation passes through Granite Guard
 ### 5. Eight IBM tools, all load-bearing
 
 Granite-Docling, Granite Vision 4.1, Granite TimeSeries TTM r2.1, Granite 4.1 8B Instruct, Granite Guardian 4.1 8B, Langflow (visible orchestration), Docling library, IBM Bob (build accelerator, per the IBM × Scuderia Ferrari case-study precedent). Every tool earns its slot.
+
+---
+
+<a id="why-it-matters-in-racing"></a>
+
+## Why it matters in racing
+
+Three constituencies, one shared product gap.
+
+- **Adaptive racers.** Drivers running hand-control rigs, prosthetic-leg-on-pedal setups, or other adapted controls compete in series like Britcar Trophy, the Adaptive Driver Championship, and FFSA Handikart. Their FIA Certificate of Adaptations (governed by Appendix L of the International Sporting Code) is a binding document that says, for example, that simultaneous brake-throttle inputs are permitted because the hand-control system supports them. Existing AI race-engineer tools assume an able-bodied physics model where `throttle * brake = 0`, so they read adaptive technique as driver error. APEX reads the COA at the tensor level. The same coaching pipeline says "lift earlier into Old Hairpin" for an able-bodied driver and "your COA permits the simultaneity you are running, the issue is brake-lever travel" for an adaptive driver in the same corner.
+- **Veteran motorsport rehabilitation programmes.** Veteran-team drivers competing through programmes like Operation Motorsport often run with combat-injury-driven adaptations under the same COA framework. The economic barrier (the £500/day race engineer) is identical.
+- **Grassroots clubman and amateur racers.** Britcar Trophy, SRO regional series, Britcar 12 Hour, club-level endurance racing. Post-race coaching is currently optional because it's a luxury good. APEX is free at the point of use for these audiences (Apache 2.0, Hugging Face Space hosted), open-source for any other developer to extend.
+
+The Scuderia Ferrari precedent matters because IBM already shipped the same Granite stack to a Formula One team. APEX takes the same architecture and points it at the drivers who need it most, not the drivers who can already afford a paid race engineer.
 
 ---
 
