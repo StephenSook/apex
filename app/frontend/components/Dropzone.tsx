@@ -497,7 +497,10 @@ function FileSlot({ slot, label, hint, accept, maxBytes, state, dispatch, dispat
       {file && (
         <button
           type="button"
-          onClick={() => {
+          onClick={(event) => {
+            // Stop the click from bubbling to the dropzone wrapper above; otherwise
+            // clearing the file would immediately reopen the file picker.
+            event.stopPropagation();
             dispatch({ type: "clearFile", slot });
             announceFor(`Cleared ${slotLabel(slot)}.`);
           }}
