@@ -18,7 +18,7 @@ Submission deadline: **2026-05-31, 11:59 PM ET**
 
 > AI race engineer for adaptive, veteran, and grassroots racers. Built on IBM Granite, with a physics-constrained TimeSeries TTM forecaster that reads the FIA Certificate of Adaptations.
 
-(199 chars including spaces. Hard limit. Tighten on Day 11 if BeMyApp form differs.)
+(184 chars including spaces, against Devpost's 200-char convention. Verify BeMyApp's actual limit on Day 11 before submission.)
 
 ### Thumbnail
 
