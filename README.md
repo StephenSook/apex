@@ -14,7 +14,7 @@ Built for the **IBM SkillsBuild AI Builders Challenge, May 2026** (theme: "AI Be
 
 ## The opening stat
 
-A pro race engineer costs **£400 to £500 per day** by industry estimates for amateur + clubman series. Every F1 driver has one. Most adaptive racers, veteran-team drivers, and grassroots competitors do not. The FIA lifted its single-seater ban on disabled drivers in December 2017. The barrier stopped being regulatory. It became economic. Post-race coaching is a luxury good.
+A professional race engineer can cost **in the low-to-mid hundreds of pounds per day** for amateur and clubman series, by industry estimates we are still cross-checking against primary sources. Every F1 driver has one. Most adaptive racers, veteran-team drivers, and grassroots competitors do not. The FIA lifted its single-seater ban on disabled drivers in December 2017. The barrier stopped being regulatory. It became economic. Post-race coaching is a luxury good.
 
 APEX changes that.
 
@@ -43,7 +43,7 @@ TTM was pretrained on weather and retail. Without constraints, it can forecast 4
 
 ### 3. FIA Certificate of Adaptations as a tensor-level safety flag
 
-APEX is the only AI race engineer that reads the driver's binding FIA Certificate of Adaptations (Article 18.3 of Appendix L) at the tensor level. When a driver's COA permits simultaneous brake+throttle (as adaptive racing programmes and adapted-hand-control systems commonly do), the physics layer permits it. When a driver's COA does not permit it, the constraint enforces. Competing tools assume able-bodied physics (`throttle * brake = 0`) and systematically misdiagnose adaptive drivers.
+APEX is the only AI race engineer that reads the driver's binding FIA Certificate of Adaptations (governed by Appendix L of the International Sporting Code; specific article numbering verified against the live Appendix L PDF Day 2) at the tensor level. When a driver's COA permits simultaneous brake+throttle (as adaptive racing programmes and adapted-hand-control systems commonly do), the physics layer permits it. When a driver's COA does not permit it, the constraint enforces. Competing tools assume able-bodied physics (`throttle * brake = 0`) and systematically misdiagnose adaptive drivers.
 
 ### 4. Granite Guardian audits with BYOC custom rules + serialization unit tests
 
@@ -114,10 +114,10 @@ flowchart TB
     BOB["IBM Bob<br/>build accelerator"]
     BOB -.->|drives code dev<br/>per Ferrari case study| LL
 
-    classDef ibm fill:#dde7ff,stroke:#052fad,stroke-width:2px,color:#000
-    classDef physics fill:#f3e5f5,stroke:#7b1fa2,stroke-width:3px,color:#000
-    classDef input fill:#e3f2fd,stroke:#1976d2,color:#000
-    classDef output fill:#e8f5e9,stroke:#388e3c,color:#000
+    classDef ibm fill:#0A2818,stroke:#0A2818,stroke-width:2px,color:#F4EBD8
+    classDef physics fill:#C1492C,stroke:#9C3A23,stroke-width:3px,color:#F4EBD8
+    classDef input fill:#F4EBD8,stroke:#D9A441,stroke-width:1px,color:#0F1410
+    classDef output fill:#D9A441,stroke:#0A2818,color:#0F1410
 
     class TEL,COA,DBR input
     class REPORT,TUNE,FCST,STAMP output
