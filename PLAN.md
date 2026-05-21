@@ -233,7 +233,7 @@ Legend: ✅ done · 🟡 in progress · ⬜ not started · ⛔ blocked · ✂️
 | 6.1 | Final deck PDF rendered via Playwright HTML to PDF | `docs/deck.pdf` | Stephen | ⬜ | 4.9 | Day 11 |
 | 6.2 | `apex.race/judges` one-page judges-tour landing | `app/frontend/app/judges/page.tsx` | Stephen | ⬜ | 5.8 | TOC: live demo URL + video + Colab + deck + GitHub + Q&A + IBM stack + team bios |
 | 6.3 | `apex.race/status` live demo status dashboard | `app/frontend/app/status/page.tsx` | Stephen | ⬜ | 5.1, 5.8 | Uptime + commit SHA + HF Space health + last green CI |
-| 6.4 | `docs/methodology.md` (Sookra Methodology trace) | docs/ | Stephen | ⬜ | — | 6 phases of recon → murder-board → judge-sim → NotebookLM → PhysicsTTM → build |
+| 6.4 | `docs/methodology.md` (Sookra Methodology trace) | docs/ | Stephen | ⬜ | — | seven phases: P1 recon → P2 murder-board + judge-sim → P3 concept-lock → P4 deep-research → P5 PhysicsTTM mitigation → P6 build → P7 submission |
 | 6.5 | `docs/pre-mortem.md` final polish | docs/ | Both | ⬜ | 1.7 | Every failure mode + mitigation |
 | 6.6 | `docs/cost-audit-2026-05-30.md` (usage-audit skill run) | docs/ | Stephen | ⬜ | — | Session cost + token spend |
 | 6.7 | `paper/apex-neurips-workshop-2026.md` DRAFT (readable quality) | paper/ | Vinh | ⬜ | 4.2, 5.7 | Abstract + intro + method + experiments + related + limitations |
@@ -325,6 +325,7 @@ Legend: ✅ done · 🟡 in progress · ⬜ not started · ⛔ blocked · ✂️
 - [ ] **Q-003 - Live sim-rig hardware:** which sim title runs on which laptop for Day 9 recording? Default: iRacing on Stephen's machine, fallback to ACC. **Owner: Stephen + Vinh, EOD Day 8.**
 - [ ] **Q-004 - APEX Lite trigger:** invoke Lite (drop sim-rig + Colab, keep core PhysicsTTM loop) if Day 9 Gate G9 fails on 2+ items. Default: NO Lite, ship full. **Owner: both, Day 10 morning.**
 - [ ] **Q-005 - June Challenge entry:** start parallel June build between Day 12 + June Challenge deadline? Default: NO, focus retro week. **Owner: Stephen, Day 12.**
+- [ ] **Q-006 - MME Motorsport + Team BRIT per-surface consent:** APEX positioning materials currently name MME Motorsport (electronic hand-controls supplier) and Team BRIT (charity racing team) without explicit per-surface consent. Per global CLAUDE.md operator-unassociation principle, suppliers and adaptive-motorsport operators get anonymous + aggregate descriptions unless explicit consent is granted per surface (deck vs README vs video vs landing page). **Action:** (a) when Team BRIT replies to the Day-0 Phase-1 email, ask explicitly for per-surface attribution permission. (b) Email MME Motorsport `info@mme-motorsport.com` Day 2 with same per-surface ask. (c) If either declines or does not reply by Day 10, anonymize to "leading UK adaptive-hand-control supplier" + "a national adaptive racing team." Surfaces affected: `README.md`, `app/frontend/app/page.tsx` Sarah persona block, `SUBMISSION.md` Inspiration block, `docs/briefing-for-vinh.pdf` (legacy artifact, lower risk). **Owner: Stephen, EOD Day 10.**
 
 ---
 
