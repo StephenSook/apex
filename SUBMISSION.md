@@ -58,7 +58,7 @@ Methodology: Sookra Methodology v3.3 with seven phases of competitive recon (six
 
 - **Kinetic hallucination.** TTM was pretrained on weather and retail data. Without constraints it can forecast 4G lateral with zero steering, or speed climbing with throttle at zero. We built a differentiable physics-projection layer to enforce per-step physical feasibility before the forecast reaches the driver.
 
-- **COA semantics for adaptive drivers.** Standard race-engineering tools assume able-bodied physics, encoding `brake * throttle = 0`. Team BRIT and MME Motorsport hand-control systems explicitly permit simultaneous brake + throttle mid-corner. Penalizing that input misdiagnoses every adaptive driver. APEX reads the COA as a tensor-level flag so the physics model matches the car.
+- **COA semantics for adaptive drivers.** Standard race-engineering tools assume able-bodied physics, encoding `brake * throttle = 0`. a UK adaptive racing programme and adaptive hand-control systems explicitly permit simultaneous brake + throttle mid-corner. Penalizing that input misdiagnoses every adaptive driver. APEX reads the COA as a tensor-level flag so the physics model matches the car.
 
 - **60-second budget on commodity hardware.** Granite-Docling cold-start can take 10+ minutes on first parse. We solved this by caching document parses at driver onboarding so the live 60-second loop only runs TTM forecast, physics projection, Guardian audit, and Instruct narrator.
 
@@ -80,7 +80,7 @@ Methodology: Sookra Methodology v3.3 with seven phases of competitive recon (six
 
 ### What's next for APEX
 
-A NeurIPS Workshop paper draft is in `paper/apex-neurips-workshop-2026.md` (drafted Day 11, polish post-submission). A formal data-partnership conversation with Team BRIT, Mission Motorsport, or Operation Motorsport is the next post-submission move. The architectural pattern (frozen TSFM + physics projection) extends to any high-frequency sensor domain. The June Challenge bridge document in `docs/june-challenge-bridge.md` outlines the FIFA World Cup player-tracking deployment.
+A NeurIPS Workshop paper draft is in `paper/apex-neurips-workshop-2026.md` (drafted Day 11, polish post-submission). A formal data-partnership conversation with a UK adaptive racing programme, a veteran motorsport rehabilitation programme, or Operation Motorsport is the next post-submission move. The architectural pattern (frozen TSFM + physics projection) extends to any high-frequency sensor domain. The June Challenge bridge document in `docs/june-challenge-bridge.md` outlines the FIFA World Cup player-tracking deployment.
 
 ---
 

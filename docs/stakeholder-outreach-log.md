@@ -12,7 +12,7 @@
 | Target | Contact | Method | Lexicon | Asked for | Sent | Reply | Attribution surface |
 |--------|---------|--------|---------|-----------|------|-------|--------------------|
 | Mission 44 | Jason Arthur (`media@mission44.org`) | Email from school address | IBM Synergy (Hamilton Commission, IBM × Mission 44 Oct 2025) | One-sentence endorsement | 2026-05-19 | PENDING | TBD on reply |
-| Team BRIT | Al Locke (`al@teambrit.co.uk`) | Email from school address | Level Playing Field (engineering specifics, no charity language) | One-sentence endorsement, reference his Sept 2025 Aston Martin GT4 work | 2026-05-19 | PENDING | TBD on reply |
+| a UK adaptive racing programme | Al Locke (`al@teambrit.co.uk`) | Email from school address | Level Playing Field (engineering specifics, no charity language) | One-sentence endorsement, reference his Sept 2025 Aston Martin GT4 work | 2026-05-19 | PENDING | TBD on reply |
 | Spinal Track | Andrew operations (`andrew@spinaltrack.co.uk`) | Email from school address | FIA legislative (Nathalie McGloin DAA Commission downstream) | One-sentence endorsement | 2026-05-19 | PENDING | TBD on reply |
 
 ## Phase 2 - secondary asks (sent 2026-05-19, Day 0)
@@ -26,18 +26,20 @@
 
 | Target | Contact | Method | Asked for | Sent | Reply | Surfaces requested |
 |--------|---------|--------|-----------|------|-------|---------------------|
-| MME Motorsport | `info@mme-motorsport.com` (verify before send) | Email from school address per `docs/outreach-drafts/mme-motorsport-consent.md` | Per-surface consent for naming as Sarah Reynolds' hand-control supplier | 2026-05-20 | PENDING | Landing page, README, BeMyApp Story block, 3-min demo video |
+| leading UK adaptive hand-control supplier | `info@mme-motorsport.com` (verify before send) | Email from school address per `docs/outreach-drafts/mme-motorsport-consent.md` | Per-surface consent for naming as Sarah Reynolds' hand-control supplier | 2026-05-20 | PENDING | Landing page, README, BeMyApp Story block, 3-min demo video |
 
 ## Phase 4 - Day 3 escalation (scheduled 2026-05-22, revised from Day 7 per Codex critique #4)
 
-| Target | Contact | Method | Why escalate | Reply | Attribution surface |
-|--------|---------|--------|--------------|-------|--------------------|
-| Aaron Morgan (Team BRIT driver) | LinkedIn DM | DM with 60-second video pitch | Real adaptive driver endorsement; UK charity response window is 7-14 days so Day 7 first escalation was too late | PENDING | TBD on reply |
-| Bobby Trundley (Team BRIT driver) | LinkedIn DM | DM with 60-second video pitch | Same | PENDING | TBD on reply |
+> Driver names omitted from this public log until the drivers have personally consented to per-surface attribution. Internal names live only in stephensookra@gmail.com Drafts folder + the LinkedIn DM compose window. Per the L52 rule below.
+
+| Target archetype | Contact | Method | Why escalate | Reply | Attribution surface |
+|------------------|---------|--------|--------------|-------|---------------------|
+| Adaptive-driver UK championship competitor (driver A) | LinkedIn DM | DM with 60-second video pitch | Real adaptive driver endorsement; UK charity response window is 7-14 days so Day 7 first escalation was too late | PENDING | TBD on consent |
+| Adaptive-driver UK championship competitor (driver B) | LinkedIn DM | DM with 60-second video pitch | Same | PENDING | TBD on consent |
 
 ## Phase 5 - Day 5 follow-ups (scheduled 2026-05-24)
 
-Re-email Phase 1+2 non-responders (Mission 44, Team BRIT, Spinal Track, Limitless, Raceability) with progress update + concrete request to participate. Subject line tweak: "Following up + APEX is live at <demo-url>."
+Re-email Phase 1+2 non-responders (Mission 44, a UK adaptive racing programme, Spinal Track, Limitless, Raceability) with progress update + concrete request to participate. Subject line tweak: "Following up + APEX is live at <demo-url>."
 
 ## Phase 6 - Day 12 IBM Consulting cold outreach (scheduled 2026-05-31 afternoon)
 
@@ -53,10 +55,10 @@ Per-surface consent. Quote-in-deck consent does NOT imply README-or-video-credit
 
 ## Anonymization fallback wording (if Q-006 expires Day 8 with no reply)
 
-- "MME Motorsport electronic hand-controls" → "a leading UK adaptive hand-control supplier"
+- "electronic hand-controls (supplier naming pending per-surface consent)" → "a leading UK adaptive hand-control supplier"
 - "Sarah Reynolds is a fictional persona" stays unchanged (the fictional disclaimer protects the architecture claim)
-- "Team BRIT, Mission Motorsport, FFSA Handikart drivers" → "the adaptive-motorsport community across UK, US, and EU programmes"
+- "a UK adaptive racing programme, a veteran motorsport rehabilitation programme, a national adaptive karting series drivers" → "the adaptive-motorsport community across UK, US, and EU programmes"
 
 ---
 
-_Last updated: 2026-05-20 Day 1 PM by Stephen. Day 2 send: MME (already sent), Day 3 sends: Aaron Morgan + Bobby Trundley LinkedIn DMs._
+_Last updated: 2026-05-20 Day 1 PM by Stephen. MME consent email sent 2026-05-20 PM (Day 1, NOT Day 2 as the draft scaffold said). Day 3 sends: 2 adaptive-driver LinkedIn DMs (names omitted pre-consent)._

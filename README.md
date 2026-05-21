@@ -27,7 +27,7 @@ APEX changes that.
 - **Colab (zero install, browser-side):** *(notebook URL lands Day 9)*
 - **Judges' tour:** *(apex.race/judges Day 11)*
 - **Status dashboard:** *(apex.race/status Day 11)*
-- **Try fixture:** Sarah Reynolds, RAF veteran, left-leg amputee, Britcar Trophy 2026, #34 BMW M240i with MME hand-controls, Donington Park GP, Lap 17
+- **Try fixture:** Sarah Reynolds (fictional persona), RAF veteran, left-leg amputee, Britcar Trophy 2026, #34 BMW M240i with electronic hand-controls (supplier name redacted pending per-surface consent per the project's operator-attribution rule), Donington Park GP, Lap 17
 
 ---
 
@@ -43,7 +43,7 @@ TTM was pretrained on weather and retail. Without constraints, it can forecast 4
 
 ### 3. FIA Certificate of Adaptations as a tensor-level safety flag
 
-APEX is the only AI race engineer that reads the driver's binding FIA Certificate of Adaptations (Article 18.3 of Appendix L) at the tensor level. When a driver's COA permits simultaneous brake+throttle (Team BRIT, MME Motorsport hand-control systems), the physics layer permits it. When a driver's COA does not permit it, the constraint enforces. Competing tools assume able-bodied physics (`throttle * brake = 0`) and systematically misdiagnose adaptive drivers.
+APEX is the only AI race engineer that reads the driver's binding FIA Certificate of Adaptations (Article 18.3 of Appendix L) at the tensor level. When a driver's COA permits simultaneous brake+throttle (as adaptive racing programmes and adapted-hand-control systems commonly do), the physics layer permits it. When a driver's COA does not permit it, the constraint enforces. Competing tools assume able-bodied physics (`throttle * brake = 0`) and systematically misdiagnose adaptive drivers.
 
 ### 4. Granite Guardian audits with BYOC custom rules + serialization unit tests
 
@@ -166,7 +166,7 @@ Full architecture spec: [`docs/architecture-spec.md`](./docs/architecture-spec.m
 
 - No em-dash in prose, commits, deck, video transcript, emails. Single most reliable AI-tone tell. Substitutes per global CLAUDE.md em-dash table (`docs/ai-tone-policy.md` Day 2 carve-out forthcoming).
 - No invented FIA Article numbers. Verify via FIA.com or `research/` PDFs.
-- No named operators (Team BRIT drivers, charity contacts) without explicit per-surface consent. Defaults to anonymous and aggregate descriptions.
+- No named operators (adaptive-racing-programme drivers, charity contacts) without explicit per-surface consent. Defaults to anonymous and aggregate descriptions.
 - No NIL violations. Sarah Reynolds is a fictional persona by design.
 - No git hooks. `.git/hooks/` stays defaults-only. Coordination is manual via PLAN.md edits per D-006.
 - Conditional phrasing on physics claims ("forecast envelope" not "guaranteed pace").

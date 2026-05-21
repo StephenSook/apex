@@ -262,7 +262,7 @@ function SarahMoment() {
           </h2>
           <p className="text-base text-ink-soft leading-relaxed">
             Sarah Reynolds. Thirty-four. RAF veteran. Left-leg amputee from a 2021
-            service incident. Britcar Trophy 2026, #34 BMW M240i with MME Motorsport
+            service incident. Britcar Trophy 2026, #34 BMW M240i with leading UK adaptive hand-control supplier
             electronic hand-controls and FIA Article 18.3 Certificate of Adaptations
             on file. Donington Park GP. Saturday qualifying. Lap 17 of 19.
           </p>

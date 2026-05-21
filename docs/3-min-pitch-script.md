@@ -42,7 +42,7 @@ The Phase 4.5 NotebookLM-verified synthesis identified 13 mandatory pitch refine
 9. **Replace "DRAFT - REQUIRES AWG REVIEW" stamp** (legacy GreenFlag concept) with confident-but-bounded language. N/A - APEX never had this stamp.
 10. **Frame as IBM Consulting blueprint** for governed foundation-model deployment on safety-critical sensor data. ⬜ Day 7 deck close beat.
 11. **Show a real adaptive-driver beta-tester quote** if Phase 1+2 outreach lands a reply. ⬜ Day 7 stakeholder check.
-12. **Add CHARITY framing (Mission Motorsport / Operation Motorsport / FFSA Handikart) as TAM proof** - not just the £500/day stat. ⬜ Day 7.
+12. **Add CHARITY framing (a veteran motorsport rehabilitation programme / Operation Motorsport / a national adaptive karting series) as TAM proof** - not just the £500/day stat. ⬜ Day 7.
 13. **Aggregation honesty line at 1:50** - separate TTM's job (envelope forecast) from Granite Instruct's job (precision tuning delta from envelope + COA + debrief). ⬜ Day 7 production take.
 
 ---

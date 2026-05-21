@@ -42,7 +42,6 @@ export const metadata: Metadata = {
     "AI race engineer",
     "IBM Granite",
     "adaptive motorsport",
-    "Team BRIT",
     "FIA Certificate of Adaptations",
     "Granite TimeSeries TTM",
     "PhysicsTTM",

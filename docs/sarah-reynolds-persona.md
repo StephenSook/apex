@@ -10,14 +10,14 @@
 
 **Name:** Sarah Reynolds.
 **Age:** 34.
-**Background:** RAF veteran. Left-leg amputee from a 2021 incident during a deployment that the persona does not discuss publicly. Out of service for 18 months recovery. Picked up Mission Motorsport's recovery programme in 2023.
+**Background:** RAF veteran. Left-leg amputee from a 2021 incident during a deployment that the persona does not discuss publicly. Out of service for 18 months recovery. Picked up a veteran motorsport rehabilitation programme in 2023.
 **Day job:** Engineer at a regional aerospace firm in Bristol. Race weekends only.
 
 ## Racing context
 
 - **Series:** Britcar Trophy 2026.
 - **Car:** #34 BMW M240i.
-- **Adaptations:** MME Motorsport electronic hand-control system (push-to-brake lever on the right of the steering wheel; throttle on the left; clutchless paddle shift). FIA Article 18.3 Certificate of Adaptations on file with the ASN.
+- **Adaptations:** electronic hand-control system from a leading UK adaptive-hand-control supplier (supplier name pending per-surface consent per Q-006). Push-to-brake lever on the right of the steering wheel; throttle on the left; clutchless paddle shift. FIA Article 18.3 Certificate of Adaptations on file with the ASN.
 - **Crew:** One mechanic, one volunteer engineer. No paid race engineer.
 - **Circuit history:** First full season at Britcar. Came up through 2024 Mazda MX-5 Cup with a borrowed adapted car, then a 2025 partial Britcar campaign on a tight budget.
 
@@ -43,7 +43,7 @@ That debrief, plus her telemetry slice and her COA on file, is what APEX takes a
 She is the entire demographic in one persona:
 
 - **Adaptive driver community:** her amputation requires hand-controls. Standard race-engineering tools (Track Titan, Trophi.ai) misdiagnose her simultaneous brake-throttle inputs as driver error. APEX reads her COA at the tensor level and permits the simultaneity her car explicitly supports.
-- **Veteran motorsport community:** Mission Motorsport routed her into racing. Operation Motorsport and Spinal Track serve the same demographic.
+- **Veteran motorsport community:** a veteran motorsport rehabilitation programme routed her into racing. Operation Motorsport and Spinal Track serve the same demographic.
 - **Grassroots community:** no paid race engineer. Volunteer crew. Budget-bound. The £400-500 a day a pro engineer costs is the difference between her getting coaching and not.
 
 She is the human form of the £500-a-day-coaching-gap that APEX exists to close.
@@ -51,8 +51,8 @@ She is the human form of the £500-a-day-coaching-gap that APEX exists to close.
 ## Compliance notes
 
 - Sarah is **fictional**. No real driver named.
-- MME Motorsport is named as the **adaptation supplier**. Per Q-006 in PLAN.md, per-surface consent is being requested (Day 2 email). If declined, anonymize to "leading UK adaptive-hand-control supplier."
-- Mission Motorsport, Operation Motorsport, Spinal Track named as **programme contexts** that match Sarah's recovery pathway. Public-charity context, lower per-surface risk than naming individuals, but per-surface consent is the standard.
+- Supplier and adaptive-racing-programme naming anonymized to role descriptions until per-surface consent confirmed per Q-006 in PLAN.md. Consent email sent 2026-05-20 PM.
+- Operation Motorsport + Spinal Track named as **programme contexts** that match Sarah's recovery pathway. Public-charity context, lower per-surface risk than naming individuals, but per-surface consent is the standard.
 - The verbatim debrief above is the only quoted "speech." The landing page renders it as a blockquote with the giant accent quotation mark for editorial effect, plus the disclaimer "Persona is fictional by design. No real driver named without consent."
 
 ## What lives in Vinh's lane (do not write without coordination)

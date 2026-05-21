@@ -85,7 +85,7 @@ Constraints (V1, ships by Gate G5):
 - **Forward-Euler kinematic step:** `speed_t = speed_{t-1} + a_long * dt`.
 - **Bicycle model:** `a_lat = (speed^2 / L) * tan(steering_angle)` with `L` = wheelbase.
 - **Jerk bound:** `|a_t - a_{t-1}| <= jerk_max * dt` to prevent intra-second sub-grid hallucinations.
-- **COA simultaneity flag:** if COA permits brake + throttle simultaneity (Team BRIT, MME hand-controls), constraint relaxed. Otherwise enforce `brake * throttle = 0`.
+- **COA simultaneity flag:** if COA permits brake + throttle simultaneity (a UK adaptive racing programme, adaptive hand-controls), constraint relaxed. Otherwise enforce `brake * throttle = 0`.
 
 V2 (Day 5+, ships by Gate G5):
 

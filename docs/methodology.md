@@ -66,7 +66,7 @@ The Sookra Methodology v3.3 is the personal process Stephen Sookra has developed
 
 **Method:** Twelve-day hackathon execution. Manual coordination via `PLAN.md` mirroring the Hometown-Pathway-Atlas + Trace convention (status snapshot, phase tables, coordination protocol, shared contracts, decisions, open questions, pre-submit checklist). No git hooks. Atomic-commit discipline. Push immediately. Quality over speed.
 
-**Artifacts (Day 1 EOD):** This repo. 50+ atomic commits. Next.js 16 + Tailwind v4 + IBM Plex + Fraunces editorial-paddock landing page. Project-local CLAUDE.md, architecture-spec, SUBMISSION draft, pre-mortem, Sarah Reynolds persona narrative, 3-min pitch script v0, MME Motorsport consent email, APEX Lite contingency, this methodology trace, full PLAN coordination doc, shared TypeScript schemas. 16 project memory files. 9 Obsidian project notes. 2 Claude Memory session anchors.
+**Artifacts (Day 1 EOD):** This repo. 50+ atomic commits. Next.js 16 + Tailwind v4 + IBM Plex + Fraunces editorial-paddock landing page. Project-local CLAUDE.md, architecture-spec, SUBMISSION draft, pre-mortem, Sarah Reynolds persona narrative, 3-min pitch script v0, leading UK adaptive hand-control supplier consent email, APEX Lite contingency, this methodology trace, full PLAN coordination doc, shared TypeScript schemas. 16 project memory files. 9 Obsidian project notes. 2 Claude Memory session anchors.
 
 **Phase 4.5 synthesis re-tiered Day 1 EOD** per Codex independent plan-critique: Core 6 ship-blockers at 95% quality + Stretch 10 at 70% quality + always-ship trivials. See PLAN.md §Scope tiering.
 

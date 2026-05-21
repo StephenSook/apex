@@ -63,7 +63,7 @@ Anchor `<Link href="#X">` → `<a href="#X">` (M2), CSS-var pattern `as React.CS
 | `a796d1a` | fix(pitch): Beat 3 achievement-led + paddock voice (S7+S8) |
 | `86bd20b` | chore(plan): Day 1 EOD status update |
 | `55bc41a` | docs: 3-min pitch script v0 |
-| `3f1ee24` | docs(outreach): MME Motorsport consent email draft |
+| `3f1ee24` | docs(outreach): leading UK adaptive hand-control supplier consent email draft |
 | `cd80680` | docs: Sarah Reynolds persona narrative |
 | `4e83f0e` | docs: start pre-mortem.md |
 | `78c5b03` | docs(readme): mark forward-looking docs explicitly |
@@ -140,7 +140,7 @@ Any contract change announces in chat with `⚠️ CONTRACT` commit prefix per `
 3. PLAN task 1.8 - Q&A Card 2 (Kinetic Hallucination) memorization drill 3x
 4. Check stakeholder inbox: Phase 1+2 replies (5 emails sent Day 0)
 5. Check Codex review status if not yet integrated
-6. Day 3 advance prep: LinkedIn DM drafts for Aaron Morgan + Bobby Trundley (Team BRIT drivers) per Q-002 revised escalation
+6. Day 3 advance prep: LinkedIn DM drafts for two UK adaptive-driver competitors (adaptive-racing-programme drivers) per Q-002 revised escalation
 
 ---
 
@@ -167,7 +167,7 @@ python -m apex.cli analyze \
 - D-006: NO git hooks
 - D-007: Quality over speed + tool-inventory audit BLOCKING
 - D-B (refined): Dual-layer pitch headline
-- Q-006: MME Motorsport per-surface consent
+- Q-006: leading UK adaptive hand-control supplier per-surface consent
 - Q-007 (implicit): apex.race domain registration deferred; metadataBase fallback to apex-race.vercel.app
 - Scope re-tiering: Core 6 + Stretch 10 (replaces strict "everything ships" reading of D-003)
 
