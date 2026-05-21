@@ -1,3 +1,5 @@
+import type { FC } from "react";
+
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, render, screen } from "@testing-library/react";
 
@@ -27,8 +29,13 @@ describe("SimRigStream", () => {
     expect(screen.getByText(/Ring buffer 1 of 120 frames/i)).toBeInTheDocument();
   });
 
-  it("renders an alert when live mode is requested without a websocketUrl", () => {
-    render(<SimRigStream mode="live" />);
+  it("renders an alert when live mode is requested without a websocketUrl (defensive runtime path)", () => {
+    // The discriminated SimRigStreamProps union prevents this prop combination
+    // at the type level (compile-time), so external callers cannot reach this
+    // branch. Cast through `unknown` to exercise the defensive runtime guard
+    // in case a future caller bypasses TypeScript via an interop boundary.
+    const Misuse = SimRigStream as unknown as FC<{ mode: "live" }>;
+    render(<Misuse mode="live" />);
     const alert = screen.getByRole("alert");
     expect(alert).toHaveTextContent(/websocketUrl prop/i);
   });

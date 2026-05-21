@@ -10,9 +10,15 @@
  * path so the production cutover is a one-prop change.
  *
  * Failure modes handled:
- *   - WebSocket connection lost mid-session: reconnect with exponential backoff.
- *   - Backend returns malformed frames: drop the frame, log to console, keep stream alive.
- *   - User navigates away mid-stream: WebSocket.close() on unmount.
+ *   - WebSocket connection lost mid-session: reconnect with exponential backoff,
+ *     capped at MAX_RECONNECT_ATTEMPTS before a terminal error.
+ *   - Backend returns malformed frames: drop the frame, log to console with the
+ *     specific failure cause (non-string transport vs JSON parse vs shape),
+ *     keep the stream alive.
+ *   - User navigates away mid-stream: WebSocket.close() + pending reconnect
+ *     timer cleared on unmount.
+ *   - Props mis-set: SimRigStreamProps is a discriminated union, so the
+ *     compiler rejects `<SimRigStream mode="live" />` without `websocketUrl`.
  */
 
 import { useEffect, useReducer, useRef } from "react";
@@ -21,6 +27,9 @@ import type { SimRigFrame, TelemetryRow } from "../../shared/types";
 
 const TICK_INTERVAL_MS = 50;
 const RING_BUFFER_SIZE = 120;
+const RECONNECT_DELAY_START_MS = 1000;
+const RECONNECT_DELAY_CAP_MS = 30_000;
+const MAX_RECONNECT_ATTEMPTS = 6;
 
 type StreamMode = "simulated" | "live";
 
@@ -35,14 +44,12 @@ type Action =
   | { type: "frame"; frame: SimRigFrame }
   | { type: "connect" }
   | { type: "disconnect" }
-  | { type: "error"; message: string }
-  | { type: "reset" };
+  | { type: "error"; message: string };
 
 function reducer(state: StreamState, action: Action): StreamState {
   switch (action.type) {
     case "frame": {
-      const next = [...state.frames, action.frame];
-      if (next.length > RING_BUFFER_SIZE) next.splice(0, next.length - RING_BUFFER_SIZE);
+      const next = [...state.frames, action.frame].slice(-RING_BUFFER_SIZE);
       return { ...state, frames: next, error: null };
     }
     case "connect":
@@ -51,22 +58,28 @@ function reducer(state: StreamState, action: Action): StreamState {
       return { ...state, connected: false };
     case "error":
       return { ...state, error: action.message, connected: false };
-    case "reset":
-      return { mode: state.mode, connected: false, frames: [], error: null };
-    default:
-      return state;
+    default: {
+      const _exhaustive: never = action;
+      return _exhaustive;
+    }
   }
 }
 
-export interface SimRigStreamProps {
-  readonly mode?: StreamMode;
-  readonly websocketUrl?: string;
-}
+/**
+ * Discriminated union so the compiler rejects `<SimRigStream mode="live" />`
+ * without a `websocketUrl`. The previous shape carried both `mode` and
+ * `websocketUrl` as optional + relied on a runtime `role="alert"` fallback,
+ * which is the exact anti-pattern in feedback_discriminated_unions_over_contradiction.md.
+ */
+export type SimRigStreamProps =
+  | { readonly mode?: "simulated" }
+  | { readonly mode: "live"; readonly websocketUrl: string };
 
-export default function SimRigStream({
-  mode = "simulated",
-  websocketUrl,
-}: SimRigStreamProps) {
+export default function SimRigStream(props: SimRigStreamProps) {
+  const mode: StreamMode = props.mode ?? "simulated";
+  const websocketUrl: string | undefined =
+    props.mode === "live" ? props.websocketUrl : undefined;
+
   const [state, dispatch] = useReducer(reducer, {
     mode,
     connected: false,
@@ -75,6 +88,7 @@ export default function SimRigStream({
   });
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const wsRef = useRef<WebSocket | null>(null);
+  const reconnectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (mode === "simulated") {
@@ -90,47 +104,94 @@ export default function SimRigStream({
     }
 
     if (!websocketUrl) {
-      dispatch({ type: "error", message: "Live mode requires websocketUrl prop." });
+      dispatch({
+        type: "error",
+        message: "Live mode requires websocketUrl prop.",
+      });
       return;
     }
 
-    let reconnectDelay = 1000;
+    let reconnectDelay = RECONNECT_DELAY_START_MS;
+    let attempts = 0;
     let cancelled = false;
+
+    const scheduleReconnect = () => {
+      if (cancelled) return;
+      if (attempts >= MAX_RECONNECT_ATTEMPTS) {
+        dispatch({
+          type: "error",
+          message: `Live stream unavailable after ${MAX_RECONNECT_ATTEMPTS} reconnect attempts. Refresh the page to retry.`,
+        });
+        return;
+      }
+      reconnectTimerRef.current = setTimeout(connect, reconnectDelay);
+      reconnectDelay = Math.min(reconnectDelay * 2, RECONNECT_DELAY_CAP_MS);
+    };
 
     const connect = () => {
       if (cancelled) return;
+      attempts += 1;
       const ws = new WebSocket(websocketUrl);
       wsRef.current = ws;
-      ws.onopen = () => dispatch({ type: "connect" });
+      ws.onopen = () => {
+        attempts = 0;
+        reconnectDelay = RECONNECT_DELAY_START_MS;
+        dispatch({ type: "connect" });
+      };
       ws.onmessage = (event) => {
+        if (typeof event.data !== "string") {
+          console.warn(
+            "[SimRigStream] non-string frame received; expected JSON text",
+          );
+          return;
+        }
+        let parsed: unknown;
         try {
-          const data = JSON.parse(event.data as string) as SimRigFrame;
-          if (typeof data.t_sim !== "number" || !data.channels) {
-            console.warn("[SimRigStream] dropped malformed frame", data);
-            return;
-          }
-          dispatch({ type: "frame", frame: data });
+          parsed = JSON.parse(event.data);
         } catch {
           console.warn("[SimRigStream] JSON parse error on frame");
+          return;
         }
+        if (!isSimRigFrame(parsed)) {
+          console.warn("[SimRigStream] dropped malformed frame");
+          return;
+        }
+        dispatch({ type: "frame", frame: parsed });
       };
-      ws.onerror = () => dispatch({ type: "error", message: "WebSocket error." });
+      ws.onerror = () => {
+        console.error("[SimRigStream] WebSocket error", {
+          url: websocketUrl,
+          readyState: ws.readyState,
+        });
+      };
       ws.onclose = () => {
         dispatch({ type: "disconnect" });
-        if (cancelled) return;
-        setTimeout(connect, reconnectDelay);
-        reconnectDelay = Math.min(reconnectDelay * 2, 30000);
+        scheduleReconnect();
       };
     };
 
     connect();
     return () => {
       cancelled = true;
+      if (reconnectTimerRef.current) {
+        clearTimeout(reconnectTimerRef.current);
+        reconnectTimerRef.current = null;
+      }
       wsRef.current?.close();
     };
   }, [mode, websocketUrl]);
 
   return <StreamView state={state} />;
+}
+
+function isSimRigFrame(value: unknown): value is SimRigFrame {
+  if (typeof value !== "object" || value === null) return false;
+  const v = value as Record<string, unknown>;
+  return (
+    typeof v.t_sim === "number" &&
+    typeof v.channels === "object" &&
+    v.channels !== null
+  );
 }
 
 function StreamView({ state }: { state: StreamState }) {
@@ -205,6 +266,14 @@ function ChannelGrid({
   );
 }
 
+function pickGear(speed: number): 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 {
+  if (speed < 25) return 2;
+  if (speed < 40) return 3;
+  if (speed < 55) return 4;
+  if (speed < 70) return 5;
+  return 6;
+}
+
 // Sarah Reynolds Donington Park lap-17 canned synthetic stream.
 // Roughly one lap of telemetry on a 50 ms tick (20 Hz; see TICK_INTERVAL_MS).
 // The simulator loops infinitely so the live tile is animated for the demo
@@ -224,7 +293,6 @@ function buildSimulatedFrame(elapsed: number): SimRigFrame {
   const lat_g = -Math.abs(0.7 * Math.sin(phase * 2)) - (old_hairpin ? 0.15 : 0);
   const long_g = (throttle - brake_pa / 5e6) * 0.9;
   const rpm = 3500 + (speed / 80) * 4500;
-  const gear = speed < 25 ? 2 : speed < 40 ? 3 : speed < 55 ? 4 : speed < 70 ? 5 : 6;
 
   return {
     t_sim: elapsed,
@@ -237,7 +305,7 @@ function buildSimulatedFrame(elapsed: number): SimRigFrame {
       lat_g,
       long_g,
       speed_mps: speed,
-      gear: gear as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8,
+      gear: pickGear(speed),
     },
   };
 }
