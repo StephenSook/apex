@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import Dropzone from "../../components/Dropzone";
+import AnalyzeFlow from "../../components/AnalyzeFlow";
 
 export const metadata = {
   title: "Analyze · APEX",
@@ -13,7 +13,7 @@ export default function AnalyzePage() {
     <>
       <main id="main" className="flex flex-col">
         <Breadcrumb />
-        <Dropzone />
+        <AnalyzeFlow />
       </main>
     </>
   );
