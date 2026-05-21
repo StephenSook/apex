@@ -8,6 +8,7 @@
 #   bash scripts/pre-submit-checks.sh --only=1,2,5     # run a subset
 
 set -u
+set -o pipefail
 
 GREEN="\033[32m"; RED="\033[31m"; YELLOW="\033[33m"; BLUE="\033[34m"; BOLD="\033[1m"; RESET="\033[0m"
 
@@ -18,13 +19,53 @@ SOFT_MODE=0
 FINAL_MODE=0
 ONLY_FILTER=""
 
+print_usage() {
+  cat <<USAGE
+Usage:
+  bash scripts/pre-submit-checks.sh                  default (Day 2-10 regression mode)
+  bash scripts/pre-submit-checks.sh --soft           treat Vinh-pending gates as WARN
+  bash scripts/pre-submit-checks.sh --final          Day 11 strict mode (video/coverage/HF must be GREEN)
+  bash scripts/pre-submit-checks.sh --only=1,2,5     run a subset
+  bash scripts/pre-submit-checks.sh -h|--help        this help
+USAGE
+}
+
 for arg in "$@"; do
   case "$arg" in
     --soft) SOFT_MODE=1 ;;
     --final) FINAL_MODE=1 ;;
     --only=*) ONLY_FILTER="${arg#--only=}" ;;
+    -h|--help) print_usage; exit 0 ;;
+    *)
+      echo "ERROR: unknown flag '$arg'. See --help." >&2
+      exit 2
+      ;;
   esac
 done
+
+if (( SOFT_MODE )) && (( FINAL_MODE )); then
+  echo "ERROR: --soft and --final are mutually exclusive." >&2
+  exit 2
+fi
+
+if [[ -n "$ONLY_FILTER" ]]; then
+  IFS=',' read -ra _filter_list <<< "$ONLY_FILTER"
+  for n in "${_filter_list[@]}"; do
+    if ! [[ "$n" =~ ^[0-9]+[a-z]?$ ]]; then
+      echo "ERROR: --only must be comma-separated check numbers (e.g. 1,2,11b), got '$n'" >&2
+      exit 2
+    fi
+  done
+fi
+
+cleanup() {
+  local rc=$?
+  if (( rc != 0 )) && (( rc != 1 )); then
+    echo ""
+    echo -e "${RED}${BOLD}SCRIPT ABORTED${RESET} (rc=$rc). Partial results above. Counters at abort: HARD-FAIL=$HARD_FAIL  SOFT-WARN=$SOFT_FAIL  MANUAL=$MANUAL_PENDING" >&2
+  fi
+}
+trap cleanup EXIT
 
 run_check() {
   local n="$1"
@@ -36,18 +77,29 @@ run_check() {
   return 0
 }
 
-pass()    { printf "${GREEN}[%2d] PASS${RESET} %s\n" "$1" "$2"; }
-fail()    { printf "${RED}[%2d] FAIL${RESET} %s\n" "$1" "$2"; HARD_FAIL=$((HARD_FAIL+1)); }
-warn()    { printf "${YELLOW}[%2d] WARN${RESET} %s\n" "$1" "$2"; SOFT_FAIL=$((SOFT_FAIL+1)); }
-manual()  { printf "${BLUE}[%2d] MANUAL${RESET} %s\n" "$1" "$2"; MANUAL_PENDING=$((MANUAL_PENDING+1)); }
+pass()    { printf "${GREEN}[%2s] PASS${RESET} %s\n" "$1" "$2"; }
+fail()    { printf "${RED}[%2s] FAIL${RESET} %s\n" "$1" "$2"; HARD_FAIL=$((HARD_FAIL+1)); }
+warn()    { printf "${YELLOW}[%2s] WARN${RESET} %s\n" "$1" "$2"; SOFT_FAIL=$((SOFT_FAIL+1)); }
+manual()  { printf "${BLUE}[%2s] MANUAL${RESET} %s\n" "$1" "$2"; MANUAL_PENDING=$((MANUAL_PENDING+1)); }
 soft_or_fail() { if (( SOFT_MODE )); then warn "$1" "$2"; else fail "$1" "$2"; fi; }
 final_or_warn() { if (( FINAL_MODE )); then fail "$1" "$2"; else warn "$1" "$2"; fi; }
 
-PROSE_PATHS=(
-  README.md PLAN.md CLAUDE.md SUBMISSION.md STATUS_DAY1.md STATUS_TEMPLATE.md
+# Build the prose-sweep path list dynamically; skip paths that don't exist yet
+# (paper/, deliverables/, bob-sessions/ are Day-9+ artifacts). Verified existing
+# paths only, so grep does not silently swallow "No such file" warnings.
+ALL_PROSE_PATHS=(
+  README.md PLAN.md CLAUDE.md SUBMISSION.md STATUS_DAY1.md STATUS_DAY2.md STATUS_TEMPLATE.md
   docs/ app/frontend/app/ app/frontend/components/
   paper/ deliverables/ bob-sessions/
 )
+PROSE_PATHS=()
+for p in "${ALL_PROSE_PATHS[@]}"; do
+  if [[ -e "$p" ]]; then PROSE_PATHS+=("$p"); fi
+done
+if (( ${#PROSE_PATHS[@]} == 0 )); then
+  echo "ERROR: no prose paths exist to scan (PROSE_PATHS list misconfigured)." >&2
+  exit 2
+fi
 
 echo -e "${BOLD}APEX pre-submit checklist${RESET} ($(date -u +%Y-%m-%dT%H:%M:%SZ))"
 echo "Repo: $(git rev-parse --show-toplevel 2>/dev/null || echo .)"
@@ -131,21 +183,37 @@ if run_check 5; then
   else fail 5 "em-dash in commit subjects:"; echo "$subjects" | sed 's/^/    /'; fi
 fi
 
-# Check 6 — CI green on main (GitHub Actions). PER-JOB check (PLAN.md §8 explicit).
+# Check 6 — CI green on main (GitHub Actions). PER-JOB (PLAN.md §8).
+# When gh or jq cannot answer the question, do NOT silently pass; the whole point of
+# the gate is to verify CI green. Default to FAIL when verification is impossible.
 if run_check 6; then
-  if command -v gh >/dev/null 2>&1; then
-    run_id=$(gh run list --branch main --limit 1 --json databaseId --jq '.[0].databaseId' 2>/dev/null)
+  if ! command -v gh >/dev/null 2>&1; then
+    final_or_warn 6 "gh CLI unavailable, CI status unverifiable"
+  elif ! command -v jq >/dev/null 2>&1; then
+    fail 6 "jq unavailable, cannot parse gh JSON output"
+  else
+    run_id=$(gh run list --branch main --limit 1 --json databaseId --jq '.[0].databaseId' 2>/tmp/apex-gh-list.log || echo "")
     if [[ -z "$run_id" || "$run_id" == "null" ]]; then
-      final_or_warn 6 "no GH Actions runs found yet (workflow added Day 2 by Vinh)"
+      if [[ -s /tmp/apex-gh-list.log ]]; then
+        fail 6 "gh run list errored (see /tmp/apex-gh-list.log)"
+      else
+        final_or_warn 6 "no GH Actions runs found yet (workflow added Day 2 by Vinh)"
+      fi
     else
-      jobs_json=$(gh run view "$run_id" --json jobs 2>/dev/null || echo '{"jobs":[]}')
-      failing=$(echo "$jobs_json" | jq -r '.jobs[] | select(.conclusion!="success" and .conclusion!=null) | "\(.name): \(.conclusion)"' 2>/dev/null || echo "")
-      pending=$(echo "$jobs_json" | jq -r '.jobs[] | select(.conclusion==null) | "\(.name): in_progress"' 2>/dev/null || echo "")
-      if [[ -n "$failing" ]]; then fail 6 "CI per-job not green:"; echo "$failing" | sed 's/^/    /'
-      elif [[ -n "$pending" ]]; then warn 6 "CI per-job has in-progress jobs:"; echo "$pending" | sed 's/^/    /'
-      else pass 6 "CI per-job green on main run $run_id"; fi
+      if jobs_json=$(gh run view "$run_id" --json jobs 2>/tmp/apex-gh-view.log); then
+        if failing=$(echo "$jobs_json" | jq -r '.jobs[] | select(.conclusion!="success" and .conclusion!=null and .conclusion!="skipped") | "\(.name): \(.conclusion)"' 2>/tmp/apex-jq.log) \
+           && pending=$(echo "$jobs_json" | jq -r '.jobs[] | select(.conclusion==null) | "\(.name): in_progress"' 2>>/tmp/apex-jq.log); then
+          if [[ -n "$failing" ]]; then fail 6 "CI per-job not green:"; echo "$failing" | sed 's/^/    /'
+          elif [[ -n "$pending" ]]; then warn 6 "CI per-job has in-progress jobs:"; echo "$pending" | sed 's/^/    /'
+          else pass 6 "CI per-job green on main run $run_id"; fi
+        else
+          fail 6 "jq parse error on gh output (see /tmp/apex-jq.log)"
+        fi
+      else
+        fail 6 "gh run view failed (see /tmp/apex-gh-view.log) - CI status UNKNOWN, do not submit"
+      fi
     fi
-  else final_or_warn 6 "gh CLI unavailable, CI status unverifiable"; fi
+  fi
 fi
 
 # Check 7 — TypeScript clean
@@ -217,30 +285,41 @@ if run_check 10; then
   fi
 fi
 
-# Check 11 — Demo video length ≤ 3:00. Final mode: required + ffprobe required.
+# Check 11 — Demo video length ≤ 3:00. Final mode: file + ffprobe both required.
 if run_check 11; then
   vid="deliverables/demo-video.mp4"
-  if [[ -f "$vid" ]]; then
-    if command -v ffprobe >/dev/null 2>&1; then
-      dur=$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$vid" 2>/dev/null | cut -d. -f1)
-      if [[ -n "$dur" && "$dur" -le 180 ]]; then pass 11 "demo video duration ${dur}s ≤ 180s"
-      else fail 11 "demo video duration ${dur}s > 180s"; fi
-    else final_or_warn 11 "ffprobe unavailable, video duration unchecked (install ffmpeg)"; fi
-  else final_or_warn 11 "deliverables/demo-video.mp4 not yet recorded (Day 10)"; fi
+  if [[ ! -f "$vid" ]]; then
+    final_or_warn 11 "deliverables/demo-video.mp4 not yet recorded (Day 10)"
+  elif ! command -v ffprobe >/dev/null 2>&1; then
+    final_or_warn 11 "ffprobe unavailable, video duration unchecked (install ffmpeg)"
+  else
+    dur=$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$vid" 2>/tmp/apex-ffprobe-demo.log | cut -d. -f1)
+    if [[ -z "$dur" || ! "$dur" =~ ^[0-9]+$ ]]; then
+      fail 11 "ffprobe could not read $vid duration (see /tmp/apex-ffprobe-demo.log)"
+    elif (( dur > 180 )); then
+      fail 11 "demo video duration ${dur}s > 180s"
+    else
+      pass 11 "demo video duration ${dur}s ≤ 180s"
+    fi
+  fi
 fi
 
-# Check 11b — 30-second highlight clip exists (PLAN §16.4 + Stretch S7).
+# Check 11b — 30-second highlight clip (PLAN §16.4 + Stretch S7). Final mode: required.
 if run_check 11; then
   clip="deliverables/demo-video-30s.mp4"
-  if [[ -f "$clip" ]]; then
-    if command -v ffprobe >/dev/null 2>&1; then
-      dur=$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$clip" 2>/dev/null | cut -d. -f1)
-      if [[ -n "$dur" && "$dur" -ge 25 && "$dur" -le 35 ]]; then printf "${GREEN}[11b] PASS${RESET} 30-second highlight clip duration ${dur}s (target 30s)\n"
-      else fail 11 "30-second highlight clip duration ${dur}s (target 25-35s)"; fi
-    else printf "${YELLOW}[11b] WARN${RESET} ffprobe unavailable, 30s clip duration unchecked\n"; SOFT_FAIL=$((SOFT_FAIL+1)); fi
+  if [[ ! -f "$clip" ]]; then
+    final_or_warn "11b" "deliverables/demo-video-30s.mp4 not yet recorded (Day 10)"
+  elif ! command -v ffprobe >/dev/null 2>&1; then
+    final_or_warn "11b" "ffprobe unavailable, 30s clip duration unchecked"
   else
-    if (( FINAL_MODE )); then fail 11 "deliverables/demo-video-30s.mp4 missing (PLAN §16.4, Stretch S7 Day 10)"
-    else printf "${YELLOW}[11b] WARN${RESET} deliverables/demo-video-30s.mp4 not yet recorded (Day 10)\n"; SOFT_FAIL=$((SOFT_FAIL+1)); fi
+    dur=$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$clip" 2>/tmp/apex-ffprobe-30s.log | cut -d. -f1)
+    if [[ -z "$dur" || ! "$dur" =~ ^[0-9]+$ ]]; then
+      fail "11b" "ffprobe could not read $clip duration (see /tmp/apex-ffprobe-30s.log)"
+    elif (( dur < 25 || dur > 35 )); then
+      fail "11b" "30-second highlight clip duration ${dur}s (target 25-35s)"
+    else
+      pass "11b" "30-second highlight clip duration ${dur}s (target 30s)"
+    fi
   fi
 fi
 
