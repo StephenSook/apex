@@ -56,20 +56,28 @@ export default function GuardianAudit({ audit }: GuardianAuditProps) {
         />
       )}
 
-      <details className="group" open={audit.verdict === "approve"}>
-        <summary className="cursor-pointer font-mono text-xs uppercase tracking-wider text-ink-soft hover:text-racing-green">
-          Reasoning trace ({audit.reasoning_trace.length} step
-          {audit.reasoning_trace.length === 1 ? "" : "s"})
-        </summary>
-        <ol className="mt-3 flex flex-col gap-2 font-mono text-xs leading-relaxed text-ink-soft">
-          {audit.reasoning_trace.map((step, idx) => (
-            <li key={idx} className="flex gap-2">
-              <span className="text-muted">{String(idx + 1).padStart(2, "0")}.</span>
-              <span>{step}</span>
-            </li>
-          ))}
-        </ol>
-      </details>
+      {audit.reasoning_trace.length === 0 ? (
+        <p role="alert" className="font-mono text-xs leading-relaxed text-accent">
+          Reasoning trace is empty. Granite Guardian returned a {audit.verdict} verdict
+          without recorded steps; the audit cannot be verified by re-reading the trace.
+          Treat this verdict as provisional and re-run the session.
+        </p>
+      ) : (
+        <details className="group" open={audit.verdict === "approve"}>
+          <summary className="cursor-pointer font-mono text-xs uppercase tracking-wider text-ink-soft hover:text-racing-green">
+            Reasoning trace ({audit.reasoning_trace.length} step
+            {audit.reasoning_trace.length === 1 ? "" : "s"})
+          </summary>
+          <ol className="mt-3 flex flex-col gap-2 font-mono text-xs leading-relaxed text-ink-soft">
+            {audit.reasoning_trace.map((step, idx) => (
+              <li key={idx} className="flex gap-2">
+                <span className="text-muted">{String(idx + 1).padStart(2, "0")}.</span>
+                <span>{step}</span>
+              </li>
+            ))}
+          </ol>
+        </details>
+      )}
 
       <p className="font-mono text-xs text-muted">Audit ID · {audit.audit_id}</p>
     </article>

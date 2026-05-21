@@ -52,4 +52,15 @@ describe("GuardianAudit", () => {
     render(<GuardianAudit audit={audit} />);
     expect(screen.getByText(/Reasoning trace \(1 step\)/i)).toBeInTheDocument();
   });
+
+  it("renders role=alert when reasoning_trace is empty (Codex wave-15 MED guard)", () => {
+    const audit: GuardianAuditType = {
+      verdict: "approve",
+      reasoning_trace: [],
+      audit_id: "audit-empty-trace",
+    };
+    render(<GuardianAudit audit={audit} />);
+    expect(screen.getByRole("alert")).toHaveTextContent(/Reasoning trace is empty/i);
+    expect(screen.queryByText(/Reasoning trace \(0 step/i)).not.toBeInTheDocument();
+  });
 });
