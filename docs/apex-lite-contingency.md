@@ -8,9 +8,11 @@
 
 ---
 
-## Trigger conditions (Day 2 noon ET evaluation)
+## Trigger conditions (Day 2 noon + PM evaluation)
 
-Invoke APEX Lite if **any** of the following is true at 12:00 noon ET on 2026-05-21:
+Invoke APEX Lite if **any** of the following is true:
+
+**Evaluated at 12:00 noon ET on 2026-05-21 (Vinh-availability triggers):**
 
 - [ ] Vinh has NOT accepted the GitHub collaborator invite at https://github.com/StephenSook/apex
 - [ ] Vinh has NOT cloned the repo (no commits visible from Vinh's GitHub-attributed email)
@@ -18,9 +20,13 @@ Invoke APEX Lite if **any** of the following is true at 12:00 noon ET on 2026-05
 - [ ] Vinh ran `pip install granite-tsfm` on his machine and the install fails on his Python / CUDA / OS combination
 - [ ] Vinh ran the Gate G1 TTM smoke test and the inference took >120s (2x budget) on his hardware
 
+**Evaluated end-of-Day-2 (TTM-domain-shift triggers, per PLAN.md task 2.6 G4 bump):**
+
+- [ ] Vinh ran the Gate G4 parallel spike (TTM zero-shot vs seasonal-naive on 5 FastF1 holdout circuits) and TTM LOST to seasonal-naive on 3 or more of the 5 holdouts. This is the "domain shift" failure mode: TTM was pretrained on weather and retail data and may not transfer to motorsport telemetry. If Gate G4 fails, the entire "first pretrained TSFM on motorsport telemetry" pitch claim collapses, and Lite mode preserves the COA + physics layer + Granite Instruct narrator without the failing TSFM.
+
 If NONE of the above: full project continues per `PLAN.md` Phase 0-7. This doc stays dead.
 
-If ANY of the above: Stephen invokes APEX Lite per the rest of this document.
+If ANY of the above: Stephen invokes APEX Lite per the rest of this document. Distinct from Q-004's Day-10 LATE trigger (Day 9 dress-rehearsal sim-rig + Colab failure stack) per PLAN.md.
 
 ---
 
