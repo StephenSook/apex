@@ -1,5 +1,7 @@
 import { ImageResponse } from "next/og";
 
+import { loadBrandFonts } from "./brand-fonts";
+
 /**
  * BeMyApp 1920x600 banner renderer.
  *
@@ -8,8 +10,9 @@ import { ImageResponse } from "next/og";
  * across competing projects in the BeMyApp gallery (calibration source
  * kept in private memory per the project's operator-attribution rule).
  *
- * Fonts fetched from Google Fonts CDN at render time so binary font files
- * stay out of the repo. The rendered PNG is committed once to
+ * Fonts loaded via the shared `loadBrandFonts` helper in `./brand-fonts`,
+ * which guards the Google Fonts fetch with AbortSignal.timeout + Content-Type
+ * validation + parallel fetches. The rendered PNG is committed once to
  * `deliverables/bemyapp-banner-1920x600.png` and that file is the artifact
  * uploaded to the BeMyApp project page top slot. The route handler at
  * `app/bemyapp-banner/route.ts` calls this for iteration + re-renders.
@@ -28,59 +31,6 @@ const AMBER = "#D9A441";
 const INK = "#0F1410";
 const INK_SOFT = "#1F2A22";
 const MUTED = "#6F6657";
-
-interface GoogleFont {
-  readonly name: string;
-  readonly data: ArrayBuffer;
-  readonly weight?: 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900;
-  readonly style?: "normal" | "italic";
-}
-
-async function fetchGoogleFont(
-  cssUrl: string,
-  // Satori only supports TTF/OTF/WOFF (not WOFF2). Google Fonts returns WOFF2 to
-  // modern Chrome UAs; switch to an older UA (Wget) to receive the TTF variant.
-  userAgent = "Wget/1.21.4 (linux-gnu)",
-): Promise<ArrayBuffer> {
-  const cssResponse = await fetch(cssUrl, {
-    headers: { "User-Agent": userAgent },
-  });
-  if (!cssResponse.ok) {
-    throw new Error(`Google Fonts CSS fetch failed (${cssResponse.status}): ${cssUrl}`);
-  }
-  const css = await cssResponse.text();
-  const match = css.match(/src:\s*url\((https:\/\/[^)]+\.(?:ttf|otf|woff))\)/);
-  if (!match) {
-    throw new Error(`Could not extract TTF/OTF/WOFF font URL from Google Fonts CSS at ${cssUrl}`);
-  }
-  const fontUrl = match[1];
-  const fontResponse = await fetch(fontUrl);
-  if (!fontResponse.ok) {
-    throw new Error(`Font file fetch failed (${fontResponse.status}): ${fontUrl}`);
-  }
-  return fontResponse.arrayBuffer();
-}
-
-async function loadBrandFonts(): Promise<ReadonlyArray<GoogleFont>> {
-  const fraunces = await fetchGoogleFont(
-    "https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;1,9..144,500;1,9..144,700&display=swap",
-  );
-  const fraunceItalic = await fetchGoogleFont(
-    "https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@1,9..144,700&display=swap",
-  );
-  const plexSans = await fetchGoogleFont(
-    "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap",
-  );
-  const plexMono = await fetchGoogleFont(
-    "https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap",
-  );
-  return [
-    { name: "Fraunces", data: fraunces, weight: 600, style: "normal" },
-    { name: "Fraunces", data: fraunceItalic, weight: 700, style: "italic" },
-    { name: "PlexSans", data: plexSans, weight: 500, style: "normal" },
-    { name: "PlexMono", data: plexMono, weight: 500, style: "normal" },
-  ];
-}
 
 export async function renderBeMyAppBanner(): Promise<ImageResponse> {
   const fonts = await loadBrandFonts();
@@ -116,12 +66,7 @@ export async function renderBeMyAppBanner(): Promise<ImageResponse> {
     ),
     {
       ...BANNER_SIZE,
-      fonts: fonts.map((f) => ({
-        name: f.name,
-        data: f.data,
-        weight: f.weight,
-        style: f.style,
-      })),
+      fonts: [...fonts],
     },
   );
 }
