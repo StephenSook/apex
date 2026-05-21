@@ -48,6 +48,8 @@ function SiteHeader() {
           </Link>
           <Link
             href="https://github.com/StephenSook/apex"
+            target="_blank"
+            rel="noopener noreferrer"
             className="rounded-sm border border-racing-green px-3 py-1.5 font-mono text-xs uppercase tracking-wider text-racing-green hover:bg-racing-green hover:text-paper transition-colors"
           >
             GitHub
@@ -105,6 +107,8 @@ function Hero() {
             </Link>
             <Link
               href="https://github.com/StephenSook/apex/blob/main/PLAN.md"
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-sm border border-ink/15 bg-paper-warm px-5 py-3 font-mono text-xs uppercase tracking-wider text-ink transition-colors hover:border-ink/40"
             >
               Read PLAN.md
@@ -506,6 +510,8 @@ function BuildStatus() {
             Every commit lands on{" "}
             <Link
               href="https://github.com/StephenSook/apex"
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-racing-green underline underline-offset-4 hover:text-accent"
             >
               the main branch
@@ -650,16 +656,16 @@ function SiteFooter() {
           </div>
           <nav aria-label="Footer" className="flex flex-col gap-3 text-sm">
             <p className="apex-eyebrow text-paper/45">Project</p>
-            <Link href="https://github.com/StephenSook/apex" className="hover:text-amber underline-offset-4 hover:underline">
+            <Link href="https://github.com/StephenSook/apex" target="_blank" rel="noopener noreferrer" className="hover:text-amber underline-offset-4 hover:underline">
               GitHub
             </Link>
-            <Link href="https://github.com/StephenSook/apex/blob/main/PLAN.md" className="hover:text-amber underline-offset-4 hover:underline">
+            <Link href="https://github.com/StephenSook/apex/blob/main/PLAN.md" target="_blank" rel="noopener noreferrer" className="hover:text-amber underline-offset-4 hover:underline">
               PLAN.md
             </Link>
-            <Link href="https://github.com/StephenSook/apex/blob/main/README.md" className="hover:text-amber underline-offset-4 hover:underline">
+            <Link href="https://github.com/StephenSook/apex/blob/main/README.md" target="_blank" rel="noopener noreferrer" className="hover:text-amber underline-offset-4 hover:underline">
               README
             </Link>
-            <Link href="https://github.com/StephenSook/apex/blob/main/LICENSE" className="hover:text-amber underline-offset-4 hover:underline">
+            <Link href="https://github.com/StephenSook/apex/blob/main/LICENSE" target="_blank" rel="noopener noreferrer" className="hover:text-amber underline-offset-4 hover:underline">
               License
             </Link>
           </nav>
