@@ -5,10 +5,12 @@
  * `main`. Unauthenticated REST call (60 req/hr per IP); the judging window
  * fits well under that budget. No third-party uptime SaaS in the loop.
  *
- * Failure modes:
- *   - 403 rate limit: render a neutral "CI status temporarily unavailable" tile.
- *   - Network down: same neutral tile.
+ * Failure modes handled:
+ *   - 403 rate limit / 5xx: render the network error tile with the GitHub Actions link.
+ *   - 200 with malformed JSON (proxy interstitial, BOM, zero-byte body): render a
+ *     parse-error tile that does not leak raw exception text containing HTML chars.
  *   - GitHub returns conclusion=null (in-progress): render in-progress tile.
+ *   - Shape drift: workflow_runs missing or not an array surfaces as a contract-changed tile.
  */
 
 import { useEffect, useState } from "react";
@@ -26,7 +28,9 @@ interface ActionsRun {
 type FetchState =
   | { readonly status: "loading" }
   | { readonly status: "ok"; readonly run: ActionsRun }
-  | { readonly status: "error"; readonly message: string };
+  | { readonly status: "error"; readonly kind: ErrorKind; readonly message: string };
+
+type ErrorKind = "network" | "parse" | "shape" | "rate_limit" | "unknown";
 
 const REPO_OWNER = "StephenSook";
 const REPO_NAME = "apex";
@@ -34,28 +38,68 @@ const ENDPOINT = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/action
 
 export default function StatusLiveIndicator() {
   const [state, setState] = useState<FetchState>({ status: "loading" });
+  const [reloadCount, setReloadCount] = useState(0);
 
   useEffect(() => {
     const controller = new AbortController();
-    fetch(ENDPOINT, { signal: controller.signal, headers: { Accept: "application/vnd.github+json" } })
+    fetch(ENDPOINT, {
+      signal: controller.signal,
+      headers: { Accept: "application/vnd.github+json" },
+    })
       .then(async (res) => {
-        if (!res.ok) throw new Error(`GitHub API ${res.status}`);
-        const data = (await res.json()) as { workflow_runs?: ReadonlyArray<ActionsRun> };
-        const latest = data.workflow_runs?.[0];
-        if (!latest) throw new Error("No runs on main yet");
+        if (res.status === 403 || res.status === 429) {
+          throw new ApiError("rate_limit", `GitHub API rate-limited (HTTP ${res.status}).`);
+        }
+        if (!res.ok) {
+          throw new ApiError("network", `GitHub API returned HTTP ${res.status}.`);
+        }
+        let data: unknown;
+        try {
+          data = await res.json();
+        } catch {
+          throw new ApiError(
+            "parse",
+            "GitHub API returned a malformed response. Try again, or check the run via the link below.",
+          );
+        }
+        const runs = (data as { workflow_runs?: unknown }).workflow_runs;
+        if (!Array.isArray(runs)) {
+          throw new ApiError(
+            "shape",
+            "GitHub API contract changed (workflow_runs is not an array).",
+          );
+        }
+        const latest = runs[0] as ActionsRun | undefined;
+        if (!latest) {
+          throw new ApiError("network", "No runs on main yet.");
+        }
         setState({ status: "ok", run: latest });
       })
       .catch((err: unknown) => {
         if (err instanceof DOMException && err.name === "AbortError") return;
+        if (err instanceof ApiError) {
+          setState({ status: "error", kind: err.kind, message: err.message });
+          return;
+        }
         const message = err instanceof Error ? err.message : "Unknown error";
-        setState({ status: "error", message });
+        setState({ status: "error", kind: "unknown", message });
       });
     return () => controller.abort();
-  }, []);
+  }, [reloadCount]);
 
   if (state.status === "loading") return <LoadingTile />;
-  if (state.status === "error") return <ErrorTile message={state.message} />;
+  if (state.status === "error") {
+    return <ErrorTile state={state} onRetry={() => setReloadCount((n) => n + 1)} />;
+  }
   return <RunTile run={state.run} />;
+}
+
+class ApiError extends Error {
+  readonly kind: ErrorKind;
+  constructor(kind: ErrorKind, message: string) {
+    super(message);
+    this.kind = kind;
+  }
 }
 
 function LoadingTile() {
@@ -73,27 +117,39 @@ function LoadingTile() {
   );
 }
 
-function ErrorTile({ message }: { message: string }) {
+function ErrorTile({
+  state,
+  onRetry,
+}: {
+  state: { status: "error"; kind: ErrorKind; message: string };
+  onRetry: () => void;
+}) {
   return (
     <article
       role="alert"
-      className="flex flex-col gap-2 rounded-sm border-2 border-amber bg-paper p-5"
+      className="flex flex-col gap-3 rounded-sm border-2 border-amber bg-paper p-5"
     >
       <p className="font-mono text-xs uppercase tracking-wider text-amber">
         CI status temporarily unavailable
       </p>
-      <p className="text-sm leading-relaxed text-ink-soft">
-        Could not reach the GitHub Actions API ({message}). Check directly at{" "}
+      <p className="text-sm leading-relaxed text-ink-soft">{state.message}</p>
+      <div className="flex flex-wrap items-center gap-3 pt-1">
+        <button
+          type="button"
+          onClick={onRetry}
+          className="rounded-sm border border-racing-green px-3 py-1.5 font-mono text-xs uppercase tracking-wider text-racing-green hover:bg-racing-green hover:text-paper transition-colors"
+        >
+          Retry now
+        </button>
         <a
           href="https://github.com/StephenSook/apex/actions"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-racing-green underline-offset-4 hover:underline"
+          className="font-mono text-xs uppercase tracking-wider text-racing-green hover:underline"
         >
-          github.com/StephenSook/apex/actions
+          Open the run on GitHub →
         </a>
-        .
-      </p>
+      </div>
     </article>
   );
 }
@@ -103,7 +159,7 @@ function RunTile({ run }: { run: ActionsRun }) {
   const tone = TONE[verdict];
   const label = LABEL[verdict];
   const shortSha = typeof run.head_sha === "string" ? run.head_sha.slice(0, 7) : "unknown";
-  const updated = run.updated_at ? new Date(run.updated_at).toLocaleString() : "unknown";
+  const updated = run.updated_at ? formatUtc(run.updated_at) : "unknown";
   const runNumber = typeof run.run_number === "number" ? run.run_number : "?";
 
   return (
@@ -139,12 +195,42 @@ function RunTile({ run }: { run: ActionsRun }) {
   );
 }
 
-type Verdict = "success" | "failure" | "cancelled" | "in_progress" | "unknown";
+function formatUtc(iso: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return iso;
+  return d.toISOString().replace("T", " ").slice(0, 19) + " UTC";
+}
+
+// All GitHub Actions conclusion values per the REST API spec.
+// Keeping this as a literal union forces a compile error the next time GitHub
+// ships a new conclusion variant.
+type GhConclusion =
+  | "success"
+  | "failure"
+  | "neutral"
+  | "cancelled"
+  | "skipped"
+  | "timed_out"
+  | "action_required"
+  | "stale"
+  | "startup_failure"
+  | null;
+
+type Verdict =
+  | "success"
+  | "failure"
+  | "cancelled"
+  | "neutral"
+  | "skipped"
+  | "in_progress"
+  | "unknown";
 
 const TONE: Record<Verdict, { readonly border: string; readonly text: string }> = {
   success: { border: "border-racing-green", text: "text-racing-green" },
   failure: { border: "border-accent", text: "text-accent" },
   cancelled: { border: "border-amber", text: "text-amber" },
+  neutral: { border: "border-rule", text: "text-ink-soft" },
+  skipped: { border: "border-rule", text: "text-ink-soft" },
   in_progress: { border: "border-rule", text: "text-ink-soft" },
   unknown: { border: "border-rule", text: "text-ink-soft" },
 };
@@ -153,22 +239,39 @@ const LABEL: Record<Verdict, string> = {
   success: "Green",
   failure: "Failing",
   cancelled: "Cancelled",
+  neutral: "Neutral",
+  skipped: "Skipped",
   in_progress: "Running",
   unknown: "Unknown",
 };
 
 function pickVerdict(status: string, conclusion: string | null): Verdict {
   if (status !== "completed") return "in_progress";
-  switch (conclusion) {
+  const c = conclusion as GhConclusion;
+  switch (c) {
     case "success":
       return "success";
     case "failure":
     case "timed_out":
     case "action_required":
+    case "startup_failure":
+    case "stale":
       return "failure";
     case "cancelled":
       return "cancelled";
-    default:
+    case "neutral":
+      return "neutral";
+    case "skipped":
+      return "skipped";
+    case null:
+      return "in_progress";
+    default: {
+      // Exhaustiveness guard: when GitHub adds a new conclusion variant, this
+      // case must be widened. `_exhaustive` typed `never` makes the omission a
+      // compile-time error rather than a silent "unknown" fallthrough.
+      const _exhaustive: never = c;
+      void _exhaustive;
       return "unknown";
+    }
   }
 }
