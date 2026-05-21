@@ -58,9 +58,9 @@ export default function GuardianAudit({ audit }: GuardianAuditProps) {
 
       {audit.reasoning_trace.length === 0 ? (
         <p role="alert" className="font-mono text-xs leading-relaxed text-accent">
-          Reasoning trace is empty. Granite Guardian returned a {audit.verdict} verdict
-          without recorded steps; the audit cannot be verified by re-reading the trace.
-          Treat this verdict as provisional and re-run the session.
+          {audit.verdict === "reject"
+            ? "Granite Guardian rejected this recommendation with no recorded reasoning. Do not surface the blocked recommendation to the driver. Re-run the session before acting on any other output."
+            : `Granite Guardian returned a ${audit.verdict} verdict without recorded steps; the audit cannot be verified by re-reading the trace. Treat this verdict as provisional and re-run the session.`}
         </p>
       ) : (
         <details className="group" open={audit.verdict === "approve"}>
