@@ -73,7 +73,7 @@ Aggregates raw 50 Hz telemetry (8 channels) to 1 Hz mini-sector tensors that sit
 
 - Why aggregate: TTM r2 public release does not support sub-second resolution. We honor this by aggregating per mini-sector (~70 m at 150 mph).
 - 9th synthetic channel: COA simultaneity bit (0 or 1) derived from the COA parse.
-- Output tensor shape: `(batch, context_length=128, num_channels=9)`.
+- Output tensor shape: `(batch, context_length=24, num_channels=9)`. The 24 matches the per-lap aggregation locked at line 84 below; the earlier 128 value was a stale carry-over from the original blueprint and is corrected here per wave-22 cold review BLOCKER B2.
 
 ### 3. Granite TimeSeries TTM r2.1 (`app/backend/apex/ttm/forecast.py`)
 
@@ -253,11 +253,14 @@ interface FIACoa {
     driver_equipment?: FIAAdaptationDomain;
     chassis?:  FIAAdaptationDomain;
   };
-  simultaneity_envelope: {
-    brake_throttle_permitted: boolean;
-    coa_section_id: string;        // e.g. "Section 3(c)" for Sarah Reynolds.
-    homologation_class: string;    // e.g. "Group H" Britcar Trophy compound class.
-  };
+  // Hoisted from the previous `simultaneity_envelope` sub-object to top-level
+  // per wave-19 type lock; this is the LOAD-BEARING flag of the entire project,
+  // so it sits at the same nesting depth as driver + vehicle + adaptations.
+  // Wave-22 cold review BLOCKER B1 caught the lingering sub-object shape in
+  // this spec + PLAN.md Shared Contracts row and aligned both to types.ts.
+  coa_simul_permitted: boolean;     // e.g. true for Sarah Reynolds' COA Section 3(c).
+  brake_travel_adjustable_mm?: readonly [number, number];   // optional [min, max] in mm.
+  fia_section_refs: ReadonlyArray<string>;   // e.g. ["Article 18.3.2(c)", "Section 3(c)"].
 }
 
 interface FIAAdaptationDomain {

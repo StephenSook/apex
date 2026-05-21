@@ -1,19 +1,18 @@
 "use client";
 
 /**
- * SimRigStream: client-side WebSocket consumer for live sim-rig telemetry.
+ * SimRigStream: client-side consumer for live sim-rig telemetry.
  *
- * Stretch S1 (Day 9 lock) pulled forward Day 2 per galaxy-tier rule. Day 2
- * ships against an in-memory simulated stream (canned 60 Hz Sarah Reynolds
- * telemetry on a 50 ms tick). Day 9 swap: replace `useSimulatedStream` with
- * a real WebSocket connection to `GET /api/sim-rig/stream` per the SimRigFrame
- * contract in app/shared/types.ts.
+ * Ships against an in-memory simulated stream today (synthetic Sarah Reynolds
+ * Donington lap on a 50 ms tick = 20 Hz). Live mode connects to a backend
+ * WebSocket at the URL passed via `websocketUrl` per the SimRigFrame contract
+ * in app/shared/types.ts. Simulated mode + live mode share the same render
+ * path so the production cutover is a one-prop change.
  *
  * Failure modes handled:
  *   - WebSocket connection lost mid-session: reconnect with exponential backoff.
  *   - Backend returns malformed frames: drop the frame, log to console, keep stream alive.
- *   - User navigates away mid-stream: AbortController + WebSocket.close() on unmount.
- *   - Simulated mode + live mode share the same render path so the swap is a one-line change.
+ *   - User navigates away mid-stream: WebSocket.close() on unmount.
  */
 
 import { useEffect, useReducer, useRef } from "react";
@@ -207,9 +206,9 @@ function ChannelGrid({
 }
 
 // Sarah Reynolds Donington Park lap-17 canned synthetic stream.
-// One full lap (~78 s) of 50 Hz telemetry compressed into a 60 Hz sim feed.
-// The simulator loops infinitely so judges can watch the live tile evolve
-// without waiting for Vinh's real WebSocket Day 9 deploy.
+// Roughly one lap of telemetry on a 50 ms tick (20 Hz; see TICK_INTERVAL_MS).
+// The simulator loops infinitely so the live tile is animated for the demo
+// before the live WebSocket path lands.
 function buildSimulatedFrame(elapsed: number): SimRigFrame {
   const lapTime = 78.0;
   const lap_t = elapsed % lapTime;

@@ -320,7 +320,7 @@ export type AnalyzeResponse = CoachingReport;
 export interface SimRigFrame {
   /** Wall-clock timestamp of the frame at the sim. */
   readonly t_sim: number;
-  /** Live telemetry slice at 10 Hz. */
+  /** Live telemetry slice. Frontend simulator ticks at 20 Hz (TICK_INTERVAL_MS=50); backend live stream rate is owned by Vinh's `app/backend/apex/sim_bridge.py` and is targeted at 20 Hz to match the simulated mode without re-rendering downstream UI. */
   readonly channels: TelemetryRow;
 }
 

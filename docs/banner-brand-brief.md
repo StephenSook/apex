@@ -50,8 +50,8 @@ Sparing use of clay-red + amber. Cream + ink + racing green carry the structure.
 | Differentiator chip | IBM Plex Sans | 600 | 18px | paper on accent |
 | Sector label | IBM Plex Mono | 500 | 18px | racing-green |
 | Sector sub-label | IBM Plex Mono | 500 | 16px | muted |
-| **+0.34s delta** | IBM Plex Mono | 500 | 64px | accent |
-| Lap metadata | IBM Plex Mono | 500 | 20px | muted |
+| **+0.34s delta** | IBM Plex Mono | 500 | 56px | accent |
+| Lap metadata | IBM Plex Mono | 500 | 17px | muted |
 | COA sticker | IBM Plex Mono | 500 | 16px | ink on amber |
 | Footer attribution | IBM Plex Mono | 500 | 18px | paper-warm + amber on racing-green |
 
