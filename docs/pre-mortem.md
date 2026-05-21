@@ -34,7 +34,7 @@ Status legend: 🟡 actively mitigating · ✅ mitigation shipped · ⚠ accepte
 | 9 | 3-5 | CvxpyLayer QP non-convergence | Friction-ellipse + bicycle-model + COA-simultaneity constraints may produce infeasible solutions on edge-case telemetry | QP needs interior feasibility; some forecast traces will require constraint relaxation | V1: catch and log infeasibility, fallback to prior-lap baseline; V2: relax μ bound with explanation in Guardian audit |
 | 10 | 4 | TTM zero-shot baseline worse than seasonal-naive | TTM was pretrained on weather + retail, not motorsport | Domain shift | If Gate G4 fails on 3+ of 5 holdout circuits, reframe pitch from "TTM forecasts pace" to "TTM forecasts envelope" + soften deck claim |
 | 11 | 5-6 | Granite Guardian false-positive on legitimate engineering language | Guardian's safety classifier may flag "reduce brake force by 12%" as unsafe-recommendation | Guardian's policy boundaries vs engineering domain language | Convergence 14 serializer unit-test suite catches this; surface Guardian reasoning trace in UI; allow human-engineer override on flagged recommendations |
-| 12 | 7 | Phase 1+2 stakeholder emails go dark | UK charity / nonprofit response times are typically 5-10 business days | Outreach is a slow channel | Day 7 escalation: LinkedIn DMs to two UK adaptive-driver competitors + Day-7 follow-up emails to non-responders |
+| 12 | 3-5 | Phase 1+2 stakeholder emails go dark | UK charity / nonprofit response times are typically 7-14 business days | Outreach is a slow channel | **Day 3 escalation** (revised from Day 7 per Codex critique #4): LinkedIn DMs to two UK adaptive-driver competitors. Day 5 second-pass follow-up emails to non-responders. Day 8 anonymization fallback decision if zero replies. |
 | 13 | 8 | Demo loop > 60s on commodity hardware | DeepSeek engineering audit warned 15-32 min on CPU + 60s only on RTX 4060 | Granite-Docling + Guardian + Instruct end-to-end | Aggressive pre-cache of document parses at onboarding; live 60s budget is ONLY TTM + projection + Guardian + Instruct narration |
 | 14 | 9 | Sim-rig (iRacing / ACC) crashes during 3-min video recording | Live sim-rig is the most fragile element of the demo | iRacing / ACC are not designed for live data export to external WebSocket | Record fallback video on Day 9 first thing; if live mode crashes during Day 10 production take, ship the canned replay |
 | 9 | 9-10 | HF Space cold-start during judge eval | Free-tier HF Spaces sleep after 48h of inactivity | HF Space economics | Keep-alive cron during May 28-31 judging window; Colab notebook as zero-install fallback |
@@ -49,7 +49,7 @@ Status legend: 🟡 actively mitigating · ✅ mitigation shipped · ⚠ accepte
 
 - ⚠ Sub-second sub-grid kinetic hallucinations inside 1-Hz aggregates remain possible (V1 physics layer). V2 Pacejka mitigation is post-NeurIPS-paper work.
 - ⚠ Constant-mu friction ellipse oversimplifies wet-track scenarios. Day 5 V2 adds circuit-conditional mu lookup; full Pacejka load-dependent slip is V3.
-- ⚠ apex.race domain may not be registered by Day 12 (user-action gate). Fallback metadataBase: `https://apex.vercel.app`.
+- ⚠ apex.race domain may not be registered by Day 12 (user-action gate). Fallback metadataBase currently in code: `https://apex-race.vercel.app` (the Vercel auto-alias for the `apex-race` project name). Confirm during Day 9 HF Space + Vercel deploy.
 
 ---
 
