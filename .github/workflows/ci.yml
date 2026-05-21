@@ -15,6 +15,7 @@ jobs:
   frontend:
     name: Frontend (tsc + lint + vitest + build)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     defaults:
       run:
         working-directory: app/frontend
