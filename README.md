@@ -128,7 +128,7 @@ Full architecture spec: `docs/architecture-spec.md` (Day 2). SVG export: `docs/a
 ## Tech stack
 
 **Frontend**
-- Next.js 15 + React 19 + TypeScript strict
+- Next.js 16 + React 19 + TypeScript strict
 - TailwindCSS + IBM Plex Sans / Plex Mono + Fraunces (display)
 - WCAG 2.1 AA from minute one (keyboard navigation, screen-reader labels, high contrast)
 - Vercel deploy

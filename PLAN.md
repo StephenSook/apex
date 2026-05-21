@@ -43,7 +43,7 @@ This snapshot is the at-a-glance reality check for anyone reading PLAN.md fresh.
 3. Day 2 Granite-Docling + Granite Vision pipeline
 
 **Critical-path Stephen ops still open:**
-1. Next.js 15 + Tailwind + Plex + Fraunces scaffold in `app/frontend/`
+1. Next.js 16 + Tailwind + Plex + Fraunces scaffold in `app/frontend/`
 2. Phase 1+2 stakeholder reply check (5 emails sent 2026-05-19, 0 returned so far, 12 days remaining)
 3. Q&A Card 1 memorization (Deep Dynamics defense)
 
@@ -88,7 +88,7 @@ Stephen completed the bootstrap. Repo, scaffold, memory, Obsidian, plan, briefin
 ### What Stephen has done + planned next work (parallel to yours)
 
 - ✅ Repo init, license, gitignore, README, PLAN.md, decision log, memory, Obsidian. Done Day 1.
-- ⬜ Next: `app/frontend/` Next.js 15 + Tailwind + Plex + Fraunces scaffold with WCAG 2.1 AA baseline (Day 1 evening / Day 2 morning).
+- ⬜ Next: `app/frontend/` Next.js 16 + Tailwind + Plex + Fraunces scaffold with WCAG 2.1 AA baseline (Day 1 evening / Day 2 morning).
 - ⬜ Day 2 PM: file-upload UI + dropzone + accessibility baseline; start `docs/pre-mortem.md`.
 - ⬜ Day 6: Sarah Reynolds persona script committed to `fixtures/personas/sarah-reynolds.md`.
 
