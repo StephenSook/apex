@@ -19,26 +19,36 @@ import Dropzone, { type DropzoneSubmission } from "./Dropzone";
 
 export default function AnalyzeFlow() {
   const [report, setReport] = useState<CoachingReportType | null>(null);
-  const [driverId, setDriverId] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const reportRef = useRef<HTMLDivElement | null>(null);
+  const prevReportRef = useRef<CoachingReportType | null>(null);
 
   const handleAnalyze = useCallback(async (submission: DropzoneSubmission) => {
     setIsSubmitting(true);
     try {
       await delay(900);
-      setDriverId(submission.driver_id);
       setReport(buildMockReport(submission));
+    } catch (err) {
+      // Day 5-6 swap: real fetch errors land here. Dropzone's onSubmit catch
+      // is a secondary sink, but this primary catch surfaces a user-friendly
+      // message instead of leaking JS exception details upward.
+      setReport(null);
+      if (err instanceof Error) throw err;
+      throw new Error("APEX could not generate a coaching report. Check your network and try again.");
     } finally {
       setIsSubmitting(false);
     }
   }, []);
 
   useEffect(() => {
-    if (report && reportRef.current) {
+    // Focus-steal guard: only steal focus + scroll on the first report after a
+    // null state. Resubmits update content in place without yanking focus from
+    // wherever the user happens to be typing (e.g. the driver-id input).
+    if (report && !prevReportRef.current && reportRef.current) {
       reportRef.current.focus();
       reportRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
     }
+    prevReportRef.current = report;
   }, [report]);
 
   return (
@@ -46,7 +56,7 @@ export default function AnalyzeFlow() {
       <Dropzone onAnalyze={handleAnalyze} isSubmitting={isSubmitting} />
       {report && (
         <div ref={reportRef} tabIndex={-1} className="outline-none">
-          <CoachingReport report={report} driverId={driverId} />
+          <CoachingReport report={report} />
         </div>
       )}
     </>
@@ -59,6 +69,7 @@ function delay(ms: number): Promise<void> {
 
 function buildMockReport(submission: DropzoneSubmission): CoachingReportType {
   return {
+    driver_id: submission.driver_id,
     corners: [
       {
         name: "Old Hairpin",
