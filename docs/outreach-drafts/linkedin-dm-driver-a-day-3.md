@@ -36,7 +36,7 @@ Thanks for the time.
 
 Stephen Sookra
 KSU CS / IBM SkillsBuild Challenge
-ssookra@students.kennesaw.edu
+[school address kept private]
 LinkedIn: linkedin.com/in/stephen-sookra-633682339
 
 ---
