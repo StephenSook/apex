@@ -1,26 +1,82 @@
 # BeMyApp Submission Payload, APEX
 
-> Verbatim copy for each field on the BeMyApp submission form for IBM SkillsBuild AI Builders Challenge May 2026. Draft Day 2 from the wave-15 state; refine Day 10-11 with the live demo URL + recorded video link.
+> Verbatim copy for each field on the BeMyApp submission form for IBM SkillsBuild AI Builders Challenge May 2026. Draft Day 2 PM from the live BeMyApp form structure pulled 2026-05-21 PM; refine Day 10-11 with the live demo URL + recorded video link.
 >
 > **Owner:** Stephen Sookra. **Submission window opens:** TBD. **Hard deadline:** 2026-05-31, 11:59 PM ET.
 >
-> Fields below mirror what the BeMyApp portal walkthrough video describes (pinned 2026-05-20 by makenna). Verify each field at submission time against the actual form; if the portal adds a new field, surface here and re-draft.
+> The fields directly below mirror the live BeMyApp project page template field-for-field (reference: `~/.claude/projects/-Users-stephensookra-Desktop-IBM-May/memory/reference_bemyapp_submission_template.md`). The "Reference long-form drafts" section below the form-aligned section keeps the wider material (README-length elevator, full IBM-tools enumeration, full multi-track checklist) in case BeMyApp adds more fields or for cross-use in deck + video.
 
 ---
 
-## Project name
+## BeMyApp form fields (1:1 with the live template)
+
+### Banner image (1920 x 600)
+
+```
+deliverables/bemyapp-banner-1920x600.png  [PLAN task 5.14 - design + render Day 2-3]
+```
+
+Editorial-paddock palette. APEX wordmark (Fraunces display) + tagline + hero visual (architecture diagram or stylized racing line + COA annotation). Cream `#F4EBD8` base, racing-green `#0A2818` accents, clay-red `#C1492C` highlights, amber `#D9A441` band on the wordmark, ink `#0F1410` body text.
+
+### Project name
 
 ```
 APEX
 ```
 
-## Tagline (one-line, <= 100 chars)
+### 1-2 sentence summary (immediately under banner)
+
+```
+APEX is the IBM Granite-stack AI race engineer for adaptive racers, veterans, and grassroots competitors. It reads each driver's FIA Certificate of Adaptations at the tensor level, so adaptive driving stops being misdiagnosed as driver error.
+```
+
+### Challenges tag
+
+```
+May Challenge
+```
+
+### GitHub URL
+
+```
+https://github.com/StephenSook/apex
+```
+
+### The Issue (2-3 sentences)
+
+```
+A professional race engineer costs hundreds of pounds per day. Adaptive racers, veterans, and grassroots competitors cannot afford one, and existing AI race-engineer tools assume able-bodied physics that misdiagnose adaptive driving as driver error. Post-race coaching has become a luxury good for the drivers who need it most.
+```
+
+### Our Magic Solution (2-3 sentences)
+
+```
+APEX is the IBM Granite-stack race engineer for drivers who do not have one. A frozen Granite TimeSeries TTM forecaster, audited by Granite Guardian and constrained by a differentiable physics-projection layer, reads each driver's FIA Certificate of Adaptations at the tensor level. The same coaching pipeline produces accurate, COA-compliant recommendations for adaptive, veteran, and grassroots racers without retraining, without per-driver fine-tuning, and without able-bodied bias.
+```
+
+### Presentation Video Link (YouTube or public platform)
+
+```
+[Day 10 fill: YouTube unlisted URL once production take is rendered]
+```
+
+### Team Members GitHub Usernames (comma-separated)
+
+```
+StephenSook, [Vinh's GitHub handle, need to confirm with Vinh before Day 12]
+```
+
+---
+
+## Reference long-form drafts (for deck, video, README cross-use, or if BeMyApp adds fields)
+
+### Tagline (one-line, <= 100 chars)
 
 ```
 The AI race engineer for the drivers who do not have one.
 ```
 
-## One-paragraph elevator (90-120 words)
+### One-paragraph elevator (90-120 words)
 
 ```
 APEX is an AI race engineer for adaptive racers, veteran-team drivers, and grassroots competitors who cannot afford the four-to-five-hundred-pounds-a-day professional race engineer that every Formula One driver has. We point the same IBM Granite stack that ships to Scuderia Ferrari's roughly four hundred million fans at the drivers who need a race engineer most. APEX reads the driver's telemetry, their FIA Certificate of Adaptations under the Appendix L provisions, and a written debrief, then returns a corner-by-corner coaching report with a tuning recommendation, a next-session forecast envelope, and a Granite Guardian safety stamp in sixty seconds end-to-end on a commodity RTX 4060 GPU.
@@ -118,12 +174,16 @@ Per global hackathon-project-flow multi-track strategy: every unchecked box is a
 
 Before clicking Submit on 2026-05-31:
 
-- [ ] BeMyApp form completed end-to-end with all fields above filled
-- [ ] All eligible tracks ticked
+- [ ] BeMyApp form-aligned section above completed end-to-end with all fields filled
+- [ ] Banner image at 1920x600 uploaded (`deliverables/bemyapp-banner-1920x600.png`)
+- [ ] 1-2 sentence summary copy approved
+- [ ] The Issue panel copy approved (2-3 sentences, em-dash-clean, AI-tone-clean)
+- [ ] Our Magic Solution panel copy approved (2-3 sentences, em-dash-clean, AI-tone-clean)
 - [ ] Demo video URL points at the recorded production take (not the Day 9 dress rehearsal cut)
+- [ ] Team Members GitHub usernames field includes Vinh's confirmed handle
+- [ ] All eligible tracks ticked (verify against current BeMyApp form: no sponsor / install / DQE tracks expected per the Official Rules; verify Day 11 morning)
 - [ ] Live demo URL returns HTTP 200 from a clean browser session
 - [ ] GitHub repo is public + Apache 2.0 + last commit on main is green CI
-- [ ] Team field references both members + their affiliations
 - [ ] `bash scripts/pre-submit-checks.sh --final` returns 0 HARD-FAIL
 - [ ] Screenshot of the submitted form saved to `deliverables/screenshots/submission-confirmed.png` for record
 - [ ] BeMyApp project listing visible on the public projects feed (verify in a fresh browser session)
@@ -131,4 +191,4 @@ Before clicking Submit on 2026-05-31:
 
 ---
 
-_Last updated: 2026-05-21 Day 2 by Stephen. Day-2 v0 draft. Day 10-11 final-pass fill in real video URL + live demo URL._
+_Last updated: 2026-05-21 PM by Stephen. Day-2 alignment pass against the live BeMyApp project-page template (pulled from the live IBM SkillsBuild Challenge Hub example project today). Form-aligned section is the authoritative copy for Day-12 submission; reference long-form drafts retained for deck + video + README cross-use. Day 10-11 final-pass fill in the real video URL + live demo URL + Vinh GitHub handle. PLAN task 5.14 owns the 1920x600 banner asset; PLAN task 5.15 owns the 3-example gallery calibration pass once URLs land._
