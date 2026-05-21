@@ -36,7 +36,7 @@ The Phase 4.5 NotebookLM-verified synthesis identified 13 mandatory pitch refine
 3. **60-second latency reframed as the post-race coaching loop** - not end-to-end cold start. ✅ applied (Beat 6 wording "Sixty seconds after Sarah uploads").
 4. **Three-firsts triple-lock language** in Beat 5 + Beat 6. ⬜ Day 7.
 5. **Granite Guardian as text-audit-with-tests** - not implied as silver-bullet safety classifier. ✅ applied (Beat 4 "structured text log of every projection correction").
-6. **Achievement-led hero framing** vs trauma-led. ✅ applied + corrected Day 1 EOD (Beat 3 now leads with lap-and-symptom: "Lap 17 of 19. Donington Park. Sarah Reynolds is up three tenths against her PB." Identity follows the achievement, never leads it). Paddock voice locked: "up three tenths" not "plus zero point three four."
+6. **Achievement-led hero framing** vs trauma-led. ✅ applied + corrected Day 1 EOD (Beat 3 now leads with lap-and-symptom: "Lap 17 of 19. Donington Park. Sarah Reynolds is two tenths off her PB and the time is bleeding out in Sector 2." Identity follows the achievement, never leads it). Paddock voice locked: "two tenths off" not "plus zero point three four."
 7. **Show a failure path in demo** - one of Sarah's previous laps that Guardian rejects. ⬜ Day 7 demo recording.
 8. **Citation provenance audit panel visible in demo** - reproducibility footer + Guardian reasoning trace surfaced. ⬜ Day 7 UI work + Day 10 production take.
 9. **Replace "DRAFT - REQUIRES AWG REVIEW" stamp** (legacy GreenFlag concept) with confident-but-bounded language. N/A - APEX never had this stamp.
