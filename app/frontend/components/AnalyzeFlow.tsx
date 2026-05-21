@@ -124,7 +124,7 @@ function buildMockReport(submission: DropzoneSubmission): CoachingReportType {
         granite_instruct: "ibm-granite/granite-4.1-8b-instruct",
         granite_guardian: "ibm-granite/granite-guardian-4.1-8b",
       },
-      commit_sha: "8cb58d9a000000000000000000000000mockedmock",
+      commit_sha: "0000000000000000000000000000000000000000",
       generated_at_iso: new Date().toISOString(),
     },
   };

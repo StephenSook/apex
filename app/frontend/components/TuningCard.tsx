@@ -39,13 +39,13 @@ export default function TuningCard({ tuning }: TuningCardProps) {
         </div>
         <div className="flex flex-col gap-1">
           <dt className="uppercase tracking-wider text-muted">Recommended</dt>
-          <dd className="text-base text-racing-green">
+          <dd className="text-base text-ink">
             {tuning.recommended.toFixed(2)} {tuning.unit}
           </dd>
         </div>
         <div className="flex flex-col gap-1">
           <dt className="uppercase tracking-wider text-muted">Delta</dt>
-          <dd className="text-base text-accent">{formattedDelta}</dd>
+          <dd className="text-base text-ink-soft">{formattedDelta}</dd>
         </div>
       </dl>
 
