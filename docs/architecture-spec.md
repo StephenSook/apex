@@ -51,6 +51,14 @@ Parses the driver's FIA Certificate of Adaptations PDF into structured JSON. Pre
 - Output schema: see PLAN.md §Shared Contracts row "FIA COA parsed JSON shape."
 - Latency budget: out of critical path (cached). Cold parse 30-90s on M2.
 
+**1a-bis. Docling library (`app/backend/apex/intake/docling_conv.py`)**
+
+Open-source IBM Docling conversion layer (`docling` PyPI package), distinct from the Granite-Docling 258M vision model used in 1a. Wraps PDF + table conversion utilities, OCR fallbacks, and the table-extraction routines that Granite-Docling's vision pass hands off to. Counts as the 8th IBM tool independent of the Granite-Docling model itself per the README + SUBMISSION 8-tool list.
+
+- Role: post-process Granite-Docling raw output into the structured JSON schema; handle non-vision-driven sections (text-only Appendix L preambles, PDF metadata).
+- Output: cleaned `FIACoa` shape (see `app/shared/types.ts`).
+- Latency budget: included in 1a's cold-parse budget.
+
 **1b. Granite Vision 4.1 4B (`app/backend/apex/vision/timing_parser.py`)**
 
 Parses official timing-sheet PDFs (SRO Motorsports, Britcar) into CSV. Charts and tables only, not phone photos.
