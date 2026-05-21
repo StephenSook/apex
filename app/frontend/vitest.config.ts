@@ -14,12 +14,21 @@ export default defineConfig({
     environment: "jsdom",
     setupFiles: ["./vitest.setup.ts"],
     globals: true,
+    pool: "threads",
+    poolOptions: { threads: { singleThread: true } },
     include: ["**/*.test.ts", "**/*.test.tsx"],
     exclude: ["node_modules/**", ".next/**", "dist/**"],
     coverage: {
       reporter: ["text", "json-summary"],
+      // Frontend coverage targets app/ + components/. Shared contract types at
+      // `../shared/types.ts` are deliberately out of scope: types-only files have
+      // no runtime coverage signal and Vinh's Pydantic mirror is the real test
+      // surface (covered by backend pytest once Vinh scaffolds it).
       include: ["app/**", "components/**"],
-      exclude: ["node_modules/**", ".next/**", "**/*.config.*", "**/types.ts"],
+      exclude: ["node_modules/**", ".next/**", "**/*.config.*"],
+      // Auto-restore vi.fn/spyOn between tests so prototype-stub leaks (Element.scrollIntoView)
+      // do not bleed across worker-reuse boundaries.
     },
+    restoreMocks: true,
   },
 });

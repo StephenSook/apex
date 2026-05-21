@@ -1,4 +1,4 @@
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
@@ -9,9 +9,7 @@ function makeFile(name: string, size: number, type: string): File {
 }
 
 describe("Dropzone interaction", () => {
-  beforeEach(() => {
-    Element.prototype.scrollIntoView = vi.fn();
-  });
+  // scrollIntoView stub is set globally in vitest.setup.ts.
 
   it("Remove file click does not bubble to the dropzone wrapper (Codex wave-15 MED guard)", async () => {
     const user = userEvent.setup();

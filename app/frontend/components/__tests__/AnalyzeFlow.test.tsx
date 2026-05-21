@@ -1,5 +1,5 @@
-import { describe, expect, it, vi, beforeEach } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { describe, expect, it } from "vitest";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import AnalyzeFlow from "../AnalyzeFlow";
@@ -9,10 +9,7 @@ function makeFile(name: string, size: number, type: string): File {
 }
 
 describe("AnalyzeFlow integration", () => {
-  beforeEach(() => {
-    // jsdom does not implement scrollIntoView; stub so the focus-effect does not throw.
-    Element.prototype.scrollIntoView = vi.fn();
-  });
+  // scrollIntoView stub is set globally in vitest.setup.ts.
 
   it("mounts the Dropzone before any submission", () => {
     render(<AnalyzeFlow />);
@@ -67,8 +64,14 @@ describe("AnalyzeFlow integration", () => {
 
     await user.click(submit);
 
-    // findBy* waits up to the default 1000ms for the element to appear, which
-    // covers the mock delay(900) without fake timers.
+    // Two-stage assertion: first verify the submit handler advanced state
+    // (so a CI flake reports "submit never entered Analyzing" not "no heading"),
+    // then verify the mock report rendered after the delay(900).
+    await waitFor(
+      () => expect(screen.getByRole("button", { name: /Analyzing\.\.\./i })).toBeInTheDocument(),
+      { timeout: 500 },
+    );
+
     const reportHeading = await screen.findByRole(
       "heading",
       { name: /Corner-by-corner coaching/i },
