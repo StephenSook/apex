@@ -33,17 +33,19 @@
 - [ ] **Validate OpenRouter API key + sample Granite 4.1 8B call.** Discord intel 2026-05-20: V.L. + BeMyApp confirmed OpenRouter as approved Granite host. Free tier, no credit card. `openrouter.ai/ibm-granite/granite-4.1-8b`. Use as primary inference path on HF Space Day 9 deploy. Backup: watsonx.ai (free account, IBM ID required). Skip Replicate (CC required) + HF inference endpoints (Granite not publicly hosted).
 - [ ] **Fork IBM-SkillsBuild Learning Lab repo + run TORCS lab + record one entry in RESULTS.md.** Discord intel 2026-05-20: BeMyApp pinned the Lab as public at `https://github.com/IBM-SkillsBuild-AI-Builders-Challenge/hands-on-labs` and mentioned "one of the required lab steps." Conservative read: complete one step minimum. Time-boxed 30 min. Do not let the lab consume G1 + G4 budget.
 
-### Stephen (parallel to Vinh)
+### Stephen (parallel to Vinh) - Day 2 mid-day progress
 
-- [ ] **Repair ESLint env** (`LazyLoadingRuleMap is not a constructor`). Options: pin ESLint to 9.34.x, or migrate to `next lint`. Pre-mortem row 26 carries the residual.
-- [ ] **Q&A Card 2 (Kinetic Hallucination) drill 3x cold.** Memorize the verbatim card from `~/.claude/projects/-Users-stephensookra-Desktop-IBM-May/memory/project_apex_qa_killshots.md`. Target: < 30 s per delivery.
-- [ ] **Check stakeholder inbox for Phase 1+2 replies.** 5 emails sent Day 0 (2026-05-19). Reply window 7-14 business days. Any reply triggers consent-revert sweep on the named-operator surfaces.
-- [ ] **Audit README.md against the BeMyApp pinned 3-question structure.** Discord intel 2026-05-20: submission README must explain (a) the problem, (b) the AI approach, (c) why it matters in racing. APEX README has all 3 implicitly. Day 2 task: surface each as an explicit section heading or anchor.
-- [ ] **Wire Dropzone into landing page top nav.** Add `Analyze` link in the primary nav on `/`. Currently only reachable by direct URL `/analyze`.
-- [ ] **Watch the BeMyApp hosting webinar + submission walkthrough video** (links in `reference_discord_intel_day_1.md` memory). Note any submission-form fields not covered by `deliverables/bemyapp-submission-payload.md`.
-- [ ] **Run `bash scripts/pre-submit-checks.sh`** at noon ET and EOD. Verify HARD-FAIL count stays at 1 (uncommitted files; expected mid-day).
-- [ ] **Pre-mortem.md daily entry** for Day 2 observations.
-- [ ] **Daily BeMyApp devlog** evening send per template at `docs/outreach-drafts/bemyapp-devlog-day-1.md` Day-2 fork.
+- [x] **Repair ESLint env** (`LazyLoadingRuleMap is not a constructor`). DONE wave 13 (`d096566`): nuked `node_modules` + `pnpm-lock.yaml` + fresh `pnpm install`. ESLint 9.39.4 runs cleanly + caught 2 real lint findings (Link instead of `<a>` for internal nav + unused SLOT_KEYS const). Pre-mortem row 26 🟡 → ✅.
+- [ ] **Q&A Card 2 (Kinetic Hallucination) drill 3x cold.** Pending Stephen evening session.
+- [ ] **Check stakeholder inbox for Phase 1+2 replies.** Pending Stephen.
+- [x] **Audit README.md against the BeMyApp pinned 3-question structure.** DONE wave 13 (`f4f9611`): added explicit submission-answers TOC at top with anchor links + renamed sections to match makenna's pinned rubric (`#the-problem` + `#the-ai-approach` + `#why-it-matters-in-racing`).
+- [x] **Wire Dropzone into landing page top nav.** DONE wave 13 (`8cb58d9`): clay-accent Analyze button in SiteHeader primary nav.
+- [x] **CoachingReport + TuningCard + GuardianAudit + AnalyzeFlow** (PLAN 2.7 / 3.2 / 2.12 pulled forward Day 4-6 → Day 2). DONE wave 13 (`91a5141` + `c268363`): full /analyze flow renders a canned Sarah Reynolds Donington-Lap-17 mock report on submit. Vinh's real backend Day 5-6 just swaps `buildMockReport()` for a `fetch()` call.
+- [x] **architecture-spec.md Docling library 8-tool count** (Gemini wave-11 M1). DONE wave 13 (`efa7881`): added 1a-bis subsection.
+- [ ] **Watch the BeMyApp hosting webinar + submission walkthrough video** (links in `reference_discord_intel_day_1.md` memory). Pending Stephen.
+- [x] **Pre-mortem.md daily entry** for Day 2 observations. DONE wave 13 (rows 38-42).
+- [ ] **Run `bash scripts/pre-submit-checks.sh`** at noon ET and EOD. Wave-13 latest dry-run: 14 PASS, 9 WARN (Vinh-lane + Day 9/10/11 pending), 3 MANUAL, 0 HARD-FAIL.
+- [ ] **Daily BeMyApp devlog** evening send. Pending Stephen.
 
 ### Joint
 
