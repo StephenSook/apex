@@ -55,7 +55,7 @@ Verified field-by-field that {API endpoint} output → `schemas/{x}.py` → `app
 
 ## Tools / skills / MCPs used today
 
-Per D-007 quality-over-speed rule, log which leverage layers got pulled:
+Per D-007 quality-over-speed rule, log which highest-impact layers got pulled:
 
 - `Context7` for `granite-tsfm` API
 - `pr-review-toolkit:code-reviewer` on commit `abc1234`
