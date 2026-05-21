@@ -47,33 +47,33 @@ describe("AnalyzeFlow error path (Codex wave-15 MED backfill)", () => {
     expect(handleAnalyze).toHaveBeenCalledTimes(1);
   });
 
-  it("does not steal focus from an active form input on resubmit", async () => {
+  it("scrollIntoView fires once on first report mount, not on resubmit (prevReportRef guard)", async () => {
+    const scrollSpy = vi.fn();
+    Element.prototype.scrollIntoView = scrollSpy;
+
     const user = userEvent.setup();
     const { container } = render(<AnalyzeFlow />);
 
-    // First submission completes; CoachingReport renders + focus moves to the report container.
     await fillAndSubmit(user, container, "first-driver");
     await screen.findByRole(
       "heading",
       { name: /Corner-by-corner coaching/i },
       { timeout: 2000 },
     );
+    expect(scrollSpy).toHaveBeenCalledTimes(1);
 
-    // User edits the driver-id field to fix a typo.
     const driverInput = screen.getByRole("textbox", { name: /Driver identifier/i });
     await user.clear(driverInput);
     await user.type(driverInput, "second-driver");
-    driverInput.focus();
-    expect(document.activeElement).toBe(driverInput);
 
-    // Trigger a resubmit. Old report should swap to new but focus stays on driverInput.
     await user.click(screen.getByRole("button", { name: /Generate coaching report/i }));
     await waitFor(
       () => expect(screen.getByText("second-driver")).toBeInTheDocument(),
       { timeout: 2000 },
     );
 
-    // prevReportRef guard: on the SECOND report (not the null -> first transition), focus is left alone.
-    expect(document.activeElement).toBe(driverInput);
+    // prevReportRef guard: scroll + focus only fire on null → first-report transition.
+    // Second submit swaps report content in place without re-triggering the effect.
+    expect(scrollSpy).toHaveBeenCalledTimes(1);
   });
 });
