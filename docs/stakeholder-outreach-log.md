@@ -7,7 +7,7 @@
 
 ---
 
-## Phase 1 — primary asks (sent 2026-05-19, Day 0)
+## Phase 1 - primary asks (sent 2026-05-19, Day 0)
 
 | Target | Contact | Method | Lexicon | Asked for | Sent | Reply | Attribution surface |
 |--------|---------|--------|---------|-----------|------|-------|--------------------|
@@ -15,35 +15,35 @@
 | Team BRIT | Al Locke (`al@teambrit.co.uk`) | Email from school address | Level Playing Field (engineering specifics, no charity language) | One-sentence endorsement, reference his Sept 2025 Aston Martin GT4 work | 2026-05-19 | PENDING | TBD on reply |
 | Spinal Track | Andrew operations (`andrew@spinaltrack.co.uk`) | Email from school address | FIA legislative (Nathalie McGloin DAA Commission downstream) | One-sentence endorsement | 2026-05-19 | PENDING | TBD on reply |
 
-## Phase 2 — secondary asks (sent 2026-05-19, Day 0)
+## Phase 2 - secondary asks (sent 2026-05-19, Day 0)
 
 | Target | Contact | Method | Lexicon | Asked for | Sent | Reply | Attribution surface |
 |--------|---------|--------|---------|-----------|------|-------|--------------------|
 | Limitless Motorsport UK | Johnny Dawson-Ellis (`info@limitless-motorsport.co.uk`) | Email from school address | Level Playing Field | One-sentence validation | 2026-05-19 | PENDING | TBD on reply |
 | Raceability Motorsport | Brian Roberts (`enquiries@raceability-motorsport.co.uk`) | Email from school address | Level Playing Field | One-sentence validation | 2026-05-19 | PENDING | TBD on reply |
 
-## Phase 3 — per-surface consent ask (sent 2026-05-20, Day 1 PM)
+## Phase 3 - per-surface consent ask (sent 2026-05-20, Day 1 PM)
 
 | Target | Contact | Method | Asked for | Sent | Reply | Surfaces requested |
 |--------|---------|--------|-----------|------|-------|---------------------|
 | MME Motorsport | `info@mme-motorsport.com` (verify before send) | Email from school address per `docs/outreach-drafts/mme-motorsport-consent.md` | Per-surface consent for naming as Sarah Reynolds' hand-control supplier | 2026-05-20 | PENDING | Landing page, README, BeMyApp Story block, 3-min demo video |
 
-## Phase 4 — Day 3 escalation (scheduled 2026-05-22, revised from Day 7 per Codex critique #4)
+## Phase 4 - Day 3 escalation (scheduled 2026-05-22, revised from Day 7 per Codex critique #4)
 
 | Target | Contact | Method | Why escalate | Reply | Attribution surface |
 |--------|---------|--------|--------------|-------|--------------------|
 | Aaron Morgan (Team BRIT driver) | LinkedIn DM | DM with 60-second video pitch | Real adaptive driver endorsement; UK charity response window is 7-14 days so Day 7 first escalation was too late | PENDING | TBD on reply |
 | Bobby Trundley (Team BRIT driver) | LinkedIn DM | DM with 60-second video pitch | Same | PENDING | TBD on reply |
 
-## Phase 5 — Day 5 follow-ups (scheduled 2026-05-24)
+## Phase 5 - Day 5 follow-ups (scheduled 2026-05-24)
 
 Re-email Phase 1+2 non-responders (Mission 44, Team BRIT, Spinal Track, Limitless, Raceability) with progress update + concrete request to participate. Subject line tweak: "Following up + APEX is live at <demo-url>."
 
-## Phase 6 — Day 12 IBM Consulting cold outreach (scheduled 2026-05-31 afternoon)
+## Phase 6 - Day 12 IBM Consulting cold outreach (scheduled 2026-05-31 afternoon)
 
 | Target | Contact | Method | Asked for |
 |--------|---------|--------|-----------|
-| IBM Consulting leadership | TBD — research before send | Cold email referencing Scuderia Ferrari case study | Whether APEX architectural pattern (PhysicsTTM + COA-aware narrator) extends to other IBM Consulting verticals |
+| IBM Consulting leadership | TBD - research before send | Cold email referencing Scuderia Ferrari case study | Whether APEX architectural pattern (PhysicsTTM + COA-aware narrator) extends to other IBM Consulting verticals |
 
 ---
 

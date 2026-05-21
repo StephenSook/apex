@@ -12,11 +12,11 @@
 
 Day 1 bootstrap day. 50+ atomic commits pushed to https://github.com/StephenSook/apex.
 
-### Task 0.1-0.5 — repo setup + folder reorg
+### Task 0.1-0.5 - repo setup + folder reorg
 
 Repo init (Apache 2.0), 12 PDFs reorganized into `research/` (kebab-case), `docs/briefing-for-vinh.pdf` available for you. `.gitignore` extended for Python + Node + IBM caches. `LICENSE` + `README.md` v0 + `PLAN.md` v0 shipped.
 
-### Task 0.14 — Next.js 16 frontend scaffold + landing page
+### Task 0.14 - Next.js 16 frontend scaffold + landing page
 
 `app/frontend/` is Next.js 16.2.6 + React 19.2.4 + Tailwind v4 + TypeScript strict. Editorial-paddock visual identity (cream paper #F4EBD8, racing-green #0A2818, accent clay #C1492C, amber #D9A441, ink #0F1410). IBM Plex Sans + Plex Mono + Fraunces (variable, SOFT/WONK/opsz axes) via `next/font/google`. WCAG 2.1 AA baseline (skip link, focus-visible ring, semantic landmarks, prefers-reduced-motion). 670-line landing page committed in `app/frontend/app/page.tsx` with hero (hand-coded SVG racing line + apex annotation) + Sarah Reynolds editorial moment + PhysicsTTM 3-layer cards + 5 differentiators + build-status table + 8-tool IBM stack + footer. Build green via `pnpm build` (1.7s Turbopack), lint green, Playwright visual QA passed (screenshot at `deliverables/screenshots/day-01-landing-1440x900.png`).
 
@@ -42,10 +42,10 @@ Anchor `<Link href="#X">` → `<a href="#X">` (M2), CSS-var pattern `as React.CS
 ### Day-2 and Day-7 tasks pulled forward to Day 1 EOD
 
 - `docs/pre-mortem.md` started (PLAN task 1.7, was Day 2)
-- `docs/sarah-reynolds-persona.md` written (PLAN task 3.3, was Day 6 — Stephen narrative only; engineering data files reserved for your lane)
+- `docs/sarah-reynolds-persona.md` written (PLAN task 3.3, was Day 6 - Stephen narrative only; engineering data files reserved for your lane)
 - `docs/3-min-pitch-script.md` v0 (PLAN task 4.4, was Day 7)
 - `docs/outreach-drafts/mme-motorsport-consent.md` (per Q-006, sent Day 1 PM)
-- `docs/apex-lite-contingency.md` (Codex critique #3 — written contingency if you cannot accept the invite by Day 2 noon ET; **DO NOT EXECUTE unless trigger fires**)
+- `docs/apex-lite-contingency.md` (Codex critique #3 - written contingency if you cannot accept the invite by Day 2 noon ET; **DO NOT EXECUTE unless trigger fires**)
 - `docs/methodology.md` v0 (PLAN task 6.4 / Core 6 C4)
 - `docs/stakeholder-outreach-log.md` (referenced in `project_apex_stephen_lane.md`)
 - `app/shared/types.ts` (shared API contracts in TypeScript; mirror in your Pydantic `app/backend/apex/schemas.py` Day 2-3)
@@ -75,13 +75,13 @@ Anchor `<Link href="#X">` → `<a href="#X">` (M2), CSS-var pattern `as React.CS
 
 API contract is in `app/shared/types.ts`. Pydantic mirror needed in `app/backend/apex/schemas.py` Day 2-3. Specifically:
 
-- `TelemetryRow` — 9 fields, raw 50 Hz
-- `MiniSectorTensor` — 1-Hz aggregated, includes COA simultaneity bit
-- `FIACoa` — 9 adaptation domains + simultaneity envelope
-- `CoachingReport` — top-level API response (corners + tuning_delta + forecast + audit + provenance)
-- `AnalyzeRequest` / `AnalyzeResponse` — `POST /api/analyze`
-- `SimRigFrame` — `GET /api/sim-rig/stream` WebSocket (Stretch S1)
-- `HealthResponse` — `/health`
+- `TelemetryRow` - 9 fields, raw 50 Hz
+- `MiniSectorTensor` - 1-Hz aggregated, includes COA simultaneity bit
+- `FIACoa` - 9 adaptation domains + simultaneity envelope
+- `CoachingReport` - top-level API response (corners + tuning_delta + forecast + audit + provenance)
+- `AnalyzeRequest` / `AnalyzeResponse` - `POST /api/analyze`
+- `SimRigFrame` - `GET /api/sim-rig/stream` WebSocket (Stretch S1)
+- `HealthResponse` - `/health`
 
 Any contract change announces in chat with `⚠️ CONTRACT` commit prefix per `PLAN.md` §Coordination Protocol rule 10.
 
@@ -93,7 +93,7 @@ Any contract change announces in chat with `⚠️ CONTRACT` commit prefix per `
 - `Context7` MCP (Next.js v16 + tailwind verification; tailwind 502'd, fallback to `node_modules/next/dist/docs/`)
 - `Playwright` MCP (browser_navigate + full-page screenshot 1440x900)
 - `pr-review-toolkit:code-reviewer` agent (returned 8 ranked findings)
-- `codex:codex-rescue` agent (×2 — code review + plan critique)
+- `codex:codex-rescue` agent (×2 - code review + plan critique)
 - `pnpm` + `create-next-app@latest` + `npx @mermaid-js/mermaid-cli` (Mermaid PNG + SVG)
 - `Read` (with `offset` + `limit`) per Read-before-Edit invariant
 - Manual `grep -rn` for em-dash + AI-blocklist + smart-quote sweep
@@ -107,7 +107,7 @@ Any contract change announces in chat with `⚠️ CONTRACT` commit prefix per `
 | G1 (Day 1 TTM smoke) | ⬜ pending Vinh | `pip install granite-tsfm` + 1Hz inference < 60s on M2 / RTX 4060 |
 | G2 (Day 2 COA parse) | ⬜ pending Vinh | Granite-Docling all 9 adaptation domains |
 | G3 (Day 3 NumPy validator V1) | ⬜ pending Vinh | 5/5 impossible traces caught, 5/5 valid approved |
-| **G4 (Day 2 SPIKE — TTM beats seasonal-naive)** | ⬜ pending Vinh | **Bumped from Day 4 to Day 2 parallel spike per Codex critique #2 BLOCKER.** If FAIL: invoke `docs/apex-lite-contingency.md` Lite mode + pivot pitch claim. |
+| **G4 (Day 2 SPIKE - TTM beats seasonal-naive)** | ⬜ pending Vinh | **Bumped from Day 4 to Day 2 parallel spike per Codex critique #2 BLOCKER.** If FAIL: invoke `docs/apex-lite-contingency.md` Lite mode + pivot pitch claim. |
 | G5 (Day 5 Guardian BYOC + serializer tests) | ⬜ pending Vinh | Convergence 14 unit-test suite |
 | G6 (Day 6 end-to-end Sarah canned demo) | ⬜ pending Both | Core 6 C1, ship-blocker |
 
@@ -128,16 +128,16 @@ Any contract change announces in chat with `⚠️ CONTRACT` commit prefix per `
 
 1. Accept invite + clone + git config
 2. Read `docs/briefing-for-vinh.pdf` (legacy PIT WALL branding kept as artifact)
-3. **Run Gate G1 smoke test** — commit `logs/day-02-ttm-smoke.md`
-4. **Run Gate G4 spike (parallel)** — commit `logs/day-02-ttm-vs-naive.md` with RMSE per holdout circuit
+3. **Run Gate G1 smoke test** - commit `logs/day-02-ttm-smoke.md`
+4. **Run Gate G4 spike (parallel)** - commit `logs/day-02-ttm-vs-naive.md` with RMSE per holdout circuit
 5. If G1 + G4 pass: start Phase 1 task 1.1 Granite-Docling COA parse
 6. If G4 fails: read `docs/apex-lite-contingency.md` + ping Stephen for joint Lite decision
 
 ### Stephen (parallel to Vinh)
 
-1. PLAN task 1.6 file-upload dropzone UI (`app/frontend/components/Dropzone.tsx`) — WCAG keyboard + screen-reader baseline
-2. PLAN task 1.7 — pre-mortem.md daily entry (Day 2 observations)
-3. PLAN task 1.8 — Q&A Card 2 (Kinetic Hallucination) memorization drill 3x
+1. PLAN task 1.6 file-upload dropzone UI (`app/frontend/components/Dropzone.tsx`) - WCAG keyboard + screen-reader baseline
+2. PLAN task 1.7 - pre-mortem.md daily entry (Day 2 observations)
+3. PLAN task 1.8 - Q&A Card 2 (Kinetic Hallucination) memorization drill 3x
 4. Check stakeholder inbox: Phase 1+2 replies (5 emails sent Day 0)
 5. Check Codex review status if not yet integrated
 6. Day 3 advance prep: LinkedIn DM drafts for Aaron Morgan + Bobby Trundley (Team BRIT drivers) per Q-002 revised escalation

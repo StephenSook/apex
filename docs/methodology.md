@@ -16,7 +16,7 @@ The Sookra Methodology v3.3 is the personal process Stephen Sookra has developed
 
 ## The seven phases
 
-### Phase 1 — Cross-model competitive recon (2026-05-09 to 2026-05-12)
+### Phase 1 - Cross-model competitive recon (2026-05-09 to 2026-05-12)
 
 **Question:** What will the other 42 teams in the IBM SkillsBuild May Challenge build, so we can avoid the dogpile?
 
@@ -24,19 +24,19 @@ The Sookra Methodology v3.3 is the personal process Stephen Sookra has developed
 
 **Artifacts:** Six model output PDFs in `research/{claude,perplexity,deepseek,gemini,groq,kimi,new-chatgpt}-*-may-2026.pdf` + cross-model synthesis identifying the dogpile lanes (pit-wall agent, telemetry copilot, race-recap generator, regulation RAG, TORCS racer) and the empty lanes (adaptive-motorsport regulatory work, post-crash safety data, pit-crew biomechanics, sponsor ROI).
 
-**Outcome:** Lane identified — adaptive-motorsport AI race engineer. Not in any model's dogpile.
+**Outcome:** Lane identified - adaptive-motorsport AI race engineer. Not in any model's dogpile.
 
-### Phase 2 — Murder-board + judge-simulation (2026-05-13 to 2026-05-15)
+### Phase 2 - Murder-board + judge-simulation (2026-05-13 to 2026-05-15)
 
 **Question:** What kills our lane before we commit?
 
-**Method:** Two-prompt sequence per model: (1) Murder Board — tear apart the concept, find every reason it fails; (2) Judge Simulation — score it 1-5 on the four official IBM SkillsBuild criteria.
+**Method:** Two-prompt sequence per model: (1) Murder Board - tear apart the concept, find every reason it fails; (2) Judge Simulation - score it 1-5 on the four official IBM SkillsBuild criteria.
 
 **Artifacts:** `research/kimi-hostile-pitch-review.pdf` and equivalent hostile-pass outputs from the other five models. Phase 2.5 cross-model synthesis identifying 12 fatal flaws + counter-positioning.
 
 **Outcome:** GreenFlag (the FIA Certificate of Adaptations RAG chatbot concept) was killed because Formula 1 launched "Your Tech Director" agent on Salesforce Agentforce 360 in early 2026, occupying the regulatory-AI lane. Concept pivoted to PIT WALL (later renamed to APEX on Day 1).
 
-### Phase 3 — Concept lock (2026-05-16 to 2026-05-17)
+### Phase 3 - Concept lock (2026-05-16 to 2026-05-17)
 
 **Method:** Re-run Phase 2 against the new PIT WALL concept. NotebookLM grounding pass with the FIA Vehicle Adaptation Guidelines PDF + the six model outputs as source corpus.
 
@@ -44,7 +44,7 @@ The Sookra Methodology v3.3 is the personal process Stephen Sookra has developed
 
 **Outcome:** PIT WALL locked. Calibrated outcome ceiling: 85% top-3, 92% Best Use of Technology, 78% Most Innovative (NotebookLM Phase 3 pass).
 
-### Phase 4 — Deep research (2026-05-18)
+### Phase 4 - Deep research (2026-05-18)
 
 **Method:** Six-prompt fan-out to the same six models, each with a distinct specialization: (a) ChatGPT technical adversarial review of Granite TimeSeries TTM claims, (b) Perplexity hidden-competitor sweep, (c) Gemini stakeholder intelligence, (d) DeepSeek engineering risk audit, (e) Kimi hostile pitch review, (f) Groq strategic positioning + IBM judge psychology.
 
@@ -52,17 +52,17 @@ The Sookra Methodology v3.3 is the personal process Stephen Sookra has developed
 
 **Outcome:** PIT WALL hardened with 13 mandatory pitch edits + confirmed five firsts (later reduced to three independently-verifiable firsts after triple-lock analysis).
 
-### Phase 5 — NotebookLM gap analysis + PhysicsTTM mitigation (2026-05-19)
+### Phase 5 - NotebookLM gap analysis + PhysicsTTM mitigation (2026-05-19)
 
 **Question:** What objection does a frontier-model judge raise that we haven't addressed?
 
 **Method:** Upload nine sources to NotebookLM (Phase 4.5 synthesis v2 + six model outputs + Claude TTM technical verification + Phase 3 concept-lock doc + IBM SkillsBuild rules). Ask the 10-question gap-finding interrogation.
 
-**Artifacts:** Original PIT WALL Physics-Constrained Foundation Models research report in `research/pit-wall-physics-constrained-foundation-models.pdf`. The NotebookLM Phase 5 verdict surfaced **Kinetic Hallucination** — TTM trained on weather + retail data can forecast physically impossible motorsport telemetry — and proposed the three-layer mitigation: frozen TTM forecaster → differentiable physics-projection layer → Granite Guardian BYOC text audit. The serializer unit-test suite (Convergence 14) is the load-bearing safety contract.
+**Artifacts:** Original PIT WALL Physics-Constrained Foundation Models research report in `research/pit-wall-physics-constrained-foundation-models.pdf`. The NotebookLM Phase 5 verdict surfaced **Kinetic Hallucination** - TTM trained on weather + retail data can forecast physically impossible motorsport telemetry - and proposed the three-layer mitigation: frozen TTM forecaster → differentiable physics-projection layer → Granite Guardian BYOC text audit. The serializer unit-test suite (Convergence 14) is the load-bearing safety contract.
 
 **Outcome:** Architecture locked as D-A in `docs/decision-log.md`. Calibrated outcome ceiling raised to 90% top-3, 96% Best Use of Technology, 88% Most Innovative.
 
-### Phase 6 — Build (2026-05-20 to 2026-05-30, in progress)
+### Phase 6 - Build (2026-05-20 to 2026-05-30, in progress)
 
 **Method:** Twelve-day hackathon execution. Manual coordination via `PLAN.md` mirroring the Hometown-Pathway-Atlas + Trace convention (status snapshot, phase tables, coordination protocol, shared contracts, decisions, open questions, pre-submit checklist). No git hooks. Atomic-commit discipline. Push immediately. Quality over speed.
 
@@ -70,7 +70,7 @@ The Sookra Methodology v3.3 is the personal process Stephen Sookra has developed
 
 **Phase 4.5 synthesis re-tiered Day 1 EOD** per Codex independent plan-critique: Core 6 ship-blockers at 95% quality + Stretch 10 at 70% quality + always-ship trivials. See PLAN.md §Scope tiering.
 
-### Phase 7 — Submission (2026-05-31)
+### Phase 7 - Submission (2026-05-31)
 
 **Method:** Submit by 21:00 ET to leave a three-hour buffer to the hard 23:59 deadline. Tick every eligible track checkbox per global hackathon multi-track strategy. IBM Consulting cold email Day 12 afternoon. Post-submission engineering-retro committed to the repo Day 12 evening.
 
@@ -90,7 +90,7 @@ Three concrete examples from the methodology that would not have happened withou
 
 ## What the methodology costs
 
-Roughly 50 hours of pre-build process work (Phases 1-5) across 11 days. The frontier-model fan-out is API + screen-time. NotebookLM upload + 10-question interrogation is a half-day. The cross-model syntheses are the synthesis layer — Claude does the heavy lifting; the human reviews and locks.
+Roughly 50 hours of pre-build process work (Phases 1-5) across 11 days. The frontier-model fan-out is API + screen-time. NotebookLM upload + 10-question interrogation is a half-day. The cross-model syntheses are the synthesis layer - Claude does the heavy lifting; the human reviews and locks.
 
 The hackathon would lose 1-2 days of build to do the methodology if started cold. But APEX was started after the methodology had already produced the locked concept, so build-time was preserved.
 

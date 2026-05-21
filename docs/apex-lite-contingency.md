@@ -1,4 +1,4 @@
-# APEX Lite — Contingency Plan (Vinh-unresponsive scenario)
+# APEX Lite - Contingency Plan (Vinh-unresponsive scenario)
 
 > **DO NOT EXECUTE THIS DOC UNLESS THE TRIGGER FIRES.** This is a written contingency for the scenario where Vinh's GitHub collaborator invite remains unaccepted by Day 2 noon ET, or Vinh's local hardware cannot run Granite TimeSeries TTM r2.1 + cvxpylayers + Granite Guardian within Gate G1's 60-second pass criterion.
 >
@@ -30,7 +30,7 @@ If ANY of the above: Stephen invokes APEX Lite per the rest of this document.
 |-----------|-----------|-----------|-----|
 | Frontend | Next.js 16 landing page + dropzone + report UI + judges page + status page | Same (Stephen-lane already shipped Day 1) | No change |
 | Document parsing | Granite-Docling 258M parses COA PDF | **Pre-parsed canned JSON** (Sarah Reynolds fixture) | Stephen pre-bakes the COA JSON manually using the structured layout in `docs/sarah-reynolds-persona.md` |
-| Timing-sheet parsing | Granite Vision 4.1 parses timing PDFs | **Pre-parsed canned CSV** | Same approach — manual data entry, committed as fixture |
+| Timing-sheet parsing | Granite Vision 4.1 parses timing PDFs | **Pre-parsed canned CSV** | Same approach - manual data entry, committed as fixture |
 | Telemetry aggregation | 1-Hz mini-sector aggregator | Same (deterministic, no model) | Stephen ports the aggregator to a pure Python module without Vinh-style backend infrastructure |
 | **TTM forecaster** | Granite TimeSeries TTM r2.1 zero-shot | **Seasonal-naive baseline (deterministic, no ML)** | Without Vinh's hardware, TTM cannot run. Seasonal-naive ("next lap looks like this lap minus the symptom Sarah described") is honest about being naive. |
 | Physics-projection layer | CvxpyLayers QP with friction ellipse + bicycle + COA simultaneity | **Pure NumPy validator (V1 from PLAN.md task 2.1)** | Validator catches impossible physics, returns text log. No differentiable QP needed in Lite. |
@@ -105,7 +105,7 @@ If Lite is triggered, immediately append to `docs/decision-log.md`:
 
 **Decision.** APEX Lite scope per `docs/apex-lite-contingency.md`. Substitutes seasonal-naive forecaster + NumPy validator + hosted-API Granite Instruct for the full PhysicsTTM stack. Stephen executes `app/backend-lite/` per the contingency timeline.
 
-**Rationale.** Trigger fired Day 2 noon ET: [check exact reason — Vinh-unresponsive / Gate G1 fail / TTM hardware incompatibility].
+**Rationale.** Trigger fired Day 2 noon ET: [check exact reason - Vinh-unresponsive / Gate G1 fail / TTM hardware incompatibility].
 
 **Affected.** Pitch (Beat 4 + Beat 7 edits), README ("Eight IBM tools" → "Six IBM tools"), `paper/` (NeurIPS draft S10 cut), `app/backend/` (stays untouched, Vinh's lane preserved if he reappears).
 ```

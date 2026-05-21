@@ -161,8 +161,8 @@ Legend: ✅ done · 🟡 in progress · ⬜ not started · ⛔ blocked · ✂️
 | 1.4 | Tests for intake + vision parsers | `app/backend/tests/test_intake.py`, `test_vision.py` | Vinh | ⬜ | 1.3 | Schema fixtures |
 | 1.5 | **Gate G2 - COA parse coverage** | logs entry | Vinh | ⬜ | 1.1 | Pass: JSON contains all 9 adaptation domains + section IDs |
 | 1.6 | File-upload UI dropzone + WCAG keyboard/screen-reader | `app/frontend/components/Dropzone.tsx` | Stephen | ⬜ | 0.14 | Day 2 PM |
-| 1.7 | `docs/pre-mortem.md` started | docs/ | **Stephen** | ✅ | — | Pulled forward to Day 1 EOD per galaxy-tier rule. 6 Day-1 failures logged + 14 forward-looking modes + 3 accepted residual risks. Daily updates start Day 2 morning. |
-| 1.8 | Q&A Card 2 memorization (Kinetic Hallucination) | mental | Both | ⬜ | — | Drill 3x |
+| 1.7 | `docs/pre-mortem.md` started | docs/ | **Stephen** | ✅ | - | Pulled forward to Day 1 EOD per galaxy-tier rule. 6 Day-1 failures logged + 14 forward-looking modes + 3 accepted residual risks. Daily updates start Day 2 morning. |
+| 1.8 | Q&A Card 2 memorization (Kinetic Hallucination) | mental | Both | ⬜ | - | Drill 3x |
 
 ### Phase 2 - Physics layer (Days 3-5, Vinh)
 
@@ -170,17 +170,17 @@ Legend: ✅ done · 🟡 in progress · ⬜ not started · ⛔ blocked · ✂️
 |---|-----------|---------|-------|--------|------|-------|
 | 2.1 | Pure-NumPy kinematic validator V1 (friction ellipse + bicycle + Euler + jerk) | `app/backend/apex/physics/validator.py` | Vinh | ⬜ | 0.13 | Day 3 |
 | 2.2 | V1 catches 5 impossible-physics traces + approves 5 valid | `app/backend/tests/test_physics_v1.py` | Vinh | ⬜ | 2.1 | **Gate G3** |
-| 2.3 | Langflow graph screenshot mockup for deck slide 6 | `docs/deck/langflow-mockup.png` | Stephen | ⬜ | — | Day 3 |
-| 2.4 | Q&A Card 3 memorization (Serialization) | mental | Both | ⬜ | — | Drill 3x |
+| 2.3 | Langflow graph screenshot mockup for deck slide 6 | `docs/deck/langflow-mockup.png` | Stephen | ⬜ | - | Day 3 |
+| 2.4 | Q&A Card 3 memorization (Serialization) | mental | Both | ⬜ | - | Drill 3x |
 | 2.5 | TTM → NumPy validator → text log end-to-end | `app/backend/apex/ttm/forecast.py` + integration | Vinh | ⬜ | 2.1, 0.13 | Day 4 |
-| 2.6 | Beats seasonal-naive baseline on 3 of 5 holdout circuits | `app/backend/tests/test_ttm_vs_naive.py` | Vinh | ⬜ | 2.5 | **Gate G4** |
-| 2.7 | Coaching-report React component (corner-by-corner cards) | `app/frontend/components/CoachingReport.tsx` | Stephen | ⬜ | — | Day 4 |
-| 2.8 | Q&A Card 4 memorization (COA Simultaneity) | mental | Both | ⬜ | — | Drill 3x |
+| 2.6 | Beats seasonal-naive baseline on 3 of 5 holdout circuits | `app/backend/tests/test_ttm_vs_naive.py` | Vinh | ⬜ | 0.13 (NOT 2.5) | **Gate G4 - BUMPED TO DAY 2 PARALLEL SPIKE per Codex critique #2 BLOCKER.** Run alongside G1 smoke. 3-4 hour spike using FastF1 holdout circuits. Pass criterion: TTM zero-shot RMSE beats seasonal-naive on 3 of 5 holdouts. If FAIL: immediate invoke APEX Lite contingency (`docs/apex-lite-contingency.md`) OR reframe pitch from "TTM forecasts pace" to "physics-constrained envelope generator + COA-aware narrator" (drop TTM as the headline novelty, keep COA + physics layer). Day-2 timing buys 9 days for pivot vs. Day-4 timing buying 7. |
+| 2.7 | Coaching-report React component (corner-by-corner cards) | `app/frontend/components/CoachingReport.tsx` | Stephen | ⬜ | - | Day 4 |
+| 2.8 | Q&A Card 4 memorization (COA Simultaneity) | mental | Both | ⬜ | - | Drill 3x |
 | 2.9 | CvxpyLayer QP V2 replaces NumPy validator | `app/backend/apex/physics/projection.py` | Vinh | ⬜ | 2.5 | Day 5 |
 | 2.10 | Granite Guardian 4.1 BYOC custom rules audit text log | `app/backend/apex/guardian/audit.py` | Vinh | ⬜ | 2.9 | Day 5 |
 | 2.11 | Guardian catches the same 5 impossibilities the validator catches | `app/backend/tests/test_guardian_audit.py` | Vinh | ⬜ | 2.10 | **Gate G5** |
-| 2.12 | Guardian-verdict UI panel with reasoning trace surfaced | `app/frontend/components/GuardianAudit.tsx` | Stephen | ⬜ | — | Day 5 |
-| 2.13 | Q&A Card 5 memorization (Latency) | mental | Both | ⬜ | — | Drill 3x |
+| 2.12 | Guardian-verdict UI panel with reasoning trace surfaced | `app/frontend/components/GuardianAudit.tsx` | Stephen | ⬜ | - | Day 5 |
+| 2.13 | Q&A Card 5 memorization (Latency) | mental | Both | ⬜ | - | Drill 3x |
 
 ### Phase 3 - Narrator (Day 6, Vinh)
 
@@ -190,7 +190,7 @@ Legend: ✅ done · 🟡 in progress · ⬜ not started · ⛔ blocked · ✂️
 | 3.2 | Tuning-recommendation card UI with COA-section provenance | `app/frontend/components/TuningCard.tsx` | Stephen | ⬜ | 3.1 | Day 6 |
 | 3.3 | Sarah Reynolds persona fixture | `docs/sarah-reynolds-persona.md` (Stephen narrative) + `fixtures/{telemetry,coa,timing-sheets}/sarah-*` (Vinh data) | Both | 🟡 | 3.1 | Stephen narrative ✅ Day 1 EOD (pulled forward, Stephen-lane only, no fixtures/ touched per Vinh-lane respect). Vinh data files Day 6 with G6 integration. |
 | 3.4 | End-to-end pipeline runs Sarah test case < 2 min on RTX 4060 | demo run logs | Both | ⬜ | 3.1, 2.10 | **Gate G6** |
-| 3.5 | Q&A hostile rehearsal pass 1 | mental | Both | ⬜ | — | Vinh asks Stephen, then swap |
+| 3.5 | Q&A hostile rehearsal pass 1 | mental | Both | ⬜ | - | Vinh asks Stephen, then swap |
 
 ### Phase 4 - Orchestration + polish (Days 7-8, both)
 
@@ -199,14 +199,14 @@ Legend: ✅ done · 🟡 in progress · ⬜ not started · ⛔ blocked · ✂️
 | 4.1 | Langflow graph export of full pipeline | `app/backend/apex/langflow/graph.json` + screenshot | Vinh | ⬜ | 3.1 | Day 7 |
 | 4.2 | **Convergence-14 serializer unit-test suite** | `app/backend/tests/test_serializer.py` | Vinh | ⬜ | 2.10 | Every kinematic violation type has a fixture + verified Guardian verdict |
 | 4.3 | Langflow renders at 1920x1080 | screenshot | Vinh | ⬜ | 4.1 | **Gate G7** |
-| 4.4 | Deck draft v0 (3-min pitch script + storyboard) | `docs/3-min-pitch-script.md`, `docs/deck/storyboard.md` | **Stephen** | 🟡 | — | Pitch script v0 ✅ Day 1 EOD (pulled forward, 8-beat structure, 2:58 target, 13 mandatory edits roadmap). Deck storyboard pending Day 7. |
-| 4.5 | LinkedIn DMs to Aaron Morgan + Bobby Trundley (Team BRIT drivers) | DM log | Stephen | ⬜ | — | **MOVED to Day 3** per Codex critique #4 + self-critique S4. UK charity response window is 7-14 business days; Day 7 was too late as first escalation. Day 3 send leaves 8 days for reply + integration. |
-| 4.6 | Day-7 follow-up emails to Phase 1+2 non-responders | DM log | Stephen | ⬜ | — | Day 7 |
+| 4.4 | Deck draft v0 (3-min pitch script + storyboard) | `docs/3-min-pitch-script.md`, `docs/deck/storyboard.md` | **Stephen** | 🟡 | - | Pitch script v0 ✅ Day 1 EOD (pulled forward, 8-beat structure, 2:58 target, 13 mandatory edits roadmap). Deck storyboard pending Day 7. |
+| 4.5 | LinkedIn DMs to Aaron Morgan + Bobby Trundley (Team BRIT drivers) | DM log | Stephen | ⬜ | - | **MOVED to Day 3** per Codex critique #4 + self-critique S4. UK charity response window is 7-14 business days; Day 7 was too late as first escalation. Day 3 send leaves 8 days for reply + integration. |
+| 4.6 | Day-7 follow-up emails to Phase 1+2 non-responders | DM log | Stephen | ⬜ | - | Day 7 |
 | 4.7 | Cache COA + timing-sheet parses at onboarding | `app/backend/apex/intake/cache.py` | Vinh | ⬜ | 1.1, 1.2 | Day 8 |
 | 4.8 | Demo loop fits 60s on RTX 4060 | latency log | Vinh | ⬜ | 4.7 | **Gate G8** |
 | 4.9 | Deck draft v1 with all 13 mandatory edits from Phase 4.5 synthesis | `docs/deck/v1.md` | Stephen | ⬜ | 4.4 | Day 8 |
-| 4.10 | June Challenge bridge architecture doc + slide | `docs/june-challenge-bridge.md`, deck slide | Stephen | ⬜ | — | PhysicsTTM extends to FIFA player-tracking |
-| 4.11 | Q&A hostile rehearsal pass 2 | mental | Both | ⬜ | — | Day 8 |
+| 4.10 | June Challenge bridge architecture doc + slide | `docs/june-challenge-bridge.md`, deck slide | Stephen | ⬜ | - | PhysicsTTM extends to FIFA player-tracking |
+| 4.11 | Q&A hostile rehearsal pass 2 | mental | Both | ⬜ | - | Day 8 |
 
 ### Phase 5 - Demo + deploy (Days 9-10, both)
 
@@ -233,14 +233,14 @@ Legend: ✅ done · 🟡 in progress · ⬜ not started · ⛔ blocked · ✂️
 | 6.1 | Final deck PDF rendered via Playwright HTML to PDF | `docs/deck.pdf` | Stephen | ⬜ | 4.9 | Day 11 |
 | 6.2 | `apex.race/judges` one-page judges-tour landing | `app/frontend/app/judges/page.tsx` | Stephen | ⬜ | 5.8 | TOC: live demo URL + video + Colab + deck + GitHub + Q&A + IBM stack + team bios |
 | 6.3 | `apex.race/status` live demo status dashboard | `app/frontend/app/status/page.tsx` | Stephen | ⬜ | 5.1, 5.8 | Uptime + commit SHA + HF Space health + last green CI |
-| 6.4 | `docs/methodology.md` (Sookra Methodology trace) | docs/ | Stephen | ⬜ | — | seven phases: P1 recon → P2 murder-board + judge-sim → P3 concept-lock → P4 deep-research → P5 PhysicsTTM mitigation → P6 build → P7 submission |
+| 6.4 | `docs/methodology.md` (Sookra Methodology trace) | docs/ | Stephen | ⬜ | - | seven phases: P1 recon → P2 murder-board + judge-sim → P3 concept-lock → P4 deep-research → P5 PhysicsTTM mitigation → P6 build → P7 submission |
 | 6.5 | `docs/pre-mortem.md` final polish | docs/ | Both | ⬜ | 1.7 | Every failure mode + mitigation |
-| 6.6 | `docs/cost-audit-2026-05-30.md` (usage-audit skill run) | docs/ | Stephen | ⬜ | — | Session cost + token spend |
+| 6.6 | `docs/cost-audit-2026-05-30.md` (usage-audit skill run) | docs/ | Stephen | ⬜ | - | Session cost + token spend |
 | 6.7 | `paper/apex-neurips-workshop-2026.md` DRAFT (readable quality) | paper/ | Vinh | ⬜ | 4.2, 5.7 | Abstract + intro + method + experiments + related + limitations |
 | 6.8 | README.md final polish | repo root | Stephen | ⬜ | 5.8 | Demo URL + Mermaid arch + Cloud Run links + IBM stack |
 | 6.9 | AI-tone sweep (`scripts/ai-tone-sweep.sh`) | scripts/ | Stephen | ⬜ | 6.1, 6.8 | Zero em-dash + zero blocklist hits across README, deck, video transcript, emails |
-| 6.10 | All §17 external-tool passes | logs | Both | ⬜ | — | pre-landing-review, claude-council, three-brain (Codex + Gemini), architecture-reviewer, repo-sentinel, NotebookLM gap pass 2 |
-| 6.11 | Q&A final hostile pass (evening) | mental | Both | ⬜ | — | Cold + timed; each card < 30s |
+| 6.10 | All §17 external-tool passes | logs | Both | ⬜ | - | pre-landing-review, claude-council, three-brain (Codex + Gemini), architecture-reviewer, repo-sentinel, NotebookLM gap pass 2 |
+| 6.11 | Q&A final hostile pass (evening) | mental | Both | ⬜ | - | Cold + timed; each card < 30s |
 | 6.12 | Every §Pre-submit Checklist (below) item green | gates checklist | Both | ⬜ | 6.1-6.11 | **Gate G11** |
 
 ### Phase 7 - Submit (Day 12, both)
@@ -250,7 +250,7 @@ Legend: ✅ done · 🟡 in progress · ⬜ not started · ⛔ blocked · ✂️
 | 7.1 | Final smoke test (demo, video, Colab, fresh-clone, sim-rig) | gates checklist | Both | ⬜ | 6.12 | Morning |
 | 7.2 | BeMyApp form submit + tick every eligible track checkbox | submission proof | Stephen | ⬜ | 7.1 | Afternoon |
 | 7.3 | Devpost cross-post if applicable | submission proof | Stephen | ⬜ | 7.2 | Afternoon |
-| 7.4 | IBM Consulting cold email referencing Scuderia Ferrari case study | sent log | Stephen | ⬜ | — | Afternoon |
+| 7.4 | IBM Consulting cold email referencing Scuderia Ferrari case study | sent log | Stephen | ⬜ | - | Afternoon |
 | 7.5 | Post-submission Claude Memory write + engineering-retro | obsidian + docs | Stephen | ⬜ | 7.2 | Evening |
 | 7.6 | Submitted by 21:00 ET (3-hour buffer to hard 23:59 deadline) | submission timestamp | Stephen | ⬜ | 7.2 | **HARD DEADLINE** |
 
@@ -360,7 +360,7 @@ Run `scripts/pre-submit-checks.sh`. All 20 items must pass. Fail = no submission
 2. [ ] AI-tone blocklist sweep ("delve into / leverage / seamless / robust / etc") = zero hits
 3. [ ] En-dash + smart-quote sweep = ASCII only in prose
 4. [ ] Operator-attribution sweep = no named operator without per-surface consent
-5. [ ] Em-dash in commit messages = `git log --pretty=%s | grep "—"` empty
+5. [ ] Em-dash in commit messages = `git log --pretty=%s | grep "-"` empty
 6. [ ] GitHub Actions CI green on `main` per-job (not just aggregate)
 7. [ ] TypeScript clean: `tsc --noEmit` zero errors
 8. [ ] Lint clean: `ruff check` + `eslint` zero errors
@@ -383,7 +383,7 @@ Run `scripts/pre-submit-checks.sh`. All 20 items must pass. Fail = no submission
 
 > Memorize. Auditor catches at sweep level. Manual review for demo video + pitch text.
 
-- ❌ **No em-dash (—) in prose.** Per global CLAUDE.md. Single most reliable AI-tone tell. Pre-submit sweep on Day 11.
+- ❌ **No em-dash (-) in prose.** Per global CLAUDE.md. Single most reliable AI-tone tell. Pre-submit sweep on Day 11.
 - ❌ **No AI-tone blocklist words** in prose: "delve into / leverage / seamless / robust / comprehensive / unlock / cutting-edge / revolutionary / streamline / ecosystem / easily / simply."
 - ❌ **No invented FIA Article numbers.** Verify via FIA.com or research/ PDFs before citing. Per D-004 research-tool discipline.
 - ❌ **No named operators without per-surface consent.** Aaron Morgan, Bobby Trundley, anyone who replies to outreach: get explicit consent per surface (deck vs README vs video).
