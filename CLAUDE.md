@@ -33,7 +33,7 @@ Full rationale in `docs/decision-log.md`.
 - **D-006:** No git hooks. Manual coordination only. `.git/hooks/` stays defaults-only. No Husky, lefthook, pre-commit, commit-msg validators.
 - **D-007:** Quality over speed. Tool-inventory audit BLOCKING before any non-trivial task. Use every available skill + agent + MCP + connector.
 - **D-A:** PhysicsTTM three-layer architecture (frozen TTM → CvxpyLayer QP projection → Guardian BYOC text audit). Convergence 14 (serializer unit-test suite) is load-bearing.
-- **D-B:** Pitch headline = "First integrated workflow for adaptive hand-controls." Q&A killshot reserved = COA-parameterized brake-throttle simultaneity.
+- **D-B (refined Day 1 PM):** Dual-layer pitch architecture. Emotional Hero headline = "The race engineer for the drivers who don't have one." Technical positioning headline (Differentiator #1) = "First integrated workflow for adaptive hand-controls." Q&A killshot reserved = COA-parameterized brake-throttle simultaneity.
 
 ## Hard compliance (DQ-grade)
 
