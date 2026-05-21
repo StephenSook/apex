@@ -174,16 +174,20 @@ interface StaticSignal {
   readonly label: string;
   readonly value: string;
   readonly href: string | null;
-  readonly tone: "racing-green" | "ink" | "amber";
+  readonly tone: SignalTone;
 }
 
+type SignalTone = "racing-green" | "ink" | "amber" | "accent";
+
+const SIGNAL_TONE_CLASS: Record<SignalTone, string> = {
+  "racing-green": "text-racing-green",
+  ink: "text-ink",
+  amber: "text-amber",
+  accent: "text-accent",
+};
+
 function SignalTile({ signal }: { signal: StaticSignal }) {
-  const valueClass =
-    signal.tone === "racing-green"
-      ? "text-racing-green"
-      : signal.tone === "amber"
-        ? "text-amber"
-        : "text-ink";
+  const valueClass = SIGNAL_TONE_CLASS[signal.tone];
 
   const inner = (
     <article className="flex h-full flex-col gap-2 rounded-sm border border-rule bg-paper-warm p-5">
