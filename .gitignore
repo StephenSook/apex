@@ -115,6 +115,11 @@ runtime-*.log
 playwright-report/
 playwright/.cache/
 test-results/
+.playwright-mcp/
+apex-landing-*.png
+
+# Next.js build output (frontend subworkspace)
+app/frontend/.next/
 
 # Misc local scratch
 scratch/
