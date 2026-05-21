@@ -1,684 +1,453 @@
-# IBM SkillsBuild May Challenge — Build & Workspace Plan
-**Working name:** APEX (rename from PIT WALL — final pick on Day 1, see §10)
-**Submission deadline:** 2026-05-31, 11:59 PM
-**Days remaining:** 12 (today is Day 1 of build = 2026-05-20)
-**Team:** Stephen Sookra (frontend, deck, video, narrative, stakeholder outreach), Vinh Le (backend, ML pipeline, Langflow, FastAPI, infra)
+# APEX - Plan & Coordination
+
+> Living working doc for **Stephen Sookra** (frontend + pitch + project architect) and **Vinh Le** (backend + ML pipeline + data + AI). Updated on every task status change and pushed to `main`. Authoritative over `docs/architecture-spec.md` when the two disagree.
+
+**Hackathon:** IBM SkillsBuild AI Builders Challenge, May Challenge ("AI Beyond the Finish Line")
+**Submission deadline:** 2026-05-31, 11:59 PM ET
+**Repo:** https://github.com/StephenSook/apex
+**Strategy:** Galaxy-tier scope. Playing for Grand Prize ($5K across May+June) AND 1st Place + Most Innovative + Best Use of Technology. No item is "post-hackathon" or "stretch." Conservative core ships first (Phases 0-3, Days 1-6), enhancement layers stack on top (Phases 4-6, Days 7-11), each layer independently cuttable if it threatens the Day 12 submit.
 
 ---
 
-## 1. Context
+## Status snapshot (last sync 2026-05-20 PM, Day 1)
 
-We have spent the last several days in deep Sookra-methodology recon: six-model competitive map (Phase 1.5), murder-board + judge-sim (Phase 2.5), GreenFlag dead → PIT WALL locked (Phase 3), seven-voice synthesis with NotebookLM verification (Phase 4.5), Kinetic Hallucination discovered + PhysicsTTM mitigation locked (Phase 5). The concept, IBM Granite stack, Q&A defense pack, pitch architecture, and 12-day build skeleton are all locked. Calibrated outcome ceiling: 90% top-3 / 96% Best Use of Technology / 88% Most Innovative.
+This snapshot is the at-a-glance reality check for anyone reading PLAN.md fresh.
 
-What is NOT yet done and what this plan executes:
+**Phase 0 - Bootstrap:** 🟡 IN PROGRESS (Day 1).
+- D0.1 Lock APEX name (rename from PIT WALL): ✅ DONE
+- D0.2a Init GitHub monorepo: ✅ DONE (https://github.com/StephenSook/apex live)
+- D0.2b Invite Vinh as collaborator: ✅ DONE (Stephen confirmed invite sent, Vinh has been texted, waiting on accept)
+- D0.3 Obsidian APEX MOC + 7 child notes + Home.md update: ✅ DONE
+- D0.4 Project memory folder + 15 seed files: ✅ DONE
+- D0.5 Reorganize `Desktop/IBM May/` per §Repo layout: ✅ DONE (13 atomic commits, all pushed)
+- D0.6 Hand Vinh the briefing PDF + repo URL: ✅ DONE (committed at `docs/briefing-for-vinh.pdf`)
+- D0.7 Vinh TTM smoke test (Gate G1): ⬜ pending (Vinh-side, once he accepts repo invite)
 
-1. The workspace folder is a flat dump of 12 research PDFs with no organization, no git repo, no Obsidian project notes, no project memory. Vinh cannot orient.
-2. The product name "PIT WALL" collides on BeMyApp with another team's submission "PitWall" (cinematic GoPro coaching for amateur drivers). We rename Day 1.
-3. There is no rolling state-sync protocol between sessions. If VS Code crashes or a new chat starts, context is lost. This plan installs Obsidian + project-memory as the persistent state layer.
-4. No code exists yet. Day 1 of the build is today. The 12-day schedule starts now.
-5. Research-tool discipline (context7, tavily, web_research, firecrawl, EXA) is not yet a session-default. This plan installs it as a memory-enforced rule.
+**Phase 1 - Document parsing (Day 2, Vinh):** ⬜ pending. Granite-Docling on FIA COA + Granite Vision on SRO timing-sheet. Gate G2.
 
-The intended outcome of executing this plan: by 2026-05-31 23:59, submit a working public demo with a 3-minute video, a clean GitHub repo of ~80–120 atomic commits, a deck-ready briefing PDF, and a Q&A-rehearsed team — positioned to take Grand Prize, Most Innovative, Best Use of Technology, or all three. The plan is also structured so that any future "ultraplann" iteration pass (run plan through external review models) finds clean, addressable sections instead of one monolithic blob.
+**Phase 2 - Physics layer (Days 3-5, Vinh):** ⬜ pending. NumPy validator V1 → CvxpyLayer QP V2 → Granite Guardian BYOC + Convergence-14 serializer unit-test suite. Gates G3, G4, G5.
 
----
+**Phase 3 - Narrator (Day 6, Vinh):** ⬜ pending. Granite 4.1 Instruct + COA simultaneity flag. Gate G6.
 
-## 2. Phase 0 — Day 1 Decisions (sequence-blocking, do these first)
+**Phase 4 - Orchestration + polish (Days 7-8, both):** ⬜ pending. Langflow export + latency closure + June Challenge bridge + LinkedIn DM beta-tester escalation. Gates G7, G8.
 
-Order matters. Each step blocks the next.
+**Phase 5 - Demo + deploy (Days 9-10, both):** ⬜ pending. HF Space + Colab + sim-rig + production video + 30s clip + Lite contingency. Gates G9, G10.
 
-| # | Decision | Owner | Output | Blocks |
-|---|----------|-------|--------|--------|
-| D0.1 | Lock final project name from §10 shortlist | Stephen | Name committed to repo + Obsidian | D0.2, D0.3, D0.4 |
-| D0.2a | Init GitHub monorepo, public, Apache 2.0, named after D0.1 | Stephen | `https://github.com/StephenSook/<name>` live | D0.2b, D0.5 |
-| D0.2b | Invite Vinh as repo collaborator with Write access | Stephen | Vinh accepts invite, can push to main | D0.6, parallel build |
-| D0.3 | Create Obsidian project hub + seed notes per §5 | Stephen | `<Name> MOC.md` + 6 child notes live in vault | session-sync |
-| D0.4 | Create project memory folder + seed entries per §6 | Stephen | `~/.claude/projects/-Users-stephensookra-Desktop-IBM-May/memory/` populated | session-sync |
-| D0.5 | Reorganize `Desktop/IBM May/` per §3, commit to repo | Stephen | folder is git-tracked, PDFs in `research/`, code scaffold in `app/` | Vinh onboarding |
-| D0.6 | Hand Vinh the (rebranded) briefing PDF + repo URL + invite link + his lane | Stephen | Vinh acknowledges + accepts invite + clones repo | D0.7, parallel build |
-| D0.7 | First Vinh-side `pip install granite-tsfm` zero-shot smoke test, push from Vinh's account | Vinh | `logs/day-01-ttm-smoke.md` committed by Vinh | Day 2 build, attribution check |
+**Phase 6 - Submission package (Day 11, both):** ⬜ pending. Judges page + status page + methodology + pre-mortem + cost audit + NeurIPS workshop paper draft + all §17 external-tool passes. Gate G11.
 
-If D0.7 fails (Granite TTM doesn't load on Vinh's box), the day-1 go/no-go gate fails and we fall back to APEX Lite (drop TTM, keep Granite 4.1 Instruct + Guardian as a regulatory + narrative-only product). Document the gate result in `Claude Memory/Session - 2026-05-20 - apex-day-1.md`.
+**Phase 7 - Submit (Day 12, both):** ⬜ pending. Multi-track BeMyApp form + IBM Consulting cold email + retrospective. HARD DEADLINE 23:59 ET.
 
----
+**Critical-path Vinh deps still open:**
+1. Accept collaborator invite
+2. Clone repo + `pip install granite-tsfm` + Gate G1 TTM smoke test
+3. Day 2 Granite-Docling + Granite Vision pipeline
 
-## 3. Phase 1 — Workspace Folder Reorganization
+**Critical-path Stephen ops still open:**
+1. Next.js 15 + Tailwind + Plex + Fraunces scaffold in `app/frontend/`
+2. Phase 1+2 stakeholder reply check (5 emails sent 2026-05-19, 0 returned so far, 12 days remaining)
+3. Q&A Card 1 memorization (Deep Dynamics defense)
 
-### 3.1 Current state (flat, 12 PDFs at `~/Desktop/IBM May/`)
-
-All research PDFs sit at the root with no taxonomy: model recon outputs, the Vinh briefing, the IBM rules, the screenshot of BeMyApp portal, the Physics-TTM research, etc.
-
-### 3.2 Target structure
-
-```
-~/Desktop/IBM May/                          ← repo root, becomes the GitHub repo
-├── .git/                                   ← git init Day 1
-├── .gitignore                              ← Python + Node + macOS + IBM/HF caches
-├── LICENSE                                 ← Apache 2.0
-├── README.md                               ← project pitch, demo URL, team, IBM stack
-├── pyproject.toml                          ← `apex` + `physics-tsfm` workspace
-├── docs/
-│   ├── briefing-for-vinh.pdf               ← move from root
-│   ├── 3-min-pitch-script.md               ← Day 9 lock
-│   ├── deck.pdf                            ← Day 11 lock
-│   ├── q-and-a-flashcards.md               ← 5 cards from Phase 4.5
-│   ├── stakeholder-outreach-log.md         ← every email + reply
-│   └── decision-log.md                     ← rename, kill-switches, pivots
-├── research/                               ← all 12 PDFs land here
-│   ├── ibm-rules.pdf
-│   ├── may-challenge-ibm.pdf
-│   ├── claude-pit-wall.pdf
-│   ├── perplexity-pit-wall-may-2026.pdf
-│   ├── deepseek-ibm-may.pdf
-│   ├── gemini-ibm-may.pdf
-│   ├── groq-ibm-may.pdf
-│   ├── kimi-hostile-pitch-review.pdf
-│   ├── new-chatgpt-ibm-may.pdf
-│   ├── chatgpt-greenflag-scoring.pdf       ← (dead concept, keep as artifact)
-│   ├── pit-wall-physics-constrained-foundation-models.pdf
-│   └── pit-wall-briefing-for-vinh.pdf      ← (rename target version lives in /docs)
-├── app/                                    ← the product
-│   ├── frontend/                           ← Next.js 15 + React + Tailwind + Plex
-│   │   ├── app/                            ← App Router
-│   │   ├── components/
-│   │   └── public/                         ← demo telemetry CSVs, COA fixtures
-│   ├── backend/                            ← FastAPI + Langflow + IBM Granite
-│   │   ├── apex/                           ← package code
-│   │   │   ├── intake/                     ← Granite-Docling COA parser
-│   │   │   ├── vision/                     ← Granite Vision timing-sheet parser
-│   │   │   ├── ttm/                        ← Granite TimeSeries TTM forecaster
-│   │   │   ├── physics/                    ← projection layer (CvxpyLayer QP)
-│   │   │   ├── guardian/                   ← Granite Guardian BYOC rules
-│   │   │   ├── instruct/                   ← Granite 4.1 8B narrator
-│   │   │   └── langflow/                   ← visible orchestration graph export
-│   │   ├── tests/                          ← serialization unit tests (Convergence 14)
-│   │   └── pyproject.toml
-│   └── shared/                             ← TypeScript types + Python schemas
-├── physics-tsfm/                           ← library carve-out (post-hackathon paper)
-│   ├── README.md                           ← Apache 2.0, abstract from Source 10 §10
-│   ├── physics_tsfm/                       ← projection-layer code
-│   └── tests/
-├── fixtures/                               ← reproducible demo data
-│   ├── telemetry/                          ← FastF1 slice + Team BRIT synthetic
-│   ├── coa/                                ← redacted FIA COA example PDFs
-│   └── timing-sheets/                      ← SRO + Britcar PDF samples
-├── deliverables/                           ← what we hand the judges
-│   ├── demo-video.mp4                      ← Day 12 lock
-│   ├── demo-video-backup.mp4               ← pre-recorded fallback
-│   ├── thumbnail.png
-│   └── bemyapp-submission-payload.md       ← form copy
-├── scripts/                                ← one-shot ops
-│   ├── render-deck.sh                      ← Playwright HTML→PDF
-│   ├── ai-tone-sweep.sh                    ← em-dash + blocklist scanner
-│   └── pre-submit-checks.sh                ← gate runner
-├── bob-sessions/                           ← IBM Bob session logs (per Ferrari precedent)
-└── logs/                                   ← per-day build logs
-    ├── day-01-2026-05-20.md
-    └── ...
-```
-
-### 3.3 Move plan (commit-by-commit)
-
-| Commit | Action |
-|--------|--------|
-| `chore: init repo, license, gitignore` | git init, LICENSE, .gitignore, root README stub |
-| `docs: import IBM challenge rules + May brief` | move `ibm rules.pdf` + `May challenge IBM.pdf` → `research/` |
-| `docs: import six-model recon outputs` | move Claude / Perplexity / DeepSeek / Gemini / Groq / Kimi / ChatGPT PDFs |
-| `docs: import physics-tsfm research artifact` | move Physics-Constrained Foundation Models PDF |
-| `docs: import Vinh briefing PDF (legacy PIT WALL branding)` | move briefing PDF to `docs/` |
-| `chore: scaffold app + physics-tsfm + fixtures dirs` | create empty subtrees with .gitkeep |
-| `docs: README v0 — name + tagline + IBM stack + team` | first real README |
-
-Seven commits before any code is written. Green squares activated.
+**Calibration ceiling (NotebookLM Phase 5 pass):** 90% top-3 / 96% Best Use of Technology / 88% Most Innovative. Working planning numbers: 75/85/75.
 
 ---
 
-## 4. Phase 2 — GitHub Repo Setup
+## Vinh - read this first when you wake up (2026-05-21 AM)
 
-### 4.1 Repo config (decided)
+**End of Day 1 (2026-05-20) status:**
 
-| Item | Value |
-|------|-------|
-| Name | `<rename-from-D0.1>` (recommendation: `apex`) |
-| Visibility | Public from Day 1 |
-| License | Apache 2.0 |
-| Default branch | `main` |
-| Collaborators | Stephen (owner), Vinh (Write access via repo Settings → Collaborators) |
-| Branch protection | OFF for hackathon speed. Both members push directly to `main`. Atomic-commit discipline replaces PR review as the quality gate. |
-| Commit style | Conventional Commits (`feat:`, `fix:`, `docs:`, `chore:`, `test:`, `refactor:`, `perf:`, `ci:`) |
-| Branch model | Trunk + short feature branches only when 2+ commits touch the same surface AND the other member is also editing that surface; rebase-merge to keep linear history |
-| CI | GitHub Actions: tsc + lint + pytest on PR + main push (per global lint-before-commit triplet) |
-| Secrets | `HF_TOKEN`, `IBM_API_KEY`, `WATSONX_PROJECT_ID` in repo secrets; never in code |
-| Attribution | Each member commits from their own GitHub account so green-squares land on the right profile. Verify `git config user.email` per machine matches the account that owns the email on github.com. |
+Stephen completed the bootstrap. Repo, scaffold, memory, Obsidian, plan, briefing PDF, decision log all live.
 
-### 4.2 Atomic-commit discipline (rule of three)
+### What's in the repo waiting for you
 
-Every commit must:
-1. **One logical change** — one bug fix, one new function, one doc update, one fixture import. Never bundle unrelated work.
-2. **Subject ≤ 100 chars** — commitlint passes.
-3. **Push immediately** — no batching at end of day. Push-after-every-commit per global CLAUDE.md.
+- `https://github.com/StephenSook/apex` is public, Apache 2.0, 13+ commits pushed
+- `docs/briefing-for-vinh.pdf` is the full 21-page briefing (legacy PIT WALL branding kept as artifact; the rename to APEX is the only thing that changed about the substance)
+- `PLAN.md` (this file) is the living coordination doc
+- `docs/decision-log.md` lists every locked decision (D-001 through D-007)
+- `research/` has all 12 model recon PDFs (Claude, Perplexity, DeepSeek, Gemini, Groq, Kimi, two ChatGPT runs) plus the IBM rules + May brief + Physics-TTM research artifact
+- `app/backend/apex/` has 7 empty subpackages waiting for your code (intake, vision, ttm, physics, guardian, instruct, langflow) plus `tests/` for the Convergence-14 serializer unit-test suite
+- `physics-tsfm/` is the library carve-out for the NeurIPS Workshop paper draft (Day 11)
+- `fixtures/{coa, telemetry, timing-sheets, personas}` are the test-data slots; populate with Sarah Reynolds persona Day 6
+- `paper/` is where the NeurIPS draft lives starting Day 11
 
-Target velocity: 6–10 commits per build day × 11 days ≈ **80–110 total commits** by submission. Green-squares effect maximized.
+### Your action items in order (~30 min before any backend code)
 
-### 4.3 CI guardrails (configured Day 2)
+1. **Accept GitHub collaborator invite.** Stephen sent the invite + texted you. Check `https://github.com/StephenSook/apex/invitations` or wait for the GitHub email.
+2. **Read `docs/briefing-for-vinh.pdf`** (cover to cover, ~25 min). Skip pages 1-2 if you only have 5 minutes; pages 11-12 are your lane.
+3. **Clone the repo:** `git clone https://github.com/StephenSook/apex && cd apex`
+4. **Set git config to your account** so green-squares attribute correctly: `git config user.email <your-github-email>` and `git config user.name <your-github-name>`.
+5. **Verify the IBM SkillsBuild rules PDF + the FIA Vehicle Adaptation Guidelines** in `research/` (link to live FIA URL in `docs/architecture-spec.md` if not present, fall back to the PDF in research).
+6. **Run Gate G1 - TTM smoke test:**
+   ```bash
+   cd app/backend
+   python3 -m venv .venv && source .venv/bin/activate
+   pip install granite-tsfm transformers torch fastf1
+   python -c "from tsfm_public.toolkit import TinyTimeMixerForPrediction; m = TinyTimeMixerForPrediction.from_pretrained('ibm-granite/granite-timeseries-ttm-r2'); print(m)"
+   ```
+   Commit `logs/day-01-ttm-smoke.md` documenting: load time, inference latency on a 6000x8 telemetry slice, output tensor shape. Pass criterion: TTM loads + 1Hz inference returns within 60s on your machine. If it does not, switch to APEX Lite contingency (drop TTM, keep Granite Instruct + Guardian on regulatory-only product) and ping Stephen.
 
-`.github/workflows/ci.yml` runs on every push to main + every PR:
-- Backend: `ruff`, `mypy --strict`, `pytest -q`, `pytest --cov=apex --cov-fail-under=70`
-- Frontend: `tsc --noEmit`, `eslint`, `vitest run`
-- AI-tone: `scripts/ai-tone-sweep.sh` (fails on em-dash, smart quotes, AI blocklist words in README + docs)
-- Build: `next build` for frontend, `python -m apex --version` for backend
+### What Stephen has done + planned next work (parallel to yours)
 
-Verify CI is green per push, not just per PR (per global hackathon-project-flow Phase 1 discipline).
+- ✅ Repo init, license, gitignore, README, PLAN.md, decision log, memory, Obsidian. Done Day 1.
+- ⬜ Next: `app/frontend/` Next.js 15 + Tailwind + Plex + Fraunces scaffold with WCAG 2.1 AA baseline (Day 1 evening / Day 2 morning).
+- ⬜ Day 2 PM: file-upload UI + dropzone + accessibility baseline; start `docs/pre-mortem.md`.
+- ⬜ Day 6: Sarah Reynolds persona script committed to `fixtures/personas/sarah-reynolds.md`.
 
----
+### Contact path (no Slack/Discord yet - use these in order)
 
-## 5. Phase 3 — Obsidian Population
+1. **Real-time:** the chat platform you and Stephen have been using (text/iMessage/Discord DM)
+2. **Async, attached to repo:** add a `🟡 NEEDS-INPUT` row in PLAN.md with your question; Stephen will see on next `git pull`
+3. **Issue tracking:** open a GitHub issue at https://github.com/StephenSook/apex/issues if it's structured
 
-Obsidian = persistent project state. If a new chat starts cold or VS Code crashes, the next assistant session reads the vault to re-orient.
+### Coordination protocol (mirrors Hometown-Pathway-Atlas + Trace conventions, see §Coordination Protocol below)
 
-### 5.1 Notes to create on Day 1 (under `Projects/`)
-
-| Filename | Type | Purpose |
-|----------|------|---------|
-| `<Name> MOC.md` | moc | Project hub. Lists every child note + status table + decision log + active gate. |
-| `Project - <Name>.md` | project-note | One-page summary: problem, hero use case, IBM stack, team, deadline, prize map. |
-| `<Name> - Architecture.md` | project-note | Three-layer PhysicsTTM diagram + role of each Granite tool + serialization contract. |
-| `<Name> - 12 Day Build Plan.md` | project-note | Copy of §7 of this plan, kept editable per-day. |
-| `<Name> - Vinh Lane.md` | project-note | Backend ownership table (TTM, Physics, Guardian, Langflow, FastAPI, tests). |
-| `<Name> - Stephen Lane.md` | project-note | Frontend + deck + video + narrative + outreach. |
-| `<Name> - Q&A Defense Pack.md` | project-note | Five flashcards verbatim + rehearsal log. |
-| `<Name> - Stakeholder Outreach Log.md` | reference | One row per outreach: org, contact, date sent, reply, quote text, attribution surface. |
-
-Each note follows global frontmatter schema (`title`, `type`, `status: active`, `project: <Name>`, `created: 2026-05-20`, `tags`, `related`).
-
-### 5.2 Update `Home.md` (insertion)
-
-Add this line under `Active MOCs (project hubs)`:
-
-```markdown
-- [[<Name> MOC]] — IBM SkillsBuild May Challenge, adaptive-motorsport AI race engineer (deadline 2026-05-31)
-```
-
-### 5.3 Session-end sync protocol (durable rule)
-
-Every substantive session terminates with a Claude Memory write:
-
-```
-Claude Memory/Session - YYYY-MM-DD - <name> - <slug>.md
-```
-
-Body: What done / Decided / Next / Gotchas / Related.
-
-This is the **state-recovery anchor**. If VS Code crashes or the user opens a new chat tomorrow, the assistant reads `Home.md` → `<Name> MOC.md` → last 3 `Claude Memory/` entries and resumes mid-flight.
+- Edit PLAN.md to claim 🟡, complete ✅, block ⛔, cut ✂️
+- Single-file commit per status change
+- 4-hour stale lock TTL
+- ⚠️ CONTRACT prefix on commits that change Shared Contracts
+- **NO git hooks, NO CLI wrappers, NO commit-msg validators.** Manual coordination only. The `.git/hooks/` directory must contain only `.sample` defaults. Locked per D-006.
 
 ---
 
-## 6. Phase 4 — Project Memory Population
+## Sources of truth (priority order)
 
-Memory = facts that should outlive this session and carry into every future conversation about this project.
-
-### 6.1 Directory bootstrap
-
-Create `~/.claude/projects/-Users-stephensookra-Desktop-IBM-May/memory/` with `MEMORY.md` index + seed files. Use the frontmatter schema in global CLAUDE.md (`name`, `description`, `metadata.type`).
-
-### 6.2 Seed memory files (Day 1)
-
-| File | Type | Content (one-liner) |
-|------|------|---------------------|
-| `project_apex_overview.md` | project | What APEX is, who for, deadline, prize map, locked architecture |
-| `project_apex_stack.md` | reference | Granite-Docling, Granite Vision 4.1, Granite TTM r2.1, Granite 4.1 Instruct, Granite Guardian 4.1, Langflow, Docling, IBM Bob — version pins + role |
-| `project_apex_decisions.md` | project | Renamed from PIT WALL on 2026-05-20 (reason: BeMyApp collision). Monorepo. Public Day 1. PhysicsTTM 3-layer mitigation locked. |
-| `project_apex_vinh_lane.md` | project | Backend ownership, FastAPI + Langflow + TTM + Guardian + tests |
-| `project_apex_stephen_lane.md` | project | Frontend + deck + 3-min video + outreach + Q&A drills |
-| `project_apex_kill_switches.md` | feedback | Day-by-day go/no-go gates: Day 1 TTM smoke, Day 4 zero-shot beats naive, Day 7 projection converges, Day 10 Lite fallback trigger |
-| `project_apex_qa_killshots.md` | reference | Five Q&A flashcards verbatim (Deep Dynamics, Kinetic Hallucination, Serialization, COA simultaneity, Latency) |
-| `project_apex_stakeholders.md` | reference | Mission 44 (Jason Arthur), Team BRIT (Al Locke), Spinal Track (Nathalie via Andrew), Limitless (Johnny Dawson-Ellis), Raceability (Brian Roberts) — addresses + status |
-| `feedback_research_tool_discipline.md` | feedback | When uncertain about a library / API / FIA reg / IBM model / contact / fact: ALWAYS context7 → web_research → firecrawl → EXA before claiming. Save tool used + finding to memory. |
-| `feedback_obsidian_state_sync.md` | feedback | Every substantive session terminates with a Claude Memory write so the next session can recover state from `Home.md` → MOC → last 3 sessions |
-| `feedback_em_dash_zero_tolerance.md` | feedback | Global rule mirrored: no em-dash in prose, period. Substitutes per global CLAUDE.md table |
-| `feedback_atomic_commit_discipline.md` | feedback | One logical change per commit, ≤100 char subject, push immediately, CI green per push |
-| `feedback_galaxy_ambition_no_deferrals.md` | feedback | LOAD-BEARING: nothing is "post-hackathon," "stretch," or "if time permits." Everything ships by 2026-05-31 23:59. Every enhancement, paper draft, beta-tester quote, parallel June track, live driver mode — all in scope NOW. Reject any future suggestion to "punt to v2." |
-
-### 6.3 The research-tool discipline rule (memory-enforced)
-
-This is the durable rule the user requested. Saving it as `feedback_research_tool_discipline.md`:
-
-> When I am uncertain about a fact, library version, API behavior, FIA regulation, IBM Granite model card, person's role/email, or any claim I'm about to make in code, deck copy, email, or memory, I MUST verify with a research tool BEFORE asserting it. Order: (1) Context7 for library/API docs, (2) tavily / WebSearch for general facts, (3) Firecrawl for JS-heavy/SPA sites, (4) EXA for academic/research sources, (5) WebFetch for static URLs. Save the tool used + finding to a memory file. Never bluff a fact in this project.
-
-**Why:** This project ships to IBM judges. A single false claim about Granite TTM's training distribution, an outdated email for Jason Arthur, or a wrong FIA Article number turns the demo into a credibility hit. Discipline ships.
-
-**How to apply:** Before any tool call that asserts a fact, ask "do I know this with certainty?". If no, run a research tool first. After verification, save to memory as a fact card so the next session doesn't re-verify the same thing.
+1. **`~/.claude/projects/-Users-stephensookra-Desktop-IBM-May/memory/`** - persistent context Claude Code reads every session. Locked rules + facts live here. If anything in PLAN.md drifts from a memory file, fix the drift in PLAN.md.
+2. **`docs/architecture-spec.md`** (TODO Day 2) - full system design carved out from the design-blueprint plan. Master reference for stack roles, physics-projection layer math, COA section IDs, FIA Article references.
+3. **This file (`PLAN.md`)** - authoritative for task ownership, status, decisions, contracts.
+4. **`docs/briefing-for-vinh.pdf`** - operational guide for Vinh's Days 1-6.
+5. **`docs/decision-log.md`** - every locked decision with rationale + date + scope.
+6. **`docs/methodology.md`** (Day 11) - Sookra Methodology trace.
+7. **`docs/pre-mortem.md`** (Day 2 start, Day 11 final) - running failure-mode journal.
+8. **`README.md`** - public-facing pitch. Locked Day 11. Do not mirror this plan into it.
 
 ---
 
-## 7. Phase 5 — 12-Day Build Plan (today is Day 1)
+## Status dashboard
 
-Days indexed from build kickoff = 2026-05-20. Submission = 2026-05-31 23:59 ET = Day 12.
+Legend: ✅ done · 🟡 in progress · ⬜ not started · ⛔ blocked · ✂️ cut
 
-### Day 1 — Mon 2026-05-20 — Bootstrap + Smoke Test
-- D0.1 → D0.7 from §2
-- Vinh: `pip install granite-tsfm`, run zero-shot TTM on FastF1 telemetry slice, commit `logs/day-01-ttm-smoke.md`
-- Stephen: Next.js 15 + Tailwind + Plex scaffold, commit `app/frontend/` skeleton
-- Both: read briefing PDF + memorize Q&A Card 1 (Deep Dynamics)
-- **Gate G1:** TTM loads on Vinh's box + 1Hz inference returns within 60s on M2 / RTX 4060
-- **Commits target:** 8–12
+**Bold owner = currently active on the task. Plain owner = assigned but not started.**
 
-### Day 2 — Tue 2026-05-21 — Docling + Vision parsing
-- Vinh: Granite-Docling parses FIA COA example PDF into structured JSON; Granite Vision 4.1 parses one SRO timing-sheet
-- Stephen: file-upload UI + dropzone + accessibility baseline (WCAG 2.1 AA keyboard + screen-reader)
-- Both: memorize Q&A Card 2 (Kinetic Hallucination)
-- Stakeholder: send Phase-3 emails if any new contacts surface (FFSA Handikart secretary)
-- **Gate G2:** parsed COA JSON contains all 9 adaptation domain headings + section IDs
-- **Commits target:** 8–10
+### Phase 0 - Bootstrap (Day 1, both)
 
-### Day 3 — Wed 2026-05-22 — Physics Validator V1
-- Vinh: pure-NumPy kinematic validator (friction circle, bicycle, Euler step, jerk bound)
-- Stephen: build the visible Langflow graph screenshot mockup for deck slide 6
-- Both: memorize Q&A Card 3 (Serialization)
-- **Gate G3:** validator catches 5 hand-crafted impossible-physics traces and approves 5 valid ones
-- **Commits target:** 6–8
+| # | Component | File(s) | Owner | Status | Notes |
+|---|-----------|---------|-------|--------|-------|
+| 0.1 | Lock APEX name (rename from PIT WALL) | repo metadata | **Stephen** | ✅ | A.P.E.X. = Adaptive Performance Engineer with eXplanation. BeMyApp portal showed competing "PitWall" submission. |
+| 0.2 | Init GitHub monorepo + Apache 2.0 LICENSE | repo root | **Stephen** | ✅ | `gh repo create apex --public --source=. --remote=origin --push` |
+| 0.3 | Invite Vinh as collaborator | GitHub Settings | **Stephen** | ✅ | Invite sent + Vinh texted; waiting on accept |
+| 0.4 | Drop PLAN.md + STATUS_TEMPLATE + briefing PDF | repo root, docs/ | **Stephen** | ✅ | Coordination is manual (mirrors Trace/Hometown) - no hooks, no CLI |
+| 0.5 | `.gitignore` for Python + Node + IBM caches | repo root | **Stephen** | ✅ | 122 lines |
+| 0.6 | Reorganize 12 PDFs into research/ + docs/ | research/, docs/ | **Stephen** | ✅ | All kebab-case |
+| 0.7 | Scaffold app/, physics-tsfm/, fixtures/, deliverables/, scripts/, bob-sessions/, paper/, logs/ | repo tree | **Stephen** | ✅ | 25 `.gitkeep` placeholders |
+| 0.8 | Project memory folder + 15 seed files | `~/.claude/projects/-Users-stephensookra-Desktop-IBM-May/memory/` | **Stephen** | ✅ | 8 project facts + 6 durable rules + 1 index |
+| 0.9 | Obsidian APEX MOC + 7 child notes + Home.md update | Obsidian vault | **Stephen** | ✅ | State-recovery anchor live |
+| 0.10 | `logs/day-01-2026-05-20.md` + `docs/decision-log.md` | logs/, docs/ | **Stephen** | ✅ | Committed |
+| 0.11 | Vinh's git config matches GitHub account | Vinh's local | Vinh | ⬜ | `git config user.email <your-github-email>` |
+| 0.12 | Vinh accept invite + clone repo | Vinh's local | Vinh | ⬜ | Blocker for parallel build |
+| 0.13 | **Gate G1 - TTM smoke test** | `logs/day-01-ttm-smoke.md` | Vinh | ⬜ | Pass: TTM loads + 1Hz inference within 60s on M2 or RTX 4060 |
+| 0.14 | Next.js 15 + Tailwind + Plex + Fraunces scaffold | `app/frontend/` | Stephen | ⬜ | Day 1 evening / Day 2 AM. WCAG 2.1 AA baseline. |
+| 0.15 | Mermaid architecture diagram in README + SVG export to docs/ | README.md, docs/architecture.svg | Stephen | ⬜ | Day 2 |
+| 0.16 | Project-local `CLAUDE.md` (refers to global + memory) | repo root | Stephen | ⬜ | Day 2 |
+| 0.17 | `STATUS_TEMPLATE.md` for daily handoffs | repo root | Stephen | ✅ | Mirrors Hometown convention |
 
-### Day 4 — Thu 2026-05-23 — Zero-Shot Baseline + Projection V1
-- Vinh: end-to-end TTM forecast → NumPy validator → text log; compare against seasonal-naive baseline on one FastF1 race
-- Stephen: build coaching-report React component with corner-by-corner cards
-- Both: memorize Q&A Card 4 (COA Simultaneity)
-- **Gate G4:** zero-shot TTM (with physics projection) beats seasonal-naive on next-lap mini-sector MAE on at least 3 of 5 holdout circuits
-- **Commits target:** 8–10
+### Phase 1 - Document parsing (Day 2, Vinh)
 
-### Day 5 — Fri 2026-05-24 — CvxpyLayer Projection V2 + Guardian BYOC
-- Vinh: replace NumPy validator with differentiable QP via `cvxpylayers`; wire to Granite Guardian 4.1 with BYOC rules (text log → Guardian audit)
-- Stephen: build Guardian-verdict UI panel with the reasoning trace surfaced
-- Both: memorize Q&A Card 5 (Latency)
-- **Gate G5:** Guardian text audit catches the 5 same impossibilities the validator catches
-- **Commits target:** 6–8
+| # | Component | File(s) | Owner | Status | Deps | Notes |
+|---|-----------|---------|-------|--------|------|-------|
+| 1.1 | Granite-Docling 258M parses FIA COA PDF into structured JSON | `app/backend/apex/intake/coa_parser.py` | Vinh | ⬜ | 0.13 | Preserve section IDs + 9 adaptation domains |
+| 1.2 | Granite Vision 4.1 parses SRO timing-sheet PDF into CSV | `app/backend/apex/vision/timing_parser.py` | Vinh | ⬜ | 0.13 | Charts/tables only, not phone photos |
+| 1.3 | Fixture COA + timing-sheet committed | `fixtures/coa/`, `fixtures/timing-sheets/` | Vinh | ⬜ | 1.1, 1.2 | Public FIA + SRO examples |
+| 1.4 | Tests for intake + vision parsers | `app/backend/tests/test_intake.py`, `test_vision.py` | Vinh | ⬜ | 1.3 | Schema fixtures |
+| 1.5 | **Gate G2 - COA parse coverage** | logs entry | Vinh | ⬜ | 1.1 | Pass: JSON contains all 9 adaptation domains + section IDs |
+| 1.6 | File-upload UI dropzone + WCAG keyboard/screen-reader | `app/frontend/components/Dropzone.tsx` | Stephen | ⬜ | 0.14 | Day 2 PM |
+| 1.7 | `docs/pre-mortem.md` started | docs/ | Stephen | ⬜ | — | Failure-mode journal, every Phase 1+ failure recorded |
+| 1.8 | Q&A Card 2 memorization (Kinetic Hallucination) | mental | Both | ⬜ | — | Drill 3x |
 
-### Day 6 — Sat 2026-05-25 — Granite Instruct narrator + COA simultaneity flag
-- Vinh: Granite 4.1 8B Instruct wired to read forecast envelope + COA + driver debrief, output the tuning-delta recommendation in race-engineer voice
-- Stephen: build the tuning-recommendation card UI with citation-to-COA-section provenance
-- Both: full Q&A hostile-pass rehearsal (Vinh asks, Stephen answers, swap)
-- **Gate G6:** end-to-end pipeline produces a corner-by-corner report from one canned (Sarah / Britcar M240i) test case in under 2 minutes on RTX 4060
-- **Commits target:** 8–10
+### Phase 2 - Physics layer (Days 3-5, Vinh)
 
-### Day 7 — Sun 2026-05-26 — Langflow + tests + beta-tester escalation
-- Vinh: export the full pipeline as a Langflow graph; write the serialization unit-test suite (Convergence 14) — every kinematic violation type has a fixture
-- Stephen: deck draft v0 — 3-minute pitch script + storyboard
-- Stakeholder: Day-7 follow-up emails to Phase 1 + 2 contacts that did not reply (per Gemini protocol). **In parallel: send LinkedIn DMs to Aaron Morgan and Bobby Trundley (Team BRIT drivers) with 60-second video pitch to secure a real adaptive-driver beta-test quote.** This is in scope per §9.7 galaxy rule — no waiting for Phase 1 to fail.
-- **Gate G7:** Langflow graph renders correctly in a screenshot at 1920×1080
-- **Commits target:** 6–8
+| # | Component | File(s) | Owner | Status | Deps | Notes |
+|---|-----------|---------|-------|--------|------|-------|
+| 2.1 | Pure-NumPy kinematic validator V1 (friction ellipse + bicycle + Euler + jerk) | `app/backend/apex/physics/validator.py` | Vinh | ⬜ | 0.13 | Day 3 |
+| 2.2 | V1 catches 5 impossible-physics traces + approves 5 valid | `app/backend/tests/test_physics_v1.py` | Vinh | ⬜ | 2.1 | **Gate G3** |
+| 2.3 | Langflow graph screenshot mockup for deck slide 6 | `docs/deck/langflow-mockup.png` | Stephen | ⬜ | — | Day 3 |
+| 2.4 | Q&A Card 3 memorization (Serialization) | mental | Both | ⬜ | — | Drill 3x |
+| 2.5 | TTM → NumPy validator → text log end-to-end | `app/backend/apex/ttm/forecast.py` + integration | Vinh | ⬜ | 2.1, 0.13 | Day 4 |
+| 2.6 | Beats seasonal-naive baseline on 3 of 5 holdout circuits | `app/backend/tests/test_ttm_vs_naive.py` | Vinh | ⬜ | 2.5 | **Gate G4** |
+| 2.7 | Coaching-report React component (corner-by-corner cards) | `app/frontend/components/CoachingReport.tsx` | Stephen | ⬜ | — | Day 4 |
+| 2.8 | Q&A Card 4 memorization (COA Simultaneity) | mental | Both | ⬜ | — | Drill 3x |
+| 2.9 | CvxpyLayer QP V2 replaces NumPy validator | `app/backend/apex/physics/projection.py` | Vinh | ⬜ | 2.5 | Day 5 |
+| 2.10 | Granite Guardian 4.1 BYOC custom rules audit text log | `app/backend/apex/guardian/audit.py` | Vinh | ⬜ | 2.9 | Day 5 |
+| 2.11 | Guardian catches the same 5 impossibilities the validator catches | `app/backend/tests/test_guardian_audit.py` | Vinh | ⬜ | 2.10 | **Gate G5** |
+| 2.12 | Guardian-verdict UI panel with reasoning trace surfaced | `app/frontend/components/GuardianAudit.tsx` | Stephen | ⬜ | — | Day 5 |
+| 2.13 | Q&A Card 5 memorization (Latency) | mental | Both | ⬜ | — | Drill 3x |
 
-### Day 8 — Mon 2026-05-27 — Latency closure + caching + June Challenge bridge architecture
-- Vinh: cache COA + timing-sheet parses at onboarding; ensure post-race coaching loop fits in 60 seconds on RTX 4060
-- Stephen: deck draft v1 with all 13 mandatory changes from Phase 4.5 synthesis applied. **In parallel: design the June Challenge bridge — write `docs/june-challenge-bridge.md` outlining how the PhysicsTTM architecture transfers to FIFA World Cup player-tracking telemetry. Concrete: which channels map (player x/y/v/a → throttle/brake/lat-G/long-G), which physics constraints apply (max human acceleration, max turn rate), which IBM tools stay vs swap. Commit a one-slide deck addition that signals to Grand Prize judges we are executing both halves of the prize structure.**
-- Both: hostile Q&A pass #2
-- **Gate G8:** demo loop measured at < 60s wall-clock 3 runs in a row + June bridge slide committed
-- **Commits target:** 8–10
+### Phase 3 - Narrator (Day 6, Vinh)
 
-### Day 9 — Tue 2026-05-28 — Demo dress rehearsal + HF Space deploy + Colab notebook + live sim-rig integration
-- Vinh: deploy backend to Hugging Face Space free tier; verify cold-start fallback path. **Also: publish `deliverables/apex-demo.ipynb` — self-contained Colab notebook that runs the entire pipeline in a free browser cell. Becomes the zero-install demo path AND the "try it yourself" link in README on launch day, not later.**
-- Stephen: record demo video v0 (raw screen capture); lock pitch script. **Also: stand up sim-rig integration — connect iRacing or Assetto Corsa Competizione telemetry export to APEX over WebSocket. The 3-minute video will run APEX on LIVE simulated adaptive-controls telemetry, not a canned replay. This is the galaxy commitment: live + adaptive + on-camera.**
-- Both: dress rehearsal #1 (full 3-minute pitch + 5-minute Q&A)
-- **Gate G9:** v0 video plays without obvious breakage; HF Space loads in < 90s cold; Colab notebook executes end-to-end in browser; sim-rig WebSocket streams clean telemetry.
-- **Commits target:** 6–8
+| # | Component | File(s) | Owner | Status | Deps | Notes |
+|---|-----------|---------|-------|--------|------|-------|
+| 3.1 | Granite 4.1 Instruct narrator wired | `app/backend/apex/instruct/narrator.py` | Vinh | ⬜ | 2.10, 1.1 | Reads forecast envelope + COA + debrief, emits tuning delta |
+| 3.2 | Tuning-recommendation card UI with COA-section provenance | `app/frontend/components/TuningCard.tsx` | Stephen | ⬜ | 3.1 | Day 6 |
+| 3.3 | Sarah Reynolds persona fixture | `fixtures/personas/sarah-reynolds.md` + telemetry + COA | Both | ⬜ | 3.1 | Story-grade case |
+| 3.4 | End-to-end pipeline runs Sarah test case < 2 min on RTX 4060 | demo run logs | Both | ⬜ | 3.1, 2.10 | **Gate G6** |
+| 3.5 | Q&A hostile rehearsal pass 1 | mental | Both | ⬜ | — | Vinh asks Stephen, then swap |
 
-### Day 10 — Wed 2026-05-29 — Polish + live driver mode dress rehearsal + Lite contingency
-- **Decision day for Lite fallback:** if any Day 9 gate slipped catastrophically, invoke APEX Lite (drop sim-rig integration, drop Colab, ship the core PhysicsTTM loop on cached fixtures). Default expectation is no fallback needed because the galaxy rule (§9.7) means we built the contingencies pre-emptively, not reactively.
-- Stephen: record demo video v1 (production take with voiceover, live sim-rig data on screen) + thumbnail + 30-second highlight clip per §16.4
-- Vinh: fix every bug surfaced by dress rehearsal #1; instrument reproducibility metadata footer per §16.5 on every demo output
-- Both: dress rehearsal #2 with hostile Q&A using live sim-rig
-- **Gate G10:** video v1 ≤ 3:00, audio clean, screen captures readable at 1080p, 30s clip locked, sim-rig didn't crash during recording
-- **Commits target:** 8–12
+### Phase 4 - Orchestration + polish (Days 7-8, both)
 
-### Day 11 — Thu 2026-05-30 — Submission package + judges page + methodology trace + NeurIPS draft
-- Stephen: final deck PDF render via Playwright; BeMyApp form copy; README final polish; AI-tone sweep across README + deck + video transcript + emails. **Stand up `apex.race/judges` per §16.9 — one-page TOC for evaluators. Stand up `apex.race/status` per §16.10 — live demo uptime indicator. Write `docs/methodology.md` per §16.6 — the Sookra Methodology trace. Write `docs/pre-mortem.md` per §16.3 — every known failure mode with mitigation, started Day 2 and final-polished today.**
-- Vinh: final repo cleanup; ensure CI green on main; double-check HF Space stays warm via keep-alive cron; finalize reproducibility metadata footer rendering. **Also: draft `paper/apex-neurips-workshop-2026.md` — the NeurIPS Time-Series Foundation Models Workshop paper draft (abstract + intro + method + experiments + related work + limitations). This is IN SCOPE per §9.7. The paper itself goes from "outlined" to "draft-quality readable by another researcher" by submission. Commit the .md and the .tex skeleton.**
-- Both: stakeholder follow-up — every quote that landed goes into deck + video credits. Run §17 external-tool layers: `pre-landing-review`, `claude-council`, `three-brain` (Codex + Gemini reviews), `architecture-reviewer`, `repo-sentinel`, NotebookLM gap pass #2, `usage-audit`. Run them today, not tomorrow.
-- **Gate G11:** every pre-submit checklist item in §8 passes; methodology + pre-mortem + NeurIPS draft + judges page + status page all committed
-- **Commits target:** 12–18 (heaviest commit day)
+| # | Component | File(s) | Owner | Status | Deps | Notes |
+|---|-----------|---------|-------|--------|------|-------|
+| 4.1 | Langflow graph export of full pipeline | `app/backend/apex/langflow/graph.json` + screenshot | Vinh | ⬜ | 3.1 | Day 7 |
+| 4.2 | **Convergence-14 serializer unit-test suite** | `app/backend/tests/test_serializer.py` | Vinh | ⬜ | 2.10 | Every kinematic violation type has a fixture + verified Guardian verdict |
+| 4.3 | Langflow renders at 1920x1080 | screenshot | Vinh | ⬜ | 4.1 | **Gate G7** |
+| 4.4 | Deck draft v0 (3-min pitch script + storyboard) | `docs/3-min-pitch-script.md`, `docs/deck/storyboard.md` | Stephen | ⬜ | — | Day 7 |
+| 4.5 | LinkedIn DMs to Aaron Morgan + Bobby Trundley (Team BRIT drivers) | DM log | Stephen | ⬜ | — | Day 7 escalation, 60-second video pitch attached |
+| 4.6 | Day-7 follow-up emails to Phase 1+2 non-responders | DM log | Stephen | ⬜ | — | Day 7 |
+| 4.7 | Cache COA + timing-sheet parses at onboarding | `app/backend/apex/intake/cache.py` | Vinh | ⬜ | 1.1, 1.2 | Day 8 |
+| 4.8 | Demo loop fits 60s on RTX 4060 | latency log | Vinh | ⬜ | 4.7 | **Gate G8** |
+| 4.9 | Deck draft v1 with all 13 mandatory edits from Phase 4.5 synthesis | `docs/deck/v1.md` | Stephen | ⬜ | 4.4 | Day 8 |
+| 4.10 | June Challenge bridge architecture doc + slide | `docs/june-challenge-bridge.md`, deck slide | Stephen | ⬜ | — | PhysicsTTM extends to FIFA player-tracking |
+| 4.11 | Q&A hostile rehearsal pass 2 | mental | Both | ⬜ | — | Day 8 |
 
-### Day 12 — Fri 2026-05-31 — Submission + multi-track entry + retrospective + IBM Consulting outreach
-- Morning: final smoke test of live demo, video playback, Colab notebook execution, GitHub repo clone-and-run from a clean machine, sim-rig WebSocket healthy.
-- Afternoon: submit BeMyApp form per §16.11 — tick EVERY eligible track checkbox (May main, Most Innovative, Best Use of Technology, Grand Prize, any sponsor track). Verify Devpost cross-post if applicable. **Also send: cold email to IBM Consulting leadership citing the Scuderia Ferrari case-study precedent and offering APEX as the reference architecture for governed foundation-model deployment on safety-critical sensor data (per §16.6 methodology trace + Grok strategic positioning). This is IN SCOPE today, not "post-submission."**
-- Evening: post-submission session-memory write + engineering-retro skill run + retrospective draft committed to repo
-- **Hard deadline:** 23:59 ET. Submit no later than 21:00 to leave margin.
+### Phase 5 - Demo + deploy (Days 9-10, both)
 
-### Velocity check
-- 12 days × ~7 commits/day = ~84 commits. Per global hackathon-project-flow, we target 80–120. On track.
+| # | Component | File(s) | Owner | Status | Deps | Notes |
+|---|-----------|---------|-------|--------|------|-------|
+| 5.1 | HF Space deploy (free tier) + cold-start fallback | `app/backend/Dockerfile`, HF Space config | Vinh | ⬜ | 4.7, 4.1 | Day 9 |
+| 5.2 | `deliverables/apex-demo.ipynb` Colab notebook | deliverables/ | Vinh | ⬜ | 5.1 | Zero-install browser-side demo |
+| 5.3 | Sim-rig WebSocket bridge for iRacing/ACC live telemetry | `app/backend/apex/sim_bridge.py` | Stephen + Vinh | ⬜ | 5.1 | Day 9 - galaxy commitment |
+| 5.4 | Demo video v0 (raw screen capture) + pitch script locked | `deliverables/demo-video-v0.mp4`, `docs/3-min-pitch-script.md` | Stephen | ⬜ | 4.9 | Day 9 |
+| 5.5 | Dress rehearsal 1 (3-min pitch + 5-min hostile Q&A) | recorded | Both | ⬜ | 5.4 | Day 9 |
+| 5.6 | v0 plays + HF loads < 90s + Colab executes + sim-rig streams | gates checklist | Both | ⬜ | 5.1-5.5 | **Gate G9** |
+| 5.7 | Reproducibility metadata footer on every demo output | `app/frontend/components/ProvenanceFooter.tsx` | Vinh | ⬜ | 3.1 | Model versions + COA section IDs + Guardian audit ID + commit SHA |
+| 5.8 | Vercel frontend deploy | `app/frontend/Dockerfile` or Vercel config | Stephen | ⬜ | 0.14 | Day 9 |
+| 5.9 | Demo video v1 production take + voiceover + thumbnail | `deliverables/demo-video.mp4`, `deliverables/thumbnail.png` | Stephen | ⬜ | 5.5 | Day 10 |
+| 5.10 | 30-second highlight clip | `deliverables/demo-video-30s.mp4` | Stephen | ⬜ | 5.9 | Day 10 |
+| 5.11 | Dress rehearsal 2 with hostile Q&A using live sim-rig | recorded | Both | ⬜ | 5.9 | Day 10 |
+| 5.12 | v1 video <= 3:00, audio clean, 1080p, sim-rig stable | gates checklist | Both | ⬜ | 5.9-5.11 | **Gate G10** |
+| 5.13 | APEX Lite contingency decision (default: NO, ship full) | `docs/decision-log.md` D-Lite | Both | ⬜ | 5.6 | Day 10 morning |
 
----
+### Phase 6 - Submission package (Day 11, both)
 
-## 8. Phase 6 — Pre-Submission Checklist (Day 11 gate)
+| # | Component | File(s) | Owner | Status | Deps | Notes |
+|---|-----------|---------|-------|--------|------|-------|
+| 6.1 | Final deck PDF rendered via Playwright HTML to PDF | `docs/deck.pdf` | Stephen | ⬜ | 4.9 | Day 11 |
+| 6.2 | `apex.race/judges` one-page judges-tour landing | `app/frontend/app/judges/page.tsx` | Stephen | ⬜ | 5.8 | TOC: live demo URL + video + Colab + deck + GitHub + Q&A + IBM stack + team bios |
+| 6.3 | `apex.race/status` live demo status dashboard | `app/frontend/app/status/page.tsx` | Stephen | ⬜ | 5.1, 5.8 | Uptime + commit SHA + HF Space health + last green CI |
+| 6.4 | `docs/methodology.md` (Sookra Methodology trace) | docs/ | Stephen | ⬜ | — | 6 phases of recon → murder-board → judge-sim → NotebookLM → PhysicsTTM → build |
+| 6.5 | `docs/pre-mortem.md` final polish | docs/ | Both | ⬜ | 1.7 | Every failure mode + mitigation |
+| 6.6 | `docs/cost-audit-2026-05-30.md` (usage-audit skill run) | docs/ | Stephen | ⬜ | — | Session cost + token spend |
+| 6.7 | `paper/apex-neurips-workshop-2026.md` DRAFT (readable quality) | paper/ | Vinh | ⬜ | 4.2, 5.7 | Abstract + intro + method + experiments + related + limitations |
+| 6.8 | README.md final polish | repo root | Stephen | ⬜ | 5.8 | Demo URL + Mermaid arch + Cloud Run links + IBM stack |
+| 6.9 | AI-tone sweep (`scripts/ai-tone-sweep.sh`) | scripts/ | Stephen | ⬜ | 6.1, 6.8 | Zero em-dash + zero blocklist hits across README, deck, video transcript, emails |
+| 6.10 | All §17 external-tool passes | logs | Both | ⬜ | — | pre-landing-review, claude-council, three-brain (Codex + Gemini), architecture-reviewer, repo-sentinel, NotebookLM gap pass 2 |
+| 6.11 | Q&A final hostile pass (evening) | mental | Both | ⬜ | — | Cold + timed; each card < 30s |
+| 6.12 | Every §Pre-submit Checklist (below) item green | gates checklist | Both | ⬜ | 6.1-6.11 | **Gate G11** |
 
-Run `scripts/pre-submit-checks.sh`. Fail = do not submit until fixed.
+### Phase 7 - Submit (Day 12, both)
 
-| # | Check | Pass condition |
-|---|-------|----------------|
-| 1 | Em-dash sweep | `grep -r "—" docs/ README.md app/frontend/app/` returns zero matches in prose |
-| 2 | AI-tone blocklist | "delve into / leverage / seamless / robust / comprehensive / unlock / cutting-edge / revolutionary / streamline / ecosystem / easily / simply" all absent |
-| 3 | En-dash + smart-quote sweep | only ASCII hyphens + straight quotes in prose |
-| 4 | Operator-attribution sweep | no named operator without consent; check briefing PDF + deck + video credits |
-| 5 | Em-dash in commit messages | `git log --pretty=%s | grep "—"` empty |
-| 6 | CI green on main | latest GitHub Actions run is green per job, not just aggregate |
-| 7 | TypeScript clean | `tsc --noEmit` zero errors |
-| 8 | Lint clean | `ruff check` + `eslint` zero errors |
-| 9 | Tests pass | `pytest` + `vitest run` zero failures, coverage ≥ 70% on `apex/` |
-| 10 | Hugging Face Space healthy | `curl -s https://huggingface.co/spaces/.../health` returns 200 |
-| 11 | Demo video length | `ffprobe deliverables/demo-video.mp4` shows ≤ 3:00 |
-| 12 | Backup demo exists | `deliverables/demo-video-backup.mp4` present |
-| 13 | Deck PDF renders | `docs/deck.pdf` opens without errors, every slide < 100 words |
-| 14 | README has working demo URL | `curl -sI <url>` returns 200 |
-| 15 | License present | `LICENSE` is Apache 2.0 |
-| 16 | All IBM tools cited in README | Granite-Docling, Granite Vision 4.1, Granite TimeSeries TTM r2.1, Granite 4.1 8B Instruct, Granite Guardian 4.1, Langflow, Docling, IBM Bob each named with role |
-| 17 | Q&A flashcards memorized | both team members can deliver all 5 cards in < 30s each from cold |
-| 18 | Multi-track entries verified | every eligible track checkbox ticked on BeMyApp |
-| 19 | Stakeholder quotes attributed | any endorsement quote in deck cites name + org with permission |
-| 20 | Git in sync | `git status` clean, `git pull && git push` clean |
-
----
-
-## 9. Phase 7 — Ongoing Discipline (durable, multi-session)
-
-These behaviors install as memory rules and stay live across all future sessions on this project.
-
-### 9.1 Research-tool discipline (memory-enforced)
-Already specified in §6.3. Restated for emphasis: any factual claim → tool first.
-
-### 9.2 Read-before-Edit invariant (mirror of global rule)
-Before any file edit: Read first. After 5 tool calls since last Read of a file, re-Read before next Edit. Per global CLAUDE.md.
-
-### 9.3 Session-end sync protocol
-Every substantive session ends with a Claude Memory write. Format per §5.3.
-
-### 9.4 Em-dash zero-tolerance
-Per global CLAUDE.md. Substitutes table memorized.
-
-### 9.5 Atomic commit + push-immediately
-One logical change per commit. ≤100 char subject. Push after every commit. Verify CI green per push.
-
-### 9.6 Operator-unassociation principle
-For any community member, mod, or operator: anonymous + aggregate description unless explicit per-surface consent. Even when they reply to outreach, separate consent for deck vs README vs video.
-
-### 9.7 Galaxy-tier scope (no deferrals) — load-bearing project rule
-**Nothing is "post-hackathon," "stretch," or "if time permits." Everything ships by 2026-05-31 23:59.**
-
-This rule reframes the entire plan. There is no §18 "outer-orbit stretch" and no "post-submission" §17.10. Every enhancement in §16, every external-tool layer in §17, every "future" thing in §14 collapses into the 12-day scope. The team operates on an "aim for the galaxy, hit the moon" budget: even if a feature lands at 70% quality, having attempted it at all on Day 11 beats deferring it to a "version 2" that judges will never see.
-
-Concrete implications already folded into §7 below:
-- Live driver mode (sim-rig running adaptive controls feeding APEX in real time) → Day 9–10 commit, not "if dress rehearsal passes"
-- Real adaptive-driver beta-tester quote → Day 7 commit, escalate LinkedIn DM if Phase 1 emails go dark
-- NeurIPS Workshop paper draft → Day 11–12, drafted (not just outlined) before submission
-- June Challenge bridge architecture → Day 8 parallel-track planning, with one slide in the final deck explicitly committing to it
-- Public Colab demo + apex.race/judges + apex.race/status + 30s highlight clip + reproducibility metadata → all Day 7–11
-- Methodology trace doc + devlog + multi-track submission → all Day 11 commits
-
-The rule itself is committed to memory as `feedback_galaxy_ambition_no_deferrals.md` (§6.2). It applies to every future session on this project. If a future iteration says "let's punt X to v2," it gets rejected on sight unless X is physically impossible by May 31.
-
-### 9.8 Two-cycle BeMyApp workflow awareness
-(Not applicable here — BeMyApp does not have a 2-step approval — but the discipline transfers: verify the submission appears on the public projects feed by Day 12 22:00 with an unrelated browser session.)
+| # | Component | File(s) | Owner | Status | Deps | Notes |
+|---|-----------|---------|-------|--------|------|-------|
+| 7.1 | Final smoke test (demo, video, Colab, fresh-clone, sim-rig) | gates checklist | Both | ⬜ | 6.12 | Morning |
+| 7.2 | BeMyApp form submit + tick every eligible track checkbox | submission proof | Stephen | ⬜ | 7.1 | Afternoon |
+| 7.3 | Devpost cross-post if applicable | submission proof | Stephen | ⬜ | 7.2 | Afternoon |
+| 7.4 | IBM Consulting cold email referencing Scuderia Ferrari case study | sent log | Stephen | ⬜ | — | Afternoon |
+| 7.5 | Post-submission Claude Memory write + engineering-retro | obsidian + docs | Stephen | ⬜ | 7.2 | Evening |
+| 7.6 | Submitted by 21:00 ET (3-hour buffer to hard 23:59 deadline) | submission timestamp | Stephen | ⬜ | 7.2 | **HARD DEADLINE** |
 
 ---
 
-## 10. Phase 0.1 — Name Decision (D0.1 expanded)
+## Coordination Protocol
 
-Renamed because the BeMyApp portal already shows a competing submission "PitWall" (cinematic GoPro coaching for amateur drivers). Name collision risk is real for judges scanning the 43-submission grid.
-
-### Shortlist (pick one before D0.2)
-
-| # | Name | Tagline candidate | Pros | Cons |
-|---|------|------|------|------|
-| 1 | **APEX** ★ recommended | "The AI race engineer for the drivers who don't have one." | Universal racing term. Two syllables, brandable, every corner has an apex. Already in our session vocabulary. | `apex.ai` is taken (Apex Autonomy). Use `apex.race` or `apexengineer.dev` domain. |
-| 2 | **GreenLine** | "Get cleared to race. Find the line. Make it home." | Carries forward the GreenFlag predecessor energy. Accessibility undertone. Racing-line semantic. | Generic English compound, weaker brand mark. |
-| 3 | **Pacer** | "Your race engineer at the speed of one lap." | Short, racing vocabulary, easy to say. | Pacer.com is a fitness app, possible weak collision. |
-| 4 | **TouchLine** | "Hand-controls deserve a coach who reads them right." | Distinctive, double-meaning (tactile + boundary). Surfaced as my working name in earlier research. | Less obvious racing fit at first glance. |
-
-Recommendation: **APEX**. Strongest brand mark, universal racing semantic, no PitWall confusion, and the acronym A.P.E.X. = **A**daptive **P**erformance **E**ngineer (with) e**X**planation reads as a deliberate stack-architectural choice rather than a forced backronym.
-
-If APEX is taken on GitHub (likely): fall back to `apex-engineer` or `apex-race`. Check via `gh repo view StephenSook/apex` Day 1.
-
-This decision is **Day 1 D0.1** — block on it before initializing the repo.
-
----
-
-## 11. Critical Files To Be Created Day 1
-
-| Path | Purpose |
-|------|---------|
-| `~/Desktop/IBM May/.gitignore` | Python + Node + macOS + IBM/HF + VS Code |
-| `~/Desktop/IBM May/LICENSE` | Apache 2.0 |
-| `~/Desktop/IBM May/README.md` | Project + IBM stack + demo URL + team |
-| `~/Desktop/IBM May/docs/decision-log.md` | Rename rationale + every kill-switch outcome |
-| `~/Desktop/IBM May/logs/day-01-2026-05-20.md` | Bootstrap log |
-| `~/.claude/projects/-Users-stephensookra-Desktop-IBM-May/memory/MEMORY.md` | Index per §6.2 |
-| `~/.claude/projects/-Users-stephensookra-Desktop-IBM-May/memory/feedback_research_tool_discipline.md` | The durable rule per §6.3 |
-| `~/Documents/Obsidian Vault/Projects/<Name> MOC.md` | Project hub per §5.1 |
-| `~/Documents/Obsidian Vault/Home.md` | One-line edit per §5.2 |
-| `~/Documents/Obsidian Vault/Claude Memory/Session - 2026-05-20 - apex-bootstrap.md` | First session anchor |
+1. **Before starting a task:** set status to 🟡 with timestamp in Notes, commit `PLAN.md` only, push. This is your lock.
+2. **After finishing:** flip to ✅, commit `PLAN.md` only, push.
+3. **If blocked:** set to ⛔, add a one-line note explaining why. Ping the other person.
+4. **Before starting ANY task:** run `git pull` and check this file. If the other person has 🟡 on overlapping files, coordinate first.
+5. **Hotfixes:** skip the protocol - commit the fix directly, update PLAN.md after. Don't let process block a real emergency.
+6. **PLAN.md commits are atomic.** Never bundle a status update with code changes. One-line status change → commit → push.
+7. **Commit messages:** Conventional Commits (mirrors Trace/Hometown).
+   - `feat(backend): add ProfileService with FIPS lookup`
+   - `feat(frontend): scaffold CoachingReport with corner-by-corner cards`
+   - `fix(physics): tighten friction-ellipse bound for wet-track scenarios`
+   - `chore(plan): claim 2.1 🟡 Vinh`
+   - `docs(plan): complete 1.1 ✅`
+   - `docs(plan): cut 4.10 ✂️ - June bridge slide on next session`
+   - `⚠️ CONTRACT: change ttm-to-physics tensor shape - adds simultaneity bit` (announce in chat first)
+8. **Handoffs:** when your part is done and the other person picks up, add `→ Vinh` or `→ Stephen` in the Notes column.
+9. **Stale lock TTL = 4 hours (hackathon mode).** A 🟡 task requires a timestamp in Notes. If no commit happens within 4 hours, the lock is stale - the other person can claim it. Ping the original owner first.
+10. **Contract changes require announcement.** Anything in the Shared Contracts table below must be announced in chat BEFORE committing. Use `⚠️ CONTRACT` prefix. Contract drift is the #1 cause of integration bugs.
+11. **NO git hooks. NO CLI wrappers. NO commit-msg validators.** `.git/hooks/` must contain only `.sample` defaults. Verified Day 1 Stephen-side. Vinh verifies post-clone (`ls -la .git/hooks/` should show only `*.sample` files). If a tool wants to install Husky / lefthook / pre-commit, DECLINE.
+12. **Push after every commit.** Push-immediately rule per global CLAUDE.md atomic-commit discipline.
 
 ---
 
-## 12. Existing Functions / Skills To Reuse (no reinvention)
+## Shared Contracts
 
-| Need | Reuse | Path |
-|------|-------|------|
-| Pre-submission gate runner | `hackathon-pre-deploy` skill | global skill set |
-| Multi-agent recon | `claude-council` or `three-brain` | global |
-| Pitch pressure-test | `pre-landing-review` | global |
-| AI-tone scanning | `humanize` + project-local `scripts/ai-tone-sweep.sh` | global + new |
-| Atomic-commit polish | global `commit-commands:commit-push-pr` | global |
-| Plan iteration | external review pass per user's "ultraplann" workflow | external |
-| PDF rendering | Playwright HTML → PDF (already proven for Vinh briefing) | session-proven |
-| Library docs lookup | `context7` MCP | global |
-| Web verification | `tavily` / `WebSearch` | global |
-| JS-heavy scrape | `firecrawl` MCP | global |
-| Academic / paper search | `EXA` MCP | global |
-| Time-series ML | Granite TimeSeries TTM r2.1 from Hugging Face | external |
-| Document parsing | Granite-Docling + Docling library | external |
-| Safety classifier | Granite Guardian 4.1 8B BYOC | external |
-| Narrator | Granite 4.1 8B Instruct | external |
-| Visible orchestration | Langflow | external |
-| Build accelerator | IBM Bob (commit `bob-sessions/` per Ferrari precedent) | external |
+> Don't drift these without an announcement + commit prefix `⚠️ CONTRACT`.
+
+| Contract | Owner | Consumer | Definition |
+|----------|-------|----------|------------|
+| Telemetry CSV input schema | Vinh | Vinh (intake), Stephen (mocks + upload UI) | Channels: `t` (sec), `throttle_pct`, `brake_pa`, `steering_rad`, `rpm`, `lat_g`, `long_g`, `speed_mps`, `gear`. Raw at 50 Hz. Aggregated to 1-Hz mini-sectors before TTM. |
+| FIA COA parsed JSON shape | Vinh | Vinh (services), Stephen (UI) | `{driver: {name, impairment, license_class}, vehicle: {make, model, homologation}, adaptations: {throttle: {...}, brake: {...}, clutch: {...}, steering: {...}, gearshift: {...}, seat: {...}, headrest: {...}, driver_equipment: {...}, chassis: {...}}, simultaneity_envelope: {brake_throttle_simul_permitted: bool, ...}, fia_section_refs: [...]}`. Always cite FIA Article + paragraph IDs. |
+| Timing-sheet parsed CSV shape | Vinh | Stephen | `lap, sector_1_time, sector_2_time, sector_3_time, lap_time, gap, position, tyre, in_pit`. |
+| TTM input tensor shape | Vinh | Vinh | `(batch, context_length=128, num_channels=9)` at 1 Hz. 9th channel is COA simultaneity flag. |
+| Physics-projection output | Vinh | Vinh (Guardian + Instruct) | `(corrected_tensor: same shape as input, violation_log: List[{step, type, severity, msg}])`. Log is serialized to plain English for Guardian. |
+| Guardian audit JSON | Vinh | Stephen (UI) | `{verdict: "approve" \| "flag" \| "reject", reasoning_trace: [...], blocked_recommendations: [...]}`. |
+| Coaching-report JSON (API response) | Vinh | Stephen | `{corners: [{name, sector, current_delta_s, recommendation, citations: [{coa_section, fia_article}]}], tuning_delta: {parameter, current, recommended, unit, citation}, forecast: {next_session_envelope, confidence_band}, audit: <Guardian JSON>}`. |
+| `POST /api/analyze` request | Stephen | Vinh | `{telemetry_csv: <file>, coa_pdf: <file>, debrief: <text>, driver_id: <str>}`. |
+| `GET /api/sim-rig/stream` (WebSocket) | Vinh | Stephen | Live frames of telemetry channels at 10 Hz from iRacing/ACC. |
+| Em-dash policy in prose | both | UI strings, deck, video transcript, emails | BANNED in prose. Substitutes per global CLAUDE.md table. Exempt: table column separators, code blocks. |
+| FIA citation format | both | UI strings, deck | `FIA Appendix L, Article 18.3.2(c)` format. Never invent article numbers; verify via tool. |
 
 ---
 
-## 13. Verification
+## Decisions (locked)
 
-End-to-end the plan succeeds when:
+> Reference by D-### in commits and code comments. Do not re-litigate without escalation. Full rationale: `docs/decision-log.md`.
 
-1. `https://github.com/StephenSook/<name>` is public, has 80+ commits, CI green, License Apache 2.0.
-2. `<name> MOC.md` in Obsidian links to 6+ child notes, status table reflects current day, last 3 Claude Memory entries are dated within 72h.
-3. Project memory dir at `~/.claude/projects/-Users-stephensookra-Desktop-IBM-May/memory/` has `MEMORY.md` index + ≥12 entries.
-4. `Desktop/IBM May/` matches the §3.2 structure, no PDFs at root, every subdirectory git-tracked.
-5. `app/backend/apex/` has: intake/, vision/, ttm/, physics/, guardian/, instruct/, langflow/ — each with at least one Python module and one passing test.
-6. `app/frontend/` deploys to Vercel (or HF Space) at a stable URL referenced in README.
-7. `deliverables/demo-video.mp4` is ≤ 3:00, plays cleanly, screen captures readable at 1080p.
-8. Pre-submit checklist §8 returns all 20 green.
-9. BeMyApp submission form filled, every eligible track entry ticked, submission visible on the public projects feed.
-10. Q&A flashcards drill log shows both team members at < 30s/card cold from at least 3 hostile passes.
+- **D-001 (2026-05-20):** Project renamed PIT WALL → APEX. BeMyApp collision.
+- **D-002 (2026-05-20):** Monorepo, public Day 1, Apache 2.0.
+- **D-003 (2026-05-20):** Galaxy-tier scope. Nothing post-hackathon. Memory rule installed.
+- **D-004 (2026-05-20):** Research-tool discipline. Context7 → tavily → firecrawl → EXA → WebFetch before any factual claim.
+- **D-005 (2026-05-20):** State-sync protocol. Every session ends with Claude Memory write.
+- **D-006 (2026-05-20):** No git hooks. Manual coordination only (mirrors Trace + Hometown). `.git/hooks/` stays defaults-only.
+- **D-007 (2026-05-20):** Quality over speed. Tool-inventory audit BLOCKING before any non-trivial task. Use every available skill + agent + MCP + connector.
+- **D-A (2026-05-19, carried in from PIT WALL):** PhysicsTTM three-layer architecture (frozen TTM → CvxpyLayer QP projection → Guardian BYOC text audit). Convergence 14 (serializer unit-test suite) is load-bearing.
+- **D-B (2026-05-19, carried in from PIT WALL):** Hero pitch headline = "First integrated workflow for adaptive hand-controls." Q&A killshot reserved = COA-parameterized brake-throttle simultaneity.
 
-### Smoke test (run locally)
+---
+
+## Open Questions
+
+> Decisions that need sign-off before work can proceed. Tag the person who needs to decide.
+
+- [ ] **Q-001 - Vinh's git config email:** which email does Vinh's GitHub account use as primary or noreply? Needed so green-squares attribute correctly. **Owner: Vinh.** Resolves at Day 1 EOD when Vinh clones.
+- [ ] **Q-002 - Stakeholder reply by Day 7:** if 0 of 5 Phase 1+2 emails reply by EOD Day 6, escalate to LinkedIn DMs of Aaron Morgan + Bobby Trundley per plan §16.2. **Owner: Stephen.**
+- [ ] **Q-003 - Live sim-rig hardware:** which sim title runs on which laptop for Day 9 recording? Default: iRacing on Stephen's machine, fallback to ACC. **Owner: Stephen + Vinh, EOD Day 8.**
+- [ ] **Q-004 - APEX Lite trigger:** invoke Lite (drop sim-rig + Colab, keep core PhysicsTTM loop) if Day 9 Gate G9 fails on 2+ items. Default: NO Lite, ship full. **Owner: both, Day 10 morning.**
+- [ ] **Q-005 - June Challenge entry:** start parallel June build between Day 12 + June Challenge deadline? Default: NO, focus retro week. **Owner: Stephen, Day 12.**
+
+---
+
+## Pre-submit Checklist (Day 11 gate G11)
+
+Run `scripts/pre-submit-checks.sh`. All 20 items must pass. Fail = no submission tomorrow.
+
+1. [ ] Em-dash sweep on README + PLAN.md + docs + deck + video transcript = zero hits in prose
+2. [ ] AI-tone blocklist sweep ("delve into / leverage / seamless / robust / etc") = zero hits
+3. [ ] En-dash + smart-quote sweep = ASCII only in prose
+4. [ ] Operator-attribution sweep = no named operator without per-surface consent
+5. [ ] Em-dash in commit messages = `git log --pretty=%s | grep "—"` empty
+6. [ ] GitHub Actions CI green on `main` per-job (not just aggregate)
+7. [ ] TypeScript clean: `tsc --noEmit` zero errors
+8. [ ] Lint clean: `ruff check` + `eslint` zero errors
+9. [ ] Tests pass: `pytest` + `vitest run`; backend coverage >= 70% on `apex/`
+10. [ ] HF Space health: `curl -sI <hf-url>/health` returns 200
+11. [ ] Demo video length: `ffprobe deliverables/demo-video.mp4` <= 3:00
+12. [ ] Backup demo present: `deliverables/demo-video-backup.mp4`
+13. [ ] 30-second highlight clip: `deliverables/demo-video-30s.mp4` exists
+14. [ ] Deck PDF renders: `docs/deck.pdf` opens cleanly, every slide < 100 words
+15. [ ] README has working demo URL: `curl -sI <vercel-url>` returns 200
+16. [ ] LICENSE = Apache 2.0
+17. [ ] All 8 IBM tools cited in README (Granite-Docling / Vision / TTM / Instruct / Guardian / Langflow / Docling / Bob) with role
+18. [ ] Q&A flashcards memorized: both members deliver all 5 cards < 30s each from cold
+19. [ ] Multi-track entries verified: every eligible track checkbox ticked on BeMyApp form
+20. [ ] Stakeholder quotes attributed only with explicit per-surface consent (or omitted)
+
+---
+
+## Hard Compliance Rules (DQ-grade if violated)
+
+> Memorize. Auditor catches at sweep level. Manual review for demo video + pitch text.
+
+- ❌ **No em-dash (—) in prose.** Per global CLAUDE.md. Single most reliable AI-tone tell. Pre-submit sweep on Day 11.
+- ❌ **No AI-tone blocklist words** in prose: "delve into / leverage / seamless / robust / comprehensive / unlock / cutting-edge / revolutionary / streamline / ecosystem / easily / simply."
+- ❌ **No invented FIA Article numbers.** Verify via FIA.com or research/ PDFs before citing. Per D-004 research-tool discipline.
+- ❌ **No named operators without per-surface consent.** Aaron Morgan, Bobby Trundley, anyone who replies to outreach: get explicit consent per surface (deck vs README vs video).
+- ❌ **No NIL violations.** Do not use real driver names in demo without consent (Sarah Reynolds is fictional, that's the point).
+- ❌ **No git hooks.** Per D-006. Verify `.git/hooks/` is defaults-only.
+- ✅ **Conditional phrasing on physics claims.** "Forecast envelope" not "guaranteed pace." "Recommended tuning delta" not "optimal setup."
+- ✅ **Every coaching claim cites COA section + FIA Article.** Provenance footer.
+- ✅ **Granite + watsonx + Bob attribution per Ferrari case-study precedent.**
+
+---
+
+## Setup (anyone cloning)
 
 ```bash
-# from ~/Desktop/IBM May/
-git status                                  # clean
-gh repo view StephenSook/<name>             # public, has commits
-ls research/ | wc -l                        # 12 (every PDF moved)
-pytest app/backend/ -q                      # passes
-cd app/frontend && npm run build            # succeeds
-curl -sI <demo URL>                         # 200
-bash scripts/pre-submit-checks.sh           # all 20 green
-ffprobe deliverables/demo-video.mp4 2>&1 | grep Duration  # ≤ 3:00
+# 1. Clone
+git clone https://github.com/StephenSook/apex.git
+cd apex
+
+# 2. Verify no active git hooks (D-006)
+ls -la .git/hooks/  # should be only .sample files
+
+# 3. Set git identity to your GitHub-attributed email
+git config user.email <your-github-email>
+git config user.name <your-github-name>
+
+# 4. Backend setup (Day 1 onward)
+cd app/backend
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt   # requirements.txt lands Phase 1
+
+# 5. Frontend setup (after task 0.14)
+cd ../frontend
+npm install
+
+# 6. Local dev
+# Terminal 1: backend
+cd app/backend && uvicorn apex.main:app --reload --port 8000
+# Terminal 2: frontend
+cd app/frontend && npm run dev    # serves on :3000
 ```
 
-### Manual verification
+### Updating PLAN.md (manual coordination, no CLI, no hooks)
 
-- Read `<name> MOC.md` and last 3 Claude Memory entries from a fresh terminal. Should be enough to brief a new assistant in < 5 minutes.
-- Have a non-team-member clone the repo and run the demo path. They reach a coaching report in ≤ 5 minutes total.
-- Run the AI-tone sweep on a sample README + email + video transcript and confirm zero blocklist hits.
+Mirrors Trace + Hometown convention. Edit by hand, commit only `PLAN.md`, push.
 
----
+```bash
+# Claim a task: change ⬜ to 🟡 in the row, add timestamp + your name in Notes
+git add PLAN.md
+git commit -m "chore(plan): claim 1.1 🟡 Vinh"
+git push
 
-## 14. Pending Decisions (call out explicitly)
+# Complete a task: change 🟡 to ✅
+git add PLAN.md
+git commit -m "chore(plan): complete 1.1 ✅"
+git push
 
-- **D0.1 Name:** APEX recommended. Confirm or override. Blocks all of Day 1.
-- **D0.2 Repo URL:** `https://github.com/StephenSook/apex` (or fallback). Confirm GitHub username = `StephenSook` and Vinh's GitHub handle for the collaborator invite.
-- **D6 Endorsement quote target:** at least one real adaptive-driver or veteran org reply by Day 10, escalation path through Team BRIT driver DMs per §7 Day 7. Per §9.7 galaxy rule, "no quote" is not an acceptable outcome — escalate, don't shrug.
-- **D10 Lite fallback trigger:** if Gate G6 (end-to-end pipeline by Day 6) slips, invoke Lite by Day 10 morning. Lite drops sim-rig + Colab but keeps PhysicsTTM core; per §9.7 the default expectation is no fallback because contingencies are built pre-emptively.
-- **June Challenge entry:** parallel-track planning starts Day 8 (§7 Day 8 bridge architecture + slide). Full June build is not on this 12-day clock, but the architectural commitment + deck slide IS in scope.
+# Block a task: change to ⛔, add reason in Notes
+git add PLAN.md
+git commit -m "chore(plan): block 1.1 ⛔ - TTM library throws on M-series"
 
----
-
-## 16. Project Enhancements — bring it to another realm
-
-These are not in the locked Phase 4.5 architecture but each one materially elevates the submission without changing the core product. Folded in here so the plan can ship them when time allows. Ranked by leverage.
-
-### 16.1 The `/judges` tour page (highest UX leverage)
-A dedicated single-page route on the live demo that bypasses the upload flow. One click loads the canned "Sarah Reynolds" telemetry + COA + debrief, the pipeline executes live, and the judge sees the full coaching report in 60 seconds without ever touching a file picker. Judges have 5 minutes per submission. Save them four.
-
-Build target: Day 8. Belongs to Stephen.
-
-### 16.2 The Sarah Reynolds persona — story-grade synthetic case
-Full persona scripted to last detail and committed to `fixtures/personas/sarah-reynolds.md`:
-- Sarah Reynolds, 34, RAF veteran, left-leg amputee from a 2021 service incident.
-- Britcar Trophy 2026 grid, #34 BMW M240i.
-- MME Motorsport hand-control system, FIA Article 18.3 COA on file (synthetic but format-faithful).
-- Donington Park GP, Saturday qualifying, Lap 17 of 19.
-- Sector 2 time delta vs her PB: +0.34s. Debrief: "Lost the rears mid-Old Hairpin again, can't trail-brake on the lever the way I did at Croft last month."
-- Telemetry CSV is synthetically generated to be physically plausible AND to contain the exact symptom her debrief describes.
-
-Judges remember stories. "An amputee veteran" is forgettable. "Sarah, Lap 17, lost the rears at Old Hairpin" is unforgettable. Build target: Day 6. Stephen + Vinh joint.
-
-### 16.3 Pre-mortem journal (`docs/pre-mortem.md`)
-Live document tracking every known failure mode with a printed mitigation. Started Day 2, updated daily:
-- Demo Wi-Fi fails on judge day → pre-recorded video plays automatically if `fetch('/health')` times out
-- Granite Guardian false-positives a valid recommendation → fallback narrator: "Recommendation withheld pending engineer review"
-- Projection layer doesn't converge → return prior-lap baseline + flag in Guardian audit
-- HF Space cold-starts during eval → keep-warm cron job every 4 minutes during May 28–31
-
-Same content powers Q&A defense. Build target: Day 2. Vinh owns, Stephen reviews.
-
-### 16.4 30-second highlight clip alongside the 3-minute video
-Some judges only watch 30 seconds. Make those 30 the strongest 30. Cut: 0:00–0:05 problem (£500/day) → 0:05–0:10 hero (Billy Monger achievement) → 0:10–0:25 the demo moment (TTM forecast + physics projection + Guardian stamp landing) → 0:25–0:30 close ("the AI race engineer for the drivers who don't have one").
-
-Published alongside the 3-minute video in `deliverables/demo-video-30s.mp4`. Build target: Day 10. Stephen.
-
-### 16.5 Reproducibility metadata on every demo output
-Every coaching report, tuning card, and forecast plot tagged with a provenance footer:
-- Granite model versions (TTM r2.1, Instruct 4.1 8B, Guardian 4.1 8B, Vision 4.1 4B, Docling 258M)
-- Input file hashes (telemetry CSV SHA-256, COA PDF SHA-256, debrief text hash)
-- Cited COA section IDs (e.g., "Article 18.3.2(c)")
-- Guardian audit ID + verdict + reasoning trace link
-- Generation timestamp + commit SHA of the model code
-
-Right-click any claim in the UI, see the provenance. Best-Use-of-Technology booster. Build target: Day 7. Vinh.
-
-### 16.6 Sookra Methodology trace doc (`docs/methodology.md`)
-A single-page chronology of how this project was built: Phase 1 recon (6 models), Phase 2 murder-board, Phase 3 concept lock, Phase 4 verification, Phase 5 PhysicsTTM mitigation, Phase 6 build, Phase 7 submission. Names the methodology, dates each phase, cites the artifacts. Signals process rigor to IBM judges who care about engineering discipline.
-
-Cross-references: `~/.claude/skills/hackathon-project-flow/SKILL.md` for the upstream framework. Build target: Day 11. Stephen.
-
-### 16.7 Colab notebook (`deliverables/apex-demo.ipynb`) — published Day 9, live on launch
-A self-contained Google Colab notebook that runs the entire pipeline in a free Colab cell on the judge's browser. Zero install. Doubles as: (a) zero-install demo path for judges who hit a live-demo issue, (b) the public "try it yourself" link on `apex.race` from launch day, (c) the supplementary materials artifact attached to the NeurIPS Workshop paper draft (also produced by submission). Build target: Day 9. Vinh.
-
-### 16.8 Public devlog (daily BeMyApp community ping)
-Once per build day, post a one-paragraph update to the BeMyApp May Challenge chat room (the `Chat Rooms` widget visible in the user's screenshot). Builds in public, signals momentum, neutral-to-positive view bias from any judge lurking, and seeds the post-submission narrative for IBM Consulting outreach + NeurIPS paper attention. Cost: 90 seconds per day.
-
-Day 1 ping: "Building APEX — an AI race engineer for adaptive drivers using the IBM Granite stack. PhysicsTTM-projected forecasts + COA-aware Guardian audit. Day 1 just smoke-tested Granite TimeSeries TTM on FastF1 telemetry. Let's see where this goes."
-
-Stephen owns. Calendared into every build day's evening tasks.
-
-### 16.9 `apex.race/judges` as the single submission landing page
-A one-page TOC for evaluators: live demo URL + 3-min video + 30s clip + deck PDF + GitHub repo + Q&A flashcards + IBM stack diagram + team bios + methodology trace. Judge clicks one link, sees everything. Lower their cognitive load, raise their patience for our actual pitch. Build target: Day 11. Stephen.
-
-### 16.10 Live status dashboard during judging period
-On `apex.race/status`: demo URL uptime indicator, current commit SHA, last green CI run timestamp, HF Space health badge. Confidence signal during the eval window (May 31–June 7). Costs an hour to build via Better Uptime or Plausible. Day 11 polish.
-
-### 16.11 Multi-track submission verification (process gate, not feature)
-Re-read the IBM rules PDF Day 11 morning. Identify EVERY eligible track on BeMyApp:
-- Main May Challenge prize
-- Most Innovative
-- Best Use of Technology
-- Grand Prize (across May + June)
-- Any sponsor-specific track (Granite Open Track? Watson TTS Track? — check)
-- Any community-voted / popularity track
-
-Tick every box on the form per global hackathon multi-track strategy (CLAUDE.md). Each unchecked box = forfeited entry. This is process work, not engineering, but the cost of missing it is real.
+# Cut a galaxy-tier item: change to ✂️, add reason. Per D-003 galaxy rule, cutting requires escalation - galaxy rule says "nothing deferred."
+git add PLAN.md
+git commit -m "chore(plan): cut 5.3 ✂️ - sim-rig hardware unavailable; APEX Lite contingency invoked per Q-004"
+```
 
 ---
 
-## 17. External Tooling Layers (the "another planner" amplifiers)
+## Phase Build Order Notes
 
-Skills + agents + MCP servers we will deliberately deploy at specific moments to multiply leverage. Each one is invoked once or twice, not continuously.
+**Phase 0 is the unblocker.** Vinh cannot start parallel work until D0.12 (accept invite + clone) and D0.13 (Gate G1 TTM smoke) pass. Stephen owns 0.14 Next.js scaffold while Vinh boots.
 
-### 17.1 `pre-landing-review` skill — Day 9 pitch pressure-test
-After demo video v0 is recorded, run the deck + video + README through this skill before locking v1. Catches the last 10% of issues a human reviewer would surface.
+**Phase 1 is the critical path for Phase 2.** TTM has nothing to forecast over until intake + vision parse the fixtures. Vinh owns Days 1-2 end-to-end on Phase 1.
 
-### 17.2 `claude-council` skill — Day 10 final adversarial pass
-Five-advisor council with anonymous peer review. Run once on the final pitch + Q&A defense pack to flush any blind spots before submission. Different from the Phase 1-4 model recon because the council uses the same model (calibration check, not diversity check).
+**Phase 2 + Phase 3 converge Day 6.** Sarah Reynolds canned end-to-end test = first integration moment. If G6 slips, Day 10 Lite contingency triggers.
 
-### 17.3 `three-brain` stack — Day 9 + Day 10
-- Codex (GPT-5.5) as adversarial reviewer on the demo loop code before the dress rehearsal.
-- Gemini 2.5 Pro for the 3-minute video pass — multimodal review of the actual recorded video, not the script.
-- Claude (us) as the driver synthesizing both.
+**Phase 4 starts in parallel** with Phase 2-3 polish. Stephen builds deck v0 + outreach while Vinh closes physics.
 
-### 17.4 `feature-dev:code-architect` — Day 1 backend blueprint
-Use to lay down the FastAPI + Langflow + Granite skeleton with explicit file paths and module boundaries before Vinh writes the first line. Saves Vinh 2–3 hours of decision-fatigue.
+**Phase 5 is the highest-risk Phase** because three new surfaces (HF deploy + Colab + sim-rig) all land Day 9. Build buffer Day 10 morning.
 
-### 17.5 `architecture-reviewer` skill — Day 7 mid-build audit
-After Gate G6 (end-to-end pipeline works), run an architecture review to catch scalability + structural debt that will bite during Q&A. Specifically requested dimensions: enterprise readiness (IBM judge cares), performance, security.
+**Phase 6 is the heaviest commit day.** Target 12-18 atomic commits Day 11 across methodology + judges page + status page + cost audit + NeurIPS draft + README polish + AI-tone sweep + all §17 external-tool passes.
 
-### 17.6 `repo-sentinel` skill — Day 11 pre-push security sweep
-Full repo audit for secrets leaks, exposed API keys, dependency vulnerabilities, license compliance, before the final public push. The `HF_TOKEN` and `WATSONX_PROJECT_ID` MUST be in env vars, not in committed files.
-
-### 17.7 NotebookLM gap analysis — Day 8 + Day 11
-Two more passes:
-- Day 8: feed `docs/pre-mortem.md` + the latest synthesis + the Day 5 demo recording, ask "What objection have we still not addressed?"
-- Day 11: feed the full submission package, ask "If you were an IBM judge, what's the one weakness you'd flag?"
-
-### 17.8 `codex:codex-rescue` — emergency-only
-If Gate G6 slips and end-to-end doesn't work by Day 7, escalate to Codex via the codex-rescue agent for a fresh-eyes diagnosis pass. Cost: one hour of Codex time. Value: avoids the Day 10 Lite fallback.
-
-### 17.9 Context7 + Firecrawl + EXA + Tavily — continuous
-Per the durable rule installed in §6.3. Whenever Vinh hits an unknown API behavior (Granite-Docling parsing edge case, Cvxpylayers gradient flow, HF Space deployment quirk), context7 first, tavily second, firecrawl third, EXA for any academic citation. Save findings to project memory as fact cards. Never bluff.
-
-### 17.10 `usage-audit` skill — Day 11 evening (in scope, not deferred)
-Audit the session-level cost + token spend so we have real economics data for the IBM Consulting outreach email on Day 12 and the NeurIPS paper's cost-efficiency claim. Per global CLAUDE.md cost discipline. Output committed to `docs/cost-audit-2026-05-30.md`.
+**Phase 7 = submission only.** No new features Day 12.
 
 ---
 
-## 18. Galaxy-Tier Inclusions — confirmation list
+## Reference: full design blueprint
 
-Every item in this section is committed to the 12-day scope per §9.7. None are deferred. The plan ships all of these by 2026-05-31 23:59 or it fails the galaxy bar.
-
-| # | Inclusion | Day committed | Owner | Cross-ref |
-|---|-----------|---------------|-------|-----------|
-| 1 | Live sim-rig driver mode in 3-min video | Day 9 stand-up, Day 10 recording | Stephen + Vinh | §7 Day 9 |
-| 2 | Real adaptive-driver beta-tester quote (Team BRIT driver DM escalation) | Day 7 send, by-Day-10 deadline for reply | Stephen | §7 Day 7 |
-| 3 | June Challenge bridge architecture + slide | Day 8 | Stephen | §7 Day 8 |
-| 4 | Public Colab notebook (`deliverables/apex-demo.ipynb`) | Day 9 | Vinh | §16.7 |
-| 5 | `apex.race/judges` landing page | Day 11 | Stephen | §16.9 |
-| 6 | `apex.race/status` live status page | Day 11 | Stephen | §16.10 |
-| 7 | 30-second highlight clip alongside 3-min video | Day 10 | Stephen | §16.4 |
-| 8 | Reproducibility metadata footer on every demo output | Day 10 | Vinh | §16.5 |
-| 9 | `docs/methodology.md` — Sookra Methodology trace | Day 11 | Stephen | §16.6 |
-| 10 | `docs/pre-mortem.md` — running failure mode journal | Started Day 2, final-polished Day 11 | Vinh + Stephen | §16.3 |
-| 11 | `docs/cost-audit-2026-05-30.md` from usage-audit | Day 11 | Stephen | §17.10 |
-| 12 | NeurIPS Workshop paper DRAFT (`paper/apex-neurips-workshop-2026.md`) | Day 11 | Vinh | §7 Day 11 |
-| 13 | IBM Consulting cold email referencing Ferrari case study | Day 12 afternoon | Stephen | §7 Day 12 |
-| 14 | Multi-track submission with every checkbox ticked | Day 12 afternoon | Stephen | §16.11 |
-| 15 | Daily BeMyApp community devlog | Every build day evening | Stephen | §16.8 |
-| 16 | All §17 external-tool passes (pre-landing-review, claude-council, three-brain, architecture-reviewer, repo-sentinel, NotebookLM) | Day 11 | Both | §17 |
-
-If any item slips past its day, escalate immediately. No rescheduling to "post-submission."
+The original `~/.claude/plans/all-right-i-want-rippling-moon.md` (also mirrored at `docs/build-plan-blueprint.md` Day 2) contains the design-blueprint depth: PhysicsTTM math, Sookra Methodology trace, full §16 enhancements list, §17 external-tool layer detail, §18 galaxy-tier inclusions list. PLAN.md is the coordination surface; the blueprint is the design surface.
 
 ---
 
-## 19. Why this plan should survive a future "ultraplann" iteration pass
-
-The plan is structured so a hostile external reviewer (or another LLM running an iteration pass) finds clean addressable seams instead of a monolith:
-
-- **Phases are numbered and self-contained** (§2–§9). Each phase has owner, output, gate, and commit target.
-- **Critical files explicitly listed** (§11) so any reviewer can verify "did this happen?"
-- **Verification section** (§13) gives a concrete pass/fail smoke test, not a vibe.
-- **Decisions pending** (§14) are surfaced rather than buried.
-- **Existing reuse** (§12) prevents "reinvent the wheel" objections.
-- **Discipline rules** (§9) carry through every session, not just this one — so iteration passes don't have to re-derive the global hygiene.
-
-If the user runs this plan through a hostile model review, the expected output is improvements at the leaf-level (one gate's pass criterion, one PR's commit ordering), not structural objections. Structural risk has been pre-addressed by phase boundaries, gates, and the Phase 4.5 synthesis we already locked.
+_Last updated: 2026-05-20 by Stephen (Day 1 bootstrap complete, 13+ atomic commits pushed, Phase 0 task 0.13 G1 TTM smoke pending Vinh)._
