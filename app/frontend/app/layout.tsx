@@ -24,12 +24,25 @@ const fraunces = Fraunces({
   display: "swap",
 });
 
+// Default to a known-resolvable Vercel URL until apex.race is registered + DNS configured (Q-007).
+// `??` only catches null/undefined; empty-string or invalid-URL env vars still throw inside `new URL()`
+// at module-load time and brick the production build with no hint of the env-var cause.
+function resolveSiteUrl(): URL {
+  const raw = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+  const fallback = "https://apex-race.vercel.app";
+  if (!raw) return new URL(fallback);
+  try {
+    return new URL(raw);
+  } catch {
+    console.warn(
+      `[metadataBase] NEXT_PUBLIC_SITE_URL='${raw}' is not a valid URL; falling back to ${fallback}.`,
+    );
+    return new URL(fallback);
+  }
+}
+
 export const metadata: Metadata = {
-  // Default to a known-resolvable Vercel URL until apex.race is registered + DNS configured (Q-007).
-  // Flip to "https://apex.race" once domain is live in production.
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ?? "https://apex-race.vercel.app",
-  ),
+  metadataBase: resolveSiteUrl(),
   title: {
     default: "APEX | AI race engineer for adaptive racers",
     template: "%s | APEX",
