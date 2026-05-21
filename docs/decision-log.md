@@ -26,7 +26,7 @@ Every locked decision with rationale + date + scope. Newest first.
 
 ## 2026-05-20 D-003: Galaxy-tier scope rule
 
-**Decision.** Nothing post-hackathon. Nothing stretch. Every enhancement, paper draft, beta-tester quote, June bridge architecture, live sim-rig mode, Colab notebook, judges-tour page, status dashboard, methodology trace, IBM Consulting outreach, multi-track submission entry — all in scope by 2026-05-31 23:59 ET.
+**Decision.** Nothing post-hackathon. Nothing stretch. Every enhancement, paper draft, beta-tester quote, June bridge architecture, live sim-rig mode, Colab notebook, judges-tour page, status dashboard, methodology trace, IBM Consulting outreach, multi-track submission entry. All in scope by 2026-05-31 23:59 ET.
 
 **Rationale.** Stephen explicit: "We're aiming for the galaxy, not the moon. Nothing should be post-hackathon; everything should be within the scope right now so we can have the best project ever." This reframes the 12-day plan from default-scope to all-in-scope. A feature shipped at 70% quality on Day 11 beats a feature deferred to a v2 that judges never see.
 
@@ -58,16 +58,21 @@ Every locked decision with rationale + date + scope. Newest first.
 
 **Decision.** Three-layer architecture: frozen Granite TimeSeries TTM forecaster → differentiable physics-projection layer (CvxpyLayer QP with friction ellipse, bicycle model, COA-flagged simultaneity) → Granite Guardian BYOC text audit on serialized violation log.
 
-**Rationale.** Phase 5 NotebookLM gap analysis surfaced "Kinetic Hallucination" — TTM trained on energy grids and weather can forecast physically impossible motorsport telemetry. The three-layer architecture closes this objection. Convergence 14 (serialization integrity) is the load-bearing safety requirement.
+**Rationale.** Phase 5 NotebookLM gap analysis surfaced "Kinetic Hallucination": TTM trained on energy grids and weather can forecast physically impossible motorsport telemetry. The three-layer architecture closes this objection. Convergence 14 (serialization integrity) is the load-bearing safety requirement.
 
 **Affected.** Backend architecture, deck slide 6, Q&A Card 2.
 
 ---
 
-## 2026-05-19 D-B: Hero pitch headline + Q&A killshot reserved (carried into APEX)
+## 2026-05-19 D-B: Dual-layer pitch headline + Q&A killshot reserved (carried into APEX, refined Day 1 PM 2026-05-20)
 
-**Decision.** Pitch headline: "First integrated workflow for adaptive hand-controls." Q&A knockout held in reserve: COA-parameterized brake-throttle simultaneity (the deepest novelty per NotebookLM).
+**Decision.** Pitch architecture has two leads, both ship in the deck + video + landing page:
 
-**Rationale.** Phase 5 NotebookLM Q4 verdict: candidate 3 (integrated workflow) is most accessible for opening pitch; candidate 4 (COA simultaneity) is the deepest novelty and best preserved for Q&A when a judge asks "why not just Track Titan?"
+1. **Emotional hero headline (h1 on the landing page, lead line of the 3-minute video):** "The race engineer for the drivers who don't have one." This is the human-story hook. Calibrated by Phase 4.5 hostile-pitch review (Kimi) as the most universally accessible opening beat.
+2. **Technical positioning headline (Differentiator #1 card on the landing page, slide 4 in the deck):** "First integrated workflow for adaptive hand-controls." This is the technical-novelty anchor that distinguishes APEX from Track Titan, Trophi.ai, and the generic AI race-engineer category.
 
-**Affected.** Pitch script, Q&A flashcards (Card 4).
+**Q&A killshot reserved:** COA-parameterized brake-throttle simultaneity (the deepest novelty per NotebookLM Phase 5 Q4 verdict). Deployed only when a judge presses "why not just Track Titan or Trophi.ai." Card 4 in `~/.claude/projects/-Users-stephensookra-Desktop-IBM-May/memory/project_apex_qa_killshots.md`.
+
+**Rationale.** Phase 5 NotebookLM Q4 audit: candidate 3 (integrated workflow) is the most accessible *technical* positioning. The Kimi hostile-pitch review separately identified that leading with the technical claim loses the emotional hook for judges scanning 43 submissions. The synthesis: lead Hero with emotion ("drivers who don't have one"), lead Differentiator panel with technical positioning ("first integrated workflow"), hold COA simultaneity for the Q&A knockout. All three are present in every submission surface (landing page, deck, video, Q&A pack). None are mutually exclusive.
+
+**Affected.** Pitch script (3-min video Day 9), deck (Day 11), landing page (live Day 1 PM), Q&A flashcards (Card 4 in memory).
