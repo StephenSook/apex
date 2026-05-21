@@ -217,12 +217,18 @@ cd app/frontend
 npm install
 npm run dev   # http://localhost:3000
 
-# Run Sarah Reynolds canned end-to-end test
-cd app/backend
-python -m apex.cli analyze \
-  --telemetry ../../fixtures/telemetry/sarah-lap-17.csv \
-  --coa ../../fixtures/coa/sarah-coa.json \
-  --debrief ../../fixtures/personas/sarah-debrief.txt
+# Try the canned Sarah Reynolds demo via the live UI
+# Day 2: open http://localhost:3000/analyze, then drag the bundled fixtures:
+#   app/frontend/public/fixtures/sarah-lap-17.csv
+#   app/frontend/public/fixtures/sarah-coa.pdf
+# Fill the debrief + driver-id fields, click "Generate coaching report".
+#
+# Day 6+ (post-G6 integration): the backend CLI handles the same flow:
+# cd app/backend
+# python -m apex.cli analyze \
+#   --telemetry ../../fixtures/telemetry/sarah-lap-17.csv \
+#   --coa ../../fixtures/coa/sarah-coa.json \
+#   --debrief ../../fixtures/personas/sarah-debrief.txt
 ```
 
 ---
