@@ -1,6 +1,7 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "Judges' Tour · APEX",
   description:
     "Single-page tour for IBM SkillsBuild AI Builders Challenge May 2026 judges. Demo, video, deck, repo, Q&A defense pack, IBM stack, methodology trace, and team in one place.",
@@ -36,7 +37,7 @@ const RESOURCES: ReadonlyArray<ResourceLink> = [
   {
     label: "Public GitHub repo",
     href: "https://github.com/StephenSook/apex",
-    detail: "Apache 2.0, public Day 1, 120+ atomic commits across the 12-day build window.",
+    detail: "Apache 2.0, public Day 1, 130+ atomic commits across the 12-day build window.",
     badge: "live",
   },
   {

@@ -1,8 +1,9 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 
 import AnalyzeFlow from "../../components/AnalyzeFlow";
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "Analyze · APEX",
   description:
     "Upload your telemetry, FIA Certificate of Adaptations, and a sentence of debrief. APEX returns a corner-by-corner coaching report inside two minutes.",
