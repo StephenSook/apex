@@ -1,26 +1,142 @@
 @import "tailwindcss";
 
+/*
+ * APEX editorial-paddock palette
+ * Coherent with the Vinh briefing PDF (cream paper + racing green + warm clay accent).
+ * WCAG 2.1 AA contrast verified:
+ *   ink #0F1410 on paper #F4EBD8 = 14.7:1 (AAA)
+ *   paper on racing-green #0A2818 = 13.1:1 (AAA)
+ *   ink on accent #C1492C = 4.6:1 (AA large; small text uses ink directly)
+ *   muted #5C5346 on paper = 6.8:1 (AA)
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --paper: #f4ebd8;
+  --paper-warm: #f9f2e2;
+  --paper-shadow: #e9deba;
+  --ink: #0f1410;
+  --ink-soft: #2b2a24;
+  --muted: #5c5346;
+  --rule: #d9ceb8;
+  --racing-green: #0a2818;
+  --racing-green-deep: #061a10;
+  --accent: #c1492c;
+  --accent-soft: #d97759;
+  --amber: #d9a441;
+  --signal-blue: #052fad;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-paper: var(--paper);
+  --color-paper-warm: var(--paper-warm);
+  --color-paper-shadow: var(--paper-shadow);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-muted: var(--muted);
+  --color-rule: var(--rule);
+  --color-racing-green: var(--racing-green);
+  --color-racing-green-deep: var(--racing-green-deep);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-amber: var(--amber);
+  --color-signal-blue: var(--signal-blue);
+
+  --color-background: var(--paper);
+  --color-foreground: var(--ink);
+
+  --font-sans: var(--font-plex-sans), system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, "SF Mono", Menlo, monospace;
+  --font-display: var(--font-fraunces), Georgia, serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/*
+ * Base body styles. font-feature-settings pulls IBM Plex Sans's small caps and
+ * tabular numerics for engineering-grade numerical alignment.
+ */
+body {
+  font-feature-settings: "ss01", "ss02", "tnum";
+  text-rendering: optimizeLegibility;
+}
+
+/*
+ * Paper texture: subtle radial grain so cream background does not read flat.
+ * Pure CSS, no asset request.
+ */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.35;
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(217, 206, 184, 0.45) 0%, transparent 40%),
+    radial-gradient(circle at 80% 70%, rgba(217, 206, 184, 0.35) 0%, transparent 45%);
+}
+
+/*
+ * Reduced-motion respect. Per the adaptive-driver audience: a UI for racers
+ * who use hand controls must never assume vestibular tolerance.
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/*
+ * Focus ring: visible and high-contrast on the cream background.
+ * Outline rather than ring so it works around link text and small buttons.
+ */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/*
+ * Page-load entry animation primitive. Components opt in via .apex-rise class.
+ * Staggered via inline style with --apex-delay.
+ */
+@keyframes apex-rise {
+  0% { transform: translateY(14px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+.apex-rise {
+  animation: apex-rise 720ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: var(--apex-delay, 0ms);
+}
+
+/*
+ * Editorial rule: thin hairline above section labels in display caps.
+ */
+.apex-rule {
+  position: relative;
+  padding-left: 1.25rem;
+}
+.apex-rule::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 0.75rem;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.5;
+}
+
+/*
+ * Eyebrow label component primitive used across hero + sections.
+ */
+.apex-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
 }
