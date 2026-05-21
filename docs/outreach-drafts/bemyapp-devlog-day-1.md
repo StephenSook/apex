@@ -9,11 +9,11 @@
 ## Day 1 ping (post 2026-05-20 evening ET)
 
 ```
-Day 1 done on APEX. Building an AI race engineer for adaptive racers (drivers running hand-controls, veteran-team competitors, grassroots-budget teams) on the IBM Granite stack.
+Day 1 done on APEX. AI race engineer for adaptive racers, on the IBM Granite stack.
 
-Pipeline: telemetry CSV + FIA Certificate of Adaptations + driver debrief into a frozen Granite TimeSeries TTM r2.1 forecaster, wrapped in a differentiable physics-projection layer (CvxpyLayer QP with friction ellipse + bicycle model + COA-flagged brake-throttle simultaneity), audited by Granite Guardian 4.1 with BYOC custom rules, narrated by Granite 4.1 8B Instruct.
+Pipeline: telemetry + FIA Certificate of Adaptations + driver debrief into a frozen Granite TimeSeries TTM r2.1 forecaster, wrapped in a differentiable physics-projection layer, audited by Granite Guardian 4.1, narrated by Granite 4.1 8B Instruct.
 
-Repo public Day 1: https://github.com/StephenSook/apex (Apache 2.0). 67 atomic commits, Mermaid architecture in the README. Team: Stephen Sookra (frontend + pitch) + Vinh Le (backend + ML).
+Repo public Day 1: https://github.com/StephenSook/apex (Apache 2.0). 70+ atomic commits, Mermaid architecture in the README.
 
 11 days to go.
 ```
