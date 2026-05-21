@@ -295,10 +295,10 @@ export interface CoachingReport {
  * variants. For Day 1-12 scope, multipart is the only mode.
  */
 export interface AnalyzeRequestPayload {
-  /** Telemetry CSV bytes (raw 50 Hz file upload). */
-  readonly telemetry_csv: File | Blob;
-  /** FIA COA PDF bytes (one-time at onboarding; cached). */
-  readonly coa_pdf: File | Blob;
+  /** Telemetry CSV (raw 50 Hz file upload from a `<input type="file">` picker). */
+  readonly telemetry_csv: File;
+  /** FIA COA PDF (one-time at onboarding; cached). */
+  readonly coa_pdf: File;
   /** Driver's written debrief (max 1000 chars, enforced server-side). */
   readonly debrief: string;
   /** Driver identifier (matches a cached COA parse). */

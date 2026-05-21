@@ -4,24 +4,28 @@
  * Dropzone: three-slot upload surface for the APEX analyze flow.
  *
  * Slots map 1:1 to the multipart fields in `AnalyzeRequestPayload`
- * (`app/shared/types.ts` lines 297-306):
- *   - telemetry_csv : raw 50 Hz telemetry CSV (max 50 MB)
- *   - coa_pdf       : FIA Certificate of Adaptations PDF (max 10 MB)
- *   - debrief       : driver's written debrief, 1000-char cap (server-side enforced)
+ * (`app/shared/types.ts`):
+ *   telemetry_csv (max 50 MB), coa_pdf (max 10 MB), debrief (1000-char cap),
+ *   driver_id (slug).
  *
- * WCAG 2.1 AA baseline:
- *   - Each slot is keyboard-operable (Tab to focus, Space or Enter to open picker).
- *   - Drag-and-drop is offered as enhancement; native click-to-pick stays primary.
- *   - All drag-state changes announced via `aria-live="polite"` region.
- *   - File-type + size errors announced as `role="alert"` so screen readers interrupt.
- *   - Buttons keep a 44x44 minimum tap target (WCAG 2.5.5 AAA, AA-friendly).
- *   - Focus ring inherits the global `:focus-visible` outline from globals.css.
- *   - Reduced-motion is honored by the global `prefers-reduced-motion` block.
+ * Wave-12 refactor lessons (review trail in `docs/pre-mortem.md` rows 21+):
+ *   - SlotState is a discriminated union so contradictory states cannot exist.
+ *   - DropzoneSubmission field names mirror the backend Pydantic schema verbatim
+ *     (snake_case + telemetry_csv / coa_pdf / driver_id) so the parent does not
+ *     have to re-map at fetch time.
+ *   - Validators reject empty (0-byte) and below-minimum-floor files instead of
+ *     silently accepting them.
+ *   - Drop handler rejects multi-file drops and directory drops with a clear
+ *     error message in the same slot's error region.
+ *   - The native file input lives as a sibling of the clickable region so the
+ *     two affordances do not double-fire the picker.
+ *   - onAnalyze is awaited and any rejection surfaces in a parent-or-self
+ *     errorMessage rendered as role=alert near the submit button.
  *
- * State is local to this component. The actual POST to `/api/analyze`
- * lands in a parent route once Vinh's backend (Vinh lane, Day 5-6) returns
- * the canned Sarah Reynolds report. Until then the submit button only
- * fires an onAnalyze callback the parent supplies.
+ * WCAG 2.1 AA baseline: Tab+Space/Enter opens the picker, drag-and-drop is
+ * enhancement, drag-state changes announce via aria-live polite, errors via
+ * role=alert, focus ring inherits :focus-visible from globals.css, reduced
+ * motion honored globally.
  */
 
 import {
@@ -30,6 +34,7 @@ import {
   useMemo,
   useReducer,
   useRef,
+  useState,
   type ChangeEvent,
   type DragEvent,
   type FormEvent,
@@ -37,33 +42,29 @@ import {
   type ReactNode,
 } from "react";
 
-// Field limits mirror server-side validation (`app/backend/apex/schemas.py`
-// once Vinh writes it). Off-by-one here would let an over-cap upload reach
-// FastAPI and bounce with 413, which is wasted bandwidth.
+const SLOT_KEYS = ["telemetry", "coa"] as const;
+type SlotKey = (typeof SLOT_KEYS)[number];
+
+const MIN_TELEMETRY_BYTES = 1024;
 const MAX_TELEMETRY_BYTES = 50 * 1024 * 1024;
 const MAX_COA_BYTES = 10 * 1024 * 1024;
 const MAX_DEBRIEF_CHARS = 1000;
 
-// Accept attributes are advisory in the file picker but enforced by us
-// post-pick. Browsers vary on whether MIME type, extension, or both win.
 const TELEMETRY_ACCEPT = ".csv,text/csv";
 const COA_ACCEPT = ".pdf,application/pdf";
 
-type SlotKey = "telemetry" | "coa";
-
-type SlotState = {
-  file: File | null;
-  error: string | null;
-  isDragging: boolean;
-};
+type SlotState =
+  | { readonly status: "idle" }
+  | { readonly status: "drag" }
+  | { readonly status: "filled"; readonly file: File }
+  | { readonly status: "error"; readonly error: string };
 
 type DropzoneState = {
-  telemetry: SlotState;
-  coa: SlotState;
-  debrief: string;
-  debriefError: string | null;
-  driverId: string;
-  announce: string;
+  readonly telemetry: SlotState;
+  readonly coa: SlotState;
+  readonly debrief: string;
+  readonly debriefError: string | null;
+  readonly driverId: string;
 };
 
 type Action =
@@ -73,64 +74,49 @@ type Action =
   | { type: "setDragging"; slot: SlotKey; isDragging: boolean }
   | { type: "setDebrief"; value: string }
   | { type: "setDriverId"; value: string }
-  | { type: "announce"; message: string };
+  | { type: "resetForm" };
 
-const emptySlot: SlotState = { file: null, error: null, isDragging: false };
+const idleSlot: SlotState = { status: "idle" };
 
 const initialState: DropzoneState = {
-  telemetry: emptySlot,
-  coa: emptySlot,
+  telemetry: idleSlot,
+  coa: idleSlot,
   debrief: "",
   debriefError: null,
   driverId: "",
-  announce: "",
 };
 
 function reducer(state: DropzoneState, action: Action): DropzoneState {
   switch (action.type) {
     case "setFile":
-      return {
-        ...state,
-        [action.slot]: {
-          file: action.file,
-          error: null,
-          isDragging: false,
-        } satisfies SlotState,
-        announce: `Selected ${action.file.name} for ${slotLabel(action.slot)}.`,
-      };
+      return { ...state, [action.slot]: { status: "filled", file: action.file } satisfies SlotState };
     case "clearFile":
-      return {
-        ...state,
-        [action.slot]: emptySlot,
-        announce: `Cleared ${slotLabel(action.slot)}.`,
-      };
+      return { ...state, [action.slot]: idleSlot };
     case "setError":
-      return {
-        ...state,
-        [action.slot]: {
-          file: null,
-          error: action.error,
-          isDragging: false,
-        } satisfies SlotState,
-        announce: `Error in ${slotLabel(action.slot)}: ${action.error}`,
-      };
-    case "setDragging":
-      return {
-        ...state,
-        [action.slot]: { ...state[action.slot], isDragging: action.isDragging },
-      };
+      return { ...state, [action.slot]: { status: "error", error: action.error } satisfies SlotState };
+    case "setDragging": {
+      const current = state[action.slot];
+      if (action.isDragging) {
+        if (current.status === "idle") return { ...state, [action.slot]: { status: "drag" } satisfies SlotState };
+        return state;
+      }
+      if (current.status === "drag") return { ...state, [action.slot]: idleSlot };
+      return state;
+    }
     case "setDebrief": {
-      const trimmed = action.value.slice(0, MAX_DEBRIEF_CHARS);
-      const over =
-        action.value.length > MAX_DEBRIEF_CHARS
-          ? `Trimmed to the ${MAX_DEBRIEF_CHARS}-character limit.`
-          : null;
-      return { ...state, debrief: trimmed, debriefError: over };
+      const over = action.value.length > MAX_DEBRIEF_CHARS;
+      return {
+        ...state,
+        debrief: action.value,
+        debriefError: over
+          ? `Debrief is ${action.value.length} characters; the cap is ${MAX_DEBRIEF_CHARS}. Trim ${action.value.length - MAX_DEBRIEF_CHARS} before submitting.`
+          : null,
+      };
     }
     case "setDriverId":
       return { ...state, driverId: action.value };
-    case "announce":
-      return { ...state, announce: action.message };
+    case "resetForm":
+      return initialState;
     default:
       return state;
   }
@@ -147,11 +133,20 @@ function formatBytes(bytes: number): string {
 }
 
 function validateTelemetry(file: File): string | null {
+  if (file.size === 0) {
+    return "File is empty (0 B). Re-export from your data logger and try again.";
+  }
+  if (file.size < MIN_TELEMETRY_BYTES) {
+    return `File is ${formatBytes(file.size)}; raw 50 Hz telemetry CSV is typically several kilobytes or more. Verify your export is complete.`;
+  }
   if (file.size > MAX_TELEMETRY_BYTES) {
     return `File is ${formatBytes(file.size)}; the limit is ${formatBytes(MAX_TELEMETRY_BYTES)}.`;
   }
   const name = file.name.toLowerCase();
-  const ok = name.endsWith(".csv") || file.type === "text/csv" || file.type === "application/vnd.ms-excel";
+  const ok =
+    name.endsWith(".csv") ||
+    file.type === "text/csv" ||
+    file.type === "application/vnd.ms-excel";
   if (!ok) {
     return "Telemetry must be a .csv file exported from FastF1, MoTeC, AiM, or compatible.";
   }
@@ -159,6 +154,9 @@ function validateTelemetry(file: File): string | null {
 }
 
 function validateCoa(file: File): string | null {
+  if (file.size === 0) {
+    return "File is empty (0 B). Re-export from the FIA portal or your NSA and try again.";
+  }
   if (file.size > MAX_COA_BYTES) {
     return `File is ${formatBytes(file.size)}; the limit is ${formatBytes(MAX_COA_BYTES)}.`;
   }
@@ -171,42 +169,73 @@ function validateCoa(file: File): string | null {
 }
 
 export interface DropzoneSubmission {
-  telemetry: File;
-  coa: File;
-  debrief: string;
-  driverId: string;
+  readonly telemetry_csv: File;
+  readonly coa_pdf: File;
+  readonly debrief: string;
+  readonly driver_id: string;
 }
 
 export interface DropzoneProps {
-  /** Called once all three fields are valid and the user submits. */
-  onAnalyze?: (submission: DropzoneSubmission) => void | Promise<void>;
-  /** Disables the submit button (e.g. while a parent request is in flight). */
-  isSubmitting?: boolean;
+  readonly onAnalyze?: (submission: DropzoneSubmission) => void | Promise<void>;
+  readonly isSubmitting?: boolean;
+  readonly errorMessage?: string;
 }
 
-export default function Dropzone({ onAnalyze, isSubmitting = false }: DropzoneProps) {
+export default function Dropzone({ onAnalyze, isSubmitting = false, errorMessage }: DropzoneProps) {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [announce, setAnnounce] = useState<string>("");
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
+  const isFilled = (slot: SlotState): slot is { status: "filled"; file: File } => slot.status === "filled";
+
+  const debriefValid = state.debrief.trim().length > 0 && state.debriefError === null;
+  const driverValid = state.driverId.trim().length > 0;
   const canSubmit =
-    !!state.telemetry.file &&
-    !!state.coa.file &&
-    state.debrief.trim().length > 0 &&
-    state.driverId.trim().length > 0 &&
+    isFilled(state.telemetry) &&
+    isFilled(state.coa) &&
+    debriefValid &&
+    driverValid &&
     !isSubmitting;
 
-  const handleSubmit = useCallback(
-    (event: FormEvent<HTMLFormElement>) => {
-      event.preventDefault();
-      if (!canSubmit || !state.telemetry.file || !state.coa.file) return;
-      void onAnalyze?.({
-        telemetry: state.telemetry.file,
-        coa: state.coa.file,
-        debrief: state.debrief.trim(),
-        driverId: state.driverId.trim(),
-      });
+  const announceFor = useCallback((message: string) => setAnnounce(message), []);
+
+  const dispatchFile = useCallback(
+    (slot: SlotKey, file: File) => {
+      const validator = slot === "telemetry" ? validateTelemetry : validateCoa;
+      const err = validator(file);
+      if (err) {
+        dispatch({ type: "setError", slot, error: err });
+        announceFor(`Error in ${slotLabel(slot)}: ${err}`);
+      } else {
+        dispatch({ type: "setFile", slot, file });
+        announceFor(`Selected ${file.name} for ${slotLabel(slot)}.`);
+      }
     },
-    [canSubmit, onAnalyze, state.coa.file, state.debrief, state.driverId, state.telemetry.file],
+    [announceFor],
   );
+
+  const handleSubmit = useCallback(
+    async (event: FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+      if (!canSubmit || !isFilled(state.telemetry) || !isFilled(state.coa)) return;
+      setSubmitError(null);
+      try {
+        await onAnalyze?.({
+          telemetry_csv: state.telemetry.file,
+          coa_pdf: state.coa.file,
+          debrief: state.debrief.trim(),
+          driver_id: state.driverId.trim(),
+        });
+      } catch (err) {
+        const message = err instanceof Error ? err.message : "Analysis failed. Try again, or check the COA upload.";
+        setSubmitError(message);
+        announceFor(`Submit failed: ${message}`);
+      }
+    },
+    [announceFor, canSubmit, onAnalyze, state.coa, state.debrief, state.driverId, state.telemetry],
+  );
+
+  const surfaceError = errorMessage ?? submitError;
 
   return (
     <section
@@ -244,9 +273,10 @@ export default function Dropzone({ onAnalyze, isSubmitting = false }: DropzonePr
               hint="50 Hz channels: throttle, brake, steering, RPM, lat-G, long-G, speed, gear, time."
               accept={TELEMETRY_ACCEPT}
               maxBytes={MAX_TELEMETRY_BYTES}
-              validate={validateTelemetry}
               state={state.telemetry}
               dispatch={dispatch}
+              dispatchFile={dispatchFile}
+              announceFor={announceFor}
             />
             <FileSlot
               slot="coa"
@@ -254,9 +284,10 @@ export default function Dropzone({ onAnalyze, isSubmitting = false }: DropzonePr
               hint="Granite-Docling parses each of the nine adaptation domains and the simultaneity envelope."
               accept={COA_ACCEPT}
               maxBytes={MAX_COA_BYTES}
-              validate={validateCoa}
               state={state.coa}
               dispatch={dispatch}
+              dispatchFile={dispatchFile}
+              announceFor={announceFor}
             />
             <DebriefSlot
               value={state.debrief}
@@ -274,9 +305,15 @@ export default function Dropzone({ onAnalyze, isSubmitting = false }: DropzonePr
             this session.
           </p>
 
+          {surfaceError && (
+            <p role="alert" className="font-sans text-sm leading-relaxed text-accent">
+              {surfaceError}
+            </p>
+          )}
+
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <p className="font-mono text-xs uppercase tracking-wider text-muted">
-              {canSubmit ? "Ready to analyze" : "All three fields required"}
+              {canSubmit ? "Ready to analyze" : "All four fields required"}
             </p>
             <button
               type="submit"
@@ -288,12 +325,12 @@ export default function Dropzone({ onAnalyze, isSubmitting = false }: DropzonePr
                   : "bg-paper-shadow text-muted cursor-not-allowed")
               }
             >
-              {isSubmitting ? "Analyzing…" : "Generate coaching report"}
+              {isSubmitting ? "Analyzing..." : "Generate coaching report"}
             </button>
           </div>
 
           <span aria-live="polite" className="sr-only">
-            {state.announce}
+            {announce}
           </span>
         </form>
       </div>
@@ -301,54 +338,73 @@ export default function Dropzone({ onAnalyze, isSubmitting = false }: DropzonePr
   );
 }
 
-/* -------------------------------------------------------------- */
-/* File slot                                                       */
-/* -------------------------------------------------------------- */
-
 interface FileSlotProps {
   slot: SlotKey;
   label: string;
   hint: string;
   accept: string;
   maxBytes: number;
-  validate: (file: File) => string | null;
   state: SlotState;
   dispatch: React.Dispatch<Action>;
+  dispatchFile: (slot: SlotKey, file: File) => void;
+  announceFor: (message: string) => void;
 }
 
-function FileSlot({ slot, label, hint, accept, maxBytes, validate, state, dispatch }: FileSlotProps) {
+function FileSlot({ slot, label, hint, accept, maxBytes, state, dispatch, dispatchFile, announceFor }: FileSlotProps) {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const inputId = useId();
+  const labelId = useId();
   const hintId = useId();
   const errorId = useId();
+  const dragDepth = useRef(0);
 
-  const openPicker = useCallback(() => inputRef.current?.click(), []);
-
-  const handleFile = useCallback(
-    (file: File) => {
-      const error = validate(file);
-      if (error) dispatch({ type: "setError", slot, error });
-      else dispatch({ type: "setFile", slot, file });
-    },
-    [dispatch, slot, validate],
-  );
+  const openPicker = useCallback(() => {
+    if (!inputRef.current) {
+      announceFor(`Picker for ${slotLabel(slot)} is not ready yet. Try again in a moment.`);
+      return;
+    }
+    inputRef.current.click();
+  }, [announceFor, slot]);
 
   const onChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
       const file = event.target.files?.[0];
-      if (file) handleFile(file);
       event.target.value = "";
+      if (file) dispatchFile(slot, file);
     },
-    [handleFile],
+    [dispatchFile, slot],
   );
 
   const onDrop = useCallback(
     (event: DragEvent<HTMLDivElement>) => {
       event.preventDefault();
-      const file = event.dataTransfer.files?.[0];
-      if (file) handleFile(file);
+      dragDepth.current = 0;
+      const files = event.dataTransfer.files;
+      if (!files || files.length === 0) {
+        dispatch({ type: "setDragging", slot, isDragging: false });
+        return;
+      }
+      if (files.length > 1) {
+        dispatch({
+          type: "setError",
+          slot,
+          error: `Drop one file at a time (you dropped ${files.length}). Pick the ${slotLabel(slot)} you want and try again.`,
+        });
+        return;
+      }
+      const item = event.dataTransfer.items?.[0];
+      const entry = item && typeof item.webkitGetAsEntry === "function" ? item.webkitGetAsEntry() : null;
+      if (entry && entry.isDirectory) {
+        dispatch({
+          type: "setError",
+          slot,
+          error: "Folders cannot be uploaded. Open the folder and drag the file inside it.",
+        });
+        return;
+      }
+      dispatchFile(slot, files[0]);
     },
-    [handleFile],
+    [dispatch, dispatchFile, slot],
   );
 
   const onKeyDown = useCallback(
@@ -361,29 +417,31 @@ function FileSlot({ slot, label, hint, accept, maxBytes, validate, state, dispat
     [openPicker],
   );
 
-  const onDragOver = useCallback(
+  const onDragEnter = useCallback(
     (event: DragEvent<HTMLDivElement>) => {
       event.preventDefault();
-      if (!state.isDragging) dispatch({ type: "setDragging", slot, isDragging: true });
-    },
-    [dispatch, slot, state.isDragging],
-  );
-
-  const onDragLeave = useCallback(
-    (event: DragEvent<HTMLDivElement>) => {
-      event.preventDefault();
-      dispatch({ type: "setDragging", slot, isDragging: false });
+      dragDepth.current += 1;
+      if (dragDepth.current === 1) dispatch({ type: "setDragging", slot, isDragging: true });
     },
     [dispatch, slot],
   );
 
-  const status = state.file
-    ? "filled"
-    : state.error
-      ? "error"
-      : state.isDragging
-        ? "drag"
-        : "idle";
+  const onDragOver = useCallback((event: DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+  }, []);
+
+  const onDragLeave = useCallback(
+    (event: DragEvent<HTMLDivElement>) => {
+      event.preventDefault();
+      dragDepth.current = Math.max(0, dragDepth.current - 1);
+      if (dragDepth.current === 0) dispatch({ type: "setDragging", slot, isDragging: false });
+    },
+    [dispatch, slot],
+  );
+
+  const status = state.status;
+  const errorMessage = state.status === "error" ? state.error : null;
+  const file = state.status === "filled" ? state.file : null;
 
   const containerClasses = (() => {
     const base = "relative flex flex-col gap-3 rounded-sm border-2 border-dashed p-6 transition-colors min-h-[180px] cursor-pointer";
@@ -401,44 +459,50 @@ function FileSlot({ slot, label, hint, accept, maxBytes, validate, state, dispat
 
   return (
     <div className="flex flex-col gap-2">
-      <label htmlFor={inputId} className="font-mono text-xs uppercase tracking-wider text-ink-soft">
+      <span id={labelId} className="font-mono text-xs uppercase tracking-wider text-ink-soft">
         {label}
-      </label>
+      </span>
       <div
         role="button"
         tabIndex={0}
-        aria-labelledby={inputId}
-        aria-describedby={`${hintId} ${state.error ? errorId : ""}`.trim()}
+        aria-labelledby={labelId}
+        aria-describedby={`${hintId} ${errorMessage ? errorId : ""}`.trim()}
         onClick={openPicker}
         onKeyDown={onKeyDown}
         onDrop={onDrop}
+        onDragEnter={onDragEnter}
         onDragOver={onDragOver}
         onDragLeave={onDragLeave}
         className={containerClasses}
       >
-        <SlotBody status={status} state={state} maxBytes={maxBytes} />
-        <input
-          ref={inputRef}
-          id={inputId}
-          type="file"
-          accept={accept}
-          onChange={onChange}
-          className="sr-only"
-        />
+        <SlotBody status={status} file={file} maxBytes={maxBytes} />
       </div>
+      <input
+        ref={inputRef}
+        id={inputId}
+        type="file"
+        accept={accept}
+        onChange={onChange}
+        tabIndex={-1}
+        aria-hidden="true"
+        className="sr-only"
+      />
       <p id={hintId} className="text-xs leading-relaxed text-muted">
         {hint}
       </p>
-      {state.error && (
+      {errorMessage && (
         <p id={errorId} role="alert" className="text-xs leading-relaxed text-accent">
-          {state.error}
+          {errorMessage}
         </p>
       )}
-      {state.file && (
+      {file && (
         <button
           type="button"
-          onClick={() => dispatch({ type: "clearFile", slot })}
-          className="self-start font-mono text-xs uppercase tracking-wider text-accent hover:underline"
+          onClick={() => {
+            dispatch({ type: "clearFile", slot });
+            announceFor(`Cleared ${slotLabel(slot)}.`);
+          }}
+          className="self-start font-mono text-xs uppercase tracking-wider text-ink-soft hover:text-accent hover:underline"
         >
           Remove file
         </button>
@@ -449,24 +513,24 @@ function FileSlot({ slot, label, hint, accept, maxBytes, validate, state, dispat
 
 function SlotBody({
   status,
-  state,
+  file,
   maxBytes,
 }: {
-  status: "filled" | "error" | "drag" | "idle";
-  state: SlotState;
+  status: SlotState["status"];
+  file: File | null;
   maxBytes: number;
 }): ReactNode {
-  if (status === "filled" && state.file) {
+  if (status === "filled" && file) {
     return (
       <>
         <span className="font-mono text-xs uppercase tracking-wider text-racing-green">
           Loaded
         </span>
         <span className="font-display text-lg leading-snug text-ink break-words">
-          {state.file.name}
+          {file.name}
         </span>
         <span className="font-mono text-xs text-muted">
-          {formatBytes(state.file.size)} · {state.file.type || "type pending"}
+          {formatBytes(file.size)} · {file.type || "type pending"}
         </span>
       </>
     );
@@ -494,10 +558,6 @@ function SlotBody({
   );
 }
 
-/* -------------------------------------------------------------- */
-/* Debrief textarea                                                */
-/* -------------------------------------------------------------- */
-
 interface DebriefSlotProps {
   value: string;
   error: string | null;
@@ -509,6 +569,7 @@ function DebriefSlot({ value, error, dispatch }: DebriefSlotProps) {
   const hintId = useId();
   const errorId = useId();
   const remaining = MAX_DEBRIEF_CHARS - value.length;
+  const overCap = remaining < 0;
 
   return (
     <div className="flex flex-col gap-2">
@@ -520,8 +581,8 @@ function DebriefSlot({ value, error, dispatch }: DebriefSlotProps) {
         value={value}
         onChange={(event) => dispatch({ type: "setDebrief", value: event.target.value })}
         aria-describedby={`${hintId} ${error ? errorId : ""}`.trim()}
+        aria-invalid={overCap}
         rows={6}
-        maxLength={MAX_DEBRIEF_CHARS + 1}
         placeholder="Lost the rears mid-Old Hairpin again. Cannot trail-brake the lever the way I could at Croft."
         className="min-h-[180px] rounded-sm border-2 border-rule bg-paper p-4 font-sans text-sm leading-relaxed text-ink placeholder:text-muted focus:border-racing-green focus:outline-none"
       />
@@ -529,8 +590,8 @@ function DebriefSlot({ value, error, dispatch }: DebriefSlotProps) {
         Two or three sentences from your post-session debrief. APEX cross-references
         the debrief against the forecast envelope and your COA limits.
       </p>
-      <p className="font-mono text-xs text-muted">
-        {remaining} characters left.
+      <p className={`font-mono text-xs ${overCap ? "text-accent" : "text-muted"}`}>
+        {overCap ? `${-remaining} over the limit.` : `${remaining} characters left.`}
       </p>
       {error && (
         <p id={errorId} role="alert" className="text-xs leading-relaxed text-accent">
@@ -540,10 +601,6 @@ function DebriefSlot({ value, error, dispatch }: DebriefSlotProps) {
     </div>
   );
 }
-
-/* -------------------------------------------------------------- */
-/* Driver identifier                                               */
-/* -------------------------------------------------------------- */
 
 function DriverIdField({
   value,
