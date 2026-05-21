@@ -68,7 +68,7 @@ flowchart TB
 
     subgraph OB["One-time at onboarding (cached for the live loop)"]
         direction LR
-        DOCLING["Granite-Docling 258M<br/>COA to structured JSON"]
+        DOCLING["Granite-Docling 258M model<br/>+ Docling library conversion layer<br/>COA to structured JSON"]
         VISION["Granite Vision 4.1 4B<br/>Timing sheet to CSV"]
     end
 
