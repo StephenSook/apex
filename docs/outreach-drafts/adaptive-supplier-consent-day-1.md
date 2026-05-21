@@ -25,7 +25,7 @@ I am a sophomore Computer Science student at Kennesaw State University. My teamm
 
 APEX uses the FIA Certificate of Adaptations under the Appendix L provisions as a tensor-level input. When a driver's COA permits simultaneous brake-throttle inputs, our physics-projection layer permits the input. That is the architectural detail that distinguishes APEX from existing race-engineer AI tools (Track Titan, Trophi.ai), which assume able-bodied physics and systematically misdiagnose adaptive drivers.
 
-Our hero persona is a fictional driver named Sarah Reynolds (RAF veteran, left-leg amputee, Britcar Trophy in a hand-controlled BMW M240i). The persona materials currently reference your electronic hand-control system as her supplier, because the simultaneity-permitting hand-control technology you ship is exactly what makes the COA-aware physics layer matter.
+Our hero persona is a fictional driver named Sarah Reynolds (RAF veteran, left-leg amputee, Britcar Trophy in a hand-controlled BMW M240i). The persona materials currently reference your electronic hand-control system as her supplier, because adaptive hand-controls of the class you supply are exactly the kind of equipment the COA-aware physics layer was built to respect.
 
 I would like to ask for explicit per-surface attribution permission before any of these materials are published or submitted:
 
