@@ -21,38 +21,66 @@
  */
 
 // ---------------------------------------------------------------------------
+// Sign conventions (binding across both frontend TS and backend Pydantic):
+//   - steering positive = right turn
+//   - lat_g positive = right
+//   - long_g positive = forward acceleration
+//   - all times in seconds from session start unless suffixed otherwise
+//   - all G-forces in g (~9.81 m/s^2 per unit)
+//   - all pressures in Pascals
+// Violating these requires a `⚠️ CONTRACT` commit + both members re-sync.
+// ---------------------------------------------------------------------------
+
+// ---------------------------------------------------------------------------
 // Telemetry input (driver upload)
 // ---------------------------------------------------------------------------
 
-/** A single row of raw 50 Hz telemetry. Channels per PLAN §Shared Contracts. */
-export interface TelemetryRow {
-  /** Seconds from session start. Monotonically increasing. */
-  readonly t: number;
-  /** Throttle position, 0 to 100 percent. */
+/**
+ * The 8 instantaneous physical channels of a raw telemetry sample.
+ * Separated from `TelemetryRow` so `MiniSectorTensor` can carry these
+ * channels without inheriting `TelemetryRow.t_session_s` (which is
+ * row-level time, not window-level time).
+ */
+export interface TelemetryChannels {
+  /** Throttle position, 0 to 100 percent (NOT 0 to 1). */
   readonly throttle_pct: number;
   /** Brake pressure in Pascals. Hand-control adjusted. */
   readonly brake_pa: number;
-  /** Steering angle in radians. Positive = right turn. */
+  /** Steering angle in radians. Sign per convention above. */
   readonly steering_rad: number;
   /** Engine RPM. */
   readonly rpm: number;
-  /** Lateral G force. Positive = right. */
+  /** Lateral G force. Sign per convention above. */
   readonly lat_g: number;
-  /** Longitudinal G force. Positive = acceleration. */
+  /** Longitudinal G force. Sign per convention above. */
   readonly long_g: number;
   /** Vehicle speed in meters per second. */
   readonly speed_mps: number;
-  /** Engaged gear, 0 to 8. 0 = neutral. */
-  readonly gear: number;
+  /** Engaged gear. 0 = neutral. */
+  readonly gear: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
 }
 
-/** Aggregated to 1-Hz mini-sector tensor before TTM forecast. */
+/** A single row of raw 50 Hz telemetry. */
+export interface TelemetryRow extends TelemetryChannels {
+  /** Seconds from session start. Monotonically increasing within a session. */
+  readonly t_session_s: number;
+}
+
+/**
+ * Aggregated to 1-Hz mini-sector tensor before TTM forecast.
+ * Channels are window-averaged. Window edges are explicit so neither side
+ * has to guess whether `t` means window-start, midpoint, or end.
+ */
 export interface MiniSectorTensor {
-  /** Mini-sector index, 0-indexed. */
+  /** Mini-sector index, 0-indexed. Typical lap has 18-24 mini-sectors. */
   readonly sector_idx: number;
-  /** Channel values averaged over the mini-sector window. */
-  readonly channels: TelemetryRow;
-  /** COA simultaneity flag for the sector. true if COA permits brake+throttle simultaneously. */
+  /** Window start time in seconds from session start. */
+  readonly t_window_start_s: number;
+  /** Window end time in seconds from session start. */
+  readonly t_window_end_s: number;
+  /** Window-averaged channel values. */
+  readonly channels: TelemetryChannels;
+  /** COA simultaneity flag for the sector. True if COA permits brake+throttle simultaneously. Mirrors `FIACoa.coa_simul_permitted`. */
   readonly coa_simul_permitted: boolean;
 }
 
@@ -78,8 +106,15 @@ export interface FIACoa {
   readonly vehicle: {
     readonly make: string;
     readonly model: string;
+    /** FIA homologation number / certificate identifier (free-form string until a stricter shape is verified). */
     readonly homologation: string;
   };
+  /**
+   * 9 adaptation domains, all individually optional. Runtime invariant:
+   * at least ONE domain must be populated, otherwise the document is
+   * incoherent (a COA exists precisely to certify adaptations). Enforced
+   * at parse time on both frontend and backend, not at type level.
+   */
   readonly adaptations: {
     readonly throttle?: FIAAdaptationDomain;
     readonly brake?: FIAAdaptationDomain;
@@ -91,12 +126,19 @@ export interface FIACoa {
     readonly driver_equipment?: FIAAdaptationDomain;
     readonly chassis?: FIAAdaptationDomain;
   };
-  readonly simultaneity_envelope: {
-    /** If true, hand-control system permits brake + throttle simultaneously mid-corner. */
-    readonly brake_throttle_simul_permitted: boolean;
-    /** Hand-lever travel adjustable range in mm. */
-    readonly brake_travel_adjustable_mm?: ReadonlyArray<number>;
-  };
+  /**
+   * Hoisted from the previous `simultaneity_envelope` sub-object to top-level
+   * because this is the LOAD-BEARING flag of the entire project. It gates the
+   * physics-projection layer's COA simultaneity check.
+   * True = the hand-control system permits simultaneous brake + throttle
+   * inputs mid-corner. Mirrors `MiniSectorTensor.coa_simul_permitted`.
+   */
+  readonly coa_simul_permitted: boolean;
+  /**
+   * Hand-lever travel adjustable range in millimetres, as [min, max].
+   * Optional because not every adaptation profile defines a range.
+   */
+  readonly brake_travel_adjustable_mm?: readonly [number, number];
   /** Cross-references back into Appendix L for citation provenance. */
   readonly fia_section_refs: ReadonlyArray<string>;
 }
@@ -106,14 +148,23 @@ export interface FIACoa {
 // ---------------------------------------------------------------------------
 
 export interface TimingSheetLap {
+  /** 1-indexed lap number. */
   readonly lap: number;
-  readonly sector_1_time: number;
-  readonly sector_2_time: number;
-  readonly sector_3_time: number;
-  readonly lap_time: number;
-  readonly gap: number;
+  /** Sector 1 time in seconds. */
+  readonly sector_1_time_s: number;
+  /** Sector 2 time in seconds. */
+  readonly sector_2_time_s: number;
+  /** Sector 3 time in seconds. */
+  readonly sector_3_time_s: number;
+  /** Full lap time in seconds. */
+  readonly lap_time_s: number;
+  /** Gap to leader in seconds (positive = behind leader). */
+  readonly gap_s: number;
+  /** Classification position at end of lap. */
   readonly position: number;
+  /** Pirelli compound: C1-C5 dry, INTER, WET. Free-form here because non-F1 series differ; validate on backend. */
   readonly tyre: string;
+  /** True if the lap included a pit stop. */
   readonly in_pit: boolean;
 }
 
@@ -133,13 +184,31 @@ export interface PhysicsViolation {
 // Granite Guardian audit output
 // ---------------------------------------------------------------------------
 
-export interface GuardianAudit {
-  readonly verdict: "approve" | "flag" | "reject";
-  readonly reasoning_trace: ReadonlyArray<string>;
-  readonly blocked_recommendations: ReadonlyArray<string>;
-  /** Audit ID for provenance footer reference. */
-  readonly audit_id: string;
-}
+/**
+ * Discriminated union by `verdict`. Illegal states unrepresentable:
+ * `blocked_recommendations` only appears on `"reject"`, `flagged_concerns`
+ * only appears on `"flag"`, `"approve"` carries no list. The frontend can
+ * `switch (audit.verdict)` and TypeScript will exhaust the cases.
+ * Pydantic mirrors this as `Annotated[Union[ApproveAudit, FlagAudit, RejectAudit], Field(discriminator="verdict")]`.
+ */
+export type GuardianAudit =
+  | {
+      readonly verdict: "approve";
+      readonly reasoning_trace: ReadonlyArray<string>;
+      readonly audit_id: string;
+    }
+  | {
+      readonly verdict: "flag";
+      readonly reasoning_trace: ReadonlyArray<string>;
+      readonly flagged_concerns: ReadonlyArray<string>;
+      readonly audit_id: string;
+    }
+  | {
+      readonly verdict: "reject";
+      readonly reasoning_trace: ReadonlyArray<string>;
+      readonly blocked_recommendations: ReadonlyArray<string>;
+      readonly audit_id: string;
+    };
 
 // ---------------------------------------------------------------------------
 // Coaching report (the actual API response to the driver)
@@ -155,6 +224,7 @@ export interface Citation {
 export interface CornerInsight {
   readonly name: string;
   readonly sector: 1 | 2 | 3;
+  /** Current delta vs reference, in seconds. Positive = slower than reference. */
   readonly current_delta_s: number;
   readonly recommendation: string;
   readonly citations: ReadonlyArray<Citation>;
@@ -164,24 +234,40 @@ export interface TuningDelta {
   readonly parameter: string;
   readonly current: number;
   readonly recommended: number;
+  /** Unit string matched to parameter (e.g., "mm" for brake_travel, "deg" for wing_angle, "%" for brake_bias). Validated at runtime. */
   readonly unit: string;
   readonly citation: Citation;
 }
 
-export interface NextSessionForecast {
-  readonly next_session_envelope: ReadonlyArray<number>;
-  readonly confidence_band_low: ReadonlyArray<number>;
-  readonly confidence_band_high: ReadonlyArray<number>;
-}
+/**
+ * Next-session forecast envelope. Each entry is one mini-sector projection.
+ * Object-array shape (vs three parallel arrays) makes length-mismatch
+ * impossible by construction.
+ */
+export type NextSessionForecast = ReadonlyArray<{
+  /** Mini-sector index this projection covers. */
+  readonly sector_idx: number;
+  /** Mean forecast (the TTM output after physics projection). */
+  readonly mean: number;
+  /** Confidence band lower edge. */
+  readonly low: number;
+  /** Confidence band upper edge. */
+  readonly high: number;
+}>;
 
 export interface ProvenanceFooter {
-  readonly granite_docling_version: string;
-  readonly granite_vision_version: string;
-  readonly granite_ttm_version: string;
-  readonly granite_instruct_version: string;
-  readonly granite_guardian_version: string;
+  /** Granite + IBM model versions used to produce this report. Adding a 6th model = add a 6th field on both sides. */
+  readonly model_versions: {
+    readonly granite_docling: string;
+    readonly granite_vision: string;
+    readonly granite_ttm: string;
+    readonly granite_instruct: string;
+    readonly granite_guardian: string;
+  };
+  /** 40-char hex git SHA of the code that produced this report. */
   readonly commit_sha: string;
-  readonly generated_at: string;
+  /** ISO 8601 UTC timestamp of report generation. */
+  readonly generated_at_iso: string;
 }
 
 export interface CoachingReport {
@@ -196,16 +282,31 @@ export interface CoachingReport {
 // API request / response shapes
 // ---------------------------------------------------------------------------
 
-export interface AnalyzeRequest {
+/**
+ * Frontend-side staging shape for the POST /api/analyze submission.
+ *
+ * The wire request is `multipart/form-data`, NOT JSON. The frontend
+ * serializes this shape to `FormData` before `fetch`. On the backend,
+ * FastAPI receives the multipart fields as `UploadFile = File(...)` for
+ * the file fields plus standard form fields for `debrief` + `driver_id`.
+ *
+ * If a future change ships JSON-only (e.g. base64-encoded files), promote
+ * this to a literal-union with `kind: "multipart"` and `kind: "json"`
+ * variants. For Day 1-12 scope, multipart is the only mode.
+ */
+export interface AnalyzeRequestPayload {
   /** Telemetry CSV bytes (raw 50 Hz file upload). */
   readonly telemetry_csv: File | Blob;
   /** FIA COA PDF bytes (one-time at onboarding; cached). */
   readonly coa_pdf: File | Blob;
-  /** Driver's written debrief (max 1000 chars). */
+  /** Driver's written debrief (max 1000 chars, enforced server-side). */
   readonly debrief: string;
   /** Driver identifier (matches a cached COA parse). */
   readonly driver_id: string;
 }
+
+/** @deprecated Use {@link AnalyzeRequestPayload} - kept for backward-search. */
+export type AnalyzeRequest = AnalyzeRequestPayload;
 
 /** POST /api/analyze response. */
 export type AnalyzeResponse = CoachingReport;
