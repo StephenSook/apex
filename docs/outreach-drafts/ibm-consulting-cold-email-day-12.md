@@ -2,7 +2,7 @@
 
 > Per PLAN.md task 7.4 + STATUS_DAY1.md §Day-2-and-Day-7-and-Day-12 sends. Day 12 afternoon (2026-05-31) after BeMyApp form submitted. Frames APEX as a reference architecture for governed foundation-model deployment on safety-critical sensor data, citing the IBM × Scuderia Ferrari case-study precedent.
 >
-> **Owner:** Stephen Sookra. **Send from:** stephensookra@gmail.com (personal email for IBM commercial outreach per the global CLAUDE.md sender-email convention, NOT the school address used for adaptive-motorsport stakeholder outreach).
+> **Owner:** Stephen Sookra. **Send from:** [personal email kept private] (personal address for IBM commercial outreach per the global CLAUDE.md sender-email convention, NOT the school address used for adaptive-motorsport stakeholder outreach). Address tracked in `project_apex_stakeholders.md` (private memory).
 > **Recipient:** TBD - research before send Day 12 morning. Likely targets: IBM Consulting Industry Lead for Sports & Entertainment, OR IBM Watson Apps team principal who shipped the Ferrari fan-app case study (named in IBM newsroom; reverse-search on LinkedIn).
 > **Reply window:** open-ended (this is post-submission, not on the hackathon clock).
 
@@ -14,7 +14,7 @@
 1. IBM Consulting Sports & Entertainment Industry Lead - name + email surfaced from the IBM newsroom Scuderia Ferrari case study + the Mission 44 announcement contact list.
 2. IBM Granite product lead - name surfaced from the Hugging Face model-card author list for `ibm-granite/granite-timeseries-ttm-r2`.
 
-Pick ONE primary. CC stephensookra@gmail.com (yourself, for record).
+Pick ONE primary. CC the [personal address kept private] (yourself, for record).
 
 ## Subject
 
@@ -43,7 +43,7 @@ Thanks for the time.
 
 Stephen Sookra
 Computer Science, Kennesaw State University
-stephensookra@gmail.com
+[personal email kept private]
 GitHub: github.com/StephenSook
 LinkedIn: linkedin.com/in/stephen-sookra-633682339
 
