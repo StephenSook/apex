@@ -102,6 +102,9 @@ function RunTile({ run }: { run: ActionsRun }) {
   const verdict = pickVerdict(run.status, run.conclusion);
   const tone = TONE[verdict];
   const label = LABEL[verdict];
+  const shortSha = typeof run.head_sha === "string" ? run.head_sha.slice(0, 7) : "unknown";
+  const updated = run.updated_at ? new Date(run.updated_at).toLocaleString() : "unknown";
+  const runNumber = typeof run.run_number === "number" ? run.run_number : "?";
 
   return (
     <article
@@ -113,15 +116,15 @@ function RunTile({ run }: { run: ActionsRun }) {
       <dl className="grid grid-cols-2 gap-2 font-mono text-xs leading-relaxed">
         <div className="flex flex-col gap-1">
           <dt className="uppercase tracking-wider text-muted">Run</dt>
-          <dd className="text-ink">#{run.run_number}</dd>
+          <dd className="text-ink">#{runNumber}</dd>
         </div>
         <div className="flex flex-col gap-1">
           <dt className="uppercase tracking-wider text-muted">SHA</dt>
-          <dd className="text-ink">{run.head_sha.slice(0, 7)}</dd>
+          <dd className="text-ink">{shortSha}</dd>
         </div>
         <div className="flex flex-col gap-1 sm:col-span-2">
           <dt className="uppercase tracking-wider text-muted">Updated</dt>
-          <dd className="text-ink">{new Date(run.updated_at).toLocaleString()}</dd>
+          <dd className="text-ink">{updated}</dd>
         </div>
       </dl>
       <a
