@@ -401,6 +401,30 @@ if run_check 20; then
   fi
 fi
 
+# Check 21 — Track-entries + pre-submit-final-check boxes ticked in submission payload.
+# Silent-failure-hunter wave-17 H-3: forgetting to tick track-entries silently forfeits
+# the "Most Innovative" + sponsor-track stacking entries; pre-submit-final-check unchecked
+# silently means a stakeholder quote could land without consent verification.
+# In --final mode, every [ ] in the submission payload Track-entries section + the
+# pre-submit-final-check section is a hard fail.
+if run_check 21; then
+  payload="deliverables/bemyapp-submission-payload.md"
+  if [[ ! -f "$payload" ]]; then
+    final_or_warn 21 "submission payload missing ($payload not yet drafted)"
+  else
+    unticked=$(grep -cE "^\[ \]" "$payload" 2>/dev/null || echo "0")
+    if (( unticked > 0 )); then
+      if (( FINAL_MODE )); then
+        fail 21 "$unticked unchecked checkbox(es) in $payload (Track-entries + Pre-submit lists)"
+      else
+        warn 21 "$unticked unchecked checkbox(es) in $payload; ALL must be ticked before --final"
+      fi
+    else
+      pass 21 "all checkboxes ticked in submission payload"
+    fi
+  fi
+fi
+
 echo ""
 echo -e "${BOLD}Summary${RESET}"
 printf "  HARD-FAIL : %d\n" "$HARD_FAIL"
