@@ -90,7 +90,7 @@ Cross-reference: `research/wave-30/README.md` for source manifest + `research/wa
 | 0.6 | **Start fastf1 cache download in background hour 1** (first telemetry pull ~500MB, rate-limited; don't block on it Day 8) | `app/backend/.fastf1_cache/` | ⬜ |
 | 0.7 | **Gate G1 — TTM smoke test:** load `ibm-granite/granite-timeseries-ttm-r2`, run zero-shot on 5-lap FastF1 export, log load time + inference latency + output tensor shape | `logs/day-03-ttm-smoke.md` | ⬜ |
 | 0.8 | **Gate G1b — Granite 4.1 8B Q4 GGUF latency bench** via llama.cpp on RTX 4060 (tokens/sec on 300-word coaching-report prompt) | `logs/day-03-granite-latency.md` | ⬜ |
-| 0.9 | **Shared contracts module — single source of truth for inter-layer types (Software Lead fix #2).** Define `PhysicsViolationLog` dataclass + `ViolationRecord` per-step schema + `simultaneity_flag` per-step channel shape `(batch, 24, 1)` here, re-export everywhere. | `app/backend/apex/shared/contracts.py` | ⬜ |
+| 0.9 | **Shared contracts module: single source of truth for inter-layer types (Software Lead fix #2).** Define `PhysicsViolationLog` dataclass + `ViolationRecord` per-step schema + `simultaneity_flag` per-step channel shape `(batch, 30, 1)` here per wave-30 horizon-expansion D-010, re-export everywhere. | `app/backend/apex/shared/contracts.py` | ⬜ |
 | 0.10 | **Channel-count audit (Software Lead fix #1).** PLAN.md §Shared contracts says 9 channels but `t` is time index, not feature. Resolve in `contracts.py`: TTM input = 8 telemetry channels + 1 COA simultaneity bit per step = 9 features. Document the broadcast/tile adapter from scalar COA flag to per-step `(batch, 24, 1)` tensor. | `app/backend/apex/shared/contracts.py` + PLAN.md §Shared contracts amendment | ⬜ |
 | 0.11 | Sketch physics validator function signatures importing from `shared.contracts` (per briefing Step 3) | `app/backend/apex/physics/validator.py` | ⬜ |
 | 0.12 | **Observability minimum (SRE-reviewer fix):** structured logging module with `audit_id` + `commit_sha` + `model_versions` baked into every log line. ~2h, saves the demo if something explodes live. | `app/backend/apex/shared/logging.py` | ⬜ |
@@ -144,7 +144,7 @@ Cross-reference: `research/wave-30/README.md` for source manifest + `research/wa
 
 | # | Task | File | Status |
 |---|------|------|--------|
-| 2.8 | `forecast.py` — TTM inference wrapper, 1Hz mini-sector aggregation from 50Hz raw, 24-step context window | `app/backend/apex/ttm/forecast.py` | ⬜ |
+| 2.8 | `forecast.py` TTM inference wrapper, 1Hz mini-sector aggregation from 50Hz raw, 30-step context window per wave-30 horizon-expansion D-010 (was 24 pre-wave-30) | `app/backend/apex/ttm/forecast.py` | ⬜ |
 | 2.9 | End-to-end: telemetry CSV → TTM forecast → NumPy validator → text violation log | integration script | ⬜ |
 | 2.10 | Integration test on a FastF1 5-lap slice | `app/backend/tests/test_ttm_integration.py` | ⬜ |
 | 2.11 | **Gate G4 — zero-shot TTM vs seasonal-naive MAE bake-off on FastF1 holdouts** | `logs/day-04-g4.md` | ⬜ |
@@ -346,7 +346,7 @@ deliverables/
 | **Day 4 EOD (G6.5)** | **`cvxpylayers` Windows install fails after 4h debug** | **Switch to M2 / WSL2 / Linux container. Log decision in `logs/day-04-cvxpy-fallback.md`.** |
 | Day 3 night | G1 TTM smoke fails on RTX 4060 | APEX Lite — drop TTM, keep Granite Instruct + Guardian on regulatory-only product |
 | Day 4 | G4 zero-shot TTM does not beat seasonal-naive on defined holdout (laps 4-5, seed=42, channels speed_mps + long_g) | Fine-tune-first, skip zero-shot pitch claim |
-| Day 5 | V2 CvxpyLayer has convergence issues | Ship V1 NumPy as floor. Engine-agnostic `.to_text()` boundary means D-A still holds — V1 and V2 emit identical violation strings, paper §3.2 cites QP as canonical engine. |
+| Day 5 | cvxpylayers SCP inner-iterate has convergence issues | Walk D-027 fallback ladder per decision-log (trust-region penalty + Powell ratio acceptance; escalate to D-A revision if rung exhausted). Engine-agnostic `.to_text()` boundary means D-A still holds: SCP-inner-iterate output + V1 NumPy floor emit identical violation strings per paper §3.2 canonical-engine framing. |
 | Day 6 | Granite-Docling fails on real COA | Fallback ladder: LlamaParse → Mistral OCR → manual JSON |
 | Day 8 | 60s budget blown on RTX 4060 | Wave-30 supersedes council-trim G8-demote: D-019 EAGLE-3 + aLoRA hot-swap tighten coaching-report sub-budget to 15s inside 60s wall-clock. If 60s still blown: pre-record demo, use live UI for Q&A only. |
 | Day 9 | 2+ G9 items fail | Q-004 APEX Lite full invocation |
@@ -401,7 +401,7 @@ This plan was pressure-tested by an llm-council session (TECHNICAL mode, 7 advis
 - **Defined G4 holdout** explicitly (laps 4-5, seed=42, channels speed_mps + long_g, per-channel MAE delta). Software Lead fix #5.
 - **Hardened G6** with citation-resolution test (no hallucinated FIA Articles) + provenance contract test (audit_id non-None). Software Lead fixes #6 + #9.
 - **Added G6.5** (cvxpylayers Windows install fallback) per Executor.
-- **Trimmed G7** to screenshot-only deliverable, **demoted G8 to stretch**, **killed sim-rig WebSocket backend** (task 5.5). Council convergence (Contrarian + Executor + chairman).
+- **Trimmed G7** to screenshot-only deliverable (SUPERSEDED wave-30: G7 promoted back to LangGraph + MCP + ContextForge runtime per D-017), **demoted G8** (SUPERSEDED wave-30: G8 sub-budget tightened to 15s via EAGLE-3 + aLoRA per D-019), **killed sim-rig WebSocket backend** (task 5.5; still killed in wave-30). Council convergence (Contrarian + Executor + chairman).
 - **Added `shared/contracts.py`** as single source of truth for inter-layer types — resolves channel-count off-by-one + scalar-vs-tensor simultaneity duality + violation-log schema drift. Software Lead fixes #1, #2, #3.
 - **Engine-agnostic `PhysicsViolationLog.to_text()`** from Day 4 so V1 NumPy and V2 CvxpyLayer emit byte-identical violation strings. Long-Term Architect's load-bearing wall #2. Preserves D-A even if V2 is cut.
 - **Added observability minimum** (`shared/logging.py` with audit_id + commit_sha + model_versions). SRE-reviewer fix.
