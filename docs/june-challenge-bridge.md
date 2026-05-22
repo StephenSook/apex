@@ -10,7 +10,7 @@
 
 ## The architectural claim
 
-The PhysicsTTM three-layer pattern (frozen pretrained TSFM + differentiable physics-projection + Granite Guardian text audit) is sport-agnostic. The motorsport-specific bits are:
+The PhysicsTTM three-layer pattern (frozen pretrained TSFM + two-stage projection-and-audit middle layer + Granite Guardian text audit) is sport-agnostic. The motorsport-specific bits are:
 
 1. **Input channels** (8 telemetry channels + COA-simultaneity flag) - motorsport-specific schema
 2. **Physics constraints** (friction ellipse, bicycle model, COA-aware brake-throttle simultaneity) - motorsport vehicle-dynamics
@@ -31,7 +31,7 @@ For FIFA World Cup player-tracking telemetry, the substitution map is direct.
 | **Layer 1b (Vision)** | Granite Vision 4.1 on timing sheets | Granite Vision 4.1 on heatmap diagrams + xG charts |
 | **Layer 2a (Aggregator)** | 1-Hz mini-sector telemetry tensor | 1-Hz per-phase-of-play positional tensor (build-up / transition / set-piece) |
 | **Layer 2b (TTM)** | Granite TTM r2.1 zero-shot forecast next-lap envelope | Granite TTM r2.1 zero-shot forecast next-phase positional envelope (where will players be in 5s) |
-| **Layer 2c (Physics)** | CvxpyLayer QP: friction ellipse + bicycle model + COA simultaneity | CvxpyLayer QP: max human acceleration (~10 m/s^2) + max turn rate + ball-distance bound + offside-line check |
+| **Layer 2c (Physics)** | Stage 1 CvxpyLayer QP: friction ellipse + forward-Euler + jerk bound. Stage 2 feasibility filter: bicycle-model coupling + COA-parameterized simultaneity gate | Stage 1 CvxpyLayer QP: max human acceleration (~10 m/s^2) + ball-distance bound (convex). Stage 2 feasibility filter: max turn rate at high-speed (nonconvex) + offside-line check (conditional) + tactical-role-spec gate |
 | **Layer 3 (Guardian)** | Granite Guardian on text log of physics violations + COA safe envelope | Granite Guardian on text log of physics violations + tactical-instruction safe envelope (e.g., "should this winger track back to defend a counter-attack?") |
 | **Layer 4 (Narrator)** | Granite 4.1 8B Instruct: race-engineer voice + COA citation | Granite 4.1 8B Instruct: assistant-coach voice + tactical-board reference |
 
@@ -59,7 +59,7 @@ The pattern is the same. The substitutions are content not architecture.
 - 0:08 - 0:25: Why elite football needs this. Manager debrief windows are 90 seconds at half-time. Player-tracking data is overwhelming. Existing AI tactical tools (Twelve, MatchMetrics, SciSports) treat the data statistically without enforcing kinematic feasibility.
 - 0:25 - 0:42: Hero use case. A specific match moment (e.g., "down 1-0 at half-time, manager has 90 seconds to decide a tactical change"). PhysicsTTM forecasts the next-phase positional envelope. Guardian audits the recommendation against player-role spec.
 - 0:42 - 1:30: Same three-layer architecture, same eight IBM Granite tools, same Convergence-14 safety pattern. The substitution map (above) lives in one slide.
-- 1:30 - 2:00: The killer detail. Where APEX-May reads FIA Article 18.3, APEX-June reads the tactical role-spec at tensor level. First AI to do this for elite football.
+- 1:30 - 2:00: The killer detail. Where APEX-May's Stage 2 feasibility filter reads the FIA Certificate of Adaptations (citing Appendix L Article 18.3) at tensor level, APEX-June's Stage 2 reads the tactical role-spec at tensor level. First AI to do this for elite football.
 - 2:00 - 2:30: Same UI, different output. Tactical recommendation card with role-spec citation. Phase-of-play forecast chart. Guardian safety stamp.
 - 2:30 - 2:50: Same stack, expanded - now ships for two sports, one architecture.
 - 2:50 - 2:58: Close.

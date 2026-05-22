@@ -3,6 +3,8 @@
 > Daily community-ping per the always-ship trivials list (PLAN.md §Scope tiering). Posted to BeMyApp May Challenge chat room. Stephen owns. Around 90 seconds of work per day. Galaxy-tier rule says ship every build day evening.
 >
 > **Owner:** Stephen Sookra. **Send to:** BeMyApp May Challenge chat room (Chat Rooms widget on the projects page).
+>
+> **Note 2026-05-21 night-late (wave-25 closure):** the Day 1 ping below describes the architecture as it was framed Day 1. Per wave-25, the projection layer was refined into two stages (Stage 1 differentiable QP + Stage 2 post-projection feasibility filter) once wave-24 cold-review identified that bicycle-model coupling + COA-parameterized simultaneity gate are nonconvex and cannot live in CvxpyLayer. Day 1 ping stays as historical record. Day 2+ pings carry the corrected two-stage framing.
 
 ---
 
@@ -23,7 +25,7 @@ Repo public Day 1: https://github.com/StephenSook/apex (Apache 2.0). 77+ atomic 
 ```
 Day 2 on APEX.
 
-[If G1+G4 both pass:] Gate G1 (TTM smoke) and Gate G4 (TTM zero-shot vs seasonal-naive on 5 FastF1 holdouts) both green. Sub-1M-param TTM beats naive on [X] of 5 circuits. PhysicsTTM physics-projection layer starts Day 3.
+[If G1+G4 both pass:] Gate G1 (TTM smoke) and Gate G4 (TTM zero-shot vs seasonal-naive on 5 FastF1 holdouts) both green. Sub-1M-param TTM beats naive on [X] of 5 circuits. Two-stage projection-and-audit layer (Stage 1 convex QP + Stage 2 feasibility filter) starts Day 3.
 
 [If G4 fails:] Honest update: TTM zero-shot lost to seasonal-naive on [X] of 5 holdouts. Domain shift from weather/retail-pretraining to motorsport telemetry is real. Pivoting pitch from "TTM forecasts pace" to "physics-constrained envelope + COA-aware narrator" - same product, different anchor. APEX Lite contingency activated.
 
