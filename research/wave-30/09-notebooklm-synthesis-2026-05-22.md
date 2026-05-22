@@ -210,7 +210,7 @@ To solve this, the maximal architecture dictates that for the inner projection s
 
 ---
 
-## Question 6 — Dependency-correct build order with 4 sync points
+## Question 6: Dependency-correct build order with 4 sync points
 
 **Prompt:** Given that every capability across the seven sources is in scope for the 12-day build, produce the dependency-correct order to build the components so each piece is ready when the next piece depends on it. Identify which components can be built in parallel by Stephen (frontend / pitch) and Vinh (backend) without blocking each other, and name the three or four hard sync points where both tracks must converge.
 
