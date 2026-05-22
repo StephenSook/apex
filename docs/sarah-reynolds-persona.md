@@ -39,7 +39,7 @@ Throttle pickup is two car-lengths late on entry. Steering angle peaks at 0.42 r
 
 ### Sector 2, T7 (Old Hairpin). +0.34 s vs reference. The hero failure.
 
-Brake-pressure trace shows her hand-lever brake travel maxing at 38 mm with a release-rate that is 0.4 s earlier than her T7 reference lap at Croft. The mechanism: at full lever travel, the secondary actuation point requires a wrist-pivot that her amputation-side prosthetic stub leverages awkwardly. She is effectively trail-braking against herself. APEX's projection layer reads her COA simultaneity flag (Section 3(c) permits brake + throttle simultaneity through entry), validates the brake-throttle overlap is within envelope, then recommends a 4 mm hand-lever brake-travel reduction at the secondary actuation point. That recommendation cites Article 18.3 of Appendix L (governing the COA structure) + Section 3(c) of her specific COA (the simultaneity permission). The forecast envelope shows her recovering 0.42 s in Sector 2 next qualifying if she applies the tuning delta.
+Brake-pressure trace shows her hand-lever brake travel maxing at 38 mm with a release-rate that is 0.4 s earlier than her T7 reference lap at Croft. The mechanism: at full lever travel, the secondary actuation point requires a wrist-pivot that her amputation-side prosthetic stub leverages awkwardly. She is effectively trail-braking against herself. APEX's two-stage physics validator processes her forecast: Stage one's convex QP keeps the friction-ellipse + forward-Euler + jerk-bound constraints satisfied, and Stage two's feasibility filter reads her COA simultaneity flag (Section 3(c) permits brake + throttle simultaneity through entry) before clearing the brake-throttle overlap. APEX then recommends a 4 mm hand-lever brake-travel reduction at the secondary actuation point. That recommendation cites Article 18.3 of Appendix L (governing the COA structure) + Section 3(c) of her specific COA (the simultaneity permission). The forecast envelope shows her recovering 0.42 s in Sector 2 next qualifying if she applies the tuning delta.
 
 ### Sector 3, T11 (Coppice). -0.05 s vs reference. The unexpected positive.
 
@@ -60,7 +60,7 @@ Eight channels at 50 Hz aggregated to 1-Hz mini-sectors:
 | Entry Coppice | 39.6 | 0.18 | 2.1M | 0.31 | -0.34 | -0.52 |
 | Apex Coppice | 35.2 | 0.78 | 0.2M | 0.48 | -0.71 | 0.32 |
 
-The failure-point row at Apex Old Hairpin shows brake (1.8 MPa) AND throttle (0.18, non-zero) present simultaneously. Standard tools assume `throttle * brake = 0`; they flag this row as either invalid telemetry or driver error. APEX reads the COA simultaneity flag, sees Section 3(c) explicitly permits it, applies the friction-ellipse + bicycle-model constraint correctly (peak lat-G of 0.81 + long-G of -0.22 = combined load within constant-mu envelope), and recommends the tuning delta instead of flagging the input.
+The failure-point row at Apex Old Hairpin shows brake (1.8 MPa) AND throttle (0.18, non-zero) present simultaneously. Standard tools assume `throttle * brake = 0`; they flag this row as either invalid telemetry or driver error. APEX runs Stage one of its physics validator (the convex QP confirms peak lat-G of 0.81 + long-G of -0.22 sits within the constant-mu friction ellipse) and Stage two of its feasibility filter (reads the COA simultaneity flag, sees Section 3(c) explicitly permits the brake-throttle overlap, audits the bicycle-model coupling for the resulting trajectory), then recommends the tuning delta instead of flagging the input.
 
 ## COA Section 3(c) excerpt (paraphrased; full text not reproduced)
 
@@ -72,7 +72,7 @@ The 4 mm reduction APEX recommends (from 38 to 34 mm) lands within the Section 3
 
 1. **Corner-by-corner coaching report.** Three corners flagged with delta-vs-reference + recommendation prose + citation chip (Appendix L Article 18.3 + COA Section 3(c) for the simultaneity citation).
 2. **Tuning recommendation card.** Reduce hand-lever brake travel by 4 mm. Cite Article 18.3 of Appendix L + Section 3(c) of her COA. Provenance footer shows the Granite Guardian audit ID + model versions + commit SHA + COA section IDs.
-3. **Next-session forecast chart.** 10 mini-sector envelope projection. Confidence band reflects the physics-projection layer's residual uncertainty after the friction-ellipse + bicycle-model constraints have corrected the forecast.
+3. **Next-session forecast chart.** 10 mini-sector envelope projection. Confidence band reflects the two-stage validator's residual uncertainty after Stage one's friction-ellipse + forward-Euler + jerk QP has corrected the forecast and Stage two's bicycle-model + COA-simultaneity audit has cleared the trajectory.
 4. **Guardian safety stamp.** Recommendation cleared against Sarah's COA safe envelope. Reasoning trace visible in think-mode (4 steps for the canned mock case).
 
 ## Why Sarah specifically
