@@ -74,7 +74,7 @@ Fraunces (italic) drives the brand mark. IBM Plex (sans + mono) carries the data
 |                                                  |           Sarah Reynolds          |
 |  [clay-red chip]                                 |                                   |
 |  First integrated workflow for                   |  [amber sticker]                  |
-|  adaptive hand-controls                          |  COA Section 3(c) - permitted     |
+|  adaptive hand-controls                          |  COA hardware spec - derived      |
 |                                                  |                                   |
 +--------------------------------------------------------------------------------------+
 | FOOTER STRIP (github URL + IBM Granite attribution + Apache 2.0)                      |  <-- 56px tall

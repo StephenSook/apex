@@ -269,8 +269,9 @@ function SarahMoment() {
           <p className="text-base text-ink-soft leading-relaxed">
             Britcar Trophy 2026 grid. #34 BMW M240i. Sarah Reynolds, first full
             season, chasing two tenths at Donington Park GP, Lap 17 of 19 of
-            Saturday qualifying. Electronic hand-controls (supplier name pending
-            per-surface consent). FIA Article 18.3 Certificate of Adaptations on
+            Saturday qualifying. MME Motorsport electronic hand-controls (per
+            consent receipt 2026-05-22 logged in docs/consent-log.md). FIA
+            Certificate of Adaptations under the FIA Appendix L provisions on
             file. Veteran. Left-leg amputee from a 2021 service incident.
           </p>
           <p className="pt-4 font-mono text-xs uppercase tracking-wider text-muted">
@@ -420,7 +421,7 @@ function Differentiators() {
       lead:
         "First AI to ingest the FIA Certificate of Adaptations as a binding safety envelope.",
       body:
-        "Article 18.3 of Appendix L is the authoritative document. APEX reads it at the tensor level, not as regulatory background.",
+        "FIA Appendix L is the regulation that governs Certificate of Adaptations structure for adaptive-equipment homologation. APEX parses the COA at onboarding, derives the c_overlap flag from the approved hand-control hardware specifications inside it, and feeds the flag to the model at the tensor level. Not regulatory background; tensor-level input.",
     },
     {
       n: "03",

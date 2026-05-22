@@ -74,7 +74,7 @@ Methodology: Sookra Methodology v3.3 with seven phases of competitive recon (six
 
 - A frozen pretrained TSFM + a differentiable physics-projection layer at inference is a viable architectural pattern that adjacent published work (Deep Dynamics, Chronos-on-car-following) has not yet explored for vehicle dynamics. The contribution is the wrapper, not the model.
 
-- The FIA Certificate of Adaptations is a structured document with binding force under Article 18.3 of Appendix L. Treating it as regulatory background instead of a tensor-level input is the mistake every existing motorsport AI tool makes for adaptive drivers.
+- The FIA Certificate of Adaptations is a structured document anchored to FIA Appendix L (the regulation governing adaptive-driver equipment homologation). APEX parses the COA at onboarding, derives the c_overlap flag from the approved hand-control hardware specifications recorded inside it, and feeds that flag to the model at the tensor level. Treating the COA as regulatory background instead of a tensor-level input is the mistake every existing motorsport AI tool makes for adaptive drivers.
 
 - IBM Granite's full stack (Docling + Vision + TTM + Instruct + Guardian + Langflow) is genuinely complementary when each tool does one thing in one place. Bob in the build loop, per the Ferrari precedent, is the cleanest dev story.
 

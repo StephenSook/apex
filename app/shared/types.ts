@@ -89,7 +89,7 @@ export interface MiniSectorTensor {
 // ---------------------------------------------------------------------------
 
 export interface FIAAdaptationDomain {
-  /** Section ID from Appendix L Article 18.3 (e.g., "3.a", "3.c"). */
+  /** Section ID inside the driver-specific COA document (e.g. "3.a", "3.c"). Anchored to FIA Appendix L as the governing regulation; the section IDs themselves are local to the parsed COA, not to FIA-internal article numbering. */
   readonly section_id: string;
   /** Human-readable summary of what is adapted. */
   readonly description: string;
@@ -215,9 +215,9 @@ export type GuardianAudit =
 // ---------------------------------------------------------------------------
 
 export interface Citation {
-  /** Appendix L Article reference, e.g., "Article 18.3.2(c)". */
+  /** FIA regulatory anchor for the cited adaptation. Use the verifiable Appendix L identifier (e.g. "Appendix L"); do not invent article numbers. Public FIA sources do not expose a discrete simultaneity field; APEX derives the simultaneity flag from approved hardware specifications, never from a fabricated FIA-internal field. */
   readonly fia_article: string;
-  /** COA section reference, e.g., "Section 3(c)". */
+  /** Driver-specific COA section pointer (e.g. "Section 3(c) hardware spec"). Local to the parsed COA document, not to FIA-internal article numbering. */
   readonly coa_section: string;
 }
 

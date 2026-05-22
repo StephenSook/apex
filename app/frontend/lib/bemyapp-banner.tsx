@@ -292,7 +292,7 @@ function CoaSticker() {
           borderRadius: 2,
         }}
       >
-        COA Section 3(c) - simultaneity permitted
+        COA hardware spec - simultaneity derived
       </div>
     </div>
   );

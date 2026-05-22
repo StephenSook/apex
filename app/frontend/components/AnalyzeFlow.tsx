@@ -76,9 +76,9 @@ function buildMockReport(submission: DropzoneSubmission): CoachingReportType {
         sector: 2,
         current_delta_s: 0.34,
         recommendation:
-          "Trail-brake the lever in two micro-presses rather than one. The COA permits the brake-throttle simultaneity you are running through entry; the lap loss is the lever-travel ramp at apex release. Reduce hand-lever brake travel by four millimetres at the secondary actuation point.",
+          "Trail-brake the lever in two micro-presses rather than one. Your COA-derived c_overlap flag is set (from the approved hand-control hardware spec in your COA) so the brake-throttle simultaneity you are running through entry clears Stage 2; the lap loss is the lever-travel ramp at apex release. Reduce hand-lever brake travel by four millimetres at the secondary actuation point.",
         citations: [
-          { fia_article: "Appendix L Art. 18.3", coa_section: "Section 3(c)" },
+          { fia_article: "Appendix L", coa_section: "Section 3(c) hardware spec" },
         ],
       },
       {
@@ -87,7 +87,7 @@ function buildMockReport(submission: DropzoneSubmission): CoachingReportType {
         current_delta_s: 0.08,
         recommendation:
           "Throttle pickup is two car-lengths late on entry. Steering angle peaks before throttle re-application; tighten the gap to recover most of the eighty-millisecond delta.",
-        citations: [{ fia_article: "Appendix L Art. 18.3", coa_section: "Section 1(a)" }],
+        citations: [{ fia_article: "Appendix L", coa_section: "Section 1(a) hardware spec" }],
       },
       {
         name: "Coppice",
@@ -95,7 +95,7 @@ function buildMockReport(submission: DropzoneSubmission): CoachingReportType {
         current_delta_s: -0.05,
         recommendation:
           "Strong exit. Mid-corner throttle pickup is conservative by roughly five percent against your PB; you have margin to push without breaching the friction envelope.",
-        citations: [{ fia_article: "Appendix L Art. 18.3", coa_section: "Section 1(a)" }],
+        citations: [{ fia_article: "Appendix L", coa_section: "Section 1(a) hardware spec" }],
       },
     ],
     tuning_delta: {
@@ -103,7 +103,7 @@ function buildMockReport(submission: DropzoneSubmission): CoachingReportType {
       current: 38.0,
       recommended: 34.0,
       unit: "mm",
-      citation: { fia_article: "Appendix L Art. 18.3", coa_section: "Section 3(c)" },
+      citation: { fia_article: "Appendix L", coa_section: "Section 3(c) hardware spec" },
     },
     forecast: [
       { sector_idx: 0, mean: 47.42, low: 47.21, high: 47.66 },
@@ -122,7 +122,7 @@ function buildMockReport(submission: DropzoneSubmission): CoachingReportType {
       reasoning_trace: [
         "Friction-ellipse check passed across all 10 mini-sectors; max load 0.92 mu * g.",
         "Bicycle-model tie between lateral G and steering angle within bounds across the lap.",
-        "COA Section 3(c) permits brake-throttle simultaneity; physics layer respected the permission throughout the projection.",
+        "COA-derived c_overlap flag (from the approved hand-control hardware spec in Section 3(c) of the driver's COA) was set across the lap; Stage 2 feasibility filter cleared the brake-throttle simultaneity accordingly.",
         "Tuning delta of -4.0 mm hand-lever brake travel is within recommended manufacturer envelope and does not introduce a forward-Euler kinematic violation in the projected next session.",
       ],
       audit_id: `audit-${submission.driver_id}-${Date.now().toString(36)}`,
