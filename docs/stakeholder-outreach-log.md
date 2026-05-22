@@ -28,6 +28,12 @@
 |------------------|--------|-----------|------|-------|---------------------|
 | MME Motorsport d.o.o. (Slovenia) | Email from school address per draft `docs/outreach-drafts/adaptive-supplier-consent-day-1.md` | Per-surface consent for naming as Sarah Reynolds' hand-control supplier | 2026-05-20 | **✅ CONSENT GRANTED 2026-05-22 by MME Motorsport corporate (sender name + CC contact + verbatim quote logged at `docs/consent-log.md` §1; this row keeps corporate-only attribution per the approved citation form).** | All 4 surfaces approved: Landing page, README, BeMyApp Story block, 3-min demo video. Sarah persona names MME directly post-wave-28. |
 
+## Phase 3.5 - MME consent acknowledgement reply (drafted 2026-05-22 Day 3 ; SEND within 24h of receipt)
+
+| Target archetype | Method | Asked for | Sent | Reply | Surfaces requested |
+|------------------|--------|-----------|------|-------|---------------------|
+| MME Motorsport d.o.o. (Marko + Sebastjan corporate inbox) | Reply on consent thread per draft `docs/outreach-drafts/mme-acknowledgement-reply-day-3.md` | (a) Confirm corporate-only attribution form, (b) offer private preview-link before public release of 3-min video on 2026-05-29, (c) open door for optional Marko/Sebastjan one-sentence reaction in deck Acknowledgements | TBD by Stephen Day 3 EOD | Awaiting | Closes consent loop; secondary opportunity: optional Acks quote |
+
 ## Phase 4 - Day 3 escalation (scheduled 2026-05-22, revised from Day 7 per Codex critique #4)
 
 > Driver identities omitted from this public log until the drivers have personally consented to per-surface attribution. Internal records kept in Stephen's private Drafts folder + the LinkedIn DM compose window per the L52 rule below.
