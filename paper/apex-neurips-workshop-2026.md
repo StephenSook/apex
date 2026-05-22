@@ -2,7 +2,7 @@
 
 **Workshop submission target:** NeurIPS 2026 Time-Series Foundation Models Workshop.
 
-**Status:** Prose draft 2026-05-21. §1 Introduction, §2 Related Work, §3 Method, §5 Limitations, §6 Conclusion, §7 Reproducibility, §8 Ethics, §9 References at draft quality. §4 Experiments outline + tables pending Vinh's Day-9 Gate G4 + Gate G5 measurements.
+**Status:** Draft as of 2026-05-21. §1 Introduction, §2 Related Work, §3 Method, §5 Limitations, §6 Conclusion, §7 Reproducibility, §8 Ethics, §13 References at draft quality. §4 Experiments outline + tables to be reported in the camera-ready revision.
 
 **Authors:** Stephen Sookra (Kennesaw State University), Vinh Le (Kennesaw State University).
 
@@ -16,7 +16,7 @@ Pretrained AI forecasting models can predict what a race car will do next, but t
 
 ## Abstract (250 words)
 
-Pretrained time-series foundation models (TSFMs) trained on general-domain corpora (weather, retail, energy) produce physically impossible forecasts when applied zero-shot to vehicle dynamics. Granite TimeSeries TTM r2.1 outperforms several larger TSFMs on common forecasting benchmarks, but its channel-independent architecture has no mechanism to enforce cross-channel physical relationships such as the friction ellipse, the bicycle model, or kinematic time-coupling. We name this the Kinetic Hallucination problem. Existing AI race-engineer tools either retrain a bespoke physics-informed network (Deep Dynamics) or apply a non-physics foundation model to an adjacent control domain (Chronos applied to car-following gap-distance). Neither path scales to adaptive-driver motorsport, where the driver's FIA Certificate of Adaptations may permit otherwise-impossible input patterns (simultaneous brake-and-throttle via electronic hand-controls) that an able-bodied physics model rejects as driver error. We present APEX, a three-layer architecture wrapping a frozen Granite TimeSeries TTM r2.1 forecaster with a differentiable CvxpyLayer QP projection layer that enforces the friction ellipse, the bicycle model, the forward-Euler kinematic step, the jerk bound, and a COA-parameterized brake-throttle simultaneity gate. The projection's violation log is serialized to plain text and audited by Granite Guardian 4.1 with custom Bring-Your-Own-Classifier rules. We evaluate the pipeline on a synthetic adaptive-driver Britcar Trophy 2026 Donington Park GP fixture and on FastF1-derived Formula 1 holdout circuits. Our contributions are (1) the differentiable physics-projection layer as a post-hoc add-on to any frozen TSFM, (2) the COA-parameterized simultaneity gate as the first AI race-engineer workflow that reads FIA Certificate of Adaptations data as a binding regulatory input, (3) Granite Guardian text-audit as a load-bearing, unit-tested safety contract for foundation-model-derived recommendations.
+Pretrained time-series foundation models (TSFMs) trained on general-domain corpora (weather, retail, energy) produce physically impossible forecasts when applied zero-shot to vehicle dynamics. Granite TimeSeries TTM r2.1 outperforms several larger TSFMs on common forecasting benchmarks, but its channel-independent architecture has no mechanism to enforce cross-channel physical relationships such as the friction ellipse, the bicycle model, or kinematic time-coupling. We name this the Kinetic Hallucination problem. Existing AI race-engineer tools either retrain a bespoke physics-informed network (Deep Dynamics) or apply a non-physics foundation model to an adjacent control domain (Chronos applied to car-following gap-distance). Neither path scales to adaptive-driver motorsport, where the driver's FIA Certificate of Adaptations may permit otherwise-impossible input patterns (simultaneous brake-and-throttle via electronic hand-controls) that an able-bodied physics model rejects as driver error. We present APEX, a three-layer architecture wrapping a frozen Granite TimeSeries TTM r2.1 forecaster with a differentiable CvxpyLayer QP projection layer that enforces the friction ellipse, the bicycle model, the forward-Euler kinematic step, the jerk bound, and a COA-parameterized brake-throttle simultaneity gate. The projection's violation log is serialized to plain text and audited by Granite Guardian 4.1 with custom Bring-Your-Own-Classifier rules. We evaluate the pipeline on a synthetic adaptive-driver Britcar Trophy 2026 Donington Park GP fixture and on FastF1-derived Formula 1 holdout circuits. Our contributions, scoped to the bounded claims restated in §5.3, are (1) first application of a pretrained TSFM to adaptive motorsport telemetry, applied zero-shot via an inference-time projection layer rather than via retraining; (2) the COA-parameterized simultaneity gate as the first public AI race-engineer workflow we found that reads FIA Certificate of Adaptations data as a binding regulatory input; (3) Granite Guardian text-audit as a load-bearing, unit-tested safety contract for foundation-model-derived recommendations.
 
 ---
 
@@ -48,11 +48,11 @@ Our contribution claims are scoped:
 
 **Time-series foundation models.** Granite TimeSeries TTM r2.1 (Ekambaram et al., NeurIPS 2024) is a sub-million-parameter pretrained TSFM that outperforms several larger TSFMs on standard univariate and multivariate benchmarks. The model is channel-independent by construction; cross-channel relationships are not enforced. Concurrent foundation-model work for time series includes Chronos (Ansari et al., 2024) and Moirai (Woo et al., 2024); none of these explicitly addresses physical-domain constraints.
 
-**Physics-informed neural networks for vehicle dynamics.** Deep Dynamics (cite Day 11) trains a bespoke physics-informed network on race telemetry with the friction ellipse, bicycle model, and tire-slip relations encoded as a training-time regularizer. The PINN approach requires per-domain retraining and cannot transfer to a different vehicle class without re-training. Earlier work on vehicle-dynamics neural networks (cite Day 11) shares the retraining requirement.
+**Physics-informed neural networks for vehicle dynamics.** Deep Dynamics (Chrosniak, Ning, Behl, 2023; arXiv:2312.04374) trains a bespoke physics-informed network on race telemetry with the friction ellipse, bicycle model, and tire-slip relations encoded as a training-time regularizer. The PINN approach requires per-domain retraining and cannot transfer to a different vehicle class without re-training.
 
-**Foundation models in adjacent control domains.** Chronos applied to car-following (Garza et al., cite Day 11) uses a foundation model on a different telemetry signal (front-to-rear gap distance) than our work. The car-following domain does not require the friction-ellipse or bicycle-model constraints that vehicle dynamics requires.
+**Foundation models in adjacent control domains.** Chronos applied to car-following (Zeng and Yan, 2025) uses a foundation model on a different telemetry signal (front-to-rear gap-distance prediction) than our work. The car-following domain does not require the friction-ellipse or bicycle-model constraints that vehicle dynamics requires.
 
-**AI race-engineer products.** Commercial AI race-engineer tools include Track Titan, Trophi.ai, and several others reviewed in the 2025-2026 motorsport-analytics landscape (cite Day 11). All commercial tools we surveyed encode `throttle * brake = 0` as a hard physics assumption; none reads the FIA Certificate of Adaptations or any other adaptive-driver regulatory document as a tensor-level input. The category gap APEX addresses is structural, not incremental.
+**AI race-engineer products.** Commercial AI race-engineer tools include Track Titan, Trophi.ai, and several others in the 2025-2026 motorsport-analytics landscape (web-accessible product pages cited in §9). Public materials we found for these tools do not document support for COA-aware brake-throttle simultaneity; none of the tools surveyed documents explicit conditional removal of the able-bodied mutual-exclusion assumption, and we found no public documentation that any commercial AI race-engineer product parses FIA Certificates of Adaptations or any other adaptive-driver regulatory document as a tensor-level input. The category gap APEX addresses is structural, not incremental.
 
 **Differentiable optimization layers.** CvxpyLayer (Agrawal et al., 2019) enables differentiable convex optimization as a PyTorch layer. Our projection layer is a parametric quadratic program wrapped by `cvxpylayers.torch.CvxpyLayer`; per-step constraints are constructed at run-time based on the COA-simultaneity flag values from the input tensor.
 
@@ -142,12 +142,14 @@ The full pipeline uses eight IBM Granite tools. The TTM forecaster + projection 
 
 ---
 
-## 4. Experiments (Vinh fills Day 9-10 after Gate G4 + G5 land)
+## 4. Experiments
+
+(Tables 1-3 to be reported in the camera-ready revision; the §4 prose below specifies the evaluation protocol that the camera-ready will populate.)
 
 **Datasets.**
 
 - *Sarah Reynolds Britcar Trophy 2026 Donington Park GP fixture (synthetic).* A 60-row 50-Hz telemetry CSV designed to match a plausible adaptive-driver lap-17-of-19 qualifying session for a left-leg-amputee veteran using electronic hand-controls. Paired with a 9-domain COA JSON conforming to the FIA Appendix L Article 18.3 schema. The fixture is synthetic by design (no real adaptive-driver identity); the lap shape, debrief language, and COA structure are derived from publicly documented Britcar Trophy regulations.
-- *FastF1 holdouts.* Five Formula 1 circuits drawn from the FastF1 public dataset. Selection criteria: circuits with at least three completed sessions in the 2024 season, mixed-pace (high-speed + slow-corner) layout, dry weather. Specific circuit list pending Vinh's Day-2 Gate G4 spike.
+- *FastF1 holdouts.* Five Formula 1 circuits drawn from the FastF1 public dataset. Selection criteria: circuits with at least three completed sessions in the 2024 season, mixed-pace (high-speed + slow-corner) layout, dry weather. Specific circuit list reported in §4.1 at camera-ready.
 
 **Baselines.**
 
@@ -218,35 +220,67 @@ Reproducibility is staged. The source tree at https://github.com/StephenSook/ape
 
 ## 8. Ethics statement
 
-This paper presents a coaching tool for adaptive racers, veteran-team drivers, and grassroots competitors. The hero use case (Sarah Reynolds, a fictional persona by design) does not represent any real identifiable individual. No real adaptive-driver telemetry, no real FIA Certificate of Adaptations, and no real driver identity is included in the published artifacts at the time of submission. Any future evaluation against real adaptive-driver data will follow the project's anonymization-pre-consent rule (operator names + driver identities anonymized to role descriptions in public artifacts pending explicit per-surface consent; full detail at `~/.claude/projects/.../memory/feedback_anonymization_pre_consent.md` in the authors' private project memory; the rule itself is reproduced in the public `CODE_OF_CONDUCT.md`).
+This paper presents a coaching tool for adaptive racers, veteran-team drivers, and grassroots competitors. The hero use case (Sarah Reynolds, a fictional persona by design) does not represent any real identifiable individual. No real adaptive-driver telemetry, no real FIA Certificate of Adaptations, and no real driver identity is included in the published artifacts at the time of submission. Any future evaluation against real adaptive-driver data will follow the project's anonymization-pre-consent rule (operator names and driver identities anonymized to role descriptions in public artifacts pending explicit per-surface consent; the rule is reproduced in `CODE_OF_CONDUCT.md` and the persona documentation lives at `docs/sarah-reynolds-persona.md` in the source repository).
+
+No human-subject evaluation is reported in this work. Any future real-driver telemetry or COA study based on this pipeline will require institutional ethics review (IRB or institutional exemption determination at the authors' institution and at any collaborating motorsport-rehabilitation programme), written informed consent with explicit withdrawal-rights documentation, per-surface release consent for any artifact derived from the data, and an updated Ethics section in any revision reporting such evaluation.
 
 The Guardian audit gate is explicitly a safety contract for the pipeline's coaching recommendations, not a general statement about foundation-model safety. We do not claim the pattern is sufficient for higher-stakes safety surfaces (medical advice, financial decisions, judicial outcomes) without domain-specific re-validation.
 
-The IBM Granite stack used as infrastructure is itself open-source (Apache 2.0). The IBM × Scuderia Ferrari case study cited in §3.6 is publicly documented; we adopt the same stack and architectural pattern, redirected toward audiences not served by the F1 deployment.
+The IBM Granite stack used as infrastructure is itself open-source (Apache 2.0). The IBM x Scuderia Ferrari case study cited in §3.6 is publicly documented; we adopt the same stack and architectural pattern, redirected toward audiences not served by the F1 deployment.
 
-## 9. References (BibTeX)
+## 9. Acknowledgments
+
+We thank the IBM Research Granite team for releasing the TimeSeries TTM, Guardian, Docling, Vision, and Instruct model families under permissive licenses that made this work possible. We thank the FastF1 maintainers for the public Formula 1 telemetry dataset used in §4 holdout evaluation, and the Federation Internationale de l'Automobile (FIA) for publishing Appendix L to the International Sporting Code in machine-readable form. We thank the BeMyApp + IBM SkillsBuild teams for organizing the AI Builders Challenge May 2026 program that catalyzed this work, and the operators of veteran motorsport rehabilitation programmes who informed the audience definition through publicly documented community materials (no operator names are published without per-surface consent per §8).
+
+## 10. Author contributions
+
+Stephen Sookra: project lead, frontend (Next.js coaching surface, shared TypeScript contracts, BeMyApp 1920x600 banner asset, OG cards), 3-minute submission video script, BeMyApp submission payload narrative, paper §1 + §2 + §3 + §5 + §6 + §7 + §8 + §9 prose authorship, repository discipline (atomic commits, pre-mortem journal, methodology trace, decision log). Vinh Le: backend (FastAPI orchestration, Granite-Docling COA parser, Granite Vision timing-sheet parser, CvxpyLayer projection-QP construction, post-projection feasibility filter, Granite Guardian BYOC rule authorship, Convergence-14 unit-test suite, FastF1 download + caching pipeline, Hugging Face Space containerization), paper §4 Experiments tables + ablation results. Both authors: paper revision + camera-ready prep.
+
+## 11. Conflicts of interest
+
+The authors declare no conflicts of interest. Both authors are undergraduate students at Kennesaw State University. No commercial sponsorship was received for this work.
+
+## 12. Funding
+
+Unfunded student work submitted to the IBM SkillsBuild AI Builders Challenge May 2026. Compute resources for forecaster inference + paper preparation are the authors' personal hardware.
+
+## 13. References (BibTeX)
 
 ```bibtex
 @inproceedings{ekambaram2024ttm,
   title = {Tiny Time Mixers (TTM): Fast Pre-trained Models for Enhanced Zero/Few-Shot Forecasting of Multivariate Time Series},
-  author = {Ekambaram, Vijay and Jati, Arindam and ...},
+  author = {Ekambaram, Vijay and Jati, Arindam and Nguyen, Nam H. and Sinthong, Phanwadee and Kalagnanam, Jayant},
   booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
   year = {2024},
   note = {Granite TimeSeries TTM r2.1 model card: ibm-granite/granite-timeseries-ttm-r2 on Hugging Face}
 }
 
-@article{agrawal2019cvxpylayer,
+@inproceedings{agrawal2019cvxpylayer,
   title = {Differentiable Convex Optimization Layers},
-  author = {Agrawal, Akshay and Amos, Brandon and Barratt, Shane and Boyd, Stephen and Diamond, Steven and Kolter, Zico},
-  journal = {Advances in Neural Information Processing Systems (NeurIPS)},
+  author = {Agrawal, Akshay and Amos, Brandon and Barratt, Shane and Boyd, Stephen and Diamond, Steven and Kolter, J. Zico},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
   year = {2019}
 }
 
+@article{chrosniak2023deepdynamics,
+  title = {Deep Dynamics: Vehicle Dynamics Modeling with a Physics-Informed Neural Network for Autonomous Racing},
+  author = {Chrosniak, John and Ning, Jingyun and Behl, Madhur},
+  journal = {arXiv preprint arXiv:2312.04374},
+  year = {2023}
+}
+
+@article{zeng2025chronos,
+  title = {Explore the Use of Time Series Foundation Model for Car-Following Behavior Analysis},
+  author = {Zeng, Chengyuan and Yan, Xiang},
+  journal = {arXiv preprint arXiv:2501.07034},
+  year = {2025}
+}
+
 @misc{ibm2026guardian,
-  title = {Granite Guardian 4.1: A Bring-Your-Own-Classifier Safety Gate for Foundation Model Outputs},
-  author = {IBM Research},
+  title = {Granite Guardian: A Bring-Your-Own-Classifier Safety Gate for Foundation Model Outputs},
+  author = {{IBM Research}},
   year = {2026},
-  howpublished = {ibm-granite/granite-guardian-3.0-8b on Hugging Face}
+  howpublished = {Granite Guardian model family on Hugging Face; specific Hugging Face identifier verified at camera-ready against the latest published release}
 }
 
 @misc{fia2017appendixL,
@@ -256,44 +290,51 @@ The IBM Granite stack used as infrastructure is itself open-source (Apache 2.0).
   note = {Article 18.3 revision lifted the FIA single-seater ban on disabled drivers in December 2017.}
 }
 
-@misc{deepdynamics2024,
-  title = {Deep Dynamics: A Physics-Informed Neural Network for Race Telemetry},
-  author = {[citation pending Day 11 final pass]},
-  year = {2024},
-  note = {Primary AI race-engineer baseline cited in our §2 + §4.}
-}
-
 @misc{ibm2026granite4instruct,
-  title = {Granite 4.1 8B Instruct: Race-Engineer Voice Narrator},
-  author = {IBM Research},
+  title = {Granite 4.1 8B Instruct},
+  author = {{IBM Research}},
   year = {2026},
-  howpublished = {ibm-granite/granite-4-8b-instruct on Hugging Face}
+  howpublished = {ibm-granite/granite-4-8b-instruct on Hugging Face; specific Hugging Face identifier verified at camera-ready against the latest published release}
 }
 
-@misc{ibmgrantdocling2026,
+@misc{ibmgranitedocling2026,
   title = {Granite-Docling 258M: Multimodal Document Parser},
-  author = {IBM Research},
+  author = {{IBM Research}},
   year = {2026},
   howpublished = {ibm-granite/granite-docling-258M on Hugging Face}
 }
 
 @misc{ibmlangflow2026,
   title = {Langflow: Visual Orchestration for LLM Pipelines},
-  author = {IBM Research},
+  author = {{IBM and the Langflow community}},
   year = {2026},
   howpublished = {https://github.com/langflow-ai/langflow}
 }
 
 @misc{ibmferrari2025,
-  title = {IBM x Scuderia Ferrari: Granite Stack on Safety-Critical Sensor Data},
-  author = {IBM Consulting},
+  title = {IBM x Scuderia Ferrari HP: Reimagined Mobile App and Granite Stack on Safety-Critical Sensor Data},
+  author = {{IBM Newsroom}},
   year = {2025},
-  note = {Case-study precedent cited in §3.6 for the same Granite stack applied to F1 fan-app + race-strategy workflows.}
+  howpublished = {https://newsroom.ibm.com/2025-05-01-ibm-and-scuderia-ferrari-hp-debut-reimagined-mobile-app-to-supercharge-global-formula-1-fan-experience}
+}
+
+@misc{tracktitan2026,
+  title = {Track Titan: AI Race-Engineer Telemetry Comparison Platform},
+  author = {{Track Titan}},
+  year = {2026},
+  howpublished = {Public product documentation, accessed 2026-05-21}
+}
+
+@misc{trophiai2026,
+  title = {Trophi.ai: AI Race Coaching from Onboard Telemetry},
+  author = {{Trophi.ai}},
+  year = {2026},
+  howpublished = {Public product documentation, accessed 2026-05-21}
 }
 ```
 
-Full BibTeX expansion + the Chronos-on-car-following + Moirai + Llama Guard + Constitutional AI entries land Day 11 final pass.
+Camera-ready will add the Moirai (Woo et al. 2024) + Chronos (Ansari et al. 2024) + Llama Guard + Constitutional AI entries once §2 expands to cover their roles in the broader TSFM + safety-classifier landscape, plus any additional motorsport-AI comparators identified between submission and camera-ready.
 
 ---
 
-_Last updated: 2026-05-21 night-late-late by Stephen (Stretch S10 paper expansion Day 11 -> today per galaxy-tier rule. Prose draft for all sections except §4 Experiments tables, which require Vinh's Day-9 Gate G4 + G5 measurements. Reproducibility + Ethics statements + BibTeX skeleton added. Wave-22 cold-review claim-softening applied to §1 + §5.3 bounded-scope language: "first application of a pretrained TSFM to adaptive motorsport telemetry" + "first public AI race-engineer workflow we found that reads the FIA Certificate of Adaptations as a binding regulatory input."_
+_Last updated: 2026-05-21 night-late-late-3. Camera-ready revision will report Vinh's §4 Experiments measurements + finalize all citation identifiers + embed the rendered architecture figure (currently referenced via the source-repository Mermaid diagram)._
