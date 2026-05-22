@@ -76,9 +76,9 @@ consent-log.md §1 claimed BeMyApp Story block is one of 4 approved surfaces. be
 
 **Closed:** wave-29 commit 2. Sticker text now reads "COA hardware spec - simultaneity derived."
 
-### B-W28-13 + B-W28-14 Personal-name leak (Marko + Sebastjan on public-repo surfaces)
+### B-W28-13 + B-W28-14 Personal-name leak (MME corporate sender + CC contact on public-repo surfaces)
 
-`README.md:44` + `docs/stakeholder-outreach-log.md:29` + `docs/outreach-drafts/adaptive-supplier-consent-day-1.md:3` + `docs/pre-mortem.md:65` all named Marko Mlakar (or Sebastjan Filipic CC contact) on public-repo surfaces. consent-log.md §1 approved citation form is corporate-only ("MME Motorsport" or "MME Motorsport d.o.o."); personal sender + CC names stay in the audit-trail consent-log only.
+`README.md:44` + `docs/stakeholder-outreach-log.md:29` + `docs/outreach-drafts/adaptive-supplier-consent-day-1.md:3` + `docs/pre-mortem.md:65` all named the MME corporate sender + CC contact on public-repo surfaces (personal names redacted from this finding-summary post-wave-34; original names retained only in `docs/consent-log.md` §1 audit trail). consent-log.md §1 approved citation form is corporate-only ("MME Motorsport" or "MME Motorsport d.o.o."); personal sender + CC names stay in the audit-trail consent-log only.
 
 **Closed:** wave-29 commit 3. Personal-name redaction sweep with `docs/consent-log.md` §1 retained as the audit-trail surface that keeps the verbatim quote + sender + CC.
 
@@ -124,7 +124,7 @@ Paper line 107 said "j_max = 30 m/s^3" while arch-spec line 139 + C14-04 sample 
 
 ### H-W28-9 (plan-gap-scanner) Q-006 closure scope incomplete
 
-Q-006 resolution language didn't explicitly say "personal naming of Marko Mlakar or Sebastjan Filipic is NOT in scope."
+Q-006 resolution language didn't explicitly say "personal naming of the MME corporate sender or CC contact is NOT in scope." (Personal names redacted from this finding-summary cell post-wave-34 per anonymisation-pre-consent rule.)
 
 **Closed:** wave-29 commit 4. Q-006 resolution clause extended.
 

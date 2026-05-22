@@ -208,7 +208,7 @@ Abstract sketch (200 words):
 Co-author / advisor strategy:
 - IBM Research co-author: target the TTM author team (Ekambaram, Jati, Lin) at IBM TJ Watson Research Center or IBM Research UK (Hursley).
 - Motorsport-engineering academic: Politecnico di Milano (Prof. Sergio M. Savaresi, vehicle dynamics, motorcycle g-g paper); Cranfield (Prof. James Brighton, Advanced Motorsport Engineering MSc); Oxford Brookes.
-- Disability-motorsport co-author: Dave Player (Team BRIT founder), Marko Mlakar (MME Motorsport) — ethical weight + data section.
+- Disability-motorsport co-author: Team BRIT founder + MME Motorsport corporate contact (personal names redacted post-wave-34 per anonymisation-pre-consent rule); ethical weight + data section.
 
 Which novelty is deepest? All three (kinetic-hallucination mitigation, FIA-COA-as-envelope, adaptive-motorsport application) are real, but COA-parameterized envelope is the deepest — no prior paper combines a regulator's adaptation certificate with a differentiable safety constraint on a foundation model.
 
@@ -223,7 +223,7 @@ IBM partnership path.
 
 FIA Disability and Accessibility Commission. Formal contact: `disability@fia.com`. Pitch: "We're building the first AI race engineer that reads CoA as a machine-readable envelope — will you publish a JSON schema?" Positions PIT WALL as infrastructure for FIA's own digital transformation.
 
-Data partners. Team BRIT (Washington, West Sussex; multi-platform telemetry: McLaren 570S GT4, BMW M240i, BMW 1 Series, Aston Martin Vantage GT4); Mission Motorsport (UK veterans); Resilience Racing Foundation (US); MME Motorsport (Slovenia, Marko Mlakar — hand-control OEM); FFSA Handikart (France). Template MoU: anonymization, IP retention, academic publication right, co-author option, brand-use right.
+Data partners. Team BRIT (Washington, West Sussex; multi-platform telemetry: McLaren 570S GT4, BMW M240i, BMW 1 Series, Aston Martin Vantage GT4); Mission Motorsport (UK veterans); Resilience Racing Foundation (US); MME Motorsport (Slovenia, hand-control OEM; personal names redacted post-wave-34 per anonymisation-pre-consent rule); FFSA Handikart (France). Template MoU: anonymization, IP retention, academic publication right, co-author option, brand-use right.
 
 Open-source moat. Release `physics-tsfm` / `racing-pinn-wrapper` as Apache-2.0:
 - GitHub + HuggingFace Spaces demo.
@@ -280,7 +280,7 @@ Day 12 (May 31): Polish, video, submission. 3-minute demo with killer side-by-si
 - Full Pacejka option.
 - CPTC conformal layer.
 - Workshop paper draft.
-- Outreach: IBM Research (Ekambaram, Jati), Cranfield, Politecnico Milano (Savaresi), Team BRIT (Player), MME (Mlakar).
+- Outreach: IBM Research (Ekambaram, Jati), Cranfield, Politecnico Milano (Savaresi), Team BRIT (founder; personal name redacted), MME Motorsport (corporate contact; personal name redacted).
 - Submit `physics-tsfm` to AI Alliance / IBM Cookbook.
 
 ### 90-day arc (June 1 – Aug 31, 2026)
