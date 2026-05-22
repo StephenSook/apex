@@ -21,7 +21,7 @@ How: twelve IBM Granite tools earning their slot in a five-layer architecture. L
 
 Stack rationale: every tool earns its slot against a NeurIPS Workshop paper draft that names the central novelty (frozen time-series foundation model + hard differentiable physics-projection composition, a confirmed-absence in the prior-art sweep) and three supporting contributions (kinetic hallucination as a characterised failure mode, polyphase 50 Hz feasible-lift projector, APEX-Bench public benchmark with LIPS 4-axis ablation released under Apache 2.0 alongside the paper).
 
-Status: 257+ atomic commits across Day 1 through Day 3 (atomic-commit discipline, conventional commits prefixes, push-after-every-commit). Wave-30 maximal architecture lock landed Day 3 night. Day-3 Sequential Convex Programming go/no-go gate is the single most important checkpoint of the build.
+Status: [X+] atomic commits across Day 1 through [current day] (atomic-commit discipline, conventional commits prefixes, push-after-every-commit). Wave-30 maximal architecture lock landed Day 3 night. Day-3 Sequential Convex Programming go/no-go gate is the single most important checkpoint of the build.
 
 Open to technical feedback from anyone in the adaptive-racing community, IBM Granite contributors, sim-racing engineering folks, foundation-model + physics-projection researchers. Repo public Day 1 at github.com/StephenSook/apex (Apache 2.0). Paper draft + architecture spec + decision log all live there.
 
