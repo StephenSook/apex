@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
+
+import { ConvergenceFixtureGrid } from "../../components/ConvergenceFixtureGrid";
+import { CONVERGENCE_FIXTURES } from "../../lib/convergence-fixtures";
 
 export const metadata: Metadata = {
   title: "Judges' Tour · APEX",
@@ -55,7 +59,19 @@ const RESOURCES: ReadonlyArray<ResourceLink> = [
   {
     label: "Architecture spec",
     href: "https://github.com/StephenSook/apex/blob/main/docs/architecture-spec.md",
-    detail: "PhysicsTTM 3-layer: frozen Granite TTM → CvxpyLayer QP physics → Granite Guardian audit.",
+    detail: "Three-layer pipeline with a two-stage projection-and-audit middle layer; Figure 1 inline below.",
+    badge: "live",
+  },
+  {
+    label: "Convergence 14 fixture grid",
+    href: "#convergence-14",
+    detail: "Display of the 14-fixture safety-contract catalogue. 4 Stage 1, 4 Stage 2, 4 Stage 3, 2 round-trip integrity.",
+    badge: "live",
+  },
+  {
+    label: "NeurIPS Workshop paper draft",
+    href: "https://github.com/StephenSook/apex/blob/main/paper/apex-neurips-workshop-2026.md",
+    detail: "Publication-readable §1-§3 + §5-§13 draft. §4 Experiments cell values fill at camera-ready.",
     badge: "live",
   },
   {
@@ -182,6 +198,79 @@ export default function JudgesPage() {
               </div>
             ))}
           </dl>
+        </div>
+      </section>
+
+      <section
+        id="architecture"
+        aria-labelledby="architecture-title"
+        className="border-b border-rule bg-paper-warm"
+      >
+        <div className="mx-auto max-w-6xl px-6 py-16 lg:px-10 lg:py-20">
+          <h2 id="architecture-title" className="font-display text-3xl tracking-tight text-ink">
+            The pipeline, one diagram.
+          </h2>
+          <p className="mt-3 max-w-3xl text-base leading-relaxed text-ink-soft">
+            Frozen Granite TimeSeries TTM r2.1 forecaster, wrapped in a two-stage projection-and-audit
+            layer (Stage 1 differentiable CvxpyLayer convex QP for friction-ellipse + forward-Euler +
+            jerk bound; Stage 2 post-projection feasibility filter for bicycle-model coupling + the
+            COA-parameterized brake-throttle simultaneity gate), audited by Granite Guardian 4.1 with
+            custom BYOC rules, narrated by Granite 4.1 8B Instruct. Source diagram lives at{" "}
+            <span className="font-mono text-xs text-racing-green">docs/architecture-diagram.mmd</span>{" "}
+            in the repository; Figure 1 in the NeurIPS Workshop paper draft is the same artifact.
+          </p>
+          <figure className="mt-8 flex flex-col items-center gap-3 rounded-sm border border-rule bg-paper p-6">
+            <Image
+              src="/figures/figure-1-architecture.svg"
+              alt="APEX pipeline architecture: driver inputs (telemetry CSV, FIA Certificate of Adaptations PDF, written debrief) feed a one-time onboarding stage (Granite-Docling + Granite Vision) and the 60-second post-race coaching loop (1-Hz aggregator into Granite TimeSeries TTM r2.1 into Stage 1 differentiable convex QP into Stage 2 post-projection feasibility filter into Granite Guardian text audit into Granite 4.1 8B Instruct narrator). Outputs are a corner-by-corner coaching report, tuning recommendation with COA section citation, next-session envelope forecast, and Guardian safety stamp with reasoning trace."
+              width={1600}
+              height={1200}
+              priority={false}
+              className="h-auto w-full max-w-5xl"
+            />
+            <figcaption className="font-mono text-xs text-muted">
+              Figure 1 (vector) · also available at{" "}
+              <a
+                href="/figures/figure-1-architecture.png"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-racing-green underline decoration-dotted underline-offset-2"
+              >
+                figure-1-architecture.png
+              </a>{" "}
+              for raster reuse.
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section
+        id="convergence-14"
+        aria-labelledby="convergence-14-title"
+        className="border-b border-rule bg-paper"
+      >
+        <div className="mx-auto max-w-6xl px-6 py-16 lg:px-10 lg:py-20">
+          <h2 id="convergence-14-title" className="font-display text-3xl tracking-tight text-ink">
+            Convergence 14 · the safety contract.
+          </h2>
+          <p className="mt-3 max-w-3xl text-base leading-relaxed text-ink-soft">
+            Decision-log D-A names the Convergence 14 fixture suite as the load-bearing safety contract.
+            Every kinematic-violation class has a unit-test fixture firing the violation, asserting the
+            serializer output, and asserting the Granite Guardian verdict matches. The grid below
+            enumerates the 14 fixtures: 4 at the Stage 1 convex QP boundary, 4 at the Stage 2
+            feasibility-filter boundary, 4 at the Stage 3 Granite Guardian BYOC text-audit boundary,
+            plus 2 round-trip integrity fixtures that close the convergence loop. The fixture files
+            land at <span className="font-mono text-xs text-racing-green">app/backend/tests/fixtures/convergence-14/</span>{" "}
+            with the test suite at{" "}
+            <span className="font-mono text-xs text-racing-green">app/backend/tests/test_serializer.py</span>{" "}
+            (PLAN row 4.2). Click any row to see the Guardian verdict reason and the serialized
+            violation-log excerpt the fixture asserts.
+          </p>
+          <ConvergenceFixtureGrid fixtures={CONVERGENCE_FIXTURES} />
+          <p className="mt-6 font-mono text-xs italic text-muted">
+            Grid is display-only. The Vinh-lane test suite at the path above is the assertion source
+            of truth.
+          </p>
         </div>
       </section>
 

@@ -335,3 +335,66 @@ export interface HealthResponse {
   readonly ttm_loaded: boolean;
   readonly guardian_loaded: boolean;
 }
+
+// ---------------------------------------------------------------------------
+// Convergence 14 safety-contract fixture catalogue
+// ---------------------------------------------------------------------------
+
+/**
+ * Kinematic-violation class for a Convergence 14 fixture. Each class
+ * corresponds to a constraint family in the architecture-spec Layer 4
+ * (Stage 1 convex QP or Stage 2 post-projection feasibility filter).
+ */
+export type ConvergenceViolationClass =
+  | "friction_ellipse"
+  | "forward_euler"
+  | "jerk_bound"
+  | "bicycle_model"
+  | "coa_simultaneity"
+  | "physical_envelope"
+  | "serializer_integrity";
+
+/**
+ * Which pipeline stage catches the violation. Stage 1 = convex QP
+ * projection clamp (CvxpyLayer). Stage 2 = post-projection feasibility
+ * filter audit. Stage 3 = Granite Guardian BYOC text audit on the
+ * combined violation log (the load-bearing safety contract).
+ */
+export type ConvergenceDetectionStage = "stage_1_qp" | "stage_2_feasibility" | "stage_3_guardian";
+
+/**
+ * The Guardian verdict the fixture is asserting (the unit-test
+ * assertion target). Mirrors `GuardianAudit.verdict`.
+ */
+export type ConvergenceExpectedVerdict = "approve" | "flag" | "reject";
+
+/**
+ * A single Convergence 14 fixture row. The Convergence 14 catalogue is
+ * the load-bearing safety contract: every kinematic-violation class has
+ * a fixture firing the violation + asserting the serializer output +
+ * Guardian verdict match the expected verdict. Display-only on
+ * `/judges`; Vinh's `app/backend/tests/test_serializer.py` owns the
+ * actual assertion suite.
+ */
+export interface ConvergenceFixture {
+  /** Stable identifier across the 14 fixtures: "C14-01" .. "C14-14". */
+  readonly id: string;
+  /** Short headline for the fixture grid. */
+  readonly title: string;
+  /** One-sentence description of the violation scenario. */
+  readonly summary: string;
+  /** Which constraint family the fixture exercises. */
+  readonly violation_class: ConvergenceViolationClass;
+  /** Pipeline stage that catches the violation. */
+  readonly detection_stage: ConvergenceDetectionStage;
+  /** Guardian verdict the fixture asserts. */
+  readonly expected_verdict: ConvergenceExpectedVerdict;
+  /** Plain-text reason the Guardian audit gives when firing the verdict. Mirrors `GuardianAudit.reason_lines` shape. */
+  readonly expected_guardian_reason: string;
+  /** COA simultaneity flag value the fixture pins (true = permitted, false = forbidden, null = COA-agnostic). */
+  readonly coa_simul_permitted: boolean | null;
+  /** Path to the fixture file under `app/backend/tests/fixtures/convergence-14/` (Vinh-lane; the path is the contract). */
+  readonly fixture_path: string;
+  /** Excerpt of the serialized violation log the fixture asserts the serializer produces. Display-only on `/judges`. */
+  readonly sample_violation_log_excerpt: string;
+}
