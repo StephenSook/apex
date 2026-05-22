@@ -76,6 +76,7 @@ export const CONVERGENCE_FIXTURES: ConvergenceFixtureCatalogue = [
   {
     id: "C14-04",
     title: "Jerk bound",
+    summary:
       "Long_g jumps from +0.6 g at t=8 to -0.8 g at t=9 in one 1-Hz mini-sector. Delta of 1.4 g/s exceeds the V1 jerk bound at 8 m/s^3 (approximately 0.815 g/s). 1 Hz fixture is a deliberate demo simplification per arch-spec sampling-rate caveat; production telemetry runs the jerk-bound at >=10 Hz on the raw 50 Hz upstream signal before mini-sector aggregation.",
     violation_class: "jerk_bound",
     detection_stage: "stage_1_qp",
