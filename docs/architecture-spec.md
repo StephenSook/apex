@@ -90,9 +90,13 @@ Zero-shot multivariate forecaster. Frozen weights, no retraining. NeurIPS 2024 "
 
 **Honest caveat:** TTM is channel-independent by default. Cross-channel physical relationships (friction ellipse, bicycle model, kinematic step) are NOT enforced by TTM. That is the job of Layer 2 (physics projection). TTM forecasts the envelope; Layer 2 projects it onto the feasible manifold; Layer 6 (Granite Instruct) turns the projected envelope into the precision tuning delta. Two jobs split between two models per Phase 4.5 mandatory edit #13.
 
-### 4. Differentiable physics-projection layer (`app/backend/apex/physics/projection.py`)
+### 4. Two-stage projection-and-audit layer (`app/backend/apex/physics/projection.py`)
 
-The novel architectural contribution. Wraps TTM's raw forecast with a differentiable QP that enforces physical feasibility per step. `cvxpylayers.torch.CvxpyLayer` implementation with a parametric QP.
+The novel architectural contribution. Two stages: a differentiable convex QP that handles the constraints expressible as convex inequalities, followed by a non-differentiable post-projection feasibility filter that audits the nonconvex constraints. The split is necessary because CvxpyLayer is convex-only; the bicycle-model coupling (nonlinear equality) and the COA-parameterized simultaneity gate (complementarity) cannot live inside the QP. Wave-25 propagated the paper §3.2 two-stage architecture into this spec.
+
+#### Stage 1: convex QP projection
+
+`cvxpylayers.torch.CvxpyLayer` implementation with a parametric QP. Decision variables per step `t`: `(a_long[t], a_lat[t], speed[t+1])`. Exogenous inputs: `(throttle[t], brake[t], steering_rad[t], speed[t])` taken from the TTM forecaster (or the previous step's accepted state). Objective: minimize the squared L2 distance between the decision-variable triple and the TTM forecast triple at step `t`.
 
 Constraints (V1, ships by Gate G5):
 
@@ -102,23 +106,21 @@ Constraints (V1, ships by Gate G5):
 a_lat[t]^2 + a_long[t]^2 <= (mu_v * g)^2          for all t in [0, prediction_length)
 ```
 
-where `mu_v` is a constant per-circuit friction coefficient (V1), `g = 9.81 m/s^2`, `a_lat` and `a_long` are the projected lateral and longitudinal accelerations in g. V2 (Day 5+) replaces `mu_v` with a circuit-conditional lookup `mu_v(circuit, weather)` and V3 (post-NeurIPS) replaces the constant-mu ellipse with a Pacejka load-dependent slip model.
-
-**Forward-Euler kinematic step:**
+Equivalently as a second-order cone constraint:
 
 ```
-speed[t] = speed[t-1] + a_long[t-1] * dt          for all t in [1, prediction_length)
+norm([a_lat[t] / (mu_y * g), a_long[t] / (mu_x * g)], 2) <= 1
 ```
 
-where `dt = 1.0 s` at 1-Hz mini-sector aggregation. This couples speed-evolution to longitudinal acceleration so TTM's channel-independent forecast cannot drift the speed channel away from the acceleration channel.
+where `mu_v` is a constant per-circuit friction coefficient (V1), `g = 9.81 m/s^2`, `a_lat` and `a_long` are the projected lateral and longitudinal accelerations in g. V2 (Day 5+) replaces `mu_v` with a circuit-conditional lookup `mu_v(circuit, weather)` and V3 (post-NeurIPS) replaces the constant-mu ellipse with a Pacejka load-dependent slip model. Convex.
 
-**Bicycle model:**
+**Forward-Euler kinematic step (current-step coupling):**
 
 ```
-a_lat[t] = (speed[t]^2 / L) * tan(steering_rad[t])          for all t in [0, prediction_length)
+speed[t+1] = speed[t] + a_long[t] * dt          for all t in [0, prediction_length)
 ```
 
-where `L = 2.69 m` is the BMW M240i wheelbase for the canned Sarah Reynolds demo case. Couples lateral acceleration to speed-squared and steering angle so TTM cannot forecast lateral G without the corresponding steering input.
+where `dt = 1.0 s` at 1-Hz mini-sector aggregation. Couples the current-step `a_long[t]` decision variable to the next-step `speed[t+1]` via linear equality. `speed[t]` is treated as exogenous from the previous step's accepted state. Convex.
 
 **Jerk bound:**
 
@@ -127,24 +129,41 @@ where `L = 2.69 m` is the BMW M240i wheelbase for the canned Sarah Reynolds demo
 |a_lat[t] - a_lat[t-1]| <= jerk_max * dt
 ```
 
-where `jerk_max = 30 m/s^3` (conservative human + tyre tolerance). Prevents intra-second sub-grid hallucinations that the 1-Hz aggregation would otherwise hide.
+where `jerk_max = 30 m/s^3` (conservative human + tyre tolerance), with prior-step `a_·[t-1]` treated as exogenous. Pair of linear inequalities, convex. Prevents intra-second sub-grid hallucinations that the 1-Hz aggregation would otherwise hide.
 
-**COA simultaneity flag:**
+**Stage 1 returns:** `(qp_corrected_tensor, qp_violation_log)` where `qp_corrected_tensor` is the projected forecast and `qp_violation_log` is a list of `PhysicsViolation` records (one per step that hit a convex-constraint bound). Differentiable end-to-end through the projection (gradient methods can backprop through Stage 1 if a future user wires the projection layer into a TTM-aware training loop).
+
+#### Stage 2: post-projection feasibility filter
+
+Audits the nonconvex constraints outside the convex QP. Not differentiable through the audit decisions; this is a structured accept/reject filter on the Stage-1 output.
+
+**Bicycle-model audit (low-slip kinematic approximation):**
+
+```
+a_lat_hat[t] = (speed[t]^2 / L) * tan(steering_rad[t])          # kinematic bicycle expected lateral acceleration
+flag violation when |a_lat[t] - a_lat_hat[t]| > slip_tolerance
+```
+
+where `L = 2.69 m` is the BMW M240i wheelbase for the canned Sarah Reynolds demo case, `steering_rad[t]` is the road-wheel angle (not steering-wheel angle), and `slip_tolerance` is a V1 constant (specific value committed at Gate G5 land, reported in the paper §4.1 at camera-ready). The kinematic bicycle approximation holds only at low tire-slip; at racing speeds, tire slip makes the equality fragile, so this is an audit, not a hard projection equality.
+
+**COA-parameterized simultaneity gate:**
 
 ```
 if coa_simul_permitted[t] == 1:
-    no brake * throttle constraint  (the COA explicitly permits simultaneity)
+    audit accepts any (throttle[t], brake[t])    # the COA explicitly permits simultaneity
 else:
-    throttle_pct[t] * brake_pa[t] == 0          (able-bodied physics; one or the other, never both)
+    flag violation when throttle[t] > eps AND brake[t] > eps    # able-bodied complementarity
 ```
 
-The COA simultaneity flag is the 9th input channel; the constraint is constructed at QP-build time based on the channel value. This is the architectural detail that distinguishes APEX from Track Titan + Trophi.ai.
+where `eps` is a small numerical tolerance (specific value committed at Gate G5 land, reported in paper §4.1 at camera-ready) chosen to avoid floating-point edge cases. The COA simultaneity flag is the 9th input channel; the audit consults the channel value per step. The novelty is the upstream tensor parameterization: the driver's FIA Certificate of Adaptations parsed JSON object is reduced to a binary flag that occupies the 9th channel of the TTM input tensor, so the regulatory document parameterizes audit behavior at the tensor level. This is the architectural detail that distinguishes APEX from Track Titan + Trophi.ai.
 
-**Returns:** `(corrected_tensor, violation_log)` where `corrected_tensor` is the projected forecast and `violation_log` is a list of `PhysicsViolation` records (one per step that hit a constraint) serialized to plain English for Layer 5 audit.
+**Stage 2 returns:** `feasibility_log`, a list of `PhysicsViolation` records (one per step that failed the bicycle audit OR the COA simultaneity audit). Concatenated with the Stage 1 `qp_violation_log` to form the combined `violation_log` consumed by Layer 5.
 
-The violation log is serialized to plain English for Layer 3. The serializer is treated as safety-critical code, not glue (see Convergence 14).
+**Combined returns from Layer 4:** `(corrected_tensor, violation_log)` where `corrected_tensor` is the Stage 1 projected forecast and `violation_log` is `qp_violation_log + feasibility_log`. The serializer (Convergence-14) treats both violation classes uniformly downstream.
 
-**Failure mode (pre-mortem row 9):** infeasible QP (no feasible solution exists for the constraint set on a given lap). V1 catches and logs infeasibility, falls back to the prior-lap baseline. V2 (Day 5+) relaxes the mu bound and logs the relaxation in the Guardian audit so the user knows the recommendation operated on a relaxed envelope.
+**Failure modes:**
+- (pre-mortem row 9) Infeasible Stage 1 QP. V1 catches and logs infeasibility, falls back to the prior-lap baseline. V2 (Day 5+) relaxes the mu bound and logs the relaxation in the Guardian audit so the user knows the recommendation operated on a relaxed envelope.
+- Stage 2 audit-failure: if the audit flags a violation, the projected tensor still ships downstream; the audit annotates the violation in the log so Layer 5 Guardian can decide approve/flag/reject. The audit never modifies the projected tensor.
 
 ### 5. Granite Guardian 4.1 8B BYOC text audit (`app/backend/apex/guardian/audit.py`)
 

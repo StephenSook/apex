@@ -80,8 +80,8 @@ Granite-Docling, Granite Vision 4.1, Granite TimeSeries TTM r2.1, Granite 4.1 8B
 Three constituencies, one shared product gap.
 
 - **Adaptive racers.** Drivers running hand-control rigs, prosthetic-leg-on-pedal setups, or other adapted controls compete in series like Britcar Trophy, the Adaptive Driver Championship, and FFSA Handikart. Their FIA Certificate of Adaptations (governed by Appendix L of the International Sporting Code) is a binding document that says, for example, that simultaneous brake-throttle inputs are permitted because the hand-control system supports them. Existing AI race-engineer tools assume an able-bodied physics model where `throttle * brake = 0`, so they read adaptive technique as driver error. APEX reads the COA at the tensor level. The same coaching pipeline says "lift earlier into Old Hairpin" for an able-bodied driver and "your COA permits the simultaneity you are running, the issue is brake-lever travel" for an adaptive driver in the same corner.
-- **Veteran motorsport rehabilitation programmes.** Veteran-team drivers competing through transatlantic veteran motorsport rehabilitation programmes often run with combat-injury-driven adaptations under the same COA framework. The economic barrier (the £500/day race engineer) is identical. Specific operator programmes anonymized in this public file pending per-surface consent per the project's operator-attribution rule.
-- **Grassroots clubman and amateur racers.** Britcar Trophy, SRO regional series, Britcar 12 Hour, club-level endurance racing. Post-race coaching is currently optional because it's a luxury good. APEX is free at the point of use for these audiences (Apache 2.0, Hugging Face Space hosted), open-source for any other developer to extend.
+- **Veteran motorsport rehabilitation programmes.** Veteran-team drivers competing through veteran motorsport rehabilitation programmes often run with combat-injury-driven adaptations under the same COA framework. The economic barrier is identical. Specific operator programmes anonymized in this public file pending per-surface consent per the project's operator-attribution rule.
+- **Grassroots clubman and amateur racers.** Britcar Trophy, SRO regional series, Britcar 12 Hour, club-level endurance racing. Post-race coaching is currently optional because it's a luxury good. APEX is free at the point of use for these audiences (Apache 2.0; Hugging Face Space hosted by submission week per the PLAN Phase 5 ship schedule), open-source for any other developer to extend.
 
 The Scuderia Ferrari precedent matters because IBM already shipped the same Granite stack to a Formula One team. APEX takes the same architecture and points it at the drivers who need it most, not the drivers who can already afford a paid race engineer.
 
@@ -252,10 +252,10 @@ npm run dev   # http://localhost:3000
 | 3 - Narrator (Granite 4.1 8B Instruct + COA flag) | Day 6 | 🟡 Sarah Reynolds persona narrative ✅ Day 1 EOD. Backend integration Vinh-side. |
 | 4 - Orchestration + polish (Langflow + caching + June bridge) | Days 7-8 | 🟡 3-min pitch script ✅, June Challenge bridge doc ✅, Langflow + caching Vinh-side. |
 | 5 - Demo + deploy (HF + Colab + sim-rig + video) | Days 9-10 | 🟡 Sim-rig frontend scaffold ✅, Colab notebook skeleton ✅, demo-video storyboard ✅, Vercel config + runbook ✅. HF Space + sim-rig WebSocket backend + production video take Day 9-10. |
-| 6 - Submission package (judges page + methodology + NeurIPS draft) | Day 11 | 🟡 /judges + /status routes ✅ Day 1 EOD pull-forward. Methodology trace + architecture-spec + pre-mortem + NeurIPS Workshop paper draft ✅ (Day-11 polish remains). BeMyApp 1920x600 banner ✅. |
+| 6 - Submission package (judges page + methodology + NeurIPS draft) | Day 11 | 🟡 /judges + /status routes ✅ Day 1 EOD pull-forward. Methodology trace + architecture-spec + pre-mortem ✅; NeurIPS Workshop paper publication-readable draft 🟡 (§4 Experiments tables Day 9-10; Day-11 polish remains for final polish). BeMyApp 1920x600 banner ✅. |
 | 7 - Submit | Day 12 (2026-05-31) | ⬜ pending. BeMyApp form payload draft ready at NeuroPit-depth. |
 
-Full status table: `PLAN.md` (194+ atomic commits pushed across Day 1 + Day 2). Daily handoff template: `STATUS_TEMPLATE.md`.
+Full status table: `PLAN.md` (197+ atomic commits pushed across Day 1 + Day 2). Daily handoff template: `STATUS_TEMPLATE.md`.
 
 ---
 
