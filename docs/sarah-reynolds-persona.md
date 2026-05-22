@@ -17,7 +17,7 @@
 
 - **Series:** Britcar Trophy 2026.
 - **Car:** #34 BMW M240i.
-- **Adaptations:** electronic hand-control system from a leading UK adaptive-hand-control supplier (supplier name pending per-surface consent per Q-006). Push-to-brake lever on the right of the steering wheel; throttle on the left; clutchless paddle shift. FIA Certificate of Adaptations under the Appendix L provisions on file with the ASN.
+- **Adaptations:** MME Motorsport electronic hand-control system (per consent receipt 2026-05-22 logged in `docs/consent-log.md` §1; MME Motorsport d.o.o., Todraz, Slovenia). Push-to-brake lever on the right of the steering wheel; throttle on the left; clutchless paddle shift. Sarah is a synthetic UK-Britcar driver importing MME equipment from Slovenia (consistent with the real adaptive-racing-community pattern of UK drivers running MME hardware). FIA Certificate of Adaptations under the FIA Appendix L provisions on file with the ASN; the simultaneity flag the persona references is APEX-derived from the dual-stage trigger pattern that MME ships as a real adaptive-equipment product.
 - **Crew:** One mechanic, one volunteer engineer. No paid race engineer.
 - **Circuit history:** First full season at Britcar. Came up through 2024 Mazda MX-5 Cup with a borrowed adapted car, then a 2025 partial Britcar campaign on a tight budget.
 
@@ -90,7 +90,7 @@ She is the human form of the £500-a-day-coaching-gap that APEX exists to close.
 - Sarah is **fictional**. No real driver named.
 - Supplier and adaptive-racing-programme naming anonymized to role descriptions until per-surface consent confirmed per Q-006 in PLAN.md. Consent email sent 2026-05-20 PM.
 - Veteran motorsport rehabilitation programmes referenced as anonymized aggregate ("a veteran motorsport rehabilitation programme," "multiple UK + US programmes"). Canonical programme list kept in private memory `project_apex_stakeholders.md` only.
-- The verbatim debrief above is the only quoted "speech." The landing page renders it as a blockquote with the giant accent quotation mark for editorial effect, plus the disclaimer "Persona is fictional by design. No real driver named without consent."
+- The verbatim debrief above is the only quoted "speech." The landing page renders it as a blockquote with the giant accent quotation mark for editorial effect, plus the disclaimer "Sarah Reynolds is fictional by design; no real driver is named without consent. MME Motorsport (Slovenia) consented to attribution on 2026-05-22 per `docs/consent-log.md` §1."
 - All telemetry numbers above are synthetic + chosen to be physically plausible while honoring the demo narrative. Vinh's Day-6 fixture CSV in `fixtures/telemetry/sarah-lap-17.csv` is the engineering-grade replacement.
 
 ## What lives in Vinh's lane (do not write without coordination)

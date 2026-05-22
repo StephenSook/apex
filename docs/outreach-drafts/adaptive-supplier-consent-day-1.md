@@ -1,8 +1,10 @@
-# Adaptive Hand-Control Supplier - Per-Surface Consent Email Draft (Q-006)
+# Adaptive Hand-Control Supplier - Per-Surface Consent Email Draft (Q-006) - ✅ CONSENT RECEIVED 2026-05-22
 
-> Per global CLAUDE.md operator-unassociation principle: any supplier or operator named in marketing copy without explicit per-surface consent is a risk. APEX positioning currently names a specific UK adaptive hand-control supplier in Sarah Reynolds persona materials. This email requests per-surface consent for the named association. If declined or no reply by Day 10, fall back to anonymized "leading UK adaptive-hand-control supplier" in all surfaces.
+> **Status (updated 2026-05-22):** ✅ **MME Motorsport d.o.o. (Marko Mlakar) granted per-surface attribution permission on 2026-05-22 at 03:17 AM ET.** Consent receipt logged in `docs/consent-log.md` §1. Verbatim grant: "Feel free to use the MME Motorsport Hand Controls in your projects." Approved scope covers all 4 surfaces requested (apex.race + README + BeMyApp Story + 3-min video). Sarah Reynolds persona materials now name MME directly; anonymized fallback no longer needed. Q-006 closed.
 >
-> **Owner:** Stephen Sookra. **Send date:** Day 2 (2026-05-21) morning. **Reply window:** by EOD Day 10 (2026-05-29). **Fallback decision date:** Day 10 morning if no reply.
+> Per global CLAUDE.md operator-unassociation principle: any supplier or operator named in marketing copy without explicit per-surface consent is a risk. The email below is the draft Stephen sent on 2026-05-20 that received the MME consent reply.
+>
+> **Owner:** Stephen Sookra. **Sent date:** Day 1 (2026-05-20). **Reply received:** Day 3 (2026-05-22) 03:17 AM ET. **Outcome:** Consent granted by Marko Mlakar; persona-naming sweep landed wave-28.
 >
 > **Sender + supplier identities** kept in private memory at `project_apex_stakeholders.md` (per pr-review-toolkit wave 5 BLOCKER). Public-repo file uses role descriptions only.
 
