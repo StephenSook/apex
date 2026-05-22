@@ -84,33 +84,43 @@ The forecaster is loaded from `ibm-granite/granite-timeseries-ttm-r2` and never 
 
 ### 3.2 Layer 2: differentiable physics-projection layer
 
-We construct a parametric quadratic program with the following constraints, applied per forecast step `t in [0, 24)`. Let $\mathbf{x}_t = (\text{throttle}_t, \text{brake}_t, \text{steering}_t, a_{\text{long},t}, a_{\text{lat},t}, \text{speed}_t)$ be the controllable subset of the per-step state.
+Layer 2 has two stages: a convex QP projection that handles the physical constraints expressible as convex inequalities, then a post-projection feasibility filter that audits the bicycle-model coupling and the COA-simultaneity gate (which are nonconvex and therefore cannot live inside the CvxpyLayer-wrapped QP).
 
-**Friction ellipse.** The total grip a tire generates is bounded by the friction circle (or ellipse for anisotropic compounds):
+Let $\mathbf{x}_t = (a_{\text{long},t}, a_{\text{lat},t}, \text{speed}_t)$ be the QP decision variables at step $t$, with $\text{throttle}_t$, $\text{brake}_t$, and $\text{steering}_t$ treated as exogenous inputs from the TTM forecaster for that step. All inputs are min-max normalized to $[0, 1]$ before constraint construction; the normalization mapping is preserved alongside the per-step state for the violation-log serializer.
+
+**Stage 1: convex QP projection.** The QP minimizes the squared L2 distance between $\mathbf{x}_t$ and the TTM forecast at step $t$ subject to the following convex constraints applied per forecast step $t \in [0, 24)$:
+
+*Friction ellipse.* The total grip a tire generates is bounded by the friction circle (or ellipse for anisotropic compounds):
 $$
 \left(\frac{a_{\text{lat},t}}{\mu_y g}\right)^2 + \left(\frac{a_{\text{long},t}}{\mu_x g}\right)^2 \leq 1
 $$
-In V1 we use $\mu_x = \mu_y = \mu_v$ as a per-circuit constant. V2 extends to circuit-conditional lookup $\mu_v(\text{circuit}, \text{weather})$. V3 (post-paper) replaces the constant-$\mu$ ellipse with a load-dependent Pacejka tire model.
+In V1 we use $\mu_x = \mu_y = \mu_v$ as a per-circuit constant. V2 extends to circuit-conditional lookup $\mu_v(\text{circuit}, \text{weather})$. V3 (post-paper) replaces the constant-$\mu$ ellipse with a load-dependent Pacejka tire model. This is a convex (second-order cone) constraint.
 
-**Forward-Euler kinematic step.** Discrete-time velocity update at $\Delta t = 1.0$ s:
+*Forward-Euler kinematic step.* Discrete-time velocity update at $\Delta t = 1.0$ s:
 $$
 \text{speed}_t = \text{speed}_{t-1} + a_{\text{long},t-1} \Delta t
 $$
+This is a linear equality (treating $\text{speed}_{t-1}$ and $a_{\text{long},t-1}$ as exogenous from the previous step's accepted state), therefore convex.
 
-**Bicycle model.** Lateral acceleration follows from the steering angle and current speed via the bicycle model:
-$$
-a_{\text{lat},t} = \frac{\text{speed}_t^2}{L} \tan(\theta_t)
-$$
-where $L$ is the vehicle wheelbase (BMW M240i Britcar Trophy: $L = 2.69$ m) and $\theta_t$ is the steering angle in radians.
-
-**Jerk bound.** Discrete-time jerk per axis is bounded:
+*Jerk bound.* Discrete-time jerk per axis is bounded:
 $$
 |a_{\cdot, t} - a_{\cdot, t-1}| \leq j_{\max} \Delta t, \quad j_{\max} = 30 \text{ m/s}^3
 $$
+This is a pair of linear inequalities, therefore convex.
 
-**COA simultaneity gate (architectural novelty).** If the COA-simultaneity flag is 1 at step $t$, the constraint $\text{throttle}_t \cdot \text{brake}_t = 0$ is dropped from the QP. Otherwise the constraint is enforced. The flag is the 9th channel of the input tensor; its value at each step is the result of parsing the driver's FIA Certificate of Adaptations parsed JSON object at onboarding time.
+The QP is wrapped by `cvxpylayers.torch.CvxpyLayer` (Agrawal et al., 2019) and is differentiable end-to-end through the projection. CvxpyLayer returns the projected $\mathbf{x}_t$ and a violation log enumerating, for each step, which convex constraint hit its bound.
 
-The QP is constructed at run-time based on the COA-simultaneity flag values from the input tensor. CvxpyLayer returns the projected tensor and a violation log enumerating, for each step, which constraint hit its bound. Convexity is preserved because all constraints above are either linear or strictly convex in $\mathbf{x}_t$ once the COA flag fixes the constraint set.
+**Stage 2: nonconvex post-projection feasibility filter.** Two physical relationships are nonconvex and cannot live inside the convex QP. We audit them post-projection and emit additional entries to the violation log; any nonconvex-constraint violation is escalated to the Layer-3 Guardian audit gate but does not gate the QP solve itself.
+
+*Bicycle-model (low-slip kinematic approximation).* Lateral acceleration at the kinematic bicycle approximation is:
+$$
+\hat{a}_{\text{lat},t} = \frac{\text{speed}_t^2}{L} \tan(\theta_t)
+$$
+where $L$ is the vehicle wheelbase (BMW M240i Britcar Trophy: $L = 2.69$ m) and $\theta_t$ is the road-wheel angle (not steering-wheel angle) in radians. The relationship is valid only at low tire-slip; at racing speeds, tire slip makes the equality fragile, so we treat it as an audit constraint, not a hard projection equality. We flag a violation when $|a_{\text{lat},t} - \hat{a}_{\text{lat},t}|$ exceeds a slip-tolerant threshold (V1 threshold: $0.3 g$; V2 makes the threshold circuit-conditional).
+
+*COA simultaneity gate (architectural novelty).* If the COA-simultaneity flag is 1 at step $t$, the audit accepts any combination of $(\text{throttle}_t, \text{brake}_t)$ from the TTM forecaster. Otherwise the audit flags a violation when $\text{throttle}_t > \epsilon$ AND $\text{brake}_t > \epsilon$ (small tolerance $\epsilon = 0.01$ in normalized units). The flag is the 9th channel of the input tensor; its value at each step is the result of parsing the driver's FIA Certificate of Adaptations parsed JSON object at onboarding time. Because this is a complementarity-style constraint (its feasible set is nonconvex), enforcing it inside the convex QP would require a mixed-integer formulation that CvxpyLayer does not support; the post-projection feasibility filter is the architecturally correct place.
+
+The two-stage architecture preserves end-to-end differentiability through the QP (the differentiable surface that gradient methods can backprop through if a future user wires the projection layer into a TTM-aware training loop) while keeping the nonconvex audit constraints honest as a separate accept/reject filter on the projected tensor.
 
 ### 3.3 Layer 3: Granite Guardian Bring-Your-Own-Classifier text audit
 
@@ -120,15 +130,15 @@ The textual layer is a load-bearing safety contract. We cover every kinematic-vi
 
 ### 3.4 The COA-parameterized simultaneity gate
 
-The architectural novelty is the binary COA-simultaneity flag as the 9th channel of the TTM input tensor combined with the conditional constraint in the QP. Adaptive drivers running electronic hand-control systems often have Certificates of Adaptations explicitly permitting simultaneous brake-throttle inputs (e.g., the dual-stage trigger pattern described in Section 3(c) of a typical adaptive-driver COA). The same coaching pipeline produces different corrections for adaptive vs. able-bodied drivers, governed by the COA's binding regulatory text. The pipeline runs the same model, the same projection layer, and the same audit gate; only the flag value differs at the tensor level.
+The architectural novelty is the binary COA-simultaneity flag as the 9th channel of the TTM input tensor combined with the conditional post-projection feasibility audit described in §3.2 Stage 2. Adaptive drivers running electronic hand-control systems often have Certificates of Adaptations explicitly permitting simultaneous brake-throttle inputs (e.g., the dual-stage trigger pattern described in Section 3(c) of a typical adaptive-driver COA). The same coaching pipeline produces different corrections for adaptive vs. able-bodied drivers, governed by the COA's binding regulatory text. The pipeline runs the same model, the same convex QP projection, and the same audit gate; only the flag value differs at the tensor level. Because the simultaneity gate is complementarity-style and therefore nonconvex, it lives in §3.2 Stage 2 (post-projection feasibility filter), not in the CvxpyLayer-wrapped QP itself.
 
 ### 3.5 Architecture overview
 
-A complete three-layer architecture diagram (driver inputs -> document parsing via Granite-Docling + Granite Vision -> 1-Hz aggregation -> TTM forecaster -> projection QP -> Guardian audit -> Granite 4.1 Instruct narrator -> coaching report with provenance footer) is included as Figure 1 (rendered from `docs/architecture-diagram.mmd` in the source repository). The full Pydantic + TypeScript contract specifications for every layer boundary live in the repository at `app/shared/types.ts` and the architecture spec at `docs/architecture-spec.md`.
+A complete pipeline architecture diagram (driver inputs -> document parsing via Granite-Docling + Granite Vision -> 1-Hz aggregation -> TTM forecaster -> projection QP -> post-projection feasibility filter -> Guardian audit -> Granite 4.1 8B Instruct narrator -> coaching report with provenance footer) is included as Figure 1 (rendered from `docs/architecture-diagram.mmd` in the source repository). The full Pydantic + TypeScript contract specifications for every layer boundary live in the repository at `app/shared/types.ts` and the architecture spec at `docs/architecture-spec.md`. Layer numbering in this paper compresses the spec's eight-tool view: paper Layer 1 (§3.1) covers spec Layer 3 (TTM forecaster); paper Layer 2 (§3.2 with its two stages) covers spec Layer 4 (projection QP + feasibility filter); paper Layer 3 (§3.3) covers spec Layer 5 (Guardian audit). Spec Layers 1, 2, 6, 7, 8 (Docling, Vision, Aggregator, Instruct narrator, Langflow, IBM Bob) are infrastructure adopted from the published IBM Granite stack.
 
 ### 3.6 Pipeline integration with IBM Granite stack
 
-The full pipeline uses eight IBM Granite tools, each load-bearing: Granite-Docling 258M for FIA COA PDF parsing, Granite Vision 4.1 4B for timing-sheet PDF parsing, Granite TimeSeries TTM r2.1 (this paper's core forecaster), Granite 4.1 8B Instruct as the race-engineer narrator, Granite Guardian 4.1 8B (this paper's audit gate), Langflow for visible orchestration graph export, the Docling library as the conversion layer behind the document parsers, and IBM Bob as the build accelerator per the IBM × Scuderia Ferrari case-study precedent. The TTM forecaster + projection layer + Guardian audit are the contributions of this paper; the other five tools are infrastructure.
+The full pipeline uses eight IBM Granite tools. The TTM forecaster + projection QP + post-projection feasibility filter + Guardian audit are this paper's contributions; the other five tools (Granite-Docling 258M for FIA COA PDF parsing, Granite Vision 4.1 4B for timing-sheet PDF parsing, Granite 4.1 8B Instruct as the race-engineer narrator, Langflow for visible orchestration graph export, the Docling library as the conversion layer behind the document parsers, and IBM Bob as the build accelerator) are infrastructure adopted from the published IBM Granite stack and the IBM x Scuderia Ferrari case-study precedent.
 
 ---
 
