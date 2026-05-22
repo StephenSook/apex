@@ -43,9 +43,23 @@
 | Adaptive-driver UK championship competitor (driver A) | LinkedIn DM with 60-second video pitch | Real adaptive driver endorsement; UK charity response window is 7-14 days so Day 7 first escalation was too late | ✅ SENT 2026-05-22 18:00 ET; awaiting reply through Day 8 EOD (2026-05-27) | TBD on consent (per-surface ask: deck vs README vs video, each separately) |
 | Adaptive-driver UK championship competitor (driver B) | LinkedIn DM with 60-second video pitch | Same | ✅ SENT 2026-05-22 18:00 ET; awaiting reply through Day 8 EOD (2026-05-27) | TBD on consent (per-surface ask: deck vs README vs video, each separately) |
 
+## Phase 4.5 - Day 5 LinkedIn nudge + conditional backup outreach (scheduled 2026-05-24 EOD if Day-3 DMs silent)
+
+| Target archetype | Method | Trigger | Status | Attribution surface |
+|------------------|--------|---------|--------|---------------------|
+| Day-3 driver A + driver B (Aaron, Bobby) - soft nudge | LinkedIn DM reply to original thread per draft `docs/outreach-drafts/linkedin-dm-nudge-day-5.md` | Neither Day-3 DM has replied by 2026-05-24 (Day 5) EOD | CONDITIONAL DRAFTED | Same as Phase 4 (TBD on consent) |
+| Asha Silva (championship co-driver to Bobby Trundley, 2025 Britcar Vice Champion) | LinkedIn DM with 60-second video pitch per draft `docs/outreach-drafts/linkedin-dm-asha-silva-conditional.md` | (a) Bobby replies + opens door OR (b) Bobby silent Day 5 OR (c) both Aaron + Bobby silent Day 5 | CONDITIONAL DRAFTED | TBD on consent (per-surface ask) |
+| Paul Fullick (Team BRIT McLaren 570s, military amputee, Thruxton Circuit day job) | LinkedIn DM with 60-second video pitch per draft `docs/outreach-drafts/linkedin-dm-paul-fullick-backup.md` | Both Aaron + Bobby silent by Day 5 EOD; Paul replaces Aaron as primary hand-control-user target | CONDITIONAL DRAFTED | TBD on consent (per-surface ask) |
+
 ## Phase 5 - Day 5 follow-ups (scheduled 2026-05-24)
 
 Re-email all Phase 1 + Phase 2 non-responders with progress update + concrete request to participate. Subject line tweak: "Following up + APEX is live at <demo-url>." Recipient identities tracked in private memory.
+
+## Phase 6 - Day 6 Mission Motorsport intro (scheduled 2026-05-25, unconditional)
+
+| Target archetype | Method | Asked for | Status | Attribution surface |
+|------------------|--------|-----------|--------|---------------------|
+| Mission Motorsport (UK Armed Forces' motorsport charity, England & Wales No. 1166953) | Email from school address per draft `docs/outreach-drafts/mission-motorsport-intro-day-6.md` | (a) engineering-team architecture read, (b) driver-utility reaction, (c) acknowledgement consent on apex.race + README + BeMyApp Story + 3-min video, each surface separately | DRAFTED, SEND 2026-05-25 | All 4 surfaces requested with corporate-only attribution default |
 
 ## Phase 6 - Day 12 IBM Consulting cold outreach (scheduled 2026-05-31 afternoon)
 
