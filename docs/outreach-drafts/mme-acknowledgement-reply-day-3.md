@@ -1,8 +1,8 @@
 # MME Motorsport Consent Acknowledgement Reply (Day 3 = 2026-05-22)
 
-> **Status:** Draft ready. Send today (Day 3 = 2026-05-22) within 24h of receiving Marko's consent grant. Professional courtesy + opens door for a Marko/Sebastjan quote in the deck if they want to volunteer one.
+> **Status:** Draft ready. Send today (Day 3 = 2026-05-22) within 24h of receiving the consent grant. Professional courtesy + opens door for an optional MME-corporate-attributed quote in the deck if the supplier wants to volunteer one. Personal sender + CC names redacted from this public draft per per-surface consent corporate-only rule; verbatim names live in audit-trail `docs/consent-log.md` §1 only.
 >
-> **Owner:** Stephen Sookra. **To:** Marko Mlakar `info@mme-motorsport.com`. **CC:** Sebastjan Filipic `sebastjan@mme-motorsport.com`. **Subject:** RE: Per-surface attribution request, APEX project, IBM SkillsBuild May 2026.
+> **Owner:** Stephen Sookra. **To:** MME Motorsport corporate inbox `info@mme-motorsport.com`. **CC:** MME Motorsport secondary contact `sebastjan@mme-motorsport.com`. **Subject:** RE: Per-surface attribution request, APEX project, IBM SkillsBuild May 2026.
 >
 > **Sender:** Stephen Sookra `ssookra@students.kennesaw.edu`. **Sent via:** school address (matches the consent thread).
 
@@ -41,7 +41,7 @@ LinkedIn: linkedin.com/in/stephen-sookra-633682339
 ## Pre-send checklist
 
 - [ ] Verify recipient address `info@mme-motorsport.com` matches the consent thread (not a typo).
-- [ ] CC Sebastjan Filipic `sebastjan@mme-motorsport.com` to keep the second contact in the loop.
+- [ ] CC MME Motorsport secondary contact `sebastjan@mme-motorsport.com` to keep the second contact in the loop.
 - [ ] Subject line preserves the consent thread for easy filing on their side.
 - [ ] No em-dashes in body (verified clean).
 - [ ] No AI-tone blocklist words (verified clean).
@@ -52,7 +52,7 @@ LinkedIn: linkedin.com/in/stephen-sookra-633682339
 
 1. **Closes the consent loop professionally.** Marko granted broad consent in 26 words; we acknowledge in detail what that means in practice across surfaces. Best-practice corporate-consent ack.
 2. **Surfaces the corporate-only attribution rule** so MME knows exactly how their name appears + that personal names of the sender + CC stay off public surfaces.
-3. **Opens the door for a Marko/Sebastjan quote** without pressuring them. If they want to volunteer a one-sentence reaction we name them by surface they explicitly approve; if not, the consent stays at the corporate level.
+3. **Opens the door for an optional MME-corporate-attributed quote** without pressuring the supplier. If MME wants to volunteer a one-sentence reaction, attribution stays at the corporate level unless the supplier separately approves personal-name surfacing on a specific deliverable; default posture keeps the consent at the corporate level.
 4. **Offers the preview link** as professional courtesy. Galaxy-tier rule says everything in scope, including pre-submission review by the named supplier.
 5. **Confirms the acknowledgement language** lands in 3 deliberate places (end-card + deck + README acks) so MME can flag any wording adjustment before video record on 2026-05-29.
 6. **Frames APEX's audience** (Team BRIT, Mission Motorsport, Operation Motorsport, FFSA Handikart) so MME sees the project's reach matches the adaptive-racing community their hardware actually serves.

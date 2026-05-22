@@ -32,7 +32,7 @@
 
 | Target archetype | Method | Asked for | Sent | Reply | Surfaces requested |
 |------------------|--------|-----------|------|-------|---------------------|
-| MME Motorsport d.o.o. (Marko + Sebastjan corporate inbox) | Reply on consent thread per draft `docs/outreach-drafts/mme-acknowledgement-reply-day-3.md` | (a) Confirm corporate-only attribution form, (b) offer private preview-link before public release of 3-min video on 2026-05-29, (c) open door for optional Marko/Sebastjan one-sentence reaction in deck Acknowledgements | TBD by Stephen Day 3 EOD | Awaiting | Closes consent loop; secondary opportunity: optional Acks quote |
+| MME Motorsport d.o.o. (corporate consent thread) | Reply on consent thread per draft `docs/outreach-drafts/mme-acknowledgement-reply-day-3.md` | (a) Confirm corporate-only attribution form, (b) offer private preview-link before public release of 3-min video on 2026-05-29, (c) open door for optional MME-corporate-attributed one-sentence reaction in deck Acknowledgements | TBD by Stephen Day 3 EOD | Awaiting | Closes consent loop; secondary opportunity: optional Acks quote. Personal sender + CC names live in audit-trail `docs/consent-log.md` §1 only. |
 
 ## Phase 4 - Day 3 escalation (scheduled 2026-05-22, revised from Day 7 per Codex critique #4)
 
