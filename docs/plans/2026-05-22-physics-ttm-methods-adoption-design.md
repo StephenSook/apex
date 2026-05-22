@@ -150,3 +150,55 @@ Per D-005. Path: `Claude Memory/Session - 2026-05-22 - apex-physics-methods-adop
 - Tier-2 fixture catalogue (tire load, weight transfer, aero, yaw moment)
 - Ablation A1 to A8 implementation
 - `test_serializer.py` (already on PLAN row 4.2, separate work item)
+
+## Section 5: Amendment (post-Stephen-goal-clarification, 2026-05-22 late)
+
+### What changed
+
+After committing sections 1 to 4 above, Vinh surfaced that Stephen's actual physics goal is **V2/V3 pull-forward**, not rigor consolidation. Evidence: `paper/apex-neurips-workshop-2026.md` line 97 explicitly tags load-dependent Pacejka tire model as "V3 (post-paper)" and the constant-mu to circuit-conditional-mu jump as "V2." Stephen's words paraphrased: "I thought we were limited to certain physics angles, then re-read my docs and saw stuff was held until post-hackathon."
+
+The "post-hackathon" gate is Stephen's own conservative scoping in paper §3.2, not a technical or D-A constraint. He wants the option to pull V2 (and possibly V3) forward into the 2026-05-31 demo.
+
+### What this means for the tier-2 framing in §2 and §4
+
+Sections 1 to 4 above remain valid for:
+
+- The BLOCKER (unsafe COA wording in C14-07/08), fix unchanged.
+- The WEAK finding (jerk at 1 Hz caveat), fix unchanged.
+- The methods doc adoption (`paper/physics-ttm-methods.md`), adoption is **more valuable** under V2/V3 pull-forward, not less, because the methods doc covers the math for the V2/V3 territory (load-dependent friction, dynamic bicycle, sequential convex for nonconvex extensions).
+
+Sections 1 to 4 are **rescinded** on:
+
+- The "tier-2 fixture catalogue shelved to wave-29+" framing. Tier-2 (tire load, weight transfer, aero, yaw moment) maps directly to Stephen's V2 (circuit-conditional / load-dependent friction) and V3 (Pacejka tire model). It should be on the table for Days 5 to 9, not deferred to wave-29+.
+
+### Mapping tier-2 angles to Stephen's V2/V3
+
+| Tier-2 angle | Paper version | Effort estimate | Demo-viable by Day 11? |
+|---|---|---|---|
+| Tire load sensitivity (mu drops with Fz) | V2 (line 97 "circuit-conditional lookup") to V3 (line 97 "Pacejka") | V2 = lookup table, ~1 day. V3 = sequential convex, ~3 days + convergence risk. | V2 yes. V3 borderline. |
+| Weight transfer (long + lat) | V3-adjacent (not in paper today) | ~1 day for closed-form `dFz = m*a*h_cg/L` + fixture | Yes |
+| Aero downforce vs speed | V2-adjacent (not in paper today; expands friction envelope by v^2 term) | ~1 day for `Fz_aero = 0.5*rho*Cl*A*v^2` + fixture | Yes |
+| Yaw moment / steady-state yaw rate | Already in methods doc §4 as soft penalty `Phi_yaw` | ~0.5 day to land as projection-objective term in code | Yes |
+
+Total estimate for **V2-only pull-forward (no V3 Pacejka):** 3.5 days of focused Vinh-lane work + Stephen prose updates to paper §3.2 + judges page. Fits in Days 5 to 8 if G0 to G3 pass on schedule.
+
+### Revised execution sequence (proposed for Stephen sync)
+
+Instead of the four commits in §4 standing alone, propose to Stephen this sequence at the 9 PM sync:
+
+1. **Day 3 to 4:** Land §4 commits 1 to 4 (BLOCKER fix + methods doc + design). Unchanged.
+2. **Day 5 to 6:** Vinh executes V2 pull-forward in `app/backend/apex/physics/`. Circuit-conditional mu lookup table + aero downforce term in friction ellipse. Stephen updates paper §3.2 line 97 to demote V2 from "future" to "shipped."
+3. **Day 6 to 7:** Add `EXTENDED_PHYSICS_FIXTURES` catalogue (4 new fixtures: tire load + weight transfer + aero + yaw moment). Renders as second grid on `/judges`. Each fixture has a closed-form assertion in `test_serializer.py`.
+4. **Day 8:** Decision point. V3 Pacejka pull-forward (add 3 days + convergence risk) or defer to post-paper. Default: defer. Q-004 APEX Lite trigger if V2 work blew the budget.
+
+D-A is **not** touched. Convergence-14 grid is **not** touched (still 14, still locked). `EXTENDED_PHYSICS_FIXTURES` lives as a parallel catalogue, exactly as originally proposed before this design doc drifted into rigor-only territory.
+
+### Risk this amendment introduces
+
+**Scope creep before BLOCKER lands.** If Stephen reads this amendment and gets excited about V2/V3 pull-forward, he might push to start tier-2 work before commit 1 (COA BLOCKER fix) is even done. Mitigation: at sync, explicitly sequence the work. BLOCKER first, methods doc second, V2 pull-forward third. The amendment expands the menu without re-prioritizing the BLOCKER.
+
+**Day 5 to 8 is also where Vinh's G3 + G4 + G5 gates land.** Tier-2 expansion competes with the load-bearing backend gates. Mitigation: tier-2 fixtures are display-only on `/judges` and `test_serializer.py` assertions. They share the same surface as G3 (round-trip serializer assertion). The work overlaps rather than competes if scoped to one fixture per day.
+
+### What Vinh wants from the sync
+
+A direct yes/no from Stephen on: "do we pull V2 (circuit-conditional + load-dependent mu + aero) forward into the 2026-05-31 demo, or hold V2 + V3 for post-paper as currently written?" His answer determines whether Vinh's Days 5 to 8 include tier-2 fixture work or stays focused on G3 to G5.
