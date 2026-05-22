@@ -79,7 +79,7 @@ The 4 mm reduction APEX recommends (from 38 to 34 mm) lands within the Section 3
 
 She is the entire demographic in one persona:
 
-- **Adaptive driver community:** her amputation requires hand-controls. Standard race-engineering tools (Track Titan, Trophi.ai) misdiagnose her simultaneous brake-throttle inputs as driver error. APEX reads her COA at the tensor level and permits the simultaneity her car explicitly supports.
+- **Adaptive driver community:** her amputation requires hand-controls. Public documentation for the leading commercial AI race-engineer tools we surveyed (Track Titan, Trophi.ai) does not document any conditional removal of the able-bodied brake-throttle mutual-exclusion assumption nor any FIA-Certificate-of-Adaptations parsing path. Without such handling, her simultaneous brake-throttle inputs read as either invalid telemetry or driver error rather than the COA-permitted technique they actually are. APEX reads her COA at the tensor level and recognises the simultaneity her car explicitly supports.
 - **Veteran motorsport community:** a veteran motorsport rehabilitation programme routed her into racing. Multiple UK + US programmes serve the same demographic (anonymized aggregate per operator-attribution rule; canonical programme list in private memory).
 - **Grassroots community:** no paid race engineer. Volunteer crew. Budget-bound. The £400-500 a day a pro engineer costs is the difference between her getting coaching and not.
 

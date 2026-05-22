@@ -134,7 +134,9 @@ The architectural novelty is the binary COA-simultaneity flag as the 9th channel
 
 ### 3.5 Architecture overview
 
-A complete pipeline architecture diagram (driver inputs -> document parsing via Granite-Docling + Granite Vision -> 1-Hz aggregation -> TTM forecaster -> projection QP -> post-projection feasibility filter -> Guardian audit -> Granite 4.1 8B Instruct narrator -> coaching report with provenance footer) is included as Figure 1 (rendered from `docs/architecture-diagram.mmd` in the source repository). The full Pydantic + TypeScript contract specifications for every layer boundary live in the repository at `app/shared/types.ts` and the architecture spec at `docs/architecture-spec.md`. Layer numbering in this paper compresses the spec's eight-tool view: paper Layer 1 (§3.1) covers spec Layer 3 (Granite TimeSeries TTM r2.1); paper Layer 2 (§3.2 with its two stages) covers spec Layer 4 (projection QP + post-projection feasibility filter); paper Layer 3 (§3.3) covers spec Layer 5 (Granite Guardian audit). The remaining spec layers are infrastructure: Layer 1 hosts Granite-Docling 258M (document vision parser) + the Docling library (Python conversion layer) + Granite Vision 4.1 4B (timing-sheet OCR); Layer 2 is the 1-Hz mini-sector aggregator (APEX-authored Python); Layer 6 is Granite 4.1 8B Instruct (narrator); Layer 7 is Langflow (visible orchestration graph); Layer 8 is IBM Bob (build accelerator). The six infrastructure tools are adopted from the published IBM Granite stack and the IBM x Scuderia Ferrari case-study precedent.
+![Figure 1: APEX pipeline architecture. Driver inputs (telemetry CSV, FIA Certificate of Adaptations PDF, written debrief) feed a one-time onboarding stage (Granite-Docling + Granite Vision) and the 60-second post-race coaching loop (1-Hz aggregator -> Granite TimeSeries TTM r2.1 -> Stage 1 differentiable convex QP -> Stage 2 post-projection feasibility filter -> Granite Guardian text audit -> Granite 4.1 8B Instruct narrator). Outputs are a corner-by-corner coaching report, tuning recommendation with COA section citation, next-session envelope forecast, and Guardian safety stamp with reasoning trace.](figures/figure-1-architecture.png)
+
+The diagram is generated from `docs/architecture-diagram.mmd` in the source repository; an SVG copy is at `paper/figures/figure-1-architecture.svg` for vector reproduction. The full Pydantic + TypeScript contract specifications for every layer boundary live in the repository at `app/shared/types.ts` and the architecture spec at `docs/architecture-spec.md`. Layer numbering in this paper compresses the spec's eight-tool view: paper Layer 1 (§3.1) covers spec Layer 3 (Granite TimeSeries TTM r2.1); paper Layer 2 (§3.2 with its two stages) covers spec Layer 4 (projection QP + post-projection feasibility filter); paper Layer 3 (§3.3) covers spec Layer 5 (Granite Guardian audit). The remaining spec layers are infrastructure: Layer 1 hosts Granite-Docling 258M (document vision parser) + the Docling library (Python conversion layer) + Granite Vision 4.1 4B (timing-sheet OCR); Layer 2 is the 1-Hz mini-sector aggregator (APEX-authored Python); Layer 6 is Granite 4.1 8B Instruct (narrator); Layer 7 is Langflow (visible orchestration graph); Layer 8 is IBM Bob (build accelerator). The six infrastructure tools are adopted from the published IBM Granite stack and the IBM x Scuderia Ferrari case-study precedent.
 
 ### 3.6 Pipeline integration with IBM Granite stack
 
@@ -144,18 +146,35 @@ The full pipeline uses eight IBM Granite tools. Two of them (Granite TimeSeries 
 
 ## 4. Experiments
 
-(Tables 1-3 to be reported in the camera-ready revision; the §4 prose below specifies the evaluation protocol that the camera-ready will populate.)
+The §4 prose below specifies the evaluation protocol. The Table 1 / Table 2 / Table 3 skeletons that follow each subsection are populated in the camera-ready revision once the Vinh-lane backend lands per PLAN.md row 5.7. Each skeleton states the exact shape of the table (rows, columns, units) so the camera-ready editor only fills cell values, not structure.
 
 **Datasets.**
 
 - *Sarah Reynolds Britcar Trophy 2026 Donington Park GP fixture (synthetic).* A 60-row 50-Hz telemetry CSV designed to match a plausible adaptive-driver lap-17-of-19 qualifying session for a left-leg-amputee veteran using electronic hand-controls. Paired with a 9-domain COA JSON conforming to the FIA Appendix L Article 18.3 schema. The fixture is synthetic by design (no real adaptive-driver identity); the lap shape, debrief language, and COA structure are derived from publicly documented Britcar Trophy regulations.
 - *FastF1 holdouts.* Five Formula 1 circuits drawn from the FastF1 public dataset. Selection criteria: circuits with at least three completed sessions in the 2024 season, mixed-pace (high-speed + slow-corner) layout, dry weather. Specific circuit list reported in §4.1 at camera-ready.
 
+**Table 1: Dataset summary.** Skeleton; cell values populated at camera-ready.
+
+| Dataset | Circuits / sessions | Hz | Channels | COA channel? | Use |
+|---------|---------------------|-----|----------|--------------|-----|
+| Sarah Reynolds Britcar GP synthetic | 1 / 1 (qualifying lap 17 of 19) | 50 | 8 + 1 (COA flag) | yes | COA-simultaneity-gate ablation (Table 3b) |
+| FastF1 holdouts | 5 / TBD (>=3 per circuit) | 50 -> 1 (aggregated) | 8 | no | Lap-time MAE + physics-violation rate (Table 2) |
+
 **Baselines.**
 
 - TTM zero-shot, no physics projection (the un-corrected Kinetic Hallucination baseline).
 - Seasonal-naive (last-lap repeat) at 1-Hz mini-sector resolution.
 - Deep Dynamics retrained on the same FastF1 holdouts, if a public PINN checkpoint is available; otherwise dropped from Table 2.
+
+**Table 2: Forecaster comparison on FastF1 holdouts.** Skeleton; cell values populated at camera-ready. Lower is better for MAE + violation-rate columns.
+
+| Method | Lap-time MAE (s) | Physics-violation rate | Inference latency (ms / step) | Retraining cost (GPU-hours) |
+|--------|------------------|------------------------|-------------------------------|------------------------------|
+| Seasonal-naive (last-lap repeat) | -- | -- | -- | 0 |
+| TTM zero-shot (no projection) | -- | -- | -- | 0 |
+| TTM + Stage-1 QP only | -- | -- | -- | 0 |
+| TTM + Stage-1 QP + Stage-2 feasibility filter (APEX) | -- | -- | -- | 0 |
+| Deep Dynamics retrained (if checkpoint available) | -- | -- | -- | TBD |
 
 **Metrics.**
 
@@ -170,6 +189,30 @@ The full pipeline uses eight IBM Granite tools. Two of them (Granite TimeSeries 
 - Physics projection on / off (Table 3a).
 - COA simultaneity gate on / off on the Sarah Reynolds fixture (does treating an adaptive driver as able-bodied degrade the forecast?) (Table 3b).
 - Guardian audit on / off (Table 3c, measures audit-induced latency only since correctness is a Convergence 14 property).
+
+**Table 3: Ablations.** Skeleton; cell values populated at camera-ready.
+
+*Table 3a: physics projection on / off.* Lap-time MAE + physics-violation rate on the FastF1 holdout set.
+
+| Configuration | Lap-time MAE (s) | Physics-violation rate |
+|---------------|------------------|------------------------|
+| TTM zero-shot, no Stage 1, no Stage 2 | -- | -- |
+| TTM + Stage 1 QP only | -- | -- |
+| TTM + Stage 1 QP + Stage 2 feasibility filter | -- | -- |
+
+*Table 3b: COA simultaneity gate on / off (Sarah Reynolds fixture only).* Effect-size upper-bounded by synthetic-fixture design assumptions per §5.2.
+
+| Configuration | Brake-throttle-simultaneity rows flagged | Tuning recommendation rendered? | Forecast lap-time MAE (s) |
+|---------------|-------------------------------------------|----------------------------------|----------------------------|
+| Stage 2 with COA gate ON (APEX default) | 0 (correctly permitted) | yes | -- |
+| Stage 2 with COA gate OFF (able-bodied physics) | -- (false positives) | no (input rejected) | -- |
+
+*Table 3c: Guardian audit on / off.* Wall-clock latency of the Convergence-14 audit only; correctness is established by unit-test suite, not by this ablation.
+
+| Configuration | Median audit latency (ms) | Pipeline wall-clock (s) |
+|---------------|---------------------------|---------------------------|
+| Guardian ON (APEX default) | -- | -- |
+| Guardian OFF | n / a | -- |
 
 **Latency budget.** Target post-onboarding loop wall-clock is <= 60 seconds on a commodity RTX 4060 GPU (Granite-Docling + Granite Vision run once at onboarding and cache to disk; the live loop is forecaster + projection + Guardian audit + Instruct narration). Latency breakdown table pending Day-8 measurement.
 

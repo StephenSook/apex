@@ -42,7 +42,7 @@
 
 **Q:** Why can't an adaptive racing driver just use Track Titan or Trophi.ai? They already exist, they're funded, they're proven.
 
-**A:** Because they'll misdiagnose every adaptive driver. Track Titan and Trophi.ai use able-bodied physics. Their models assume throttle times brake equals zero. Adaptive electronic hand-control systems explicitly support simultaneous brake and throttle. That's not a bug, it's the adaptation. Those tools flag the technique as driver error. APEX reads the FIA Certificate of Adaptations as a flag at the tensor level. We're not coaching disabled drivers with the same model as everyone else. We're coaching them with the model that matches their car.
+**A:** Because public documentation for both tools, which we surveyed through 2026-Q2, does not show any conditional removal of the able-bodied brake-throttle mutual-exclusion assumption. We also found no public reference in either platform's docs to FIA Certificates of Adaptations as a parsed input. Adaptive electronic hand-control systems explicitly support simultaneous brake and throttle. That's not a bug, it's the adaptation. Without explicit COA handling, the technique reads as either invalid telemetry or driver error. APEX reads the FIA Certificate of Adaptations as a flag at the tensor level. We're not coaching disabled drivers with the same model as everyone else. We're coaching them with the model that matches their car.
 
 **Why this lands.** Knockout punch. Actively reframes incumbents as broken for this population. Slow down on "We're not coaching disabled drivers with the same model as everyone else" - that's the line that wins the room.
 

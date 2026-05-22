@@ -16,8 +16,9 @@ flowchart TB
         direction TB
         AGG["1-Hz mini-sector aggregator"]
         TTM["Granite TimeSeries TTM r2.1<br/>(frozen, channel-independent)"]
-        PROJ["Differentiable physics-projection layer<br/>friction ellipse + bicycle model<br/>+ COA simultaneity flag<br/>+ jerk bound + circuit-conditional mu"]
-        GUARD["Granite Guardian 4.1 8B<br/>BYOC text audit on violation log"]
+        QP["Stage 1 - Differentiable convex QP<br/>friction ellipse + forward-Euler<br/>+ jerk bound"]
+        FEAS["Stage 2 - Post-projection<br/>feasibility filter<br/>bicycle-model coupling<br/>+ COA simultaneity gate"]
+        GUARD["Granite Guardian 4.1 8B<br/>BYOC text audit on combined<br/>QP + feasibility violation log"]
         INSTR["Granite 4.1 8B Instruct<br/>race-engineer narrator"]
     end
 
@@ -33,15 +34,16 @@ flowchart TB
     COA --> DOCLING
     DOCLING -. "COA flag<br/>(9th channel)" .-> AGG
     AGG --> TTM
-    TTM --> PROJ
-    PROJ --> GUARD
+    TTM --> QP
+    QP --> FEAS
+    FEAS --> GUARD
     DBR --> INSTR
     GUARD --> INSTR
     DOCLING --> INSTR
     VISION --> INSTR
     INSTR --> REPORT
     INSTR --> TUNE
-    PROJ --> FCST
+    FEAS --> FCST
     GUARD --> STAMP
 
     LF["Langflow visible<br/>orchestration graph"]
@@ -58,4 +60,4 @@ flowchart TB
     class TEL,COA,DBR input
     class REPORT,TUNE,FCST,STAMP output
     class DOCLING,VISION,TTM,GUARD,INSTR,LF,BOB ibm
-    class PROJ,AGG physics
+    class QP,FEAS,AGG physics
