@@ -115,7 +115,7 @@ Cross-reference: `research/wave-30/README.md` for source manifest + `research/wa
 | 1.6 | **Gate G2 — COA parse coverage:** JSON contains all 9 adaptation domains + section IDs | `logs/day-03-g2.md` | ⬜ |
 | 1.7 | OpenRouter API key wired + Granite 4.1 8B free-tier sample call (`openrouter.ai/ibm-granite/granite-4.1-8b`) | `.env.example` + `logs/day-03-openrouter.md` | ⬜ |
 | 1.8 | watsonx.ai free account stood up as backup | `logs/day-03-watsonx.md` | ⬜ |
-| 1.9 | COA parser detects approved hand-control hardware specs and **derives** simultaneity-permission flag (per Perplexity validation wording). **Output is a scalar bool stored in `CoaParseResult.simultaneity_permitted`. The broadcast adapter in `shared.contracts.build_ttm_input()` is the SINGLE place that tiles this scalar to the per-step `(batch, 24, 1)` channel — never duplicated in `forecast.py` or `validator.py` (Software Lead fix #2).** | `app/backend/apex/intake/coa_parser.py` (new fn `derive_simultaneity_flag`) | ⬜ |
+| 1.9 | COA parser detects approved hand-control hardware specs and **derives** simultaneity-permission flag (per Perplexity validation wording). **Output is a scalar bool stored in `CoaParseResult.simultaneity_permitted`. The broadcast adapter in `shared.contracts.build_ttm_input()` is the SINGLE place that tiles this scalar to the per-step `(batch, 30, 1)` channel per wave-30 horizon-expansion D-010 (was `(batch, 24, 1)` pre-wave-30); never duplicated in `forecast.py` or `validator.py` (Software Lead fix #2).** | `app/backend/apex/intake/coa_parser.py` (new fn `derive_simultaneity_flag`) | ⬜ |
 
 **Pass condition:** G2 green + one COA + one timing sheet parsed end-to-end + fallback ladder documented.
 

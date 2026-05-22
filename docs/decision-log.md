@@ -180,7 +180,7 @@ Every locked decision with rationale + date + scope. Newest first.
 7. **Full Pacejka tire model:** combined-slip heart-shape boundaries solved via SCP outer loop per D-012.
 8. **Vehicle kinematic integration:** Newton-compliant accelerations enforced.
 
-All execute inside the SCP inner iterate. EXTENDED_PHYSICS_FIXTURES catalogue (Stephen-lane wave-30 frontend) surfaces each tier on `/judges` for judge-facing visualization.
+All execute inside the unrolled SCP outer loop per D-012: the convex inner iterate (cvxpylayers QP, Tier 8 kinematic integration) handles the convex constraints; the outer loop applies first-order Taylor linearisation of the non-convex tiers (Tier 1 3D track + Tier 2 aero + Tier 4 load transfer + Tier 7 Pacejka combined-slip) around the previous iterate fed back into the inner solve. Tier 3 adaptive hand-controls runs in the COA constraint layer per D-022. Tier 5 thermal evolves T_surface as per-step internal state per arch-spec Appendix W30 Layer 4 Tier 5. Tier 6 transient tire dynamics uses steady-state algebraic substitution per D-014. EXTENDED_PHYSICS_FIXTURES catalogue (Stephen-lane wave-30 frontend) surfaces each tier on `/judges` for judge-facing visualization.
 
 **Rationale.** Per D-003 galaxy ambition + Stephen's wave-30 directive: "we need the best physics possible, not leaving out anything possible." Removes the "V2 / V3 / post-hackathon" labels that lived in earlier paper drafts. Source 02 + 09 lock this as the maximal physics target.
 
