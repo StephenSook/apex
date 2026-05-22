@@ -508,3 +508,285 @@ export type ConvergenceFixtureCatalogue = readonly [
   ConvergenceFixture,
   ConvergenceFixture,
 ];
+
+// ---------------------------------------------------------------------------
+// Wave-30 extended physics fixture catalogue (D-015 8-tier physics)
+// ---------------------------------------------------------------------------
+
+/**
+ * 8 physics tiers locked in `docs/decision-log.md` D-015 + arch-spec
+ * Appendix W30 Layer 4 expansion. Each tier becomes one fixture tile
+ * on /judges 8-tier physics grid; the catalogue mirrors the
+ * Convergence-14 pattern (fixed-arity tuple, template-literal IDs,
+ * discriminated union folding tier-to-handler invariants into the
+ * type system).
+ */
+export type ExtendedPhysicsTierId =
+  | "EP-01"
+  | "EP-02"
+  | "EP-03"
+  | "EP-04"
+  | "EP-05"
+  | "EP-06"
+  | "EP-07"
+  | "EP-08";
+
+/**
+ * Where in the wave-30 architecture each tier is handled. SCP outer-loop
+ * linearisation (Taylor step at each outer iterate fed back into the
+ * inner cvxpylayers solve), SCP inner-iterate (convex QP), COA constraint
+ * layer (lexicographic Tier-0/1/2/3 per D-022), internal state evolution
+ * (Tier 5 thermal model evolves T_surface inside the SCP solver per
+ * arch-spec Appendix W30 L391), steady-state algebraic substitution
+ * (Tier 6 transient ODE collapse per D-014).
+ */
+export type ExtendedPhysicsHandler =
+  | "scp_outer_linearisation"
+  | "scp_inner_iterate"
+  | "coa_constraint_layer"
+  | "internal_state_evolution"
+  | "steady_state_algebraic_substitution";
+
+interface ExtendedPhysicsFixtureBase {
+  readonly id: ExtendedPhysicsTierId;
+  /** Short headline for the 8-tier physics grid. */
+  readonly tier_name: string;
+  /** One-sentence physics summary for the tile. */
+  readonly summary: string;
+  /** Plain-text formula description for the hover-state. Avoid LaTeX in case the grid tile renderer does not provide a math renderer. */
+  readonly formula: string;
+  /** Channels from the (B, 30, 14) tensor this tier consumes (per arch-spec Appendix W30 channel enumeration). */
+  readonly canonical_inputs: ReadonlyArray<string>;
+  /** Expected outputs of the tier (per-iterate residual norm, jacobian shape, internal-state evolution, etc.). */
+  readonly expected_outputs: ReadonlyArray<string>;
+  /** Architecture-spec cross-reference (Appendix W30 line range). */
+  readonly arch_spec_ref: string;
+  /** decision-log entry the tier was locked in. */
+  readonly decision_log_ref: "D-015";
+}
+
+/**
+ * Discriminated union folding tier-to-handler invariants into the
+ * type system. Writing a Pacejka combined-slip tier with
+ * `handled_in: "scp_inner_iterate"` is a compile error (Pacejka is
+ * non-convex and lives in the outer-loop linearisation per D-012).
+ */
+export type ExtendedPhysicsFixture = ExtendedPhysicsFixtureBase &
+  (
+    | {
+        readonly id: "EP-01";
+        readonly tier: "3d_track_geometry";
+        readonly handled_in: "scp_outer_linearisation";
+      }
+    | {
+        readonly id: "EP-02";
+        readonly tier: "aerodynamics";
+        readonly handled_in: "scp_outer_linearisation";
+      }
+    | {
+        readonly id: "EP-03";
+        readonly tier: "adaptive_hand_controls";
+        readonly handled_in: "coa_constraint_layer";
+      }
+    | {
+        readonly id: "EP-04";
+        readonly tier: "double_track_load_transfer";
+        readonly handled_in: "scp_outer_linearisation";
+      }
+    | {
+        readonly id: "EP-05";
+        readonly tier: "tire_thermal_degradation";
+        readonly handled_in: "internal_state_evolution";
+      }
+    | {
+        readonly id: "EP-06";
+        readonly tier: "transient_tire_dynamics";
+        readonly handled_in: "steady_state_algebraic_substitution";
+      }
+    | {
+        readonly id: "EP-07";
+        readonly tier: "pacejka_combined_slip";
+        readonly handled_in: "scp_outer_linearisation";
+      }
+    | {
+        readonly id: "EP-08";
+        readonly tier: "kinematic_integration";
+        readonly handled_in: "scp_inner_iterate";
+      }
+  );
+
+/**
+ * Fixed-arity tuple typing the catalogue at compile time. Adding a 9th
+ * tier or removing one becomes a TypeScript error at the catalogue
+ * site. Order is canonical (EP-01 through EP-08); the grid renderer
+ * may sort by `tier_name` for display.
+ */
+export type ExtendedPhysicsFixtureCatalogue = readonly [
+  ExtendedPhysicsFixture,
+  ExtendedPhysicsFixture,
+  ExtendedPhysicsFixture,
+  ExtendedPhysicsFixture,
+  ExtendedPhysicsFixture,
+  ExtendedPhysicsFixture,
+  ExtendedPhysicsFixture,
+  ExtendedPhysicsFixture,
+];
+
+// ---------------------------------------------------------------------------
+// Wave-30 SCP outer-loop iteration trace (D-012 unrolled 3-iteration SCP)
+// ---------------------------------------------------------------------------
+
+/**
+ * Per-iteration state of the unrolled SCP outer loop per D-012. Three
+ * iterations fixed (unrolled completely so gradients flow backward
+ * through the entire trace to the TTM forecasting inputs). Each
+ * iterate carries the linearisation jacobian shape, residual norm,
+ * trust-region radius, and an accept/reject status from the Powell
+ * ratio acceptance rule per D-027 fallback ladder spec.
+ */
+export type ScpIterate =
+  | {
+      readonly iteration_idx: 0 | 1 | 2;
+      readonly status: "accepted";
+      /** [n_states, n_inputs] tuple for the per-iterate jacobian shape. */
+      readonly linearisation_jacobian_shape: readonly [number, number];
+      readonly residual_norm: number;
+      readonly trust_region_radius: number;
+    }
+  | {
+      readonly iteration_idx: 0 | 1 | 2;
+      readonly status: "rejected";
+      readonly linearisation_jacobian_shape: readonly [number, number];
+      readonly residual_norm: number;
+      readonly trust_region_radius: number;
+      readonly reject_reason: "powell_ratio_below_threshold" | "infeasible_inner_solve";
+    };
+
+/**
+ * Fixed-arity 3-tuple of SCP iterates. Adding a 4th iterate or removing
+ * one becomes a compile error; D-012 locks exactly 3 unrolled outer-loop
+ * iterations. The display component renders this as a convergence trace.
+ */
+export type ScpConvergenceTrace = readonly [ScpIterate, ScpIterate, ScpIterate];
+
+// ---------------------------------------------------------------------------
+// Wave-30 tri-agent Agent-as-Judge critic loop (D-018)
+// ---------------------------------------------------------------------------
+
+/**
+ * Three specialised critics from D-018 + D-019 item 5. Physics-Critic
+ * reads the projected tensor + violation log + challenges physics claims.
+ * Pedagogy-Critic reads the draft + COA structure + challenges
+ * recommendation coachability. Guardian-Safety is a Granite Guardian 4.1
+ * BYOC safety pass. If any critic flags, Mellea IVR repair fires per
+ * D-018 with `loop_budget = 3` until the panel approves.
+ */
+export type CriticName = "physics" | "pedagogy" | "guardian_safety";
+
+/**
+ * Discriminated union by verdict tag (mirrors `GuardianAudit` pattern
+ * one level up). Illegal states unrepresentable: `flagged_concerns`
+ * only appears on `"flag"`, `blocked_recommendations` only appears on
+ * `"reject"`, `"approve"` carries no list. The TriAgentCriticPanel
+ * component can `switch (verdict.verdict)` and TypeScript exhausts
+ * the cases.
+ */
+export type TriAgentVerdict =
+  | {
+      readonly critic: CriticName;
+      readonly verdict: "approve";
+      readonly reasoning_trace: ReadonlyArray<string>;
+    }
+  | {
+      readonly critic: CriticName;
+      readonly verdict: "flag";
+      readonly reasoning_trace: ReadonlyArray<string>;
+      readonly flagged_concerns: ReadonlyArray<string>;
+    }
+  | {
+      readonly critic: CriticName;
+      readonly verdict: "reject";
+      readonly reasoning_trace: ReadonlyArray<string>;
+      readonly blocked_recommendations: ReadonlyArray<string>;
+    };
+
+/**
+ * Fixed-arity 3-tuple of critic verdicts. Adding a 4th critic or removing
+ * one becomes a compile error at the panel-rendering site. D-018 locks
+ * exactly 3 critics (Physics + Pedagogy + Guardian-Safety).
+ */
+export type TriAgentVerdictPanel = readonly [TriAgentVerdict, TriAgentVerdict, TriAgentVerdict];
+
+// ---------------------------------------------------------------------------
+// Wave-30 physics-confidence detector (D-024)
+// ---------------------------------------------------------------------------
+
+/**
+ * Mahalanobis-distance physics-confidence detector per D-024. Computes
+ * the distance from incoming telemetry to the Pacejka tire-parameter
+ * distribution used to train the SCP solver. When distance exceeds the
+ * 95th-percentile threshold from the Sarah Reynolds fixture distribution,
+ * the detector downgrades Guardian's verdict from approve/flag to
+ * "review" so the coaching report surfaces "physics model in
+ * low-confidence regime for this session; verdict downgraded to REVIEW
+ * per design" per pre-mortem row 59 calibration plan.
+ */
+export type PhysicsConfidence =
+  | {
+      readonly status: "in_distribution";
+      readonly mahalanobis_distance: number;
+      readonly threshold_p95: number;
+    }
+  | {
+      readonly status: "out_of_distribution";
+      readonly mahalanobis_distance: number;
+      readonly threshold_p95: number;
+      readonly downgrade_from: "approve" | "flag";
+      readonly downgrade_to: "review";
+    };
+
+// ---------------------------------------------------------------------------
+// Wave-30 three-track forecasting ensemble (D-010 + D-011)
+// ---------------------------------------------------------------------------
+
+/**
+ * One of three forecasting tracks per D-010 ensemble: Granite TTM r2.1
+ * channel-mix decoder fine-tune (Track 1, anchor), Granite FlowState
+ * (Track 2, sampling-rate-invariant SSM), Amazon Chronos-2 (Track 3,
+ * 21-quantile probabilistic baseline mapping uncertainty corridor).
+ * Each track outputs forecast bands over the (B, 30, 14) tensor.
+ */
+export type ForecastTrackName = "ttm_channel_mix" | "flowstate" | "chronos2";
+
+export interface ThreeTrackBand {
+  readonly track: ForecastTrackName;
+  /** Forecast values for the 30-step horizon on the speed_mps channel
+   *  (the demo-visible forecast). One value per mini-sector. */
+  readonly forecast: ReadonlyArray<number>;
+  /** Optional 21-quantile bands; populated only on Chronos-2 (Track 3). */
+  readonly quantiles?: ReadonlyArray<number>;
+}
+
+/**
+ * Discriminated union by `status`. `converged` carries the ensemble
+ * blend output + divergence sigma. `diverged` carries a fallback
+ * strategy (TTM-only forecast OR weighted blend dropping the outlier
+ * track) per pre-mortem row 57 mitigation when ensemble divergence
+ * exceeds 2 sigma on Sarah Reynolds fixture.
+ */
+export type ThreeTrackForecast =
+  | {
+      readonly status: "converged";
+      readonly tracks: readonly [ThreeTrackBand, ThreeTrackBand, ThreeTrackBand];
+      /** Ensemble fused forecast (weighted-mean blend with TTM anchor). */
+      readonly ensemble: ReadonlyArray<number>;
+      /** Cross-track divergence in standard-deviation units. Less than 2.0 = converged. */
+      readonly divergence_sigma: number;
+    }
+  | {
+      readonly status: "diverged";
+      readonly tracks: readonly [ThreeTrackBand, ThreeTrackBand, ThreeTrackBand];
+      /** Cross-track divergence. Greater than or equal to 2.0 = diverged. */
+      readonly divergence_sigma: number;
+      readonly fallback: "ttm_only" | "weighted_blend_dropping_outlier";
+    };
