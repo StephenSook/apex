@@ -319,7 +319,17 @@ If any critic flags, IBM Mellea runs Instruct-Validate-Repair (IVR) with `loop_b
 
 ## 2026-05-22 D-027: Day-3 SCP go/no-go gate (single most important checkpoint)
 
-**Decision.** Day 3 EOD (Vinh-lane): prototype whether 3 unrolled SCP iterations actually converge through cvxpylayers with the 8-tier Pacejka linearization on the RTX 4060. Pass criterion: gradients flow end-to-end (TTM forecast through SCP projection) without exploding or vanishing; verdict landed at FCVR = 0.00 on the Sarah Reynolds canned fixture. Fallback ladder: (a) drop to 2 SCP iterations + trust-region penalty if 3 oscillates; (b) escalate to D-A revision (per `docs/vinh-backend-plan.md` G0 escalation) if 2 also oscillates. Logged in `logs/day-03-scp-go-no-go.md`.
+**Decision.** Day 3 EOD (Vinh-lane): prototype whether 3 unrolled SCP iterations actually converge through cvxpylayers with the 8-tier Pacejka linearization on the RTX 4060. Pass criterion: gradients flow end-to-end (TTM forecast through SCP projection) without exploding or vanishing; verdict landed at FCVR = 0.00 on the Sarah Reynolds canned fixture. **Fallback ladder (spec):**
+
+1. **Fallback rung 1: drop to 2 SCP iterations + trust-region penalty if 3 oscillates.**
+   - **Trust-region penalty form:** quadratic penalty `k * ||Δu||²` added to the QP objective, where Δu is the control-input delta from the previous iterate.
+   - **Initial trust-region radius:** Δ₀ = 0.5 (relative to nominal control range; tighter = more conservative).
+   - **Acceptance rule (Powell ratio):** ρ = predicted reduction / actual reduction. Accept step if ρ > 0.25. Expand radius (Δ ← 2·Δ) if ρ > 0.75. Shrink radius (Δ ← 0.5·Δ) if ρ < 0.25. Reject step + retry with smaller radius if ρ < 0.
+   - **Penalty weight schedule:** k₀ = 1.0; double on each oscillation detection (max k = 8.0).
+   - **Max trust-region adjustments:** 5 per outer iteration. If 5 adjustments fail to find an accepting step, declare fallback rung 1 exhausted.
+2. **Fallback rung 2: escalate to D-A revision if rung 1 exhausted.** D-A revision = revert to wave-25 two-stage projection-and-audit (convex QP + non-differentiable post-projection feasibility filter). Document the revision in a fresh decision-log entry (D-A revision SHA + date). Vinh writes the revision; Stephen approves.
+
+Logged in `logs/day-03-scp-go-no-go.md`.
 
 **Rationale.** Source 06 names this as the single most important checkpoint in the 12-day build. SCP convergence with 8-tier Pacejka is empirical, not theoretical; literature says it converges in 3-5 iterations for well-conditioned vehicle models, but APEX's specific parameterization is novel. Day-3 prototype = empirical answer + fallback plan + no surprise on Day 7+.
 
