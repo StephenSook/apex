@@ -26,7 +26,7 @@
 
 | Target archetype | Method | Asked for | Sent | Reply | Surfaces requested |
 |------------------|--------|-----------|------|-------|---------------------|
-| MME Motorsport d.o.o. (Slovenia) | Email from school address per draft `docs/outreach-drafts/adaptive-supplier-consent-day-1.md` | Per-surface consent for naming as Sarah Reynolds' hand-control supplier | 2026-05-20 | **✅ CONSENT GRANTED 2026-05-22 03:17 AM ET by Marko Mlakar (info@mme-motorsport.com, CC Sebastjan Filipic). Verbatim: "Feel free to use the MME Motorsport Hand Controls in your projects." Logged at `docs/consent-log.md` §1.** | All 4 surfaces approved: Landing page, README, BeMyApp Story block, 3-min demo video. Sarah persona names MME directly post-wave-28. |
+| MME Motorsport d.o.o. (Slovenia) | Email from school address per draft `docs/outreach-drafts/adaptive-supplier-consent-day-1.md` | Per-surface consent for naming as Sarah Reynolds' hand-control supplier | 2026-05-20 | **✅ CONSENT GRANTED 2026-05-22 by MME Motorsport corporate (sender name + CC contact + verbatim quote logged at `docs/consent-log.md` §1; this row keeps corporate-only attribution per the approved citation form).** | All 4 surfaces approved: Landing page, README, BeMyApp Story block, 3-min demo video. Sarah persona names MME directly post-wave-28. |
 
 ## Phase 4 - Day 3 escalation (scheduled 2026-05-22, revised from Day 7 per Codex critique #4)
 

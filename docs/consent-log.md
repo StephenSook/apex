@@ -70,7 +70,7 @@ Key request: "I would like to ask for explicit per-surface attribution permissio
 
 **Reciprocity / acknowledgement:**
 
-Marko + MME Motorsport granted consent at no cost. Per professional courtesy: an acknowledgement in the project's deck / video credits / README acks section is appropriate. Stephen-lane decision on the exact wording.
+MME Motorsport granted consent at no cost. Per professional courtesy, an acknowledgement in the project's deck + video credits + README acks section is appropriate. The acknowledgement uses corporate-only naming form per the approved citation rule above; the personal sender + CC names that appear in this audit-trail entry above are NOT extended to acknowledgement wording on public surfaces. Stephen-lane decision on the exact corporate-only wording.
 
 ---
 

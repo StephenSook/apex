@@ -41,7 +41,7 @@ APEX changes that.
 - **Colab (zero install, browser-side):** *(notebook URL lands Day 9)*
 - **Judges' tour:** *(apex.race/judges Day 11)*
 - **Status dashboard:** *(apex.race/status Day 11)*
-- **Try fixture:** Sarah Reynolds (fictional persona), RAF veteran, left-leg amputee, Britcar Trophy 2026, #34 BMW M240i with MME Motorsport electronic hand-controls (per consent receipt 2026-05-22 from Marko Mlakar at MME Motorsport d.o.o. logged in `docs/consent-log.md`), Donington Park GP, Lap 17
+- **Try fixture:** Sarah Reynolds (fictional persona), RAF veteran, left-leg amputee, Britcar Trophy 2026, #34 BMW M240i with MME Motorsport electronic hand-controls (per consent receipt 2026-05-22 from MME Motorsport d.o.o. logged in `docs/consent-log.md`), Donington Park GP, Lap 17
 
 ---
 

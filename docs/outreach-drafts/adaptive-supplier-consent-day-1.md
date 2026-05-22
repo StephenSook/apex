@@ -1,10 +1,10 @@
 # Adaptive Hand-Control Supplier - Per-Surface Consent Email Draft (Q-006) - ✅ CONSENT RECEIVED 2026-05-22
 
-> **Status (updated 2026-05-22):** ✅ **MME Motorsport d.o.o. (Marko Mlakar) granted per-surface attribution permission on 2026-05-22 at 03:17 AM ET.** Consent receipt logged in `docs/consent-log.md` §1. Verbatim grant: "Feel free to use the MME Motorsport Hand Controls in your projects." Approved scope covers all 4 surfaces requested (apex.race + README + BeMyApp Story + 3-min video). Sarah Reynolds persona materials now name MME directly; anonymized fallback no longer needed. Q-006 closed.
+> **Status (updated 2026-05-22):** ✅ **MME Motorsport d.o.o. granted per-surface attribution permission on 2026-05-22.** Consent receipt + sender + CC + verbatim quote logged at `docs/consent-log.md` §1 (the audit-trail file is the only public-repo surface that carries the personal sender + CC names; this public-facing draft keeps corporate-only attribution per the approved citation form). Verbatim grant: "Feel free to use the MME Motorsport Hand Controls in your projects." Approved scope covers all 4 surfaces requested (apex.race + README + BeMyApp Story + 3-min video). Sarah Reynolds persona materials now name MME directly; anonymized fallback no longer needed. Q-006 closed.
 >
 > Per global CLAUDE.md operator-unassociation principle: any supplier or operator named in marketing copy without explicit per-surface consent is a risk. The email below is the draft Stephen sent on 2026-05-20 that received the MME consent reply.
 >
-> **Owner:** Stephen Sookra. **Sent date:** Day 1 (2026-05-20). **Reply received:** Day 3 (2026-05-22) 03:17 AM ET. **Outcome:** Consent granted by Marko Mlakar; persona-naming sweep landed wave-28.
+> **Owner:** Stephen Sookra. **Sent date:** Day 1 (2026-05-20). **Reply received:** Day 3 (2026-05-22). **Outcome:** Consent granted at corporate level by MME Motorsport d.o.o.; persona-naming sweep landed wave-28.
 >
 > **Sender + supplier identities** kept in private memory at `project_apex_stakeholders.md` (per pr-review-toolkit wave 5 BLOCKER). Public-repo file uses role descriptions only.
 
