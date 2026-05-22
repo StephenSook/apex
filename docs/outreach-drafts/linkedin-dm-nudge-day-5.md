@@ -1,11 +1,11 @@
 # LinkedIn DM Nudge Template (Day 5 conditional follow-up)
 
-> Conditional fire if neither Aaron Morgan nor Bobby Trundley reply to Day-3 LinkedIn DM by 2026-05-24 (Day 5) EOD. Send 2026-05-24 evening or 2026-05-25 morning. Stephen-owned. Same template parameterised per driver (replace `[first name]` with `Aaron` or `Bobby`).
+> Conditional fire if neither adaptive driver A nor adaptive driver B reply to Day-3 LinkedIn DM by 2026-05-24 (Day 5) EOD. Send 2026-05-24 evening or 2026-05-25 morning. Stephen-owned. Same template parameterised per driver (replace `[first name]` with driver A's or driver B's first name at send time).
 >
 > **Owner:** Stephen Sookra. **Send method:** LinkedIn DM (reply to original thread for visibility continuity). **Reply window:** through Day 8 EOD (2026-05-27). **Per-surface consent ask:** quote permission in deck vs README vs video credits, each separately.
 >
-> **Driver A handle (Aaron):** `[PRIVATE: fill in at send time, keep out of public anonymized files]`
-> **Driver B handle (Bobby):** `[PRIVATE: fill in at send time, keep out of public anonymized files]`
+> **Driver A handle:** `[PRIVATE: fill in at send time, keep out of public anonymized files]`
+> **Driver B handle:** `[PRIVATE: fill in at send time, keep out of public anonymized files]`
 
 ---
 
@@ -31,12 +31,12 @@ Stephen
 
 ## After-send checklist
 
-- [ ] Reply to original Aaron-Morgan or Bobby-Trundley DM thread (NOT a new DM).
+- [ ] Reply to original driver-A or driver-B DM thread (NOT a new DM).
 - [ ] Verify name + handle still active (LinkedIn occasionally throttles inbound from new connections).
 - [ ] Log send timestamp in `docs/stakeholder-outreach-log.md` Phase 4 row (sub-row "Day 5 nudge").
 - [ ] Watch reply window through Day 8 EOD (2026-05-27).
 - [ ] If reply consents (per surface): add quote to deck + README + video credits. Revert from anonymisation on those surfaces.
-- [ ] If reply declines or no reply by Day 8: stay anonymised on all surfaces, fire conditional backup outreach (Paul Fullick at `linkedin-dm-paul-fullick-backup.md` and Asha Silva at `linkedin-dm-asha-silva-conditional.md`).
+- [ ] If reply declines or no reply by Day 8: stay anonymised on all surfaces, fire conditional backup outreach (driver C at `linkedin-dm-driver-c-conditional.md` and driver D at `linkedin-dm-driver-d-backup.md`).
 
 ---
 

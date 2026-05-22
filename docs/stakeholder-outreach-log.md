@@ -47,9 +47,9 @@
 
 | Target archetype | Method | Trigger | Status | Attribution surface |
 |------------------|--------|---------|--------|---------------------|
-| Day-3 driver A + driver B (Aaron, Bobby) - soft nudge | LinkedIn DM reply to original thread per draft `docs/outreach-drafts/linkedin-dm-nudge-day-5.md` | Neither Day-3 DM has replied by 2026-05-24 (Day 5) EOD | CONDITIONAL DRAFTED | Same as Phase 4 (TBD on consent) |
-| Asha Silva (championship co-driver to Bobby Trundley, 2025 Britcar Vice Champion) | LinkedIn DM with 60-second video pitch per draft `docs/outreach-drafts/linkedin-dm-asha-silva-conditional.md` | (a) Bobby replies + opens door OR (b) Bobby silent Day 5 OR (c) both Aaron + Bobby silent Day 5 | CONDITIONAL DRAFTED | TBD on consent (per-surface ask) |
-| Paul Fullick (Team BRIT McLaren 570s, military amputee, Thruxton Circuit day job) | LinkedIn DM with 60-second video pitch per draft `docs/outreach-drafts/linkedin-dm-paul-fullick-backup.md` | Both Aaron + Bobby silent by Day 5 EOD; Paul replaces Aaron as primary hand-control-user target | CONDITIONAL DRAFTED | TBD on consent (per-surface ask) |
+| Driver A + driver B (Day-3 targets) soft nudge | LinkedIn DM reply to original thread per draft `docs/outreach-drafts/linkedin-dm-nudge-day-5.md` | Neither Day-3 DM has replied by 2026-05-24 (Day 5) EOD | CONDITIONAL DRAFTED | Same as Phase 4 (TBD on consent) |
+| Driver C (championship co-driver to driver B, 2025 vice-champion-tier on the same UK endurance series) | LinkedIn DM with 60-second video pitch per draft `docs/outreach-drafts/linkedin-dm-driver-c-conditional.md` | (a) Driver B replies + opens door OR (b) driver B silent Day 5 OR (c) both driver A + driver B silent Day 5 | CONDITIONAL DRAFTED | TBD on consent (per-surface ask) |
+| Driver D (UK Team BRIT roster, McLaren 570s in the British Endurance Championship, military veteran amputee with adapted clutch + brake) | LinkedIn DM with 60-second video pitch per draft `docs/outreach-drafts/linkedin-dm-driver-d-backup.md` | Both driver A + driver B silent by Day 5 EOD; driver D replaces driver A as primary hand-control-user target | CONDITIONAL DRAFTED | TBD on consent (per-surface ask) |
 
 ## Phase 5 - Day 5 follow-ups (scheduled 2026-05-24)
 
