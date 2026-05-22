@@ -1,4 +1,4 @@
-import type { ConvergenceFixture } from "../../shared/types";
+import type { ConvergenceFixture, ConvergenceFixtureCatalogue } from "../../shared/types";
 
 /**
  * Convergence 14 fixture catalogue. The 14 kinematic-violation classes
@@ -19,9 +19,14 @@ import type { ConvergenceFixture } from "../../shared/types";
  * model coupling + COA-simultaneity gate (Stage 2 feasibility filter
  * catches), 4 physical-envelope sanity (Stage 3 Guardian BYOC text
  * audit catches), 2 serializer integrity round-trips (the convergence
- * test itself).
+ * test itself). The cardinality + class-to-stage binding + COA-payload
+ * binding + serializer-integrity-verdict pin all live on
+ * `ConvergenceFixtureCatalogue` and the variant union in
+ * `app/shared/types.ts`, so a 15th row, a mis-stage binding, a
+ * mis-COA-flag, or a `serializer_integrity + flag` row is a TypeScript
+ * compile error here. No runtime asserts needed.
  */
-export const CONVERGENCE_FIXTURES: ReadonlyArray<ConvergenceFixture> = [
+export const CONVERGENCE_FIXTURES: ConvergenceFixtureCatalogue = [
   // ---- Stage 1: convex QP catches (4) ------------------------------------
   {
     id: "C14-01",
@@ -241,8 +246,9 @@ export const CONVERGENCE_FIXTURES: ReadonlyArray<ConvergenceFixture> = [
   },
 ];
 
-if (CONVERGENCE_FIXTURES.length !== 14) {
-  throw new Error(
-    `Convergence 14 catalogue must contain exactly 14 fixtures; found ${CONVERGENCE_FIXTURES.length}. Update the catalogue or the C14 invariant. This is the load-bearing safety contract per docs/decision-log.md D-A.`,
-  );
-}
+/**
+ * The "14" invariant is enforced at the type level via
+ * `ConvergenceFixtureCatalogue` (14-arity tuple) in `app/shared/types.ts`.
+ * Adding or removing a fixture above is a TypeScript compile error at
+ * the catalogue site. No runtime throw needed.
+ */

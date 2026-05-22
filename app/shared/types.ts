@@ -342,8 +342,12 @@ export interface HealthResponse {
 
 /**
  * Kinematic-violation class for a Convergence 14 fixture. Each class
- * corresponds to a constraint family in the architecture-spec Layer 4
- * (Stage 1 convex QP or Stage 2 post-projection feasibility filter).
+ * binds to exactly one architecturally-correct detection stage per the
+ * `ConvergenceFixture` discriminated-union variants below; the seven
+ * cross-product combinations that are architecturally invalid (e.g.,
+ * `bicycle_model` on Stage 1) are compile errors. Refer to
+ * `docs/architecture-spec.md` Layer 4 (Stage 1 convex QP + Stage 2
+ * feasibility filter) + Layer 5 (Stage 3 Granite Guardian BYOC audit).
  */
 export type ConvergenceViolationClass =
   | "friction_ellipse"
@@ -369,32 +373,130 @@ export type ConvergenceDetectionStage = "stage_1_qp" | "stage_2_feasibility" | "
 export type ConvergenceExpectedVerdict = "approve" | "flag" | "reject";
 
 /**
- * A single Convergence 14 fixture row. The Convergence 14 catalogue is
- * the load-bearing safety contract: every kinematic-violation class has
- * a fixture firing the violation + asserting the serializer output +
- * Guardian verdict match the expected verdict. Display-only on
- * `/judges`; Vinh's `app/backend/tests/test_serializer.py` owns the
- * actual assertion suite.
+ * Stable identifier across the 14 fixtures. Template-literal-typed so
+ * typos like "C-14-01" or "C14-1" become compile errors at the catalogue
+ * site, not runtime asserts.
  */
-export interface ConvergenceFixture {
-  /** Stable identifier across the 14 fixtures: "C14-01" .. "C14-14". */
-  readonly id: string;
+export type ConvergenceFixtureId =
+  | "C14-01"
+  | "C14-02"
+  | "C14-03"
+  | "C14-04"
+  | "C14-05"
+  | "C14-06"
+  | "C14-07"
+  | "C14-08"
+  | "C14-09"
+  | "C14-10"
+  | "C14-11"
+  | "C14-12"
+  | "C14-13"
+  | "C14-14";
+
+/**
+ * Field set shared across every Convergence 14 fixture variant. The
+ * class-specific fields (`violation_class`, `detection_stage`,
+ * `coa_simul_permitted`, `expected_verdict`) live on the discriminated
+ * union below; everything else lives here.
+ */
+interface ConvergenceFixtureBase {
+  readonly id: ConvergenceFixtureId;
   /** Short headline for the fixture grid. */
   readonly title: string;
   /** One-sentence description of the violation scenario. */
   readonly summary: string;
-  /** Which constraint family the fixture exercises. */
-  readonly violation_class: ConvergenceViolationClass;
-  /** Pipeline stage that catches the violation. */
-  readonly detection_stage: ConvergenceDetectionStage;
-  /** Guardian verdict the fixture asserts. */
-  readonly expected_verdict: ConvergenceExpectedVerdict;
-  /** Plain-text reason the Guardian audit gives when firing the verdict. Mirrors `GuardianAudit.reason_lines` shape. */
+  /** Plain-text reason the Guardian audit gives when firing the verdict. Mirrors `GuardianAudit.reasoning_trace` shape. */
   readonly expected_guardian_reason: string;
-  /** COA simultaneity flag value the fixture pins (true = permitted, false = forbidden, null = COA-agnostic). */
-  readonly coa_simul_permitted: boolean | null;
   /** Path to the fixture file under `app/backend/tests/fixtures/convergence-14/` (Vinh-lane; the path is the contract). */
   readonly fixture_path: string;
   /** Excerpt of the serialized violation log the fixture asserts the serializer produces. Display-only on `/judges`. */
   readonly sample_violation_log_excerpt: string;
 }
+
+/**
+ * Discriminated-union variant per violation class. Folds three
+ * cross-cutting invariants into the type system:
+ *
+ *   1. **Class -> stage binding** (per architecture-spec Layer 4 / 5):
+ *      every class binds to exactly one stage. The 14 invalid
+ *      cross-products (e.g. `bicycle_model + stage_1_qp`) are compile
+ *      errors.
+ *   2. **Class -> COA-simul payload shape**: COA-agnostic classes pin
+ *      `coa_simul_permitted: null`; COA-gating classes
+ *      (`coa_simultaneity` + optional `serializer_integrity` end-to-end
+ *      closure) carry a boolean. Writing `coa_simul_permitted: true` on
+ *      a `friction_ellipse` fixture is a compile error.
+ *   3. **`serializer_integrity` always pins `expected_verdict:
+ *      "approve"`**: the round-trip-byte-equality + verdict-stability
+ *      check is meaningful only when the verdict is stable. A
+ *      serializer_integrity fixture asserting `flag` or `reject` is a
+ *      type error.
+ */
+export type ConvergenceFixture = ConvergenceFixtureBase &
+  (
+    | {
+        readonly violation_class: "friction_ellipse";
+        readonly detection_stage: "stage_1_qp";
+        readonly coa_simul_permitted: null;
+        readonly expected_verdict: ConvergenceExpectedVerdict;
+      }
+    | {
+        readonly violation_class: "forward_euler";
+        readonly detection_stage: "stage_1_qp";
+        readonly coa_simul_permitted: null;
+        readonly expected_verdict: ConvergenceExpectedVerdict;
+      }
+    | {
+        readonly violation_class: "jerk_bound";
+        readonly detection_stage: "stage_1_qp";
+        readonly coa_simul_permitted: null;
+        readonly expected_verdict: ConvergenceExpectedVerdict;
+      }
+    | {
+        readonly violation_class: "bicycle_model";
+        readonly detection_stage: "stage_2_feasibility";
+        readonly coa_simul_permitted: null;
+        readonly expected_verdict: ConvergenceExpectedVerdict;
+      }
+    | {
+        readonly violation_class: "coa_simultaneity";
+        readonly detection_stage: "stage_2_feasibility";
+        readonly coa_simul_permitted: boolean;
+        readonly expected_verdict: ConvergenceExpectedVerdict;
+      }
+    | {
+        readonly violation_class: "physical_envelope";
+        readonly detection_stage: "stage_3_guardian";
+        readonly coa_simul_permitted: null;
+        readonly expected_verdict: ConvergenceExpectedVerdict;
+      }
+    | {
+        readonly violation_class: "serializer_integrity";
+        readonly detection_stage: "stage_3_guardian";
+        readonly coa_simul_permitted: boolean | null;
+        readonly expected_verdict: "approve";
+      }
+  );
+
+/**
+ * Fixed-arity tuple typing the catalogue at compile time. Adding a 15th
+ * fixture or removing one becomes a TypeScript error at the catalogue
+ * site, not a runtime throw at module-import time. Drop-in for any
+ * consumer that previously typed `ReadonlyArray<ConvergenceFixture>`.
+ */
+export type ConvergenceFixtureCatalogue = readonly [
+  ConvergenceFixture,
+  ConvergenceFixture,
+  ConvergenceFixture,
+  ConvergenceFixture,
+  ConvergenceFixture,
+  ConvergenceFixture,
+  ConvergenceFixture,
+  ConvergenceFixture,
+  ConvergenceFixture,
+  ConvergenceFixture,
+  ConvergenceFixture,
+  ConvergenceFixture,
+  ConvergenceFixture,
+  ConvergenceFixture,
+];
