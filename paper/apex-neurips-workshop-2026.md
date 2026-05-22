@@ -64,11 +64,11 @@ Our contribution claims are scoped:
 
 ## 3. Method: the three-layer PhysicsTTM pipeline with a two-stage projection-and-audit middle layer
 
-The pipeline runs three layers in series: a frozen TSFM forecaster, a two-stage projection-and-audit layer, and a text-audit gate. The forecaster + projection layer share a single forward pass on a (batch, 24, 9) tensor; the audit gate runs on the serialized violation log carrying both the Stage 1 QP residuals and the Stage 2 feasibility-filter verdicts.
+The pipeline runs three layers in series: a frozen TSFM forecaster (extended to a three-track ensemble per wave-30 D-010: Granite TimeSeries TTM r2.1 channel-mix decoder fine-tune + Granite FlowState + Amazon Chronos-2), an unrolled SCP outer loop wrapping a convex QP inner stage (per wave-30 D-012 reframing of the wave-22 two-stage projection-and-audit), and a text-audit gate. The forecaster + projection layer share a single forward pass on a (batch, 30, 14) tensor per the wave-30 horizon + channel expansion (D-010 horizon expansion 24 -> 30 + D-016 channel expansion 9 -> 14, superseding the wave-22 (batch, 24, 9) lock); the audit gate runs on the serialized violation log carrying both the SCP inner-iterate residuals and the SCP outer-loop linearisation step verdicts.
 
 ### 3.1 Layer 1: frozen Granite TimeSeries TTM r2.1 forecaster
 
-We aggregate raw 50 Hz telemetry to 1-Hz mini-sector tensors of shape `(batch, 24, 9)`. The 24 along the time axis corresponds to one lap of 1-Hz mini-sector aggregates; typical lap covers 20-30 sectors depending on circuit. The 9 channels are:
+We aggregate raw 50 Hz telemetry to 1-Hz mini-sector tensors of shape `(batch, 30, 14)` per wave-30 D-010 + D-016 expansion (the wave-22 baseline was `(batch, 24, 9)`; wave-30 expanded horizon 24 -> 30 for finer 8-tier SCP convergence grid + channels 9 -> 14 with 5 wave-30 physics-tier additions). The 30 along the time axis corresponds to one lap of 1-Hz mini-sector aggregates at the wave-30 finer discretization (the wave-22 24-sector lock was tuned for V1 single-stage projection-and-audit; wave-30 8-tier unrolled SCP benefits from the 30-sector grid that covers the widest-circuit edge cases). The 14 channels are:
 
 1. `throttle_pct` (percent, 0-100)
 2. `brake_pa` (Pascals)
@@ -79,8 +79,13 @@ We aggregate raw 50 Hz telemetry to 1-Hz mini-sector tensors of shape `(batch, 2
 7. `speed_mps` (meters per second)
 8. `gear` (integer 0-8)
 9. `coa_simul_permitted` (binary 0/1, synthesized from the driver's FIA Certificate of Adaptations parsed JSON)
+10. `fz_total` (Newtons; per-tire vertical-load aggregate after Tier 4 double-track load-transfer adjustments per wave-30 D-015)
+11. `mu_v` (per-step friction coefficient consumed + updated by Tier 5 tire thermal model + Tier 7 Pacejka combined-slip per wave-30 D-015)
+12. `pitch_rad` (radians; track-frame pitch consumed by Tier 1 3D track geometry gravity projection per wave-30 D-015)
+13. `bank_rad` (radians; track-frame bank consumed by Tier 1 3D track geometry per wave-30 D-015)
+14. `yaw_rate` (radians per second; consumed by Tier 8 kinematic integration per wave-30 D-015)
 
-The forecaster is loaded from `ibm-granite/granite-timeseries-ttm-r2` and never retrained. The output tensor matches the input shape `(batch, 24, 9)`.
+The forecaster is loaded from `ibm-granite/granite-timeseries-ttm-r2` and never retrained (frozen weights per the NeurIPS central claim of frozen-TSFM + hard differentiable physics-projection composition per D-025). The output tensor matches the input shape `(batch, 30, 14)` per wave-30 D-010 + D-016 (the wave-22 (batch, 24, 9) lock is superseded; existing wave-22 fixtures + tests pad channels 9-13 with zeros + extend time axis to 30 by repeating the last mini-sector value per the migration plan in arch-spec Appendix W30 Sync Point 1 contract).
 
 ### 3.2 Layer 2: two-stage projection-and-audit layer
 
@@ -140,7 +145,7 @@ The diagram is generated from `docs/architecture-diagram.mmd` in the source repo
 
 ### 3.6 Pipeline integration with IBM Granite stack
 
-The full pipeline uses eight IBM Granite tools. Two of them (Granite TimeSeries TTM r2.1 as the forecaster and Granite Guardian 4.1 as the audit gate) host the APEX contributions of this paper through the surrounding two-stage projection-and-audit layer. The other six (Granite-Docling 258M for FIA COA PDF parsing, Granite Vision 4.1 4B for timing-sheet PDF parsing, the Docling library as the conversion layer behind the document parsers, Granite 4.1 8B Instruct as the race-engineer narrator, Langflow for visible orchestration graph export, and IBM Bob as the build accelerator) are infrastructure inspired by IBM's publicly documented Ferrari watsonx + Granite case study, redeployed here on a different safety-critical sensor-data domain.
+The full pipeline uses twelve IBM Granite tools per wave-30 D-016 stack expansion (the wave-22 baseline was 8 tools; wave-30 added Granite Embedding R2 + IBM TSPulse + Granite FlowState + Granite 4.0 Nano). Four of them (Granite TimeSeries TTM r2.1 channel-mix decoder fine-tune as Track 1 of the three-track forecasting ensemble per D-010, Granite FlowState 9.1M as Track 2, Granite Guardian 4.1 as the audit gate + D-024 physics-confidence detector verdict downgrade, and Granite Embedding R2 149M + 47M as the RAG retrieval layer per D-016) host the APEX contributions of this paper through the surrounding unrolled SCP outer loop + audit pipeline. The other eight (Granite-Docling 258M for FIA COA PDF parsing, Granite Vision 4.1 4B for timing-sheet PDF parsing, the Docling library as the conversion layer behind the document parsers, IBM TSPulse 1M for anomaly detection on polyphase phase streams per D-016, Granite 4.1 8B Instruct as the race-engineer narrator, Granite 4.0 Nano 350M as the in-browser WebGPU edge model per D-019 item 1 + D-021, Langflow for visible orchestration demo facade per D-017 demotion from runtime, and IBM Bob as the build accelerator) are infrastructure inspired by IBM's publicly documented Ferrari watsonx + Granite case study, redeployed here on a different safety-critical sensor-data domain.
 
 ---
 
@@ -157,7 +162,7 @@ The §4 prose below specifies the evaluation protocol. The Table 1 / Table 2 / T
 
 | Dataset | Circuits / sessions | Hz | Channels | COA channel? | Use |
 |---------|---------------------|-----|----------|--------------|-----|
-| Sarah Reynolds Britcar GP synthetic slice | 60 rows (1.2 seconds) from qualifying lap 17 of 19 | 50 | 8 + 1 (COA flag) | yes | COA-simultaneity-gate ablation (Table 3b) |
+| Sarah Reynolds Britcar GP synthetic slice | 60 rows (1.2 seconds) from qualifying lap 17 of 19 | 50 | 8 telemetry + 1 COA flag + 5 wave-30 D-016 additions (fz_total + mu_v + pitch_rad + bank_rad + yaw_rate) = 14 total | yes | COA-simultaneity-gate ablation (Table 3b) + 8-tier physics ablation (Table 3a) |
 | FastF1 holdouts | 5 / -- (>=3 per circuit) | 50 -> 1 (aggregated) | 8 | no | Lap-time MAE + physics-violation rate (Table 2) |
 
 **Baselines.**
