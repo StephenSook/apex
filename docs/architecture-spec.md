@@ -80,18 +80,18 @@ Aggregates raw 50 Hz telemetry (8 channels) to 1 Hz mini-sector tensors that sit
 
 - Why aggregate: TTM r2 public release does not support sub-second resolution. We honor this by aggregating per mini-sector (~70 m at 150 mph).
 - 9th synthetic channel: COA simultaneity bit (0 or 1) derived from the COA parse.
-- Output tensor shape: `(batch, context_length=24, num_channels=9)`. The 24 matches the per-lap aggregation locked at line 84 below; the earlier 128 value was a stale carry-over from the original blueprint and is corrected here per wave-22 cold review BLOCKER B2.
+- Output tensor shape: `(batch, context_length=30, num_channels=14)`. **Wave-30 supersedes wave-22.** The wave-22 BLOCKER B2 lock (context_length=24, num_channels=9) is replaced by the wave-30 Maximal Architecture Lock per D-010 + D-016: horizon expands from 24 to 30 mini-sectors (finer discretization for 8-tier SCP convergence stability per Appendix W30; covers wider circuits than the 20-30-sector wave-22 estimate); channels expand from 9 to 14 (8 telemetry + 1 COA flag + 5 wave-30 additions: fz_total + mu_v + pitch_rad + bank_rad + yaw_rate). The wave-22 24-sector lock was tuned for V1 single-stage projection-and-audit; wave-30 8-tier unrolled SCP benefits from the finer 30-sector grid.
 
 ### 3. Granite TimeSeries TTM r2.1 (`app/backend/apex/ttm/forecast.py`)
 
 Zero-shot multivariate forecaster. Frozen weights, no retraining. NeurIPS 2024 "Tiny Time Mixers" paper.
 
-**Input tensor shape:** `(batch_size, context_length, num_channels)` where:
+**Input tensor shape:** `(batch_size, context_length, num_channels)` where (wave-30 supersedes wave-22; see line 83 reconciliation note):
 - `batch_size`: 1 for a single-lap analyze call, > 1 for backfill batches.
-- `context_length`: 24 (one lap of 1-Hz mini-sector aggregates; typical lap covers 20-30 sectors depending on circuit).
-- `num_channels`: 9 → `[throttle_pct, brake_pa, steering_rad, rpm, lat_g, long_g, speed_mps, gear, coa_simul_permitted]`. The 9th channel is a binary `c_overlap` flag derived from the approved hand-control hardware specifications recorded in the driver's FIA Certificate of Adaptations (parsed by Granite-Docling at onboarding). It tells TTM that simultaneous brake-throttle is hardware-permitted at that mini-sector, which the channel-independent forecaster otherwise has no way to know. Important: public FIA documents do not expose a discrete simultaneity field; APEX derives this flag from approved adaptation-equipment metadata, not from an explicit FIA-defined boolean.
+- `context_length`: 30 (one lap of 1-Hz mini-sector aggregates at finer discretization than the wave-22 24-sector lock; matches the 30-sector horizon chosen by the wave-30 multi-model synthesis for 8-tier SCP convergence stability).
+- `num_channels`: 14 → `[throttle_pct, brake_pa, steering_rad, rpm, lat_g, long_g, speed_mps, gear, coa_simul_permitted, fz_total, mu_v, pitch_rad, bank_rad, yaw_rate]`. The 9th channel `coa_simul_permitted` is a binary `c_overlap` flag derived from the approved hand-control hardware specifications recorded in the driver's FIA Certificate of Adaptations (parsed by Granite-Docling at onboarding). It tells TTM that simultaneous brake-throttle is hardware-permitted at that mini-sector, which the channel-independent forecaster otherwise has no way to know. Important: public FIA documents do not expose a discrete simultaneity field; APEX derives this flag from approved adaptation-equipment metadata, not from an explicit FIA-defined boolean. Channels 10-14 (fz_total + mu_v + pitch_rad + bank_rad + yaw_rate) are wave-30 additions feeding the 8-tier physics solver per D-016.
 
-**Output tensor shape:** `(batch_size, prediction_length, num_channels)` where `prediction_length` defaults to 24 (next session's mini-sector envelope) and `num_channels` matches the input 9.
+**Output tensor shape:** `(batch_size, prediction_length, num_channels)` where `prediction_length` defaults to 30 (next session's mini-sector envelope at wave-30 lock; was 24 pre-wave-30) and `num_channels` matches the input 14 (was 9 pre-wave-30).
 
 **Defensible claim** (per Phase 4.5 mandatory edit #2): "outperforms several larger TSFMs in NeurIPS 2024 benchmarks on common forecasting tasks." We do NOT claim to outperform every TSFM.
 
@@ -374,7 +374,7 @@ Per Stephen's galaxy ambition directive + 9-source multi-model deep-research syn
 
 **Fusion.** All three tracks output (B, 30, 14)-shaped tensors (Path A + Track 1 + Track 3) and (B, 50, 30, 14) from Path B + Track 1 polyphase. Layer 4 projection upsamples Path A to 50 Hz and fuses with Path B + Path C + Track 3 quantile bands.
 
-**Sync Point 1 contract.** The (B, 30, 14) tensor contract from wave-29 Layer 3 expands but does NOT break. Channels enumeration locked: `[throttle_pct, brake_pa, steering_rad, rpm, lat_g, long_g, speed_mps, gear, coa_simul_permitted, fz_total, mu_v, pitch_rad, bank_rad, yaw_rate]` (14 channels per D-016 expanded schema; original 9 + 5 new for 8-tier physics: fz_total (Tier 4) + mu_v (Tier 5) + pitch_rad + bank_rad (Tier 1) + yaw_rate (Tier 8)).
+**Sync Point 1 contract.** The (B, 30, 14) tensor contract supersedes the wave-22 (B, 24, 9) lock per D-010 horizon-expansion + D-016 channel-expansion (see Layer 3 input-tensor lines 89-92 for the reconciliation note). Horizon expands from 24 to 30 mini-sectors (finer 8-tier SCP convergence grid); channels expand from 9 to 14 (8 telemetry + 1 COA flag + 5 wave-30 physics additions). Channels enumeration locked: `[throttle_pct, brake_pa, steering_rad, rpm, lat_g, long_g, speed_mps, gear, coa_simul_permitted, fz_total, mu_v, pitch_rad, bank_rad, yaw_rate]` (14 channels per D-016 expanded schema; original 9 + 5 new for 8-tier physics: fz_total (Tier 4) + mu_v (Tier 5) + pitch_rad + bank_rad (Tier 1) + yaw_rate (Tier 8)). Existing wave-22 fixtures + tests pad with zeros on channels 9-13 (placeholder) + extend the time axis from 24 to 30 by repeating the last mini-sector value; D-027 SCP gate validates the new schema end-to-end before Phase 1+ ships.
 
 ### Layer 4 expansion - 8-tier unrolled SCP physics-projection (D-012 + D-015)
 
