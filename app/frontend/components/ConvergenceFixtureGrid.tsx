@@ -2,6 +2,7 @@ import type {
   ConvergenceDetectionStage,
   ConvergenceExpectedVerdict,
   ConvergenceFixture,
+  ConvergenceFixtureCatalogue,
   ConvergenceViolationClass,
 } from "../../shared/types";
 
@@ -34,7 +35,11 @@ function verdictChipClass(verdict: ConvergenceExpectedVerdict): string {
   if (verdict === "flag") {
     return "border-amber bg-paper text-amber";
   }
-  return "border-accent bg-paper text-accent";
+  if (verdict === "reject") {
+    return "border-accent bg-paper text-accent";
+  }
+  const _exhaustive: never = verdict;
+  throw new Error(`unknown verdict: ${String(_exhaustive)}`);
 }
 
 function stageBarClass(stage: ConvergenceDetectionStage): string {
@@ -44,12 +49,16 @@ function stageBarClass(stage: ConvergenceDetectionStage): string {
   if (stage === "stage_2_feasibility") {
     return "bg-amber";
   }
-  return "bg-accent";
+  if (stage === "stage_3_guardian") {
+    return "bg-accent";
+  }
+  const _exhaustive: never = stage;
+  throw new Error(`unknown detection stage: ${String(_exhaustive)}`);
 }
 
 function coaCellLabel(value: boolean | null): string {
   if (value === null) {
-    return "n / a";
+    return "not applicable";
   }
   if (value) {
     return "permitted";
@@ -58,7 +67,7 @@ function coaCellLabel(value: boolean | null): string {
 }
 
 interface ConvergenceFixtureGridProps {
-  readonly fixtures: ReadonlyArray<ConvergenceFixture>;
+  readonly fixtures: ConvergenceFixtureCatalogue;
 }
 
 export function ConvergenceFixtureGrid({ fixtures }: ConvergenceFixtureGridProps) {

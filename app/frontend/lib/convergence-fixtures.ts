@@ -77,16 +77,16 @@ export const CONVERGENCE_FIXTURES: ConvergenceFixtureCatalogue = [
     id: "C14-04",
     title: "Jerk bound",
     summary:
-      "Long_g jumps from +0.6 g at t=8 to -0.8 g at t=9 in one 1-Hz mini-sector, exceeding the V1 jerk bound of 0.8 g/s.",
+      "Long_g jumps from +0.6 g at t=8 to -0.8 g at t=9 in one 1-Hz mini-sector. Delta of 1.4 g/s exceeds the V1 jerk bound at 8 m/s^3 (approximately 0.815 g/s).",
     violation_class: "jerk_bound",
     detection_stage: "stage_1_qp",
     expected_verdict: "flag",
     expected_guardian_reason:
-      "Stage 1 QP jerk-bound clamp engaged; projected long_g[9] from -0.8 g to +0.2 g to respect the V1 jerk bound at 0.8 g per 1.0 s mini-sector.",
+      "Stage 1 QP jerk-bound clamp engaged; projected long_g[9] from -0.8 g to -0.2 g (prev +0.6 g minus the per-step jerk budget of 0.8 g) to respect the V1 jerk bound at 8 m/s^3 over the 1.0 s mini-sector.",
     coa_simul_permitted: null,
     fixture_path: "app/backend/tests/fixtures/convergence-14/C14-04_jerk_bound.json",
     sample_violation_log_excerpt:
-      'stage:1 class:jerk_bound t:9 channel:long_g raw:-0.8 projected:+0.2 prev:+0.6 jerk_max_g_per_s:0.8',
+      'stage:1 class:jerk_bound t:9 channel:long_g raw:-0.8 projected:-0.2 prev:+0.6 jerk_max_m_per_s3:8 jerk_max_g_per_s:0.815',
   },
 
   // ---- Stage 2: feasibility filter catches (4) ---------------------------
@@ -94,31 +94,31 @@ export const CONVERGENCE_FIXTURES: ConvergenceFixtureCatalogue = [
     id: "C14-05",
     title: "Bicycle: lateral g without steering",
     summary:
-      "Forecast claims lat_g = 0.5 g with steering_rad = 0.0 at speed 35 m/s. Bicycle-model coupling makes lateral g impossible without nonzero steering at low slip.",
+      "Forecast claims lat_g = 0.5 g with steering_rad = 0.0 at speed 15 m/s. Bicycle-model coupling makes lateral g impossible without nonzero steering at low slip.",
     violation_class: "bicycle_model",
     detection_stage: "stage_2_feasibility",
     expected_verdict: "reject",
     expected_guardian_reason:
-      "Stage 2 feasibility filter rejected forecast: bicycle-model coupling requires steering_rad > 0.03 rad for lat_g > 0.1 g at speed 35 m/s with wheelbase 2.7 m.",
+      "Stage 2 feasibility filter rejected forecast: bicycle-model expects steering_rad approx 0.059 rad for lat_g = 0.5 g at speed 15 m/s with wheelbase 2.7 m (derived from delta = atan(a_lat * L / v^2)); observed steering 0.0 rad falls outside the slip_tol_rad = 0.03 tolerance band.",
     coa_simul_permitted: null,
     fixture_path: "app/backend/tests/fixtures/convergence-14/C14-05_bicycle_no_steering.json",
     sample_violation_log_excerpt:
-      'stage:2 class:bicycle_model t:14 lat_g_raw:0.5 steering_rad:0.0 speed_mps:35 expected_steering_rad:0.11',
+      'stage:2 class:bicycle_model t:14 lat_g_raw:0.5 steering_rad:0.0 speed_mps:15 expected_steering_rad:0.059 slip_tol_rad:0.03',
   },
   {
     id: "C14-06",
     title: "Bicycle: magnitude mismatch",
     summary:
-      "Steering of 0.05 rad at speed 30 m/s would yield lat_g of about 0.17 g under low-slip kinematic approximation, but the forecast asserts lat_g = 0.8 g. Magnitude mismatch flags the bicycle-coupling audit.",
+      "Steering of 0.005 rad at speed 30 m/s would yield lat_g of about 0.17 g under low-slip kinematic approximation (a_lat = v^2 * tan(delta) / L; here 900 * 0.005 / 2.7 / 9.81 = 0.170 g). Forecast instead asserts lat_g = 0.8 g. Magnitude mismatch flags the bicycle-coupling audit.",
     violation_class: "bicycle_model",
     detection_stage: "stage_2_feasibility",
     expected_verdict: "reject",
     expected_guardian_reason:
-      "Stage 2 feasibility filter rejected forecast: bicycle-model predicted lat_g approx 0.17 g for steering 0.05 rad at 30 m/s; observed 0.8 g exceeds slip-tolerant bound of 0.03 rad.",
+      "Stage 2 feasibility filter rejected forecast: bicycle-model predicted lat_g approx 0.17 g for steering 0.005 rad at 30 m/s; observed 0.8 g exceeds the magnitude band derived from the slip_tol_rad = 0.03 steering tolerance.",
     coa_simul_permitted: null,
     fixture_path: "app/backend/tests/fixtures/convergence-14/C14-06_bicycle_magnitude.json",
     sample_violation_log_excerpt:
-      'stage:2 class:bicycle_model t:18 lat_g_raw:0.8 lat_g_predicted:0.17 steering_rad:0.05 speed_mps:30 slip_tol_rad:0.03',
+      'stage:2 class:bicycle_model t:18 lat_g_raw:0.8 lat_g_predicted:0.17 steering_rad:0.005 speed_mps:30 slip_tol_rad:0.03',
   },
   {
     id: "C14-07",
@@ -220,6 +220,7 @@ export const CONVERGENCE_FIXTURES: ConvergenceFixtureCatalogue = [
     summary:
       "Synthetic violation tensor written to text log, parsed back to tensor, re-serialized; the parsed-then-re-serialized log is byte-identical to the original. Guardian's verdict on both forms is identical.",
     violation_class: "serializer_integrity",
+    closure_kind: "round_trip",
     detection_stage: "stage_3_guardian",
     expected_verdict: "approve",
     expected_guardian_reason:
@@ -227,7 +228,7 @@ export const CONVERGENCE_FIXTURES: ConvergenceFixtureCatalogue = [
     coa_simul_permitted: null,
     fixture_path: "app/backend/tests/fixtures/convergence-14/C14-13_serializer_roundtrip.json",
     sample_violation_log_excerpt:
-      'stage:3 class:serializer_integrity round_trip:byte_equal_passes guardian_verdict_round_trip:approve',
+      'stage:3 class:serializer_integrity closure:round_trip byte_equal:passes guardian_verdict_round_trip:approve',
   },
   {
     id: "C14-14",
@@ -235,6 +236,7 @@ export const CONVERGENCE_FIXTURES: ConvergenceFixtureCatalogue = [
     summary:
       "End-to-end Sarah Reynolds fixture: COA-permitted simultaneity row (C14-08) passes Stage 2 + reaches Stage 3 + receives Guardian approve verdict + tuning recommendation rendered with COA citation. Closes the full safety-contract loop.",
     violation_class: "serializer_integrity",
+    closure_kind: "end_to_end",
     detection_stage: "stage_3_guardian",
     expected_verdict: "approve",
     expected_guardian_reason:
@@ -242,7 +244,7 @@ export const CONVERGENCE_FIXTURES: ConvergenceFixtureCatalogue = [
     coa_simul_permitted: true,
     fixture_path: "app/backend/tests/fixtures/convergence-14/C14-14_full_loop_sarah.json",
     sample_violation_log_excerpt:
-      'stage:3 class:serializer_integrity convergence_14:closed sarah_fixture:approved fia:"18.3" coa:"3(c)"',
+      'stage:3 class:serializer_integrity closure:end_to_end sarah_fixture:approved fia:"18.3" coa:"3(c)"',
   },
 ];
 

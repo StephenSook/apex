@@ -136,7 +136,7 @@ where `dt = 1.0 s` at 1-Hz mini-sector aggregation. Couples the current-step `a_
 |a_lat[t] - a_lat[t-1]| <= jerk_max * dt
 ```
 
-where `jerk_max = 30 m/s^3` (conservative human + tyre tolerance), with prior-step `a_·[t-1]` treated as exogenous. Pair of linear inequalities, convex. Prevents intra-second sub-grid hallucinations that the 1-Hz aggregation would otherwise hide.
+where `jerk_max = 8 m/s^3` (approximately 0.815 g per second; tighter than the upstream human-tolerance ~30 m/s^3 bound because the 1-Hz mini-sector aggregation already smooths intra-second jerk, so a tighter inequality at 1-Hz dt keeps the constraint load-bearing at the spec's sampling rate). Prior-step `a_·[t-1]` treated as exogenous. Pair of linear inequalities, convex. Prevents inter-mini-sector hallucinations where TTM would otherwise forecast physically-implausible sign reversals in long_g or lat_g across adjacent 1-Hz steps. The Convergence-14 fixture C14-04 exercises this bound at the 0.8 g/s headline number; both values reconcile via 8 m/s^3 / 9.81 m/s^2 ≈ 0.815 g/s.
 
 **Stage 1 returns:** `(qp_corrected_tensor, qp_violation_log)` where `qp_corrected_tensor` is the projected forecast and `qp_violation_log` is a list of `PhysicsViolation` records (one per step that hit a convex-constraint bound). Differentiable end-to-end through the projection (gradient methods can backprop through Stage 1 if a future user wires the projection layer into a TTM-aware training loop).
 

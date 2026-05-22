@@ -407,8 +407,8 @@ interface ConvergenceFixtureBase {
   readonly summary: string;
   /** Plain-text reason the Guardian audit gives when firing the verdict. Mirrors `GuardianAudit.reasoning_trace` shape. */
   readonly expected_guardian_reason: string;
-  /** Path to the fixture file under `app/backend/tests/fixtures/convergence-14/` (Vinh-lane; the path is the contract). */
-  readonly fixture_path: string;
+  /** Path to the fixture file under `app/backend/tests/fixtures/convergence-14/` (Vinh-lane; the path is the contract). Template-literal-typed so a typo in either the directory prefix or the .json extension is a compile error. */
+  readonly fixture_path: `app/backend/tests/fixtures/convergence-14/${string}.json`;
   /** Excerpt of the serialized violation log the fixture asserts the serializer produces. Display-only on `/judges`. */
   readonly sample_violation_log_excerpt: string;
 }
@@ -472,8 +472,16 @@ export type ConvergenceFixture = ConvergenceFixtureBase &
       }
     | {
         readonly violation_class: "serializer_integrity";
+        readonly closure_kind: "round_trip";
         readonly detection_stage: "stage_3_guardian";
-        readonly coa_simul_permitted: boolean | null;
+        readonly coa_simul_permitted: null;
+        readonly expected_verdict: "approve";
+      }
+    | {
+        readonly violation_class: "serializer_integrity";
+        readonly closure_kind: "end_to_end";
+        readonly detection_stage: "stage_3_guardian";
+        readonly coa_simul_permitted: boolean;
         readonly expected_verdict: "approve";
       }
   );

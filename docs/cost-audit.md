@@ -2,7 +2,7 @@
 
 Per PLAN §17.10 + global CLAUDE.md cost-discipline. Pull-forward Day 2 night-late draft of the Day-11 evening `usage-audit` skill run. Final numbers commit at PLAN row 6.6 acceptance criterion (Day 11 evening); the document below is the structural shell + the Day-2 rolling snapshot.
 
-**Purpose.** Real economics data for the IBM Consulting outreach email on Day 12 and the NeurIPS paper draft's cost-efficiency claim. Also a transparency artifact for the judges page (links from `/judges` planned Day 11).
+**Purpose.** [DRAFT, pending Day-11 evening codeburn snapshot] - per-build-day cost figures backing the IBM Consulting outreach email on Day 12 and the NeurIPS paper draft's cost-efficiency claim. Also a transparency artifact for the judges page (links from `/judges` planned Day 11).
 
 **Method.** Codeburn CLI (`codeburn status` + `codeburn optimize`) produces the canonical numbers. Snapshot saved to this file. If any single project line exceeds $20 / day, that line surfaces as a pre-mortem.md entry per PLAN row 6.6 acceptance criterion (c).
 

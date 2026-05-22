@@ -99,7 +99,7 @@ The FIA lifted its single-seater ban on disabled drivers in December 2017. The r
 ## The AI approach (BeMyApp pinned rubric Q2)
 
 ```
-APEX is a three-layer PhysicsTTM architecture with a two-stage projection-and-audit middle layer: a frozen Granite TimeSeries TTM r2.1 foundation forecaster wrapped in Stage 1 (a differentiable CvxpyLayer convex QP enforcing friction ellipse + forward-Euler kinematic step + jerk bound) and Stage 2 (a post-projection feasibility filter auditing the nonconvex bicycle-model coupling + COA-parameterized brake-throttle simultaneity gate), audited by Granite Guardian 4.1 with custom Bring-Your-Own-Classifier rules on the combined Stage 1 + Stage 2 serialized text log. Granite 4.1 8B Instruct narrates the coaching report. Granite-Docling parses the FIA COA PDF into structured JSON at onboarding. Granite Vision parses official timing-sheet PDFs to CSV. Langflow exports the visible orchestration graph. IBM Bob accelerates the build per the IBM × Scuderia Ferrari case-study precedent. Eight IBM Granite tools, all load-bearing. Convergence 14, our 14-fixture safety-contract catalogue (visible at /judges), is unit-tested in Vinh's app/backend/tests/test_serializer.py: every kinematic-violation class has a fixture and an asserted Guardian verdict.
+APEX is a three-layer PhysicsTTM architecture with a two-stage projection-and-audit middle layer: a frozen Granite TimeSeries TTM r2.1 foundation forecaster wrapped in Stage 1 (a differentiable CvxpyLayer convex QP enforcing friction ellipse + forward-Euler kinematic step + jerk bound) and Stage 2 (a post-projection feasibility filter auditing the nonconvex bicycle-model coupling + COA-parameterized brake-throttle simultaneity gate), audited by Granite Guardian 4.1 with custom Bring-Your-Own-Classifier rules on the combined Stage 1 + Stage 2 serialized text log. Granite 4.1 8B Instruct narrates the coaching report. Granite-Docling parses the FIA COA PDF into structured JSON at onboarding. Granite Vision parses official timing-sheet PDFs to CSV. Langflow exports the visible orchestration graph. IBM Bob accelerates the build, in keeping with IBM's publicly-documented watsonx + Granite Ferrari case-study posture toward governed-AI development. Eight IBM Granite tools, all load-bearing. Convergence 14, our 14-fixture safety-contract catalogue (visible at /judges), is unit-tested in Vinh's app/backend/tests/test_serializer.py: every kinematic-violation class has a fixture and an asserted Guardian verdict.
 ```
 
 ## Why it matters in racing (BeMyApp pinned rubric Q3)
@@ -125,7 +125,7 @@ Three constituencies share one product gap. Adaptive racers running hand-control
 
 7. Langflow. Visible orchestration graph export. Day 7 screenshot lands in the deck.
 
-8. IBM Bob. Build accelerator, per the IBM × Scuderia Ferrari case-study precedent. Session logs committed to `bob-sessions/` in the repo.
+8. IBM Bob. Build accelerator. We adopt Bob as our codegen-assistance loop in keeping with IBM's publicly-documented watsonx + Granite Ferrari case-study posture toward governed-AI development. Session logs committed to `bob-sessions/` in the repo.
 ```
 
 ## Demo video link
@@ -140,7 +140,7 @@ Three constituencies share one product gap. Adaptive racers running hand-control
 https://github.com/StephenSook/apex
 ```
 
-Public from Day 1. Apache 2.0 license. Atomic-commit discipline (210+ commits across the 12-day build window).
+Public from Day 1. Apache 2.0 license. Atomic-commit discipline (220+ commits across the 12-day build window).
 
 ## Live demo URL
 
@@ -160,7 +160,7 @@ Vinh Le. Backend, ML pipeline, FastAPI, Langflow, infrastructure (Computer Scien
 ## What makes this innovative or impactful (video beat 4 mirror)
 
 ```
-APEX is the first public AI race-engineer workflow we found that reads the FIA Certificate of Adaptations at the tensor level and lets the COA gate live in a Stage 2 post-projection feasibility filter, separate from the Stage 1 convex QP that handles the everyday physics. Public documentation for the leading commercial AI race-engineer tools we surveyed (Track Titan, Trophi.ai) does not show any conditional removal of the able-bodied throttle * brake = 0 mutual-exclusion assumption; if a prior workflow is identified, the "first" claim narrows per the bounded-scope statement in our NeurIPS Workshop paper §5.3. APEX permits the simultaneity when the COA permits it. That single architectural choice (COA-parameterized brake-throttle simultaneity) closes the most significant misdiagnosis pattern across the entire adaptive-driver category. Combined with the two-stage projection-and-audit layer that catches kinetic hallucinations from a frozen non-physics-pretrained foundation model applied zero-shot to motorsport telemetry, and the Granite Guardian text-audit gate backed by the 14-fixture Convergence 14 unit-test catalogue on every recommendation, APEX is the IBM-Consulting reference architecture for governed foundation-model deployment on safety-critical sensor data.
+APEX is the first public AI race-engineer workflow we found that reads the FIA Certificate of Adaptations at the tensor level and lets the COA gate live in a Stage 2 post-projection feasibility filter, separate from the Stage 1 convex QP that handles the everyday physics. Public documentation for the leading commercial AI race-engineer tools we surveyed (Track Titan, Trophi.ai) does not show any conditional removal of the able-bodied throttle * brake = 0 mutual-exclusion assumption; if a prior workflow is identified, the "first" claim narrows per the bounded-scope statement in our NeurIPS Workshop paper §5.3. APEX permits the simultaneity when the COA permits it. That single architectural choice (COA-parameterized brake-throttle simultaneity) closes the most significant misdiagnosis pattern across the entire adaptive-driver category. Combined with the two-stage projection-and-audit layer that catches kinetic hallucinations from a frozen non-physics-pretrained foundation model applied zero-shot to motorsport telemetry, and the Granite Guardian text-audit gate backed by the 14-fixture Convergence 14 unit-test catalogue on every recommendation, APEX is a candidate reference pattern for IBM Consulting deployments of governed foundation models on safety-critical sensor data.
 ```
 
 ## Track entries

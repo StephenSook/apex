@@ -47,7 +47,7 @@ const RESOURCES: ReadonlyArray<ResourceLink> = [
   {
     label: "Public GitHub repo",
     href: "https://github.com/StephenSook/apex",
-    detail: "Apache 2.0, public Day 1, 130+ atomic commits across the 12-day build window.",
+    detail: "Apache 2.0, public Day 1, 220+ atomic commits across the 12-day build window.",
     badge: "live",
   },
   {
@@ -90,7 +90,7 @@ const IBM_STACK: ReadonlyArray<readonly [string, string]> = [
   ["Granite 4.1 8B Instruct", "Race-engineer narrator producing the coaching report."],
   ["Granite Guardian 4.1 8B", "BYOC custom-rule text audit on every physics-corrected forecast."],
   ["Langflow", "Visible orchestration graph export of the full pipeline."],
-  ["IBM Bob", "Build accelerator per the IBM × Scuderia Ferrari case-study precedent."],
+  ["IBM Bob", "Build accelerator. We adopt Bob as our codegen-assistance loop in keeping with IBM's publicly-documented watsonx + Granite Ferrari case-study posture toward governed-AI development."],
 ];
 
 const QA_CARDS: ReadonlyArray<QaCard> = [
@@ -220,24 +220,28 @@ export default function JudgesPage() {
             in the repository; Figure 1 in the NeurIPS Workshop paper draft is the same artifact.
           </p>
           <figure className="mt-8 flex flex-col items-center gap-3 rounded-sm border border-rule bg-paper p-6">
-            <Image
-              src="/figures/figure-1-architecture.svg"
-              alt="APEX pipeline architecture: driver inputs (telemetry CSV, FIA Certificate of Adaptations PDF, written debrief) feed a one-time onboarding stage (Granite-Docling + Granite Vision) and the 60-second post-race coaching loop (1-Hz aggregator into Granite TimeSeries TTM r2.1 into Stage 1 differentiable convex QP into Stage 2 post-projection feasibility filter into Granite Guardian text audit into Granite 4.1 8B Instruct narrator). Outputs are a corner-by-corner coaching report, tuning recommendation with COA section citation, next-session envelope forecast, and Guardian safety stamp with reasoning trace."
-              width={1600}
-              height={1200}
-              className="h-auto w-full max-w-5xl"
-            />
+            <picture>
+              <source srcSet="/figures/figure-1-architecture.svg" type="image/svg+xml" />
+              <Image
+                src="/figures/figure-1-architecture.png"
+                alt="APEX pipeline architecture: driver inputs (telemetry CSV, FIA Certificate of Adaptations PDF, written debrief) feed a one-time onboarding stage (Granite-Docling + Granite Vision) and the 60-second post-race coaching loop (1-Hz aggregator into Granite TimeSeries TTM r2.1 into Stage 1 differentiable convex QP into Stage 2 post-projection feasibility filter into Granite Guardian text audit into Granite 4.1 8B Instruct narrator). Outputs are a corner-by-corner coaching report, tuning recommendation with COA section citation, next-session envelope forecast, and Guardian safety stamp with reasoning trace."
+                width={1487}
+                height={1702}
+                className="h-auto w-full max-w-5xl"
+              />
+            </picture>
             <figcaption className="font-mono text-xs text-muted">
-              Figure 1 (vector) · also available at{" "}
+              Figure 1 (vector via SVG with PNG raster fallback). Download the raster copy at{" "}
               <Link
                 href="/figures/figure-1-architecture.png"
+                download="apex-figure-1-architecture.png"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-racing-green underline decoration-dotted underline-offset-2"
               >
                 figure-1-architecture.png
-              </Link>{" "}
-              for raster reuse.
+              </Link>
+              {" "}for reuse.
             </figcaption>
           </figure>
         </div>
@@ -254,16 +258,16 @@ export default function JudgesPage() {
           </h2>
           <p className="mt-3 max-w-3xl text-base leading-relaxed text-ink-soft">
             Decision-log D-A names the Convergence 14 fixture suite as the load-bearing safety contract.
-            Every kinematic-violation class has a unit-test fixture firing the violation, asserting the
-            serializer output, and asserting the Granite Guardian verdict matches. The grid below
-            enumerates the 14 fixtures: 4 at the Stage 1 convex QP boundary, 4 at the Stage 2
-            feasibility-filter boundary, 4 at the Stage 3 Granite Guardian BYOC text-audit boundary,
-            plus 2 round-trip integrity fixtures that close the convergence loop. The fixture files
-            land at <span className="font-mono text-xs text-racing-green">app/backend/tests/fixtures/convergence-14/</span>{" "}
-            with the test suite at{" "}
+            The catalogue below is the Stephen-lane display of the 14-fixture safety-contract specification:
+            4 at the Stage 1 convex QP boundary, 4 at the Stage 2 feasibility-filter boundary, 4 at the
+            Stage 3 Granite Guardian BYOC text-audit boundary, plus 2 round-trip integrity fixtures
+            that close the convergence loop. The Vinh-lane assertion suite at{" "}
             <span className="font-mono text-xs text-racing-green">app/backend/tests/test_serializer.py</span>{" "}
-            (PLAN row 4.2). Click any row to see the Guardian verdict reason and the serialized
-            violation-log excerpt the fixture asserts.
+            lands per PLAN rows 2.9c + 4.2, with fixture files at{" "}
+            <span className="font-mono text-xs text-racing-green">app/backend/tests/fixtures/convergence-14/</span>.
+            Each fixture asserts the violation, the serializer output, and the Granite Guardian verdict.
+            Click any row to see the expected Guardian verdict reason and the serialized
+            violation-log excerpt the fixture targets.
           </p>
           <ConvergenceFixtureGrid fixtures={CONVERGENCE_FIXTURES} />
           <p className="mt-6 font-mono text-xs italic text-muted">
@@ -356,6 +360,14 @@ function ResourceTile({ resource }: { resource: ResourceLink }) {
 
   if (!resource.href) {
     return tile;
+  }
+
+  if (resource.href.startsWith("#")) {
+    return (
+      <Link href={resource.href} className="block focus-visible:outline-none">
+        {tile}
+      </Link>
+    );
   }
 
   if (resource.href.startsWith("/")) {

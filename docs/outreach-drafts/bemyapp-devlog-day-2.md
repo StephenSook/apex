@@ -13,7 +13,7 @@ Use this version on Day 2 evening. The Day 1 ping at `bemyapp-devlog-day-1.md` f
 ```
 Day 2 done on APEX. AI race engineer for adaptive racers, on the IBM Granite stack.
 
-Frontend: 5 production routes (/, /analyze, /judges, /sim-rig, /status) on Next.js 16 + Tailwind v4. Live BeMyApp banner + per-route OG cards rendering through next/og. 57 vitest tests + Playwright e2e against the live /analyze flow + GitHub Actions CI green on main.
+Frontend: 5 production routes (/, /analyze, /judges, /sim-rig, /status) on Next.js 16 + Tailwind v4. Live BeMyApp banner + per-route OG cards rendering through next/og. 57 vitest tests + Playwright e2e against the live /analyze flow; CI status visible at github.com/StephenSook/apex/actions.
 
 Architecture refined wave-25 night: the projection middle layer is a two-stage validator (Stage 1 differentiable CvxpyLayer convex QP for friction-ellipse + forward-Euler + jerk bound; Stage 2 post-projection feasibility filter for the nonconvex bicycle-model coupling + COA-parameterized brake-throttle simultaneity gate). Stage 1 + Stage 2 violation log feeds Granite Guardian 4.1 BYOC text audit. Granite 4.1 8B Instruct narrates. Source diagram in docs/architecture-diagram.mmd, Figure 1 in the paper draft.
 
@@ -21,7 +21,7 @@ NeurIPS Workshop paper draft at paper/apex-neurips-workshop-2026.md publication-
 
 Convergence 14 fixture catalogue shipped on /judges as a 14-tile grid (4 Stage 1, 4 Stage 2, 4 Stage 3 Guardian, 2 round-trip integrity). The load-bearing safety contract per decision-log D-A is now visually inspectable, not just verbally claimed.
 
-201 + commits across Day 1 + Day 2, atomic discipline.
+220+ commits across Day 1 + Day 2, atomic discipline.
 
 10 days to go.
 ```
