@@ -1,4 +1,4 @@
-# APEX: A Differentiable Physics-Projection Layer for Adaptive-Driver Motorsport Telemetry on Frozen Time-Series Foundation Models
+# APEX: A Two-Stage Projection-and-Audit Layer for Adaptive-Driver Motorsport Telemetry on Frozen Time-Series Foundation Models
 
 **Workshop submission target:** NeurIPS 2026 Time-Series Foundation Models Workshop.
 
@@ -16,7 +16,7 @@ Pretrained AI forecasting models can predict what a race car will do next, but t
 
 ## Abstract (250 words)
 
-Pretrained time-series foundation models (TSFMs) trained on general-domain corpora (weather, retail, energy) produce physically impossible forecasts when applied zero-shot to vehicle dynamics. Granite TimeSeries TTM r2.1 outperforms several larger TSFMs on common forecasting benchmarks, but its channel-independent architecture has no mechanism to enforce cross-channel physical relationships such as the friction ellipse, the bicycle model, or kinematic time-coupling. We name this the Kinetic Hallucination problem. Existing AI race-engineer tools either retrain a bespoke physics-informed network (Deep Dynamics) or apply a non-physics foundation model to an adjacent control domain (Chronos applied to car-following gap-distance). Neither path scales to adaptive-driver motorsport, where the driver's FIA Certificate of Adaptations may permit otherwise-impossible input patterns (simultaneous brake-and-throttle via electronic hand-controls) that an able-bodied physics model rejects as driver error. We present APEX, a three-layer architecture wrapping a frozen Granite TimeSeries TTM r2.1 forecaster with a two-stage projection-and-audit layer: a differentiable CvxpyLayer QP that enforces the convex constraints (friction ellipse, forward-Euler kinematic step, jerk bound) and a post-projection feasibility audit for the nonconvex constraints (bicycle-model coupling and the COA-parameterized brake-throttle simultaneity gate). The combined violation log is serialized to plain text and audited by Granite Guardian 4.1 with custom Bring-Your-Own-Classifier rules. We evaluate the pipeline on a synthetic adaptive-driver Britcar Trophy 2026 Donington Park GP fixture and on FastF1-derived Formula 1 holdout circuits. Our contributions, scoped to the bounded claims restated in §5.3, are (1) first application of a pretrained TSFM to adaptive motorsport telemetry, applied zero-shot via the two-stage projection-and-audit layer rather than via retraining; (2) the COA-parameterized simultaneity gate as the first public AI race-engineer workflow we found that reads FIA Certificate of Adaptations data as a binding regulatory input; (3) Granite Guardian text-audit as a load-bearing, unit-tested safety contract for foundation-model-derived recommendations.
+Pretrained time-series foundation models (TSFMs) trained on general-domain corpora (weather, retail, energy) produce physically impossible forecasts when applied zero-shot to vehicle dynamics. Granite TimeSeries TTM r2.1 outperforms several larger TSFMs on common forecasting benchmarks, but its channel-independent architecture has no mechanism to enforce cross-channel physical relationships such as the friction ellipse, the bicycle model, or kinematic time-coupling. We name this the Kinetic Hallucination problem. Existing AI race-engineer tools either retrain a bespoke physics-informed network (Deep Dynamics) or apply a non-physics foundation model to an adjacent control domain (Chronos applied to car-following gap-distance). Neither path scales to adaptive-driver motorsport, where the driver's FIA Certificate of Adaptations may permit otherwise-impossible input patterns (simultaneous brake-and-throttle via electronic hand-controls) that an able-bodied physics model rejects as driver error. We present APEX, a three-layer architecture wrapping a frozen Granite TimeSeries TTM r2.1 forecaster with a two-stage projection-and-audit layer: a differentiable CvxpyLayer QP that enforces the convex constraints (friction ellipse, forward-Euler kinematic step, jerk bound) and a post-projection feasibility audit for the nonconvex constraints (bicycle-model coupling and the COA-parameterized brake-throttle simultaneity gate). The combined violation log is serialized to plain text and audited by Granite Guardian 4.1 with custom Bring-Your-Own-Classifier rules. We specify an evaluation protocol on a synthetic adaptive-driver Britcar Trophy 2026 Donington Park GP fixture and on FastF1-derived Formula 1 holdout circuits, with cell values populated at camera-ready per §4. Our contributions, scoped to the bounded claims restated in §5.3, are (1) first application of a pretrained TSFM to adaptive motorsport telemetry, applied zero-shot via the two-stage projection-and-audit layer rather than via retraining; (2) the COA-parameterized simultaneity gate as the first public AI race-engineer workflow we found that reads FIA Certificate of Adaptations data as a binding regulatory input; (3) Granite Guardian text-audit as a load-bearing, unit-tested safety contract for foundation-model-derived recommendations.
 
 ---
 
@@ -62,9 +62,9 @@ Our contribution claims are scoped:
 
 ---
 
-## 3. Method: the three-layer PhysicsTTM pipeline
+## 3. Method: the three-layer PhysicsTTM pipeline with a two-stage projection-and-audit middle layer
 
-The pipeline runs three layers in series: a frozen TSFM forecaster, a differentiable physics-projection layer, and a text-audit gate. The forecaster + projection layer share a single forward pass on a (batch, 24, 9) tensor; the audit gate runs on the serialized violation log.
+The pipeline runs three layers in series: a frozen TSFM forecaster, a two-stage projection-and-audit layer, and a text-audit gate. The forecaster + projection layer share a single forward pass on a (batch, 24, 9) tensor; the audit gate runs on the serialized violation log carrying both the Stage 1 QP residuals and the Stage 2 feasibility-filter verdicts.
 
 ### 3.1 Layer 1: frozen Granite TimeSeries TTM r2.1 forecaster
 
@@ -82,7 +82,7 @@ We aggregate raw 50 Hz telemetry to 1-Hz mini-sector tensors of shape `(batch, 2
 
 The forecaster is loaded from `ibm-granite/granite-timeseries-ttm-r2` and never retrained. The output tensor matches the input shape `(batch, 24, 9)`.
 
-### 3.2 Layer 2: differentiable physics-projection layer
+### 3.2 Layer 2: two-stage projection-and-audit layer
 
 Layer 2 has two stages: a convex QP projection that handles the physical constraints expressible as convex inequalities, then a post-projection feasibility filter that audits the bicycle-model coupling and the COA-simultaneity gate (which are nonconvex and therefore cannot live inside the CvxpyLayer-wrapped QP).
 
@@ -136,11 +136,11 @@ The architectural novelty is the binary COA-simultaneity flag as the 9th channel
 
 ![Figure 1: APEX pipeline architecture. Driver inputs (telemetry CSV, FIA Certificate of Adaptations PDF, written debrief) feed a one-time onboarding stage (Granite-Docling + Granite Vision) and the 60-second post-race coaching loop (1-Hz aggregator -> Granite TimeSeries TTM r2.1 -> Stage 1 differentiable convex QP -> Stage 2 post-projection feasibility filter -> Granite Guardian text audit -> Granite 4.1 8B Instruct narrator). Outputs are a corner-by-corner coaching report, tuning recommendation with COA section citation, next-session envelope forecast, and Guardian safety stamp with reasoning trace.](figures/figure-1-architecture.png)
 
-The diagram is generated from `docs/architecture-diagram.mmd` in the source repository; an SVG copy is at `paper/figures/figure-1-architecture.svg` for vector reproduction. The full Pydantic + TypeScript contract specifications for every layer boundary live in the repository at `app/shared/types.ts` and the architecture spec at `docs/architecture-spec.md`. Layer numbering in this paper compresses the spec's eight-tool view: paper Layer 1 (§3.1) covers spec Layer 3 (Granite TimeSeries TTM r2.1); paper Layer 2 (§3.2 with its two stages) covers spec Layer 4 (projection QP + post-projection feasibility filter); paper Layer 3 (§3.3) covers spec Layer 5 (Granite Guardian audit). The remaining spec layers are infrastructure: Layer 1 hosts Granite-Docling 258M (document vision parser) + the Docling library (Python conversion layer) + Granite Vision 4.1 4B (timing-sheet OCR); Layer 2 is the 1-Hz mini-sector aggregator (APEX-authored Python); Layer 6 is Granite 4.1 8B Instruct (narrator); Layer 7 is Langflow (visible orchestration graph); Layer 8 is IBM Bob (build accelerator). The six infrastructure tools are adopted from the published IBM Granite stack and the IBM x Scuderia Ferrari case-study precedent.
+The diagram is generated from `docs/architecture-diagram.mmd` in the source repository; an SVG copy is at `paper/figures/figure-1-architecture.svg` for vector reproduction. The full Pydantic + TypeScript contract specifications for every layer boundary live in the repository at `app/shared/types.ts` and the architecture spec at `docs/architecture-spec.md`. Layer numbering in this paper compresses the spec's eight-tool view: paper Layer 1 (§3.1) covers spec Layer 3 (Granite TimeSeries TTM r2.1); paper Layer 2 (§3.2 with its two stages) covers spec Layer 4 (projection QP + post-projection feasibility filter); paper Layer 3 (§3.3) covers spec Layer 5 (Granite Guardian audit). The remaining spec layers are infrastructure: Layer 1 hosts Granite-Docling 258M (document vision parser) + the Docling library (Python conversion layer) + Granite Vision 4.1 4B (timing-sheet OCR); Layer 2 is the 1-Hz mini-sector aggregator (APEX-authored Python); Layer 6 is Granite 4.1 8B Instruct (narrator); Layer 7 is Langflow (visible orchestration graph); Layer 8 is IBM Bob (build accelerator). See §3.6 below for the stack provenance.
 
 ### 3.6 Pipeline integration with IBM Granite stack
 
-The full pipeline uses eight IBM Granite tools. Two of them (Granite TimeSeries TTM r2.1 as the forecaster and Granite Guardian 4.1 as the audit gate) host the APEX contributions of this paper through the surrounding two-stage projection-and-audit layer. The other six (Granite-Docling 258M for FIA COA PDF parsing, Granite Vision 4.1 4B for timing-sheet PDF parsing, the Docling library as the conversion layer behind the document parsers, Granite 4.1 8B Instruct as the race-engineer narrator, Langflow for visible orchestration graph export, and IBM Bob as the build accelerator) are infrastructure adopted from the published IBM Granite stack and the IBM x Scuderia Ferrari case-study precedent.
+The full pipeline uses eight IBM Granite tools. Two of them (Granite TimeSeries TTM r2.1 as the forecaster and Granite Guardian 4.1 as the audit gate) host the APEX contributions of this paper through the surrounding two-stage projection-and-audit layer. The other six (Granite-Docling 258M for FIA COA PDF parsing, Granite Vision 4.1 4B for timing-sheet PDF parsing, the Docling library as the conversion layer behind the document parsers, Granite 4.1 8B Instruct as the race-engineer narrator, Langflow for visible orchestration graph export, and IBM Bob as the build accelerator) are infrastructure inspired by IBM's publicly documented Ferrari watsonx + Granite case study, redeployed here on a different safety-critical sensor-data domain.
 
 ---
 
@@ -150,37 +150,38 @@ The §4 prose below specifies the evaluation protocol. The Table 1 / Table 2 / T
 
 **Datasets.**
 
-- *Sarah Reynolds Britcar Trophy 2026 Donington Park GP fixture (synthetic).* A 60-row 50-Hz telemetry CSV designed to match a plausible adaptive-driver lap-17-of-19 qualifying session for a left-leg-amputee veteran using electronic hand-controls. Paired with a 9-domain COA JSON conforming to the FIA Appendix L Article 18.3 schema. The fixture is synthetic by design (no real adaptive-driver identity); the lap shape, debrief language, and COA structure are derived from publicly documented Britcar Trophy regulations.
+- *Sarah Reynolds Britcar Trophy 2026 Donington Park GP fixture (synthetic).* A 60-row (1.2-second) 50-Hz telemetry slice extracted from lap 17 of 19 of a plausible adaptive-driver qualifying session for a left-leg-amputee veteran using electronic hand-controls. The slice covers the brake-release-to-throttle-on micro-window at one corner entry, deliberately sized to exercise the COA-simultaneity gate at the smallest fixture footprint we could ship in the repository (full-lap telemetry awaits a real adaptive-driver collaborator per §5.2). Paired with a 9-domain COA JSON conforming to the FIA Appendix L Article 18.3 schema. The fixture is synthetic by design (no real adaptive-driver identity); the lap shape, debrief language, and COA structure are derived from publicly documented Britcar Trophy regulations.
 - *FastF1 holdouts.* Five Formula 1 circuits drawn from the FastF1 public dataset. Selection criteria: circuits with at least three completed sessions in the 2024 season, mixed-pace (high-speed + slow-corner) layout, dry weather. Specific circuit list reported in §4.1 at camera-ready.
 
 **Table 1: Dataset summary.** Skeleton; cell values populated at camera-ready.
 
 | Dataset | Circuits / sessions | Hz | Channels | COA channel? | Use |
 |---------|---------------------|-----|----------|--------------|-----|
-| Sarah Reynolds Britcar GP synthetic | 1 / 1 (qualifying lap 17 of 19) | 50 | 8 + 1 (COA flag) | yes | COA-simultaneity-gate ablation (Table 3b) |
-| FastF1 holdouts | 5 / TBD (>=3 per circuit) | 50 -> 1 (aggregated) | 8 | no | Lap-time MAE + physics-violation rate (Table 2) |
+| Sarah Reynolds Britcar GP synthetic slice | 60 rows (1.2 seconds) from qualifying lap 17 of 19 | 50 | 8 + 1 (COA flag) | yes | COA-simultaneity-gate ablation (Table 3b) |
+| FastF1 holdouts | 5 / -- (>=3 per circuit) | 50 -> 1 (aggregated) | 8 | no | Lap-time MAE + physics-violation rate (Table 2) |
 
 **Baselines.**
 
 - TTM zero-shot, no physics projection (the un-corrected Kinetic Hallucination baseline).
 - Seasonal-naive (last-lap repeat) at 1-Hz mini-sector resolution.
+- TTM + Stage 1 QP only (Stage 2 audit disabled; isolates the differentiable-convex contribution from the nonconvex audit contribution).
 - Deep Dynamics retrained on the same FastF1 holdouts, if a public PINN checkpoint is available; otherwise dropped from Table 2.
 
 **Table 2: Forecaster comparison on FastF1 holdouts.** Skeleton; cell values populated at camera-ready. Lower is better for MAE + violation-rate columns.
 
-| Method | Lap-time MAE (s) | Physics-violation rate | Inference latency (ms / step) | Retraining cost (GPU-hours) |
-|--------|------------------|------------------------|-------------------------------|------------------------------|
-| Seasonal-naive (last-lap repeat) | -- | -- | -- | 0 |
-| TTM zero-shot (no projection) | -- | -- | -- | 0 |
-| TTM + Stage-1 QP only | -- | -- | -- | 0 |
-| TTM + Stage-1 QP + Stage-2 feasibility filter (APEX) | -- | -- | -- | 0 |
-| Deep Dynamics retrained (if checkpoint available) | -- | -- | -- | TBD |
+| Method | Lap-time MAE (s) | Physics-violation rate (fraction of steps) | Guardian approve / flag / reject (%) | Inference latency (ms / step) | Retraining cost (GPU-hours) |
+|--------|------------------|--------------------------------------------|--------------------------------------|-------------------------------|------------------------------|
+| Seasonal-naive (last-lap repeat) | -- | -- | -- | -- | 0 |
+| TTM zero-shot (no projection) | -- | -- | -- | -- | 0 |
+| TTM + Stage 1 QP only | -- | -- | -- | -- | 0 |
+| TTM + Stage 1 QP + Stage 2 feasibility filter (APEX) | -- | -- | -- | -- | 0 |
+| Deep Dynamics retrained (if checkpoint available) | -- | -- | -- | -- | -- |
 
 **Metrics.**
 
-- Per-mini-sector lap-time MAE (root mean square error on the lap-time scalar per mini-sector).
-- Physics-violation rate (count of forecast steps where the un-projected output violates the friction ellipse + bicycle model + forward-Euler step; reported as a fraction of total steps).
-- Guardian verdict distribution (approve / flag / reject ratio on canned + holdout sets).
+- Per-mini-sector lap-time MAE (mean absolute error on the lap-time scalar per mini-sector). Tables 2 + 3a + 3b carry this metric.
+- Physics-violation rate, measured separately at three points in the pipeline so Tables 2 + 3 carry differential signal: (a) raw TTM output (the un-corrected Kinetic Hallucination baseline), (b) Stage 1 QP output (residual convex-feasibility violations from numerical tolerance only), (c) Stage 2 audit failures (bicycle-coupling or COA-gate verdicts that fire reject). All three reported as fraction of total forecast steps.
+- Guardian verdict distribution (approve / flag / reject ratio on canned + holdout sets); reported as the Guardian column in Tables 2 + 3a + 3b.
 
 **Convergence 14 validation.** Every kinematic-violation class in the Convergence-14 enumeration has a unit-test fixture firing the violation + asserting the serializer output + Guardian verdict match the expected verdict.
 
@@ -194,18 +195,18 @@ The §4 prose below specifies the evaluation protocol. The Table 1 / Table 2 / T
 
 *Table 3a: physics projection on / off.* Lap-time MAE + physics-violation rate on the FastF1 holdout set.
 
-| Configuration | Lap-time MAE (s) | Physics-violation rate |
-|---------------|------------------|------------------------|
-| TTM zero-shot, no Stage 1, no Stage 2 | -- | -- |
+| Configuration | Lap-time MAE (s) | Physics-violation rate (fraction of steps) |
+|---------------|------------------|--------------------------------------------|
+| TTM zero-shot (no projection) | -- | -- |
 | TTM + Stage 1 QP only | -- | -- |
 | TTM + Stage 1 QP + Stage 2 feasibility filter | -- | -- |
 
 *Table 3b: COA simultaneity gate on / off (Sarah Reynolds fixture only).* Effect-size upper-bounded by synthetic-fixture design assumptions per §5.2.
 
-| Configuration | Brake-throttle-simultaneity rows flagged | Tuning recommendation rendered? | Forecast lap-time MAE (s) |
-|---------------|-------------------------------------------|----------------------------------|----------------------------|
-| Stage 2 with COA gate ON (APEX default) | 0 (correctly permitted) | yes | -- |
-| Stage 2 with COA gate OFF (able-bodied physics) | -- (false positives) | no (input rejected) | -- |
+| Configuration | Brake-throttle-simultaneity rows flagged (count out of 60-row fixture) | Tuning recommendation rendered? | Forecast lap-time MAE (s) |
+|---------------|--------------------------------------------------------------------------|----------------------------------|----------------------------|
+| Stage 2 with COA gate ON (APEX default) | -- | -- | -- |
+| Stage 2 with COA gate OFF (able-bodied physics) | -- | -- | -- |
 
 *Table 3c: Guardian audit on / off.* Wall-clock latency of the Convergence-14 audit only; correctness is established by unit-test suite, not by this ablation.
 
@@ -337,7 +338,7 @@ Unfunded student work submitted to the IBM SkillsBuild AI Builders Challenge May
   title = {Granite 4.1 8B Instruct},
   author = {{IBM Research}},
   year = {2026},
-  howpublished = {ibm-granite/granite-4-8b-instruct on Hugging Face; specific Hugging Face identifier verified at camera-ready against the latest published release}
+  howpublished = {ibm-granite/granite-4.1-8b on Hugging Face (verified 2026-05-21 via the published ibm-granite organisation page)}
 }
 
 @misc{ibmgranitedocling2026,
