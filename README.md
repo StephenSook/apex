@@ -1,5 +1,7 @@
 # APEX
 
+![APEX banner: editorial magazine cover with Fraunces italic wordmark on warm cream paper, racing-line apex marker, and IBM Granite attribution](deliverables/bemyapp-banner-1920x600.png)
+
 > **AI race engineer for adaptive racers.**
 > The same IBM Granite stack that powers Scuderia Ferrari's post-race fan app, pointed at the drivers who need a race engineer most.
 
@@ -244,16 +246,16 @@ npm run dev   # http://localhost:3000
 
 | Phase | Days | State |
 |-------|------|-------|
-| 0 - Bootstrap | Day 1 (2026-05-20) | 🟡 IN PROGRESS |
-| 1 - Document parsing (Docling + Vision) | Day 2 | ⬜ pending |
-| 2 - Physics layer (NumPy V1 → CvxpyLayer V2 + Guardian) | Days 3-5 | ⬜ pending |
-| 3 - Narrator (Granite 4.1 8B Instruct + COA flag) | Day 6 | ⬜ pending |
-| 4 - Orchestration + polish (Langflow + caching + June bridge) | Days 7-8 | ⬜ pending |
-| 5 - Demo + deploy (HF + Colab + sim-rig + video) | Days 9-10 | ⬜ pending |
-| 6 - Submission package (judges page + methodology + NeurIPS draft) | Day 11 | ⬜ pending |
-| 7 - Submit | Day 12 (2026-05-31) | ⬜ pending |
+| 0 - Bootstrap | Day 1 (2026-05-20) | ✅ STEPHEN done. Vinh-side G1 TTM smoke pending (org-invite expected Tuesday 2026-05-27 per Discord). |
+| 1 - Document parsing (Docling + Vision) | Day 2 | 🟡 Vinh-side pending. Stephen-side: Dropzone UI ✅, /analyze route ✅, pre-mortem.md live (48+ entries), README structure audit ✅. |
+| 2 - Physics layer (NumPy V1 → CvxpyLayer V2 + Guardian) | Days 3-5 | 🟡 Vinh-side pending. Stephen-side: CoachingReport + TuningCard + GuardianAudit frontend components ✅. Gate G4 spike bumped to Day-2 parallel. |
+| 3 - Narrator (Granite 4.1 8B Instruct + COA flag) | Day 6 | 🟡 Sarah Reynolds persona narrative ✅ Day 1 EOD. Backend integration Vinh-side. |
+| 4 - Orchestration + polish (Langflow + caching + June bridge) | Days 7-8 | 🟡 3-min pitch script ✅, June Challenge bridge doc ✅, Langflow + caching Vinh-side. |
+| 5 - Demo + deploy (HF + Colab + sim-rig + video) | Days 9-10 | 🟡 Sim-rig frontend scaffold ✅, Colab notebook skeleton ✅, demo-video storyboard ✅, Vercel config + runbook ✅. HF Space + sim-rig WebSocket backend + production video take Day 9-10. |
+| 6 - Submission package (judges page + methodology + NeurIPS draft) | Day 11 | 🟡 /judges + /status routes ✅ Day 1 EOD pull-forward. Methodology trace + architecture-spec + pre-mortem + NeurIPS Workshop paper draft ✅ (Day-11 polish remains). BeMyApp 1920x600 banner ✅. |
+| 7 - Submit | Day 12 (2026-05-31) | ⬜ pending. BeMyApp form payload draft ready at NeuroPit-depth. |
 
-Full status table: `PLAN.md`. Daily handoff template: `STATUS_TEMPLATE.md`.
+Full status table: `PLAN.md` (186+ atomic commits pushed across Day 1 + Day 2). Daily handoff template: `STATUS_TEMPLATE.md`.
 
 Calibration ceiling (NotebookLM Phase 5 verification pass): **90% top-3 / 96% Best Use of Technology / 88% Most Innovative.**
 
