@@ -40,8 +40,8 @@
 
 | Target archetype | Method | Why escalate | Reply | Attribution surface |
 |------------------|--------|--------------|-------|---------------------|
-| Adaptive-driver UK championship competitor (driver A) | LinkedIn DM with 60-second video pitch | Real adaptive driver endorsement; UK charity response window is 7-14 days so Day 7 first escalation was too late | PENDING | TBD on consent |
-| Adaptive-driver UK championship competitor (driver B) | LinkedIn DM with 60-second video pitch | Same | PENDING | TBD on consent |
+| Adaptive-driver UK championship competitor (driver A) | LinkedIn DM with 60-second video pitch | Real adaptive driver endorsement; UK charity response window is 7-14 days so Day 7 first escalation was too late | ✅ SENT 2026-05-22 18:00 ET; awaiting reply through Day 8 EOD (2026-05-27) | TBD on consent (per-surface ask: deck vs README vs video, each separately) |
+| Adaptive-driver UK championship competitor (driver B) | LinkedIn DM with 60-second video pitch | Same | ✅ SENT 2026-05-22 18:00 ET; awaiting reply through Day 8 EOD (2026-05-27) | TBD on consent (per-surface ask: deck vs README vs video, each separately) |
 
 ## Phase 5 - Day 5 follow-ups (scheduled 2026-05-24)
 
