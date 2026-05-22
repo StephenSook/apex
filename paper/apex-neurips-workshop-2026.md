@@ -270,7 +270,7 @@ No human-subject evaluation is reported in this work. Any future real-driver tel
 
 The Guardian audit gate is explicitly a safety contract for the pipeline's coaching recommendations, not a general statement about foundation-model safety. We do not claim the pattern is sufficient for higher-stakes safety surfaces (medical advice, financial decisions, judicial outcomes) without domain-specific re-validation.
 
-The IBM Granite stack used as infrastructure is itself open-source (Apache 2.0). The IBM x Scuderia Ferrari case study cited in §3.6 is publicly documented; we adopt the same stack and architectural pattern, redirected toward audiences not served by the F1 deployment.
+The IBM Granite stack used as infrastructure is itself open-source (Apache 2.0). The IBM × Scuderia Ferrari case study cited in §3.6 is publicly documented; we adopt the same stack and architectural pattern, redirected toward audiences not served by the F1 deployment.
 
 ## 9. Acknowledgments
 
@@ -356,7 +356,7 @@ Unfunded student work submitted to the IBM SkillsBuild AI Builders Challenge May
 }
 
 @misc{ibmferrari2025,
-  title = {IBM x Scuderia Ferrari HP: Reimagined Mobile App and Granite Stack on Safety-Critical Sensor Data},
+  title = {IBM × Scuderia Ferrari HP: Reimagined Mobile App and Granite Stack on Safety-Critical Sensor Data},
   author = {{IBM Newsroom}},
   year = {2025},
   howpublished = {https://newsroom.ibm.com/2025-05-01-ibm-and-scuderia-ferrari-hp-debut-reimagined-mobile-app-to-supercharge-global-formula-1-fan-experience}
