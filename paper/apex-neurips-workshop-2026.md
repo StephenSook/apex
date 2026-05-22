@@ -104,9 +104,9 @@ This is a linear equality (treating $\text{speed}_t$ as exogenous from the previ
 
 *Jerk bound.* Discrete-time jerk per axis is bounded:
 $$
-|a_{\cdot, t} - a_{\cdot, t-1}| \leq j_{\max} \Delta t, \quad j_{\max} = 30 \text{ m/s}^3
+|a_{\cdot, t} - a_{\cdot, t-1}| \leq j_{\max} \Delta t, \quad j_{\max} = 8 \text{ m/s}^3 \approx 0.815 \text{ g/s}
 $$
-This is a pair of linear inequalities, therefore convex.
+This is a pair of linear inequalities, therefore convex. Note that production vehicle-dynamics deployments (per Rajamani's standard treatment) activate rate constraints at sampling rates of 10 Hz or above; we apply this constraint at the 1 Hz mini-sector aggregation rate of TTM r2.1 inputs, with the tighter $j_{\max} = 8 \text{ m/s}^3$ value chosen to keep the constraint load-bearing at the spec's coarser sampling rate. Section 5.4 discusses this sampling-rate caveat and the V2 production trajectory at 10 Hz on the raw 50 Hz upstream signal.
 
 The QP is wrapped by `cvxpylayers.torch.CvxpyLayer` (Agrawal et al., 2019) and is differentiable end-to-end through the projection. CvxpyLayer returns the projected $\mathbf{x}_t$ and a violation log enumerating, for each step, which convex constraint hit its bound.
 
