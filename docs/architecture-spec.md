@@ -21,14 +21,21 @@ debrief text    │  │                                  │
                 ├─ │  Granite TimeSeries TTM r2.1   ──┤
                 │  │  (frozen, channel-independent)    │   coaching report
                 │  │                                  │
-                │  │  Differentiable physics projection│   tuning recommendation
-                │  │  (CvxpyLayers QP)              ──┤   + COA section citation
+                │  │  Stage 1 - Differentiable convex  │   tuning recommendation
+                │  │  QP (CvxpyLayer):              ──┤   + COA section citation
+                │  │  friction ellipse + forward-Euler │
+                │  │  + jerk bound                     │
                 │  │                                  │
-                │  │  Granite Guardian 4.1 BYOC     ──┤   next-session envelope
-                │  │  (text audit + reasoning trace)   │   forecast chart
+                │  │  Stage 2 - Post-projection        │   next-session envelope
+                │  │  feasibility filter:           ──┤   forecast chart
+                │  │  bicycle-model + COA gate         │
                 │  │                                  │
-                │  │  Granite 4.1 8B Instruct       ──┤   Guardian safety stamp
-                │  │  (race-engineer narrator)         │   + reasoning trace
+                │  │  Granite Guardian 4.1 BYOC     ──┤   Guardian safety stamp
+                │  │  (text audit on combined          │   + reasoning trace
+                │  │  QP + feasibility log)            │
+                │  │                                  │
+                │  │  Granite 4.1 8B Instruct       ──┤   coaching report prose
+                │  │  (race-engineer narrator)         │   + COA + FIA Article cites
                 │  │                                  │
                 │  └─ Langflow (visible orchestration)─┘
                 │
@@ -112,7 +119,7 @@ Equivalently as a second-order cone constraint:
 norm([a_lat[t] / (mu_y * g), a_long[t] / (mu_x * g)], 2) <= 1
 ```
 
-where `mu_v` is a constant per-circuit friction coefficient (V1), `g = 9.81 m/s^2`, `a_lat` and `a_long` are the projected lateral and longitudinal accelerations in g. V2 (Day 5+) replaces `mu_v` with a circuit-conditional lookup `mu_v(circuit, weather)` and V3 (post-NeurIPS) replaces the constant-mu ellipse with a Pacejka load-dependent slip model. Convex.
+where `mu_v` is a constant per-circuit friction coefficient (V1), `g = 9.81 m/s^2`, and `a_lat` + `a_long` are the projected lateral and longitudinal accelerations in m/s^2 (the canonical SI convention used uniformly across `(batch, 24, 9)` channels 5 + 6 once the storage convention `lat_g + long_g` is multiplied through by `g` at the QP input boundary; the friction ellipse then bounds the m/s^2 magnitudes by `mu_v * g`). V2 (Day 5+) replaces `mu_v` with a circuit-conditional lookup `mu_v(circuit, weather)` and V3 (post-NeurIPS) replaces the constant-mu ellipse with a Pacejka load-dependent slip model. Convex.
 
 **Forward-Euler kinematic step (current-step coupling):**
 
@@ -201,7 +208,7 @@ Each rule fires on a `PhysicsViolation` matching `trigger.violation_type` + `tri
 ### 6. Granite 4.1 8B Instruct race-engineer narrator (`app/backend/apex/instruct/narrator.py`)
 
 Reads:
-- The physics-projected forecast envelope (Layer 2 output, after Layer 3 audit)
+- The physics-projected forecast envelope (Stage 1 `corrected_tensor` from Layer 4, with the Stage 2 feasibility verdict carried in the combined `violation_log`; Granite Guardian audit decision from Layer 5 also attached)
 - The driver's COA structured JSON (Layer 1a)
 - The timing-sheet CSV (Layer 1b)
 - The driver's debrief text
@@ -327,4 +334,4 @@ Sign conventions are binding across frontend TypeScript + backend Pydantic. Viol
 - `~/.claude/projects/-Users-stephensookra-Desktop-IBM-May/memory/project_apex_qa_killshots.md` for Q&A defense pack
 - `research/pit-wall-physics-constrained-foundation-models.pdf` for the Phase 5 NotebookLM-verified mitigation rationale
 
-_Last updated: 2026-05-21 evening by Stephen (wave-19 expansion: Layer 3 TTM tensor shape + 9-channel enumeration, Layer 4 physics-projection full math equations + constraint derivations + jerk-max + wheelbase constants + V1/V2/V3 ladder, Layer 5 BYOC rule schema concrete example, COA parsed JSON schema mirror, telemetry CSV channel spec with units + sign conventions)._
+_Last updated: 2026-05-21 night-late by Stephen (wave-25 closure of wave-24 BLOCKER B2 + wave-25 BLOCKER B-W25-5 + B-W25-6 + B-W25-12: Layer 4 reformulated to two-stage Stage 1 convex QP + Stage 2 post-projection feasibility filter to honor CvxpyLayer's convexity-only contract for the nonconvex bicycle-model coupling and COA-parameterized brake-throttle simultaneity gate; system-overview ASCII art redrawn with Stage 1 + Stage 2 boxes; Layer 6 narrator input rewritten to consume the Stage 1 corrected_tensor + Stage 2 feasibility verdict + Layer 5 Guardian audit decision uniformly; friction-ellipse SI-unit convention (m/s^2 with mu_v * g bound) made explicit to remove the previous g-vs-m/s^2 ambiguity)._
