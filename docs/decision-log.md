@@ -115,7 +115,7 @@ Every locked decision with rationale + date + scope. Newest first.
 
 ## 2026-05-22 D-010: Three-track forecasting ensemble (TTM r2.1 channel-mix + FlowState + Chronos-2)
 
-**Decision.** Layer 3 forecasting is now a three-track ensemble. Track 1 = Granite TimeSeries TTM r2.1 running channel-mixing decoder fine-tune on polyphase 1 Hz phase-time streams (5% of target data, ~minutes on RTX 4060). Track 2 = Granite FlowState (9.1M params, sampling-rate-invariant continuous-time state-space, native 50 Hz). Track 3 = Amazon Chronos-2 (21 quantiles, zero-shot probabilistic baseline, maps uncertainty corridor). The (B, 30, 14) tensor contract from Sync Point 1 is the output of the fused ensemble, not just TTM.
+**Decision.** Layer 3 forecasting is now a three-track ensemble. Track 1 = Granite TimeSeries TTM r2.1 running channel-mixing decoder fine-tune on polyphase 1 Hz phase-time streams (5% of target data, ~minutes on RTX 4060). Track 2 = Granite FlowState (9.1M params [VERIFIED: IBM Research FlowState listing], sampling-rate-invariant continuous-time state-space, native 50 Hz). Track 3 = Amazon Chronos-2 (21 quantiles [PARTLY VERIFIED: synthesis Q2 + source 05 specify 21; the Chronos-2 HF model card exposes user-selected quantile counts so 21 is a benchmark-chosen default for APEX], zero-shot probabilistic baseline, maps uncertainty corridor). The (B, 30, 14) tensor contract from Sync Point 1 is the output of the fused ensemble, not just TTM.
 
 **Rationale.** D-A original "bare zero-shot TTM" is not a defensible NeurIPS story because (a) channel-independent TTM cannot natively learn cross-channel physical relationships, (b) zero-shot point forecasts have no uncertainty band for the next-session-envelope claim, (c) a single forecaster ties the whole story to a single model's failure mode. Channel-mixing fine-tune + FlowState rate-invariance + Chronos-2 probabilistic baseline together address all three. Source 05 + source 09 Q2.
 
@@ -192,10 +192,10 @@ All execute inside the SCP inner iterate. EXTENDED_PHYSICS_FIXTURES catalogue (S
 
 **Decision.** Granite stack expanded from 8 tools to 12. New additions per source 05:
 
-9. **Granite Embedding R2** (149M encoder + 47M query, hybrid dense/sparse) drives Layer 5 RAG over vehicle setup guides + racing theory + adaptive-equipment specs.
-10. **IBM TSPulse** (1M params, time-frequency analyzer) drives Layer 2 anomaly detection over polyphase phase streams.
-11. **Granite FlowState** (9.1M, sampling-rate-invariant SSM) is Track 2 of D-010 three-track ensemble.
-12. **Granite 4.0 Nano 350M** runs in-browser via WebGPU + Transformers.js for the offline paddock-summary path per D-021.
+9. **Granite Embedding R2** (149M encoder + 47M query [VERIFIED: IBM Granite embedding GitHub model list, english-r2 + small-english-r2], hybrid dense/sparse) drives Layer 5 RAG over vehicle setup guides + racing theory + adaptive-equipment specs.
+10. **IBM TSPulse** (1M params [VERIFIED: IBM Research TSPulse article], time-frequency analyzer) drives Layer 2 anomaly detection over polyphase phase streams.
+11. **Granite FlowState** (9.1M [VERIFIED: IBM Research FlowState listing], sampling-rate-invariant SSM) is Track 2 of D-010 three-track ensemble.
+12. **Granite 4.0 Nano 350M** [VERIFIED: Hugging Face ONNX Granite 4.0 350M model card + IBM Granite docs] runs in-browser via WebGPU + Transformers.js for the offline paddock-summary path per D-021.
 
 Original 8 (Granite-Docling 258M + Granite Vision 4.1 4B + Granite TimeSeries TTM r2.1 + Granite 4.1 8B Instruct + Granite Guardian 4.1 + Langflow + Docling library + IBM Bob) all retained; Langflow demoted from runtime to visual demo facade per D-017.
 
@@ -223,7 +223,7 @@ Original 8 (Granite-Docling 258M + Granite Vision 4.1 4B + Granite TimeSeries TT
 - **Pedagogy-Critic:** small Granite Instruct fine-tune that reads the draft + COA structure and challenges the recommendation's coachability.
 - **Guardian-Safety:** Granite Guardian 4.1 BYOC safety pass.
 
-If any critic flags, IBM Mellea runs Instruct-Validate-Repair (IVR) with `loop_budget = 3` to repair the generated text until it passes the panel. Verified CoachingReport then proceeds to Layer 8 final Guardian audit per D-A.
+If any critic flags, IBM Mellea runs Instruct-Validate-Repair (IVR) with `loop_budget = 3` [UNVERIFIED: APEX-chosen value, not Mellea-default; Mellea docs show varying loop_budget across use cases. 3 is the APEX heuristic; tunes Day-7 if convergence under-shoots] to repair the generated text until it passes the panel. Verified CoachingReport then proceeds to Layer 8 final Guardian audit per D-A.
 
 **Rationale.** Source 05 + 09 Q2 lock the Agent-as-Judge pattern as "shouldn't-be-possible" move 5. Source 09 Q5 open question 1 also resolved: gradients do NOT flow through Mellea IVR (D-020 two-regime seam); the critic loop is the discrete-text regime optimized by GEPA reflective evolution, not gradient descent.
 
@@ -238,7 +238,7 @@ If any critic flags, IBM Mellea runs Instruct-Validate-Repair (IVR) with `loop_b
 1. **WebGPU Granite Nano 350M** (Layer 0): zero-latency offline paddock summaries in the driver's browser via Transformers.js (per D-021 scope cut).
 2. **Activated LoRA (aLoRA)** (Layer 6): hot-swap "race-engineer intrinsic" adapter into vLLM memory without KV-cache recomputation.
 3. **GEPA reflective prompt optimization** (Layer 5): DSPy-driven offline prompt evolution against APEX-Bench faithfulness metric.
-4. **EAGLE-3 speculative decoding** (Layer 6 inference plane): 2-6x wall-clock speedup on vLLM, hits sub-15s generation latency target.
+4. **EAGLE-3 speculative decoding** (Layer 6 inference plane): 2-6x wall-clock speedup on vLLM [PARTLY VERIFIED: EAGLE-3 paper arXiv:2503.01840 reports 2.5-3.7x typical on most evaluated models, up to ~5.9x on Llama-3.3-70B; "2-6x" is a benchmark-dependent envelope per synthesis Q2 secondary summary], hits sub-15s generation latency target.
 5. **Agent-as-Judge tri-agent critic loop** (Layer 7): per D-018.
 
 **Rationale.** Source 05 source 09 Q2. Each is a genuine 2025-2026 frontier capability that no existing AI race-engineer ships. Lands the "two students could not have built this in 12 days" perception that turns judges from skeptical to evangelical.
