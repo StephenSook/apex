@@ -76,9 +76,11 @@ Every locked decision with rationale + date + scope. Newest first.
 
 ## 2026-05-19 D-A: PhysicsTTM three-layer architecture (locked pre-rename, carried into APEX)
 
-**Decision.** Three-layer architecture: frozen Granite TimeSeries TTM forecaster → differentiable physics-projection layer (CvxpyLayer QP with friction ellipse, bicycle model, COA-flagged simultaneity) → Granite Guardian BYOC text audit on serialized violation log.
+**Decision.** Three-layer architecture: frozen Granite TimeSeries TTM forecaster → two-stage projection-and-audit layer (Stage 1 differentiable CvxpyLayer QP enforcing the convex constraints friction ellipse + forward-Euler kinematic step + jerk bound; Stage 2 post-projection feasibility filter auditing the nonconvex constraints bicycle-model coupling + COA-parameterized brake-throttle simultaneity gate) → Granite Guardian BYOC text audit on combined serialized violation log.
 
 **Rationale.** Phase 5 NotebookLM gap analysis surfaced "Kinetic Hallucination": TTM trained on energy grids and weather can forecast physically impossible motorsport telemetry. The three-layer architecture closes this objection. Convergence 14 (serialization integrity) is the load-bearing safety requirement.
+
+**Refinement (2026-05-21 night-late, wave-25 closure of wave-24 BLOCKER B1+B2).** D-A originally framed the middle layer as a single "differentiable physics-projection layer (CvxpyLayer QP with friction ellipse, bicycle model, COA-flagged simultaneity)." Wave-24 cold-review caught that bicycle-model coupling and the COA-parameterized brake-throttle simultaneity gate are nonconvex constraints that cannot live inside a CvxpyLayer (CvxpyLayer requires Disciplined Convex Programming). The middle layer is therefore split into Stage 1 (the convex QP that CvxpyLayer can host: friction ellipse + forward-Euler + jerk bound) and Stage 2 (a post-projection feasibility filter that audits the bicycle and COA constraints). The architectural intent is unchanged; the technical contract is now honest about CvxpyLayer's convexity-only support. D-A is amended, not superseded.
 
 **Affected.** Backend architecture, deck slide 6, Q&A Card 2.
 
