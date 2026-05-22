@@ -225,19 +225,18 @@ export default function JudgesPage() {
               alt="APEX pipeline architecture: driver inputs (telemetry CSV, FIA Certificate of Adaptations PDF, written debrief) feed a one-time onboarding stage (Granite-Docling + Granite Vision) and the 60-second post-race coaching loop (1-Hz aggregator into Granite TimeSeries TTM r2.1 into Stage 1 differentiable convex QP into Stage 2 post-projection feasibility filter into Granite Guardian text audit into Granite 4.1 8B Instruct narrator). Outputs are a corner-by-corner coaching report, tuning recommendation with COA section citation, next-session envelope forecast, and Guardian safety stamp with reasoning trace."
               width={1600}
               height={1200}
-              priority={false}
               className="h-auto w-full max-w-5xl"
             />
             <figcaption className="font-mono text-xs text-muted">
               Figure 1 (vector) · also available at{" "}
-              <a
+              <Link
                 href="/figures/figure-1-architecture.png"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-racing-green underline decoration-dotted underline-offset-2"
               >
                 figure-1-architecture.png
-              </a>{" "}
+              </Link>{" "}
               for raster reuse.
             </figcaption>
           </figure>

@@ -34,7 +34,7 @@ function verdictChipClass(verdict: ConvergenceExpectedVerdict): string {
   if (verdict === "flag") {
     return "border-amber bg-paper text-amber";
   }
-  return "border-clay bg-paper text-clay";
+  return "border-accent bg-paper text-accent";
 }
 
 function stageBarClass(stage: ConvergenceDetectionStage): string {
@@ -44,7 +44,7 @@ function stageBarClass(stage: ConvergenceDetectionStage): string {
   if (stage === "stage_2_feasibility") {
     return "bg-amber";
   }
-  return "bg-clay";
+  return "bg-accent";
 }
 
 function coaCellLabel(value: boolean | null): string {
@@ -114,11 +114,14 @@ function ConvergenceFixtureTile({ fixture }: ConvergenceFixtureTileProps) {
         </div>
       </dl>
       <details className="group">
-        <summary className="cursor-pointer font-mono text-[11px] uppercase tracking-wider text-racing-green group-open:text-clay">
+        <summary className="cursor-pointer font-mono text-[11px] uppercase tracking-wider text-racing-green group-open:text-accent">
           Guardian verdict reason
         </summary>
         <p className="mt-2 text-xs leading-relaxed text-ink-soft">{fixture.expected_guardian_reason}</p>
-        <pre className="mt-2 overflow-x-auto rounded-sm bg-ink p-3 font-mono text-[11px] leading-relaxed text-paper">
+        <pre
+          aria-label="Serialized violation log excerpt"
+          className="mt-2 overflow-x-auto rounded-sm bg-ink p-3 font-mono text-[11px] leading-relaxed text-paper"
+        >
           {fixture.sample_violation_log_excerpt}
         </pre>
       </details>
