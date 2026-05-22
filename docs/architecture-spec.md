@@ -336,4 +336,158 @@ Sign conventions are binding across frontend TypeScript + backend Pydantic. Viol
 - `~/.claude/projects/-Users-stephensookra-Desktop-IBM-May/memory/project_apex_qa_killshots.md` for Q&A defense pack
 - `research/pit-wall-physics-constrained-foundation-models.pdf` for the Phase 5 NotebookLM-verified mitigation rationale
 
-_Last updated: 2026-05-21 night-late by Stephen (wave-25 closure of wave-24 BLOCKER B2 + wave-25 BLOCKER B-W25-5 + B-W25-6 + B-W25-12: Layer 4 reformulated to two-stage Stage 1 convex QP + Stage 2 post-projection feasibility filter to honor CvxpyLayer's convexity-only contract for the nonconvex bicycle-model coupling and COA-parameterized brake-throttle simultaneity gate; system-overview ASCII art redrawn with Stage 1 + Stage 2 boxes; Layer 6 narrator input rewritten to consume the Stage 1 corrected_tensor + Stage 2 feasibility verdict + Layer 5 Guardian audit decision uniformly; friction-ellipse SI-unit convention (m/s^2 with mu_v * g bound) made explicit to remove the previous g-vs-m/s^2 ambiguity)._
+---
+
+## Appendix W30: Wave-30 Maximal Architecture Lock (2026-05-22)
+
+Per Stephen's galaxy ambition directive + 9-source multi-model deep-research synthesis at `research/wave-30/`. Decision-log D-009 through D-027 are the granular locks. This appendix overlays the wave-30 maximal architecture on top of the layered spec above, expanding Layer 2 + Layer 4 + Layer 5 + adding Layer 0 + Layer 7 + Layer 8 conditioning. V2 / V3 / post-hackathon labels are RETIRED. Everything below is in-scope for 2026-05-31.
+
+### Layer 0 - Edge / Client Plane (NEW per D-019 + D-021)
+
+**Component.** Next.js 16 + React 19 + TypeScript on Vercel. WebGPU Granite 4.0 Nano 350M via Transformers.js for offline browser inference.
+
+**Scope (D-021 scope cut).** Browser runs ONLY a 30-line Newton friction-ellipse projection (`||(a_lat, a_long)||_2 <= mu_v * g`, sub-microsecond per step). NOT the 8-tier SCP solver. The Nano model produces a draft post-race summary; the server overwrites the draft on reconnect (server-authoritative). The edge model is only allowed to claim things the friction-ellipse projector can independently verify. No mechanical recommendations (e.g. specific brake-travel deltas) allowed offline.
+
+**Data contract.** FastAPI multipart contract upstream (frontend -> backend): `multipart/form-data` payload of telemetry CSV + COA PDF + debrief text + JSON-stringified metadata. Edge summary -> server reconcile contract: `{ edge_summary: string, edge_friction_verdict: "safe" | "review", edge_audit_id: string }` returned to server on reconnect for verdict-overwrite reconciliation.
+
+### Layer 2 expansion - Polyphase + FlowState + 1Hz preprocessor (D-011)
+
+**Three concurrent paths.** Raw 50 Hz telemetry from CSV upload runs through three preprocessors simultaneously:
+
+- **Path A (1 Hz aggregation, the coarse backbone).** Boxcar / FIR decimation to 1 Hz mini-sector tensor. Operating rate 1 Hz. Feeds TTM r2.1 channel-mix forecaster (Track 1).
+- **Path B (polyphase decomposition, the exact detail preserver).** 50 Hz signal mathematically split into 50 separate 1 Hz phase streams: `x_r[k] = x[50k + r]` for r in 0..49. Each phase stream is a 1 Hz tensor. Shared-weight TTM processes all 50 phase streams along the 1 Hz axis; cross-phase mixer learns sub-second structure; outputs interleave to a 50 Hz forecast. Operating rate 1 Hz internally, 50 Hz at output.
+- **Path C (Granite FlowState, the irregular rate-invariant path).** Sampling-rate-invariant continuous-time state-space model. Operating rate native 50 Hz, requires no rate conversion. Used for channels that cannot be polyphase-downsampled cleanly + handles irregular latencies / packet drops / dual-indexing.
+
+**Mathematical guarantees.** Path B retention of all 50 native samples (no information loss); aliasing prevention (50 phase streams bypass the 0.5 Hz Nyquist ceiling that boxcar aggregation imposes); Path A backward compatibility with TTM r2.1's 1 Hz pretraining envelope.
+
+**Anomaly head.** IBM TSPulse (1M params) reads the polyphase phase streams + flags time-frequency anomalies before the forecasters consume them.
+
+**Output contract.** PolyphaseTensor of shape `(B, 50, 30, 14)` for Path B (Batch x Phase x Horizon x Channels) plus the Path A 1 Hz tensor of shape `(B, 30, 14)` plus the Path C native-rate stream. All three fan out to Layer 3.
+
+### Layer 3 expansion - Three-track forecasting ensemble (D-010)
+
+**Track 1: Granite TTM r2.1 with channel-mix decoder fine-tune + exogenous infusion.** Reads Path A 1 Hz tensor + Path B polyphase streams. Channel-mix decoder fine-tuned on ~5% of target data as a personalization head (frozen backbone, fine-tuned head only). Exogenous infusion: known control channels (throttle / brake / steering) fed as exogenous conditioning so TTM's forecast respects driver intent.
+
+**Track 2: Granite FlowState (9.1M params).** Reads Path C native 50 Hz channels directly. Sampling-rate-invariant continuous-time SSM. Output at native 50 Hz.
+
+**Track 3: Amazon Chronos-2.** Zero-shot probabilistic baseline. Outputs 21 quantiles per channel; maps uncertainty corridor (0.1 / 0.5 / 0.9 bands) for the next-session envelope.
+
+**Fusion.** All three tracks output (B, 30, 14)-shaped tensors (Path A + Track 1 + Track 3) and (B, 50, 30, 14) from Path B + Track 1 polyphase. Layer 4 projection upsamples Path A to 50 Hz and fuses with Path B + Path C + Track 3 quantile bands.
+
+**Sync Point 1 contract.** The (B, 30, 14) tensor contract from wave-29 Layer 3 expands but does NOT break. Channels enumeration locked: `[throttle_pct, brake_pa, steering_rad, rpm, lat_g, long_g, speed_mps, gear, coa_simul_permitted, fz_total, mu_v, pitch_rad, bank_rad, yaw_rate]` (14 channels per D-016 expanded schema; original 9 + 5 new for 8-tier physics: fz_total (Tier 4) + mu_v (Tier 5) + pitch_rad + bank_rad (Tier 1) + yaw_rate (Tier 8)).
+
+### Layer 4 expansion - 8-tier unrolled SCP physics-projection (D-012 + D-015)
+
+**Outer loop: unrolled Sequential Convex Programming, fixed 3 iterations.** Convex QP becomes inner iterate. Non-convex 8-tier physics handled by first-order Taylor linearization around the previous iterate, fed back into the inner solver. Convergence criterion is the fixed 3-iteration unroll (not dynamic tolerance) so PyTorch's backward pass remains deterministic and gradient flow reaches the TTM channel-mix decoder.
+
+**Inner iterate: cvxpylayers convex QP with SOCP friction-ellipse constraint.** cvxpylayers locked per D-013 (qpth lacks SOCP; theseus only applies soft constraints).
+
+**The 8 tiers (executed inside the SCP outer loop, all in-scope):**
+
+1. **3D track geometry (Tier 1).** Project gravity vector using GPS pitch + bank. Constraints: `g_track = g * (cos(pitch) * cos(bank) [vertical], -sin(pitch) [longitudinal], sin(bank) * cos(pitch) [lateral])`. Adds banking-conditional friction-ellipse rotation.
+2. **Aerodynamics (Tier 2).** Pitch-sensitive front/rear downforce loads. `F_z_aero = 0.5 * rho_air * Cl(pitch) * A * v^2`. Expands the friction-ellipse `(F_z_total = F_z_static + F_z_aero) * mu_v` per axle.
+3. **Adaptive hand-control dynamics (Tier 3).** Disable `throttle * brake = 0` complementarity constraint if COAParameters.c_overlap = true. Replace with a `c_overlap`-conditional lexicographic constraint per D-022.
+4. **Load transfer (Tier 4).** Double-track lateral + longitudinal elastic weight transfer. `dFz_lat = m * a_y * h_cg / (track * 2)`; `dFz_long = m * a_x * h_cg / wheelbase`. Per-corner friction-ellipse becomes per-corner-`F_z`.
+5. **Tire thermal + degradation (Tier 5).** Modulate peak friction `mu_v` based on thermodynamic state. Two-mass thermal model: tire-core + tire-surface; degradation decreases peak `mu_v` over lap time. `mu_v(T_surface, lap_count)`.
+6. **Transient tire dynamics (Tier 6).** Relaxation-length ODE: `tau_y * d(slip_y)/dt + slip_y = slip_y_steady_state`. Per D-014, inner SCP solver uses steady-state algebraic substitution; full transient dynamics reserved for offline validation only (`tests/transient_tire_offline_validation.py`).
+7. **Full Pacejka tire model (Tier 7).** Combined-slip heart-shape boundaries. `F_x, F_y = pacejka(s_x, s_y, F_z, mu_v, T_surface)` via Magic Formula. SCP outer loop linearizes Pacejka around previous iterate; cvxpylayers inner solver enforces the linearized half-spaces.
+8. **Vehicle kinematic integration (Tier 8).** Newton-compliant `m * a = F_total`, `dot{v} = a`, `dot{omega} = F_lateral * arm / I_z`. Final integration enforces consistency across the 30-step horizon.
+
+**Numerical hazards resolved (D-014):**
+
+- **v_x near-zero gradient singularity.** Slip-ratio denominator becomes `(v_x + epsilon)` with `epsilon = 0.5 m/s`. For `v_x < 1 m/s`, tire forces saturate via `torch.tanh(slip / threshold) * F_z * mu_v` (smooth, gradient-preserving).
+- **Stiff-ODE problem in Tier 6.** Inner solver substitutes steady-state algebraic form. Backward Euler / torchdiffeq fallback path documented in `vinh-backend-plan.md` Phase 2 if transient dynamics are strictly required at runtime.
+
+**Lexicographic COA constraint hierarchy (D-022):**
+
+- **Tier-0 (inviolable):** kinematic feasibility (vehicle stays on track).
+- **Tier-1 (inviolable):** regulatory safety (no input violating FIA Appendix L homologation).
+- **Tier-2 (elastic slack):** COA hardware permissions (c_overlap flag).
+- **Tier-3 (elastic slack):** COA hardware constraints (steering-lock limits, brake-actuation envelopes).
+
+If a corner becomes kinematically impossible under all COA Tier-2/3 constraints, the SCP solver relaxes Tier-2/3 via slack variables. The relaxation emits a Guardian audit signal (the report explicitly names which COA constraint was relaxed + why).
+
+**Output contract.** `(projected_tensor: (B, 30, 14), violation_log: List[ViolationRecord], scp_iterates: List[ConvergenceTrace], physics_confidence: float, tier_slacks: Dict[int, float])`. Layer 5 + Layer 7 + Layer 8 all consume from this contract.
+
+### Layer 5 expansion - LangGraph + MCP + ContextForge orchestration + RAG (D-017)
+
+**Substrate.** LangGraph stateful state-machine graph wraps the backend. All numerical tools (polyphase preprocessor + anomaly detector + three-track forecaster + SCP projector + RAG retriever + narrator + tri-agent critic + Guardian audit) exposed as standardized tools via Model Context Protocol (MCP), routed through IBM ContextForge API Gateway.
+
+**Langflow demotion.** Langflow is retained but demoted from runtime to top-level visual demo facade. Renders on /judges as the orchestration screenshot judges see; does NOT execute the backend graph.
+
+**RAG layer.** Granite Embedding R2 (149M encoder, 47M query) drives hybrid dense + sparse retrieval against a vector store of: (a) vehicle setup guides, (b) racing theory, (c) adaptive-equipment specifications (MME Motorsport documented permission for brake-throttle simultaneity; per consent-log §1 corporate-only attribution).
+
+**GEPA reflective prompt optimization (D-019 Move 3).** DSPy-driven offline prompt evolution against APEX-Bench faithfulness metric. Output: optimized system prompts for the narrator + tri-agent critic + Guardian BYOC rule strings. Lives in `app/backend/apex/prompts/` with version-tagged generations.
+
+**Gradient bridge two-regime seam (D-020).** Gradients flow above the SCP projector output (TTM channel-mix decoder + physics projection trained by gradient descent + cvxpylayers implicit differentiation through 3 SCP iterations). Below the seam (Mellea repair + tri-agent critic + prompts) optimized by DSPy / GEPA reflective evolution. No end-to-end backprop attempted through Mellea text repair or Chronos-2 API (structurally broken; would burn days of build time on impossible math).
+
+### Layer 6 expansion - Narrator + EAGLE-3 + aLoRA inference plane (D-019 Moves 2 + 3)
+
+**Narrator.** Granite 4.1 8B Instruct as primary planner + drafter.
+
+**EAGLE-3 speculative decoding (D-019 Move 4).** vLLM serving EAGLE-3 draft model alongside Granite 4.1 8B target. 2-6x wall-clock speedup. Hits 15s coaching-report generation budget (G8 latency target tightened from 60s ceiling).
+
+**aLoRA hot-swap (D-019 Move 2).** Activated LoRA adapter for the "race-engineer intrinsic" loaded dynamically into vLLM memory without KV-cache recomputation. Lets the same Granite 4.1 8B base serve both general race-engineer + adaptive-driver-specialized + grassroots-specialized modes via aLoRA swap.
+
+**Output.** Draft CoachingReport (corner narratives + tuning heuristics + provenance footer scaffold).
+
+### Layer 7 - Tri-agent critic loop + Mellea IVR repair (NEW per D-018)
+
+**Tri-agent panel (parallel execution):**
+
+- **Physics-Critic.** Small Granite Instruct fine-tune. Reads projected tensor + violation log. Challenges draft report's physics claims (e.g. "the report says the driver can brake later, but the projected tensor shows friction-ellipse saturation at the proposed entry speed").
+- **Pedagogy-Critic.** Small Granite Instruct fine-tune. Reads draft + COA structure. Challenges recommendation coachability (e.g. "the report recommends a brake-travel reduction the driver's COA section 3(c) hardware spec cannot mechanically execute").
+- **Guardian-Safety.** Granite Guardian 4.1 BYOC safety pass with hybrid-thinking mode (`<think>` for reasoning trace + `<no-think>` for low-latency verdict).
+
+**Mellea IVR repair (loop_budget = 3).** If any critic flags, IBM Mellea Instruct-Validate-Repair loop revises the report. Caps at 3 iterations to bound latency.
+
+**Output.** Verified CoachingReport (Tier-1 safety + Tier-1 physics + Tier-1 pedagogy all pass).
+
+### Layer 8 expansion - Granite Guardian audit + Physics-confidence detector (D-024)
+
+**Physics-confidence detector.** Mahalanobis-distance detector over real-time telemetry vs assumed Pacejka tire parameter limits + thermodynamic state envelope. Calibrated against APEX-Bench OOD axis. Threshold = X (calibration TBD wave-30 Day 5).
+
+**Guardian conditioning.** Granite Guardian 4.1 receives `(violation_log, projected_tensor, physics_confidence, scp_iterates, tier_slacks)`. BYOC rule extended: "The assistant message describes a kinematically valid vehicle trajectory consistent with the driver's certified control adaptations AND the underlying physics model is in-distribution for this session (Mahalanobis distance under threshold)."
+
+**Verdict downgrade rule.** If physics-confidence detector signals OUT-OF-DISTRIBUTION, Guardian downgrades verdict from SAFE -> REVIEW (or SAFE -> UNSAFE if Tier-0/1 also violated). Verdict downgrade reason is explicit in the audit trail.
+
+**TSPulse anomaly feed.** TSPulse anomaly score also feeds Guardian conditioning so Layer 2 anomalies surface in the Layer 8 verdict.
+
+### Layer 8 output + provenance footer
+
+**SafetyVerdict JSON.** `{ verdict: "SAFE" | "REVIEW" | "UNSAFE", reason_codes: List[str], physics_confidence: float, mahalanobis_distance: float, tspulse_anomaly_score: float, tier_slack_relaxations: Dict[int, float], audit_id: str }`.
+
+**Provenance footer extended.** ProvenanceFooter schema (per `app/shared/types.ts:258`) extends with: `granite_embedding_r2_version`, `granite_flowstate_version`, `granite_nano_version`, `tspulse_version`, `chronos2_version`, `cvxpylayers_version`, `scp_iterations_used`, `physics_confidence_score`. 12 model versions total (was 5; added 4 from D-016 expanded stack + 3 from new layers + cvxpylayers + scp_iterations).
+
+### 4 Hard Sync Points (per source 09 Q6)
+
+1. **Sync Point 1 (Day 1-2):** Data contract lock. FastAPI multipart contract + (B, 30, 14) tensor contract (now expanded to 14 channels). Independent of TTM org-invite. Vinh ships Day 1.
+2. **Sync Point 2 (Day 4-6):** Orchestration end-to-end. LangGraph + MCP + ContextForge dummy run from ingestion through RAG to frontend.
+3. **Sync Point 3 (Day 7-9):** Physics projection convergence. Three-track forecast tensor flows through 8-tier unrolled SCP without crashing or vanishing gradients. FCVR = 0.00 on Sarah Reynolds canned fixture.
+4. **Sync Point 4 (Day 10-12):** Final evaluation lock. LIPS 4-axis ablation table populated; APEX-Bench prepared for public release; FCVR = 0.00 verified; 60-second industrial-readiness latency budget met (with 15s coaching-report generation via EAGLE-3 + aLoRA).
+
+### Day-3 SCP go/no-go gate (D-027)
+
+Single most important checkpoint in 12-day build. **Today: Day 3 = 2026-05-22.** Vinh prototypes 3 unrolled SCP iterations through cvxpylayers with 8-tier Pacejka linearization on RTX 4060 in a 6h time-box. Logged in `logs/day-03-scp-go-no-go.md`.
+
+**Pass criterion.** Gradients flow end-to-end (TTM channel-mix forecast through SCP projection without exploding / vanishing); FCVR = 0.00 on Sarah Reynolds canned fixture.
+
+**Fallback ladder.**
+1. **Fallback 1:** Drop to 2 SCP iterations + trust-region penalty if 3 oscillates. Re-run.
+2. **Fallback 2:** Escalate to D-A revision (`docs/decision-log.md` entry D-A-revision-wave-31) if 2 also oscillates.
+
+Blocks everything in Phase 1+. Vinh does NOT proceed to TTM smoke / FlowState integration / Chronos-2 integration / RAG / LangGraph until D-027 passes or escalation logged.
+
+### Cross-references
+
+- `research/wave-30/README.md` - source manifest
+- `research/wave-30/09-notebooklm-synthesis-2026-05-22.md` - architectural source-of-truth
+- `docs/decision-log.md` D-009 through D-027 - granular architectural locks
+- `docs/vinh-backend-plan.md` - Vinh's day-by-day execution plan (wave-30-revised gate map)
+- `paper/apex-neurips-workshop-2026.md` §3 - paper exposition of this maximal architecture (rewrite landing wave-30 atomic commit)
+- `paper/physics-ttm-methods.md` - companion methods spec (landing wave-30 row 6.7c per Vinh adoption design)
+- `PLAN.md` - status snapshot + day-by-day task rows reflect this lock
+
+---
+
+_Last updated: 2026-05-22 night-late by Stephen (wave-30 Maximal Architecture Lock: 8-tier physics in-scope, unrolled 3-iteration SCP outer loop wrapping convex QP inner stage, three-track forecasting ensemble TTM r2.1 + FlowState + Chronos-2, multi-frequency 1Hz + polyphase + FlowState coexistence with 50Hz feasible-lift projector unifier, 12-tool Granite stack, LangGraph + MCP + ContextForge orchestration with Langflow demoted to demo facade, tri-agent Agent-as-Judge critic loop + Mellea IVR repair, 5 shouldn't-be-possible moves (WebGPU Granite Nano + aLoRA + GEPA + EAGLE-3 + Agent-as-Judge), Tikhonov damping + stiff-ODE steady-state substitution, gradient bridge two-regime seam at SCP output, WebGPU offline scope cut, lexicographic COA hierarchy with elastic slacks, MLPerf tolerance-banded reproducibility, Physics-confidence detector via Mahalanobis-distance, NeurIPS central claim + APEX-Bench public release; full lock in Appendix W30 above)._
