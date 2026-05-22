@@ -10,7 +10,7 @@
 
 ## Guiding principles
 
-1. **V1 NumPy beats V2 CvxpyLayer if V1 ships and V2 doesn't.** Ship simple, upgrade later.
+1. **Galaxy ambition target: ship the maximal architecture per D-009 + wave-30 ceiling.** V1 NumPy + V2 CvxpyLayer + D-A-revision PhysicsTTM-3-layer baseline are the named ship-floor ladders that activate per the kill-switch table; "stretch" / "v2" / "post-hackathon" deferral labels are RETIRED per wave-30 lock.
 2. **Atomic commits + push immediately.** One logical change per commit. Conventional Commits prefix.
 3. **Read before edit.** Per CLAUDE.md, re-Read files if >5 tool calls have elapsed.
 4. **Research-tool first** for any uncertain fact. Context7 → tavily → firecrawl → EXA → WebFetch.
@@ -64,7 +64,7 @@ Cross-reference: `research/wave-30/README.md` for source manifest + `research/wa
 | **G9** | **Three-track forecasting fusion + 8-tier SCP physics projector convergence (Sync Point 3)** | **Day 9** | **(B, 30, 14) tensor from ensemble flows through 8-tier unrolled SCP without crashing or vanishing gradients; FCVR = 0.00 on Sarah Reynolds canned fixture; v_x near-zero damping + stiff-ODE steady-state substitution per D-014 verified** | **Day 10 dress rehearsal + LIPS evaluation harness** |
 | **G10** | **LIPS 4-axis evaluation harness + APEX-Bench release prep (D-026 + Sync Point 4)** | **Day 11** | **All 4 ablation rows populated (zero-shot TTM; soft-loss; APEX hard projection; full 3-track + 8-tier); MLPerf tolerance bands documented per D-023; dockerized harness `eval/Dockerfile` reproduces results on RTX 4060 within published bounds; apex-bench/ repository prepared for public release** | **Day 12 submission** |
 
-**APEX Lite EARLY trigger Q-007** activates if I'm unresponsive at noon ET Day 2 — already cleared (invite accepted). Q-004 Lite trigger activates if Day 9 Gate G9 fails 2+ items.
+**APEX Lite EARLY trigger Q-007** activates if I'm unresponsive at noon ET Day 2 (already cleared, invite accepted). **Q-004 Lite trigger activates on ANY of:** (a) D-027 SCP gate fails AND D-A revision required (D-027 fallback ladder exhausted); (b) Sync Point 1 (Day 1-2 data contract lock) fails; (c) Sync Point 2 (Day 4-6 orchestration end-to-end) fails; (d) Sync Point 3 (Day 7-9 physics projection convergence) fails; (e) Day 9 Gate G9 fails 2+ items. Ship-floor on activation: V1 NumPy validator + frozen TTM + Granite Guardian text audit baseline per D-A wave-25 architecture.
 
 **Council trim (2026-05-22) - SUPERSEDED by wave-30 Maximal Architecture Lock 2026-05-22 night.** Council trim treated G7 as screenshot-only + G8 as stretch + sim-rig backend as killed. Wave-30 overrides this for G7-G10: LangGraph + MCP + ContextForge is the orchestration runtime now (D-017), not a screenshot. G8 latency budget tightens to 15s coaching-report generation via EAGLE-3 speculative decoding + aLoRA hot-swap (D-019). G9 + G10 are new gates for three-track fusion + 8-tier SCP convergence + LIPS / APEX-Bench. Engine-agnostic `PhysicsViolationLog.to_text()` boundary stays mandatory from Day 4. Sim-rig backend stays killed (frontend `SimRigStream` already mocks the WebSocket stream).
 
@@ -74,7 +74,7 @@ Cross-reference: `research/wave-30/README.md` for source manifest + `research/wa
 
 ### Phase 0 — Bootstrap (Day 3, today)
 
-**Goal:** Run the autograd-compatibility spike (G0). Until G0 passes, the entire plan is built on an unverified assumption. After G0: smoke-test the load-bearing models, establish git identity, scaffold contracts.
+**Goal:** Run the D-027 SCP go/no-go gate (3 unrolled SCP iterations through cvxpylayers with 8-tier Pacejka linearization on RTX 4060). Until D-027 passes, the entire plan is built on an unverified assumption. After D-027: smoke-test the load-bearing models, establish git identity, scaffold contracts.
 
 | # | Task | File | Status |
 |---|------|------|--------|
@@ -85,8 +85,8 @@ Cross-reference: `research/wave-30/README.md` for source manifest + `research/wa
 | 0.4b | Then install: `pip install granite-tsfm transformers fastf1 numpy pandas pytest` | local | ⬜ |
 | 0.4c | Defer to a second pin run: `pip install cvxpy cvxpylayers` (Windows wants Visual C++ Build Tools; may need `--no-build-isolation`) | local | ⬜ |
 | 0.4d | `pip freeze > app/backend/requirements.txt` with hashes pinned | `app/backend/requirements.txt` | ⬜ |
-| **0.5** | **🚨 Gate G0 — AUTOGRAD SPIKE (6h time-box, blocks everything):** load frozen TTM forward pass → wrap synthetic QP in `CvxpyLayer` → compose `x → TTM(x) → CvxpyLayer(projection) → loss.backward()` → verify gradients flow end-to-end on Windows + pinned versions. **Output: one-line pass/fail + traceback if fail.** | `logs/day-03-autograd-spike.md` | ⬜ |
-| **0.5b** | **G0 decision branch.** Pass → continue. Fail → escalate to Stephen, write `docs/decision-log.md` entry D-009 "D-A revision: V2 CvxpyLayer not viable on TTM forward graph; fallback architecture TBD." Do NOT proceed to 0.6+ unilaterally. | `docs/decision-log.md` | ⬜ |
+| **0.5** | **🚨 D-027 SCP GO/NO-GO GATE (6h time-box, blocks everything):** prototype 3 unrolled SCP iterations through cvxpylayers with 8-tier Pacejka linearization on RTX 4060. Pass criterion: gradients flow end-to-end (TTM channel-mix forecast through SCP projection without exploding / vanishing); FCVR = 0.00 on Sarah Reynolds canned fixture. **Output: one-line pass/fail + log committed.** | `logs/day-03-scp-go-no-go.md` | ⬜ |
+| **0.5b** | **D-027 decision branch.** Pass → continue. Fail → fallback ladder per D-027: (a) drop to 2 SCP iterations + trust-region penalty (see decision-log D-027 for full trust-region spec); (b) if 2 also oscillates, escalate to Stephen + write `docs/decision-log.md` D-A revision entry. Do NOT proceed to 0.6+ unilaterally on fallback path. | `docs/decision-log.md` | ⬜ |
 | 0.6 | **Start fastf1 cache download in background hour 1** (first telemetry pull ~500MB, rate-limited; don't block on it Day 8) | `app/backend/.fastf1_cache/` | ⬜ |
 | 0.7 | **Gate G1 — TTM smoke test:** load `ibm-granite/granite-timeseries-ttm-r2`, run zero-shot on 5-lap FastF1 export, log load time + inference latency + output tensor shape | `logs/day-03-ttm-smoke.md` | ⬜ |
 | 0.8 | **Gate G1b — Granite 4.1 8B Q4 GGUF latency bench** via llama.cpp on RTX 4060 (tokens/sec on 300-word coaching-report prompt) | `logs/day-03-granite-latency.md` | ⬜ |
@@ -94,10 +94,10 @@ Cross-reference: `research/wave-30/README.md` for source manifest + `research/wa
 | 0.10 | **Channel-count audit (Software Lead fix #1).** PLAN.md §Shared contracts says 9 channels but `t` is time index, not feature. Resolve in `contracts.py`: TTM input = 8 telemetry channels + 1 COA simultaneity bit per step = 9 features. Document the broadcast/tile adapter from scalar COA flag to per-step `(batch, 24, 1)` tensor. | `app/backend/apex/shared/contracts.py` + PLAN.md §Shared contracts amendment | ⬜ |
 | 0.11 | Sketch physics validator function signatures importing from `shared.contracts` (per briefing Step 3) | `app/backend/apex/physics/validator.py` | ⬜ |
 | 0.12 | **Observability minimum (SRE-reviewer fix):** structured logging module with `audit_id` + `commit_sha` + `model_versions` baked into every log line. ~2h, saves the demo if something explodes live. | `app/backend/apex/shared/logging.py` | ⬜ |
-| 0.13 | Commit `chore(plan): claim Day-3 backend tasks + G0 spike result` to PLAN.md | PLAN.md | ⬜ |
+| 0.13 | Commit `chore(plan): claim Day-3 backend tasks + D-027 SCP gate result` to PLAN.md | PLAN.md | ⬜ |
 | 0.14 | Daily pre-mortem entry | `docs/pre-mortem.md` | ⬜ |
 
-**Pass condition for Phase 0:** G0 passed (or D-A revision escalated) + G1 + G1b both committed with numbers + `contracts.py` shipped + observability module live. If G0 fails → text Stephen immediately, write D-009 to decision log, await D-A revision before Phase 1.
+**Pass condition for Phase 0:** D-027 SCP gate passed (or fallback ladder exhausted + D-A revision escalated) + G1 + G1b both committed with numbers + `contracts.py` shipped + observability module live. If D-027 fails AND fallback ladder exhausted: text Stephen immediately, write D-A revision entry to decision log, await revised architecture before Phase 1.
 
 ---
 
@@ -342,13 +342,13 @@ deliverables/
 
 | By | If | Cut to |
 |----|----|----|
-| **Day 3 EOD** | **G0 autograd spike fails (TTM forward not differentiable through cvxpylayers)** | **Escalate to Stephen + D-009 decision-log entry. D-A revision required — do NOT proceed unilaterally.** |
+| **Day 3 EOD** | **D-027 SCP gate fails (3-iteration unrolled SCP oscillates or gradient broken through cvxpylayers + 8-tier Pacejka)** | **Walk fallback ladder per D-027: (a) drop to 2 iterations + trust-region penalty; (b) escalate to Stephen + D-A revision entry if 2 also oscillates. Do NOT proceed unilaterally on fallback path.** |
 | **Day 4 EOD (G6.5)** | **`cvxpylayers` Windows install fails after 4h debug** | **Switch to M2 / WSL2 / Linux container. Log decision in `logs/day-04-cvxpy-fallback.md`.** |
 | Day 3 night | G1 TTM smoke fails on RTX 4060 | APEX Lite — drop TTM, keep Granite Instruct + Guardian on regulatory-only product |
 | Day 4 | G4 zero-shot TTM does not beat seasonal-naive on defined holdout (laps 4-5, seed=42, channels speed_mps + long_g) | Fine-tune-first, skip zero-shot pitch claim |
 | Day 5 | V2 CvxpyLayer has convergence issues | Ship V1 NumPy as floor. Engine-agnostic `.to_text()` boundary means D-A still holds — V1 and V2 emit identical violation strings, paper §3.2 cites QP as canonical engine. |
 | Day 6 | Granite-Docling fails on real COA | Fallback ladder: LlamaParse → Mistral OCR → manual JSON |
-| Day 8 | 60s budget blown on RTX 4060 | G8 was already demoted to stretch by council trim. Pre-record demo, use live UI for Q&A only. |
+| Day 8 | 60s budget blown on RTX 4060 | Wave-30 supersedes council-trim G8-demote: D-019 EAGLE-3 + aLoRA hot-swap tighten coaching-report sub-budget to 15s inside 60s wall-clock. If 60s still blown: pre-record demo, use live UI for Q&A only. |
 | Day 9 | 2+ G9 items fail | Q-004 APEX Lite full invocation |
 
 ---
@@ -378,18 +378,20 @@ deliverables/
 
 ## Things to bring to 9 PM sync (tonight, Day 3)
 
-1. **G0 autograd spike result (pass/fail).** Single most important number tonight. If fail, escalation conversation starts here.
+1. **D-027 SCP go/no-go gate result (pass/fail + fallback-ladder branch).** Single most important number tonight. If fail, escalation conversation starts here.
 2. G1 result (TTM smoke test pass/fail + numbers)
 3. G1b result (Granite 4.1 8B Q4 tokens/sec on RTX 4060)
-4. **COA wording note:** "derived flag, not explicit flag" — for whenever he writes Card 04 or COA pitch language
-5. Deploy decision FYI: HF Spaces free tier won't host the full stack — Vercel + OpenRouter is the call by Day 9
-6. **Council trim FYI:** sim-rig WebSocket backend killed; G7 reduced to screenshot-only; G8 demoted to stretch. No frontend impact — Stephen's `SimRigStream` can mock-stream from static fixture if he still wants the visual.
+4. **COA wording note:** "derived flag, not explicit flag" (for whenever he writes Card 04 or COA pitch language)
+5. Deploy decision FYI: HF Spaces free tier won't host the full stack. Vercel + OpenRouter is the call by Day 9.
+6. **Council trim status:** SUPERSEDED by wave-30 Maximal Architecture Lock (see line 69). G7 promoted to runtime LangGraph + MCP + ContextForge per D-017; G8 sub-budget tightened to 15s via EAGLE-3 + aLoRA per D-019; sim-rig backend stays killed (frontend `SimRigStream` mocks from static fixture).
 
 Everything else stays in lane and ships per this plan.
 
 ---
 
-## Provenance — council edits 2026-05-22
+## Provenance: council edits 2026-05-22 (SUPERSEDED by wave-30 Maximal Architecture Lock 2026-05-22 night)
+
+> **Status:** SUPERSEDED. The council session preceded the wave-30 Maximal Architecture Lock. Per D-009 through D-027 + Appendix W30, "stretch" / "demoted" / "future work" labels are RETIRED across the project. The wave-30 gate map at line 47 is the operating source of truth; this section preserves the council-trim history for traceability only. Specifically: G0 (autograd-compatibility spike) is replaced by D-027 SCP go/no-go gate (see line 51); G7 (screenshot-only) is promoted to LangGraph + MCP + ContextForge runtime (D-017); G8 (demoted to stretch) is replaced with a tightened 15s coaching-report sub-budget inside 60s wall-clock via EAGLE-3 + aLoRA (D-019).
 
 This plan was pressure-tested by an llm-council session (TECHNICAL mode, 7 advisors + 5 peer reviewers + chairman synthesis). Full transcript at [council-transcript-20260522-vinh-backend-plan.md](../council-transcript-20260522-vinh-backend-plan.md).
 
