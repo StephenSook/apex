@@ -2,21 +2,25 @@
  * Brand-fonts loader shared by every Next.js ImageResponse renderer (banner
  * + OG cards). Fonts fetched from Google Fonts CDN at render time so binary
  * font files stay out of the repo. The exported `BrandFont` record is a
- * strict subtype of next/og's Font option struct (upstream's `FontOptions`,
- * re-exported as `Font` from `next/dist/compiled/@vercel/og/satori/index.d.ts`):
- * every `BrandFont` is assignable to upstream `Font`, but not vice-versa
- * because `BrandFont` makes more fields required + narrows their types.
- * Five narrowings vs upstream:
+ * strict subtype of the upstream Satori `FontOptions` struct. (Note: the
+ * `Font` type lives inside Next.js's private compiled bundle at
+ * `next/dist/compiled/@vercel/og/satori/index.d.ts`; `next/og` itself does
+ * NOT re-export the `Font` symbol on its public facade. Importing
+ * `import type { Font } from "next/og"` will fail.) Every `BrandFont` is
+ * assignable to the upstream `FontOptions`, but not vice versa: `BrandFont`
+ * makes more fields required + narrows their types.
+ * Four narrowings + one omission vs upstream:
  *   - `data: Buffer | ArrayBuffer` -> `ArrayBuffer`
- *   - `name: string` -> `"Fraunces" | "PlexSans" | "PlexMono"` (three brand families)
+ *   - `name: string` -> `"Fraunces" | "PlexSans" | "PlexMono"`
  *   - `weight?: 100..900` -> required `400 | 500 | 600 | 700`
  *   - `style?: "normal" | "italic"` -> required `"normal" | "italic"`
- *   - `lang?: string` -> dropped (we author English-only banners)
+ *   - `lang?: string` -> omitted (we author English-only banners; the
+ *     optional locale field has no use here)
  * The narrow form is load-bearing for the OG renderer's `fontFamily`
  * strings. The `next/dist/compiled/...` path is a Next.js-private compiled
  * bundle and may rename across minor versions; a future maintainer wanting
  * the upstream type should install `satori` as a direct dependency and
- * `import type { Font } from "satori"`.
+ * `import type { FontOptions } from "satori"`.
  *
  * Satori only supports TTF / OTF / WOFF (not WOFF2). Google Fonts returns
  * WOFF2 to modern Chrome user-agents; the Wget UA below reliably returns
