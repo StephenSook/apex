@@ -23,25 +23,50 @@
 
 ---
 
-## Critical-path gate map
+## Wave-30 Maximal Architecture Lock - posture changes (read this before the gate map)
+
+Wave-30 multi-model deep-research synthesis (research/wave-30/) landed 2026-05-22 with 19 architectural locks in `docs/decision-log.md` D-009 through D-027. Per Stephen's galaxy ambition directive: V2 / V3 / post-hackathon labels are RETIRED. The 8-tier physics + 12-tool Granite stack + LangGraph/MCP/ContextForge orchestration + tri-agent critic + WebGPU Granite Nano + APEX-Bench public benchmark + LIPS 4-axis evaluation are all in-scope for the 2026-05-31 submission.
+
+Vinh-lane scope changes:
+1. **G0 autograd spike replaced by D-027 Day-3 SCP go/no-go gate.** Same 6h time-box, larger test: prototype 3 unrolled SCP iterations through cvxpylayers with 8-tier Pacejka linearization on RTX 4060, not just frozen-TTM-forward-plus-cvxpylayers-backward. Pass criterion + fallback ladder below.
+2. **Three-track forecasting ensemble** replaces "frozen TTM only." Track 1 TTM r2.1 channel-mix decoder fine-tune + Track 2 Granite FlowState + Track 3 Amazon Chronos-2 (D-010).
+3. **Polyphase preprocessor** replaces "1 Hz mini-sector aggregator only." Three frequency paths coexist (D-011).
+4. **8-tier physics** in the SCP solve (D-015). NOT in the convex QP only.
+5. **cvxpylayers locked over qpth + theseus** (D-013).
+6. **12-tool Granite stack** (D-016): added Granite Embedding R2 + TSPulse + Granite FlowState + Granite 4.0 Nano.
+7. **LangGraph + MCP + ContextForge** orchestration runtime (D-017); Langflow demoted to visual demo facade.
+8. **Tri-agent Agent-as-Judge critic loop + Mellea IVR repair** (D-018).
+9. **5 shouldn't-be-possible moves** layered in (D-019): WebGPU Granite Nano + aLoRA + GEPA + EAGLE-3 + Agent-as-Judge.
+10. **Gradient bridge two-regime seam at SCP projector output** (D-020): no end-to-end backprop through Mellea / Chronos-2.
+11. **APEX-Bench public benchmark release + LIPS 4-axis evaluation** (D-026).
+
+Cross-reference: `research/wave-30/README.md` for source manifest + `research/wave-30/09-notebooklm-synthesis-2026-05-22.md` for the architectural source-of-truth.
+
+---
+
+## Critical-path gate map (wave-30-revised)
 
 | Gate | What | When | Pass criterion | Blocks |
 |------|------|------|----------------|--------|
-| **G0** | **Autograd-compatibility spike — `granite-tsfm` frozen forward composes with `cvxpylayers` QP backward end-to-end on Windows + pinned versions** | **Day 3, today, time-boxed 6h** | **`loss.backward()` produces non-None gradients through composed graph; logged in `logs/day-03-autograd-spike.md`** | **Everything. If fails → escalate to Stephen, decision-log entry, D-A revision conversation. Do NOT unilaterally invalidate D-A.** |
-| G1 | TTM smoke test | Day 3 night | TTM loads + 1Hz inference < 60s on RTX 4060 | G2-G8 |
-| G1b | Granite 4.1 8B Q4 GGUF latency bench | Day 3 night | Tokens/sec measured + logged | Card 05 defense + deploy decision |
-| G2 | COA parse coverage | Day 6 | JSON contains all 9 adaptation domains + section IDs | Phase 3 narrator |
-| G3 | NumPy validator V1 catches 5 impossibilities + approves 5 valid **AND golden-text round-trip serializer assertion passes (Convergence-14 floor)** | Day 4 | All 10 fixtures pass + `violation.to_text()` produces deterministic output matching golden fixture | Projection layer |
-| G4 | Zero-shot TTM beats seasonal-naive on FastF1 holdouts **(holdout: laps 4-5 of fixture session, seed=42, channels: speed_mps + long_g, metric: per-channel MAE delta > 0)** | Day 4 (parallel spike) | MAE delta in our favor on defined split | If fails → fine-tune-first pivot |
-| G5 | Guardian catches same 5 impossibilities as validator | Day 5 | All 5 violation logs produce expected verdicts | Convergence-14 suite |
-| G6 | Narrator end-to-end on Sarah fixture **AND citations resolve to real COA sections (no hallucinated FIA Article numbers)** | Day 6 | Coaching report + provenance footer renders + every citation traces to fixture COA JSON | Phase 4 orchestration |
-| **G6.5** | **Cvxpylayers Windows install fallback gate** | **Day 4 EOD** | **If `cvxpylayers` import fails after 4h debug → switch to M2 / WSL2 / Linux container; log decision in `logs/day-04-cvxpy-fallback.md`** | **V2 projection layer** |
-| G7 | Langflow renders pipeline at 1920x1080 **(SCREENSHOT-ONLY per council trim — full Langflow graph is stretch, not gate)** | Day 7 | Screenshot committed | Day 9 demo |
-| G8 | Demo loop fits 60s on RTX 4060 **(STRETCH per council trim — not a ship-blocker if G1-G5 + G6 pass)** | Day 8 | Latency log committed | Day 9 video recording |
+| **D-027** | **Day-3 SCP go/no-go gate (replaces former G0; single most important checkpoint in 12-day build)** | **Day 3, today, time-boxed 6h** | **3 unrolled SCP iterations through cvxpylayers with 8-tier Pacejka linearization on RTX 4060: gradients flow end-to-end (TTM channel-mix forecast through SCP projection without exploding / vanishing); verdict lands at FCVR = 0.00 on Sarah Reynolds canned fixture; logged in `logs/day-03-scp-go-no-go.md`** | **Everything. Fallback ladder: (a) drop to 2 SCP iterations + trust-region penalty if 3 oscillates; (b) escalate to D-A revision (decision-log entry) if 2 also oscillates. Do NOT proceed to Phase 1+ until D-027 passes or escalation logged.** |
+| G1 | TTM smoke test | Day 3 night (after D-027 passes) | TTM r2.1 loads + 1Hz inference < 60s on RTX 4060; channel-mix decoder fine-tune scaffold ready (D-010 Track 1) | G2-G10 |
+| G1b | Granite 4.1 8B Q4 GGUF latency bench | Day 3 night | Tokens/sec measured + logged | aLoRA hot-swap + EAGLE-3 deploy decision (D-019) |
+| G1c | FlowState + Chronos-2 zero-shot smoke (D-010 Tracks 2 + 3) | Day 4 EOD | Both forecasters import + produce (B, 30, 14) tensor on Sarah fixture | Three-track fusion (Sync Point 3) |
+| G2 | COA parse coverage | Day 5 | JSON contains all 9 adaptation domains + COA-derived c_overlap flag per D-A wave-28 refinement | Phase 3 narrator |
+| G3 | V1 NumPy validator catches 5 impossibilities + approves 5 valid + golden-text round-trip serializer assertion passes (Convergence-14 floor) | Day 4 | All 10 fixtures pass + `violation.to_text()` produces deterministic output matching golden fixture | SCP projection layer |
+| G4 | Three-track forecast ensemble beats seasonal-naive on FastF1 holdouts (holdout: laps 4-5 of fixture session, seed=42, channels: speed_mps + long_g, metric: per-channel MAE delta > 0; uncertainty band coverage 0.1 / 0.5 / 0.9 quantiles from Chronos-2) | Day 5 | MAE delta in our favor on defined split + Chronos-2 quantile bands render | If fails -> fine-tune-first pivot |
+| G5 | Granite Guardian catches same 5 impossibilities as validator AND lexicographic COA tier-hierarchy stress-test passes (D-022) | Day 6 | All 5 violation logs produce expected verdicts; Tier-0/1 inviolable + Tier-2/3 elastic-slack relaxation verified on hairpin-steering-lock conflict | Convergence-14 suite |
+| G5.5 | Physics-confidence detector (D-024) | Day 6 EOD | Mahalanobis-distance detector flags Pacejka mismatch on injected-incorrect-.tir fixture; Guardian downgrades verdict from SAFE to REVIEW | Guardian audit safety contract |
+| G6 | Narrator end-to-end on Sarah fixture + tri-agent critic loop passes (D-018) + COA citations resolve to fixture (no invented FIA Articles per wave-28 closure) | Day 7 | Coaching report + provenance footer renders + Physics-Critic + Pedagogy-Critic + Guardian-Safety all approve; every citation traces to fixture COA JSON | Phase 4 orchestration |
+| **G6.5** | **cvxpylayers Windows install fallback gate** | **Day 4 EOD** | **If cvxpylayers import fails after 4h debug -> switch to M2 / WSL2 / Linux container; log decision in `logs/day-04-cvxpy-fallback.md`** | **D-013 SCP projection layer** |
+| G7 | LangGraph + MCP + ContextForge dummy run end-to-end (D-017 Sync Point 2) + Langflow demo-facade screenshot at 1920x1080 | Day 7 | LangGraph state machine executes ingestion -> RAG -> frontend without breaking; Langflow render committed | Day 9 demo + paper §3.5 |
+| G8 | Demo loop fits 60s on RTX 4060 (D-019 includes EAGLE-3 speculative decoding + aLoRA hot-swap so latency budget tightened to 15s coaching-report generation per D-019 Move 3) | Day 8 | Latency log committed; 15s generation + 60s total wall-clock both verified | Day 9 video recording |
+| **G9** | **Three-track forecasting fusion + 8-tier SCP physics projector convergence (Sync Point 3)** | **Day 9** | **(B, 30, 14) tensor from ensemble flows through 8-tier unrolled SCP without crashing or vanishing gradients; FCVR = 0.00 on Sarah Reynolds canned fixture; v_x near-zero damping + stiff-ODE steady-state substitution per D-014 verified** | **Day 10 dress rehearsal + LIPS evaluation harness** |
+| **G10** | **LIPS 4-axis evaluation harness + APEX-Bench release prep (D-026 + Sync Point 4)** | **Day 11** | **All 4 ablation rows populated (zero-shot TTM; soft-loss; APEX hard projection; full 3-track + 8-tier); MLPerf tolerance bands documented per D-023; dockerized harness `eval/Dockerfile` reproduces results on RTX 4060 within published bounds; apex-bench/ repository prepared for public release** | **Day 12 submission** |
 
 **APEX Lite EARLY trigger Q-007** activates if I'm unresponsive at noon ET Day 2 — already cleared (invite accepted). Q-004 Lite trigger activates if Day 9 Gate G9 fails 2+ items.
 
-**Council trim (2026-05-22):** Per llm-council verdict, G1-G5 + G6 are the ship-required core. G7 reduced to screenshot-only deliverable, G8 demoted to stretch, sim-rig WebSocket backend (Phase 5 task 5.5) killed. Engine-agnostic `PhysicsViolationLog.to_text()` boundary is mandatory from Day 4 so V1 NumPy and V2 CvxpyLayer produce identical violation strings (prevents NeurIPS camera-ready fixture divergence).
+**Council trim (2026-05-22) - SUPERSEDED by wave-30 Maximal Architecture Lock 2026-05-22 night.** Council trim treated G7 as screenshot-only + G8 as stretch + sim-rig backend as killed. Wave-30 overrides this for G7-G10: LangGraph + MCP + ContextForge is the orchestration runtime now (D-017), not a screenshot. G8 latency budget tightens to 15s coaching-report generation via EAGLE-3 speculative decoding + aLoRA hot-swap (D-019). G9 + G10 are new gates for three-track fusion + 8-tier SCP convergence + LIPS / APEX-Bench. Engine-agnostic `PhysicsViolationLog.to_text()` boundary stays mandatory from Day 4. Sim-rig backend stays killed (frontend `SimRigStream` already mocks the WebSocket stream).
 
 ---
 
