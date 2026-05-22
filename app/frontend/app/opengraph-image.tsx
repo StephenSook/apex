@@ -4,6 +4,7 @@ import {
   renderOgCard,
 } from "../lib/og-card";
 
+export const runtime = "nodejs";
 export const alt =
   "APEX | AI race engineer for adaptive racers - built on IBM Granite";
 export const size = OG_CARD_SIZE;

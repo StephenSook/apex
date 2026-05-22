@@ -1,7 +1,10 @@
 /**
  * Brand-fonts loader shared by every Next.js ImageResponse renderer (banner
  * + OG cards). Fonts fetched from Google Fonts CDN at render time so binary
- * font files stay out of the repo.
+ * font files stay out of the repo. Re-shape into next/og's Font option struct
+ * inline; the upstream `Font` type lives at
+ * `next/dist/compiled/@vercel/og/satori/satori.d.ts` and is structurally
+ * compatible with the BrandFont record exported below.
  *
  * Satori only supports TTF / OTF / WOFF (not WOFF2). Google Fonts returns
  * WOFF2 to modern Chrome user-agents; the Wget UA below reliably returns

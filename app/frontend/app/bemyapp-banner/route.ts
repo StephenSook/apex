@@ -1,5 +1,7 @@
 import { renderBeMyAppBanner } from "../../lib/bemyapp-banner";
 
+export const runtime = "nodejs";
+
 /**
  * GET /bemyapp-banner - returns the 1920x600 BeMyApp banner as PNG.
  *
