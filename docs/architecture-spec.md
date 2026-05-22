@@ -417,17 +417,17 @@ If a corner becomes kinematically impossible under all COA Tier-2/3 constraints,
 
 **RAG layer.** Granite Embedding R2 (149M encoder, 47M query) drives hybrid dense + sparse retrieval against a vector store of: (a) vehicle setup guides, (b) racing theory, (c) adaptive-equipment specifications (MME Motorsport documented permission for brake-throttle simultaneity; per consent-log §1 corporate-only attribution).
 
-**GEPA reflective prompt optimization (D-019 Move 3).** DSPy-driven offline prompt evolution against APEX-Bench faithfulness metric. Output: optimized system prompts for the narrator + tri-agent critic + Guardian BYOC rule strings. Lives in `app/backend/apex/prompts/` with version-tagged generations.
+**GEPA reflective prompt optimization (D-019 item 3).** DSPy-driven offline prompt evolution against APEX-Bench faithfulness metric. Output: optimized system prompts for the narrator + tri-agent critic + Guardian BYOC rule strings. Lives in `app/backend/apex/prompts/` with version-tagged generations.
 
 **Gradient bridge two-regime seam (D-020).** Gradients flow above the SCP projector output (TTM channel-mix decoder + physics projection trained by gradient descent + cvxpylayers implicit differentiation through 3 SCP iterations). Below the seam (Mellea repair + tri-agent critic + prompts) optimized by DSPy / GEPA reflective evolution. No end-to-end backprop attempted through Mellea text repair or Chronos-2 API (structurally broken; would burn days of build time on impossible math).
 
-### Layer 6 expansion - Narrator + EAGLE-3 + aLoRA inference plane (D-019 Moves 2 + 3)
+### Layer 6 expansion - Narrator + EAGLE-3 + aLoRA inference plane (D-019 items 2 + 4)
 
 **Narrator.** Granite 4.1 8B Instruct as primary planner + drafter.
 
-**EAGLE-3 speculative decoding (D-019 Move 4).** vLLM serving EAGLE-3 draft model alongside Granite 4.1 8B target. 2-6x wall-clock speedup. Hits 15s coaching-report generation budget (G8 latency target tightened from 60s ceiling).
+**EAGLE-3 speculative decoding (D-019 item 4).** vLLM serving EAGLE-3 draft model alongside Granite 4.1 8B target. 2-6x wall-clock speedup. Hits 15s coaching-report generation budget (G8 latency target tightened from 60s ceiling).
 
-**aLoRA hot-swap (D-019 Move 2).** Activated LoRA adapter for the "race-engineer intrinsic" loaded dynamically into vLLM memory without KV-cache recomputation. Lets the same Granite 4.1 8B base serve both general race-engineer + adaptive-driver-specialized + grassroots-specialized modes via aLoRA swap.
+**aLoRA hot-swap (D-019 item 2).** Activated LoRA adapter for the "race-engineer intrinsic" loaded dynamically into vLLM memory without KV-cache recomputation. Lets the same Granite 4.1 8B base serve both general race-engineer + adaptive-driver-specialized + grassroots-specialized modes via aLoRA swap.
 
 **Output.** Draft CoachingReport (corner narratives + tuning heuristics + provenance footer scaffold).
 
