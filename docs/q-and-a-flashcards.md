@@ -12,7 +12,7 @@
 
 **Q:** Isn't this just Deep Dynamics with an IBM logo? They already built a Physics Guard layer for autonomous race cars.
 
-**A:** Deep Dynamics is a brilliant precedent solving a different problem. They trained a bespoke neural network from scratch on race-car data. APEX takes a frozen general-purpose foundation model (Granite TTM, pretrained on weather and retail) and wraps it with a differentiable physics-projection layer at inference. We aren't building a custom PINN. We're constraining an off-the-shelf TSFM. No prior published work does that for vehicle dynamics without retraining.
+**A:** Deep Dynamics is a brilliant precedent solving a different problem. They trained a bespoke neural network from scratch on race-car data. APEX takes a frozen general-purpose foundation model (Granite TTM, pretrained on weather and retail) and wraps it with a two-stage projection-and-audit layer at inference: Stage 1 is a differentiable CvxpyLayer convex QP that enforces the convex constraints, Stage 2 is a post-projection feasibility filter that audits the nonconvex constraints. We aren't building a custom PINN. We're constraining an off-the-shelf TSFM. No prior published work does that for vehicle dynamics without retraining.
 
 **Why this lands.** Accepts the precedent honestly, then names the architectural distinction in one clean sentence (frozen-and-wrapped vs trained-from-scratch). Don't argue against Deep Dynamics. Argue for the paradigm.
 
@@ -22,7 +22,7 @@
 
 **Q:** TTM was trained on energy grids and weather. How do you stop it forecasting physically impossible telemetry, like 4G lateral with zero steering, or speed increasing with throttle at zero?
 
-**A:** That's exactly the problem PhysicsTTM solves. Every TTM forecast step passes through a two-stage physics validator. Stage one is a differentiable convex QP enforcing friction ellipse (total acceleration bounded by mu times g), forward-Euler kinematic step tying speed to longitudinal acceleration, and a jerk bound. Stage two is a post-projection feasibility filter auditing the bicycle-model coupling between lateral G, steering angle, and speed, and the COA-parameterized brake-throttle simultaneity gate. Both constraints are nonconvex so they cannot live in the QP, but the audit is sufficient because Stage one already pulls forecasts into the convex feasible interior. Lateral G with zero steering fails Stage two by construction. V1 uses constant-mu, not full Pacejka. Sub-second hallucinations inside 1-Hz aggregates remain V2 work. The worst zero-order impossibilities never reach the driver.
+**A:** That's exactly the problem PhysicsTTM solves. Every TTM forecast step passes through a two-stage projection-and-audit layer. Stage 1 is a differentiable CvxpyLayer convex QP enforcing the friction ellipse (total acceleration bounded by mu times g in m/s squared), the forward-Euler kinematic step tying speed to longitudinal acceleration, and a jerk bound. Stage 2 is a post-projection feasibility filter auditing the bicycle-model coupling between lateral G, steering angle, and speed, and the COA-parameterized brake-throttle simultaneity gate. Both audited constraints are nonconvex and cannot live in CvxpyLayer's Disciplined Convex Programming form. Stage 2 is an accept-reject filter on the Stage 1 output: when the bicycle relation or the COA gate flags a violation, the audit record is escalated to Granite Guardian which decides approve, flag, or reject. The architecture's safety contract is the Granite Guardian audit on the combined Stage 1 + Stage 2 violation log, unit-tested per the Convergence 14 fixture suite. We do not claim Stage 2 silently corrects bicycle or COA-gate violations; we claim the audit catches them and the unit tests prove the catch-rate. V1 uses constant-mu, not full Pacejka. Sub-second hallucinations inside 1-Hz aggregates remain V2 work. The worst zero-order impossibilities never reach the driver without a Guardian verdict attached.
 
 **Why this lands.** Names the three constraints concretely, owns the gaps proactively. Acknowledging the limitations before the judge does is a power move.
 
@@ -76,7 +76,7 @@
 
 ## Catch-all flashcard (Card 6, drafted Day 9 after dress rehearsal)
 
-For questions outside the 5 cards: "We deliberately scope-limited APEX V1 to the COA + TTM + physics layer pattern. The question you're asking is genuinely open and a great Day 13 conversation. Happy to dig in."
+For questions outside the 5 cards: "We deliberately scope-limited APEX V1 to the COA + TTM + two-stage projection-and-audit pattern, with V1 / V2 / V3 boundaries documented in the architecture spec at `docs/architecture-spec.md` and the bounded-scope statement in the paper at §5.3. Happy to walk through where your question intersects the V1 boundary."
 
 ---
 
