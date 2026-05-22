@@ -2,7 +2,7 @@
 
 > **Status:** Draft ready. Send today (Day 3 = 2026-05-22) within 24h of receiving the consent grant. Professional courtesy + opens door for an optional MME-corporate-attributed quote in the deck if the supplier wants to volunteer one. Personal sender + CC names redacted from this public draft per per-surface consent corporate-only rule; verbatim names live in audit-trail `docs/consent-log.md` §1 only.
 >
-> **Owner:** Stephen Sookra. **To:** MME Motorsport corporate inbox `info@mme-motorsport.com`. **CC:** MME Motorsport secondary contact `sebastjan@mme-motorsport.com`. **Subject:** RE: Per-surface attribution request, APEX project, IBM SkillsBuild May 2026.
+> **Owner:** Stephen Sookra. **To:** MME Motorsport corporate inbox `info@mme-motorsport.com`. **CC:** MME Motorsport secondary contact (kept in private notes; not surfaced on this public-repo file per per-surface consent corporate-only rule; verify against original consent-thread metadata at send time). **Subject:** RE: Per-surface attribution request, APEX project, IBM SkillsBuild May 2026.
 >
 > **Sender:** Stephen Sookra `ssookra@students.kennesaw.edu`. **Sent via:** school address (matches the consent thread).
 
@@ -11,11 +11,11 @@
 ## Email body (paste-ready)
 
 ```
-Hello Marko, Sebastjan,
+Hello MME Motorsport team,
 
 Thank you for the fast reply and for the explicit attribution permission. I want to confirm exactly how MME Motorsport is named across the project so there are no surprises before submission on 2026-05-31.
 
-Corporate-only attribution. Across all four surfaces (the landing page at apex.race, the GitHub README at github.com/StephenSook/apex, the IBM SkillsBuild BeMyApp project page Story block, and the 3-minute submission demo video voice-over plus on-screen text), the citation form is "MME Motorsport" or "MME Motorsport d.o.o." with the country tagged as Slovenia (Todraz). Your individual names are not on any public-facing surface. The consent thread itself sits in the project repository as an audit trail at docs/consent-log.md, which is the only place the sender + CC + verbatim text appears.
+Corporate-only attribution. Across all four surfaces (the landing page at apex.race, the GitHub README at github.com/StephenSook/apex, the IBM SkillsBuild BeMyApp project page Story block, and the 3-minute submission demo video voice-over plus on-screen text), the citation form is "MME Motorsport" or "MME Motorsport d.o.o." with the country tagged as Slovenia (Todraz). Your individual names appear only in the audit-trail consent record on our side; the public-facing surfaces use corporate attribution only. The consent thread itself sits in the project repository as an audit trail at docs/consent-log.md, which is the only place the sender + CC + verbatim text appears.
 
 Use case. APEX is an AI race engineer for adaptive racers, veteran-team drivers, and grassroots competitors. The Sarah Reynolds fictional persona we built around it runs MME Motorsport electronic hand-controls because the simultaneity-permitting hardware specification recorded in her synthetic FIA Certificate of Adaptations is consistent with the dual-stage trigger pattern that MME ships as a real adaptive-equipment product. APEX parses the COA at onboarding, derives a hardware-permission flag from the approved hand-control specifications inside it, and feeds the flag to the model so the physics layer accepts the simultaneous brake-throttle inputs the equipment is built for instead of flagging the adaptive technique as driver error.
 
@@ -41,7 +41,7 @@ LinkedIn: linkedin.com/in/stephen-sookra-633682339
 ## Pre-send checklist
 
 - [ ] Verify recipient address `info@mme-motorsport.com` matches the consent thread (not a typo).
-- [ ] CC MME Motorsport secondary contact `sebastjan@mme-motorsport.com` to keep the second contact in the loop.
+- [ ] CC MME Motorsport secondary contact (verify address from the original consent thread; not surfaced on this public-repo file).
 - [ ] Subject line preserves the consent thread for easy filing on their side.
 - [ ] No em-dashes in body (verified clean).
 - [ ] No AI-tone blocklist words (verified clean).
@@ -50,7 +50,7 @@ LinkedIn: linkedin.com/in/stephen-sookra-633682339
 
 ## What this email accomplishes
 
-1. **Closes the consent loop professionally.** Marko granted broad consent in 26 words; we acknowledge in detail what that means in practice across surfaces. Best-practice corporate-consent ack.
+1. **Closes the consent loop professionally.** The corporate consent grant came back in 26 words; we acknowledge in detail what that means in practice across surfaces. Best-practice corporate-consent ack.
 2. **Surfaces the corporate-only attribution rule** so MME knows exactly how their name appears + that personal names of the sender + CC stay off public surfaces.
 3. **Opens the door for an optional MME-corporate-attributed quote** without pressuring the supplier. If MME wants to volunteer a one-sentence reaction, attribution stays at the corporate level unless the supplier separately approves personal-name surfacing on a specific deliverable; default posture keeps the consent at the corporate level.
 4. **Offers the preview link** as professional courtesy. Galaxy-tier rule says everything in scope, including pre-submission review by the named supplier.
