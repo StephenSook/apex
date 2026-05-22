@@ -53,15 +53,15 @@ What makes APEX different from the existing AI race-engineer category (Track Tit
 
 ### 1. First application of a pretrained time-series foundation model to adaptive motorsport telemetry
 
-We do not retrain. We take a frozen Granite TimeSeries TTM r2.1 forecaster, aggregate raw 50 Hz telemetry to 1-Hz mini-sector tensors that fit the model's published support envelope, and wrap the outputs in a differentiable physics-projection layer. To our knowledge no prior published work applies a non-physics TSFM to vehicle dynamics without retraining it from scratch (vs Deep Dynamics, which trains a bespoke PINN; vs Chronos-on-car-following, which uses a different forecaster on different inputs).
+We do not retrain. We take a frozen Granite TimeSeries TTM r2.1 forecaster, aggregate raw 50 Hz telemetry to 1-Hz mini-sector tensors that fit the model's published support envelope, and wrap the outputs in a two-stage projection-and-audit layer. To our knowledge no prior published work applies a non-physics TSFM to vehicle dynamics without retraining it from scratch (vs Deep Dynamics, which trains a bespoke PINN; vs Chronos-on-car-following, which uses a different forecaster on different inputs).
 
-### 2. Differentiable physics-projection layer prevents kinetic hallucinations
+### 2. Two-stage projection-and-audit layer prevents kinetic hallucinations
 
-TTM was pretrained on weather and retail. Without constraints, it can forecast 4G lateral with zero steering, or speed increasing with throttle at zero. APEX inserts a CvxpyLayer QP between the forecaster and the report. Every step satisfies the friction ellipse (`a_lat^2 + a_long^2 <= (mu * g)^2`), a forward-Euler kinematic check tying speed to longitudinal acceleration, and a bicycle-model tie between lateral G and steering angle. Constant-mu in V1, circuit-conditional lookup in V2.
+TTM was pretrained on weather and retail. Without constraints, it can forecast 4G lateral with zero steering, or speed increasing with throttle at zero. APEX inserts a two-stage validator between the forecaster and the report. Stage 1 is a differentiable CvxpyLayer QP that enforces the convex constraints (friction ellipse `a_lat^2 + a_long^2 <= (mu * g)^2`, a forward-Euler kinematic step tying speed to longitudinal acceleration, and a jerk bound). Stage 2 is a post-projection feasibility filter that audits the nonconvex constraints (bicycle-model coupling between lateral G, steering angle, and speed; COA-parameterized brake-throttle simultaneity gate). Constant-mu in V1, circuit-conditional lookup in V2.
 
 ### 3. FIA Certificate of Adaptations as a tensor-level safety flag
 
-APEX is the only AI race engineer that reads the driver's binding FIA Certificate of Adaptations (governed by Appendix L of the International Sporting Code; specific article numbering verified against the live Appendix L PDF Day 2) at the tensor level. When a driver's COA permits simultaneous brake+throttle (as adaptive racing programmes and adapted-hand-control systems commonly do), the physics layer permits it. When a driver's COA does not permit it, the constraint enforces. Competing tools assume able-bodied physics (`throttle * brake = 0`) and systematically misdiagnose adaptive drivers.
+The COA-parameterized simultaneity gate is, to the best of our literature review through 2026-Q2, the first public AI race-engineer workflow we found that reads the driver's binding FIA Certificate of Adaptations (governed by Appendix L of the International Sporting Code; specific article numbering verified against the live Appendix L PDF Day 2) at the tensor level. When a driver's COA permits simultaneous brake+throttle (as adaptive racing programmes and adapted-hand-control systems commonly do), Stage 2's feasibility filter recognises it. When a driver's COA does not permit it, the gate flags the input. Public documentation for the leading commercial AI race-engineer tools we surveyed (Track Titan, Trophi.ai) does not document any conditional removal of the able-bodied `throttle * brake = 0` mutual-exclusion assumption nor any FIA-Certificate-of-Adaptations parsing path; if a prior workflow is identified, the "first" claim narrows accordingly (full scoping in paper §5.3).
 
 ### 4. Granite Guardian audits with BYOC custom rules + serialization unit tests
 
@@ -108,8 +108,9 @@ flowchart TB
         direction TB
         AGG["1-Hz mini-sector aggregator"]
         TTM["Granite TimeSeries TTM r2.1<br/>(frozen, channel-independent)"]
-        PROJ["Differentiable physics-projection layer<br/>friction ellipse + bicycle model<br/>+ COA simultaneity flag<br/>+ jerk bound + circuit-conditional mu"]
-        GUARD["Granite Guardian 4.1 8B<br/>BYOC text audit on violation log"]
+        QP["Stage 1 - Differentiable convex QP<br/>friction ellipse + forward-Euler<br/>+ jerk bound"]
+        FEAS["Stage 2 - Post-projection<br/>feasibility filter<br/>bicycle-model coupling<br/>+ COA simultaneity gate"]
+        GUARD["Granite Guardian 4.1 8B<br/>BYOC text audit on combined<br/>QP + feasibility violation log"]
         INSTR["Granite 4.1 8B Instruct<br/>race-engineer narrator"]
     end
 
@@ -123,17 +124,18 @@ flowchart TB
 
     TEL --> AGG
     COA --> DOCLING
+    DOCLING -. "COA flag (9th channel)" .-> AGG
     AGG --> TTM
-    DOCLING -. COA flag .-> PROJ
-    TTM --> PROJ
-    PROJ --> GUARD
+    TTM --> QP
+    QP --> FEAS
+    FEAS --> GUARD
     DBR --> INSTR
     GUARD --> INSTR
     DOCLING --> INSTR
     VISION --> INSTR
     INSTR --> REPORT
     INSTR --> TUNE
-    PROJ --> FCST
+    FEAS --> FCST
     GUARD --> STAMP
 
     LF["Langflow visible<br/>orchestration graph"]
@@ -150,7 +152,7 @@ flowchart TB
     class TEL,COA,DBR input
     class REPORT,TUNE,FCST,STAMP output
     class DOCLING,VISION,TTM,GUARD,INSTR,LF,BOB ibm
-    class PROJ,AGG physics
+    class QP,FEAS,AGG physics
 ```
 
 Full architecture spec: [`docs/architecture-spec.md`](./docs/architecture-spec.md) (v0 live, Day 2 expansion). SVG export at `docs/architecture.svg` lands Day 11.
@@ -192,7 +194,7 @@ Full architecture spec: [`docs/architecture-spec.md`](./docs/architecture-spec.m
 
 ## Hard compliance rules
 
-- No em-dash in prose, commits, deck, video transcript, emails. Single most reliable AI-tone tell. Substitutes per global CLAUDE.md em-dash table (`docs/ai-tone-policy.md` Day 2 carve-out forthcoming).
+- No em-dash in prose, commits, deck, video transcript, emails. Single most reliable AI-tone tell. Substitutes per global CLAUDE.md em-dash table.
 - No invented FIA Article numbers. Verify via FIA.com or `research/` PDFs.
 - No named operators (adaptive-racing-programme drivers, charity contacts) without explicit per-surface consent. Defaults to anonymous and aggregate descriptions.
 - No NIL violations. Sarah Reynolds is a fictional persona by design.
@@ -255,7 +257,7 @@ npm run dev   # http://localhost:3000
 | 6 - Submission package (judges page + methodology + NeurIPS draft) | Day 11 | 🟡 /judges + /status routes ✅ Day 1 EOD pull-forward. Methodology trace + architecture-spec + pre-mortem ✅; NeurIPS Workshop paper publication-readable draft 🟡 (§4 Experiments tables Day 9-10; Day-11 polish remains for final polish). BeMyApp 1920x600 banner ✅. |
 | 7 - Submit | Day 12 (2026-05-31) | ⬜ pending. BeMyApp form payload draft ready at NeuroPit-depth. |
 
-Full status table: `PLAN.md` (197+ atomic commits pushed across Day 1 + Day 2). Daily handoff template: `STATUS_TEMPLATE.md`.
+Full status table: `PLAN.md` (201+ atomic commits pushed across Day 1 + Day 2). Daily handoff template: `STATUS_TEMPLATE.md`.
 
 ---
 
