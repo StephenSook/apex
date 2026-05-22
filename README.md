@@ -7,7 +7,7 @@
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![Built on IBM Granite](https://img.shields.io/badge/Built%20on-IBM%20Granite-052FAD.svg)](https://www.ibm.com/granite)
-[![Hugging Face](https://img.shields.io/badge/Hosted-Hugging%20Face%20Space-FFD21E.svg)](https://huggingface.co/spaces)
+[![Hugging Face](https://img.shields.io/badge/Coming%20Day%209-Hugging%20Face%20Space-FFD21E.svg)](https://huggingface.co/spaces)
 [![IBM SkillsBuild](https://img.shields.io/badge/IBM%20SkillsBuild-May%202026%20Challenge-052FAD.svg)](https://ibmskillsbuildchallenge-hub.bemyapp.com/)
 
 Built for the **IBM SkillsBuild AI Builders Challenge, May 2026** (theme: "AI Beyond the Finish Line"). Submission deadline 2026-05-31, 11:59 PM ET.
@@ -28,7 +28,7 @@ Per the BeMyApp pinned submission rubric, every project must clearly answer thre
 
 ## The problem
 
-A professional race engineer can cost **in the low-to-mid hundreds of pounds per day** for amateur and clubman series, by industry estimates we are still cross-checking against primary sources. Every F1 driver has one. Most adaptive racers, veteran-team drivers, and grassroots competitors do not. The FIA lifted its single-seater ban on disabled drivers in December 2017. The barrier stopped being regulatory. It became economic. Post-race coaching is a luxury good.
+A paid race engineer is a luxury good for amateur and clubman series. Every F1 driver has one. Most adaptive racers, veteran-team drivers, and grassroots competitors do not. The FIA lifted its single-seater ban on disabled drivers in December 2017. The barrier stopped being regulatory. It became economic.
 
 APEX changes that.
 
@@ -246,7 +246,7 @@ npm run dev   # http://localhost:3000
 
 | Phase | Days | State |
 |-------|------|-------|
-| 0 - Bootstrap | Day 1 (2026-05-20) | ✅ STEPHEN done. Vinh-side G1 TTM smoke pending (org-invite expected Tuesday 2026-05-27 per Discord). |
+| 0 - Bootstrap | Day 1 (2026-05-20) | 🟡 Stephen-side done. Vinh-side G1 TTM smoke pending (org-invite expected Tuesday 2026-05-27 per Discord). |
 | 1 - Document parsing (Docling + Vision) | Day 2 | 🟡 Vinh-side pending. Stephen-side: Dropzone UI ✅, /analyze route ✅, pre-mortem.md live (48+ entries), README structure audit ✅. |
 | 2 - Physics layer (NumPy V1 → CvxpyLayer V2 + Guardian) | Days 3-5 | 🟡 Vinh-side pending. Stephen-side: CoachingReport + TuningCard + GuardianAudit frontend components ✅. Gate G4 spike bumped to Day-2 parallel. |
 | 3 - Narrator (Granite 4.1 8B Instruct + COA flag) | Day 6 | 🟡 Sarah Reynolds persona narrative ✅ Day 1 EOD. Backend integration Vinh-side. |
@@ -255,9 +255,7 @@ npm run dev   # http://localhost:3000
 | 6 - Submission package (judges page + methodology + NeurIPS draft) | Day 11 | 🟡 /judges + /status routes ✅ Day 1 EOD pull-forward. Methodology trace + architecture-spec + pre-mortem + NeurIPS Workshop paper draft ✅ (Day-11 polish remains). BeMyApp 1920x600 banner ✅. |
 | 7 - Submit | Day 12 (2026-05-31) | ⬜ pending. BeMyApp form payload draft ready at NeuroPit-depth. |
 
-Full status table: `PLAN.md` (186+ atomic commits pushed across Day 1 + Day 2). Daily handoff template: `STATUS_TEMPLATE.md`.
-
-Calibration ceiling (NotebookLM Phase 5 verification pass): **90% top-3 / 96% Best Use of Technology / 88% Most Innovative.**
+Full status table: `PLAN.md` (194+ atomic commits pushed across Day 1 + Day 2). Daily handoff template: `STATUS_TEMPLATE.md`.
 
 ---
 
