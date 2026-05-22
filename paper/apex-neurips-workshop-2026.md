@@ -126,7 +126,7 @@ The two-stage architecture preserves end-to-end differentiability through the QP
 
 The projection layer's violation log is serialized to plain-English using a deliberate text template (the "Convergence 14" serializer, named after the 14 distinct kinematic-violation classes we enumerate). The serialized log is read by Granite Guardian 4.1 under custom BYOC rules, which emits a discriminated `verdict` of `"approve"`, `"flag"`, or `"reject"` along with a reasoning trace and verdict-specific concern lists.
 
-The textual layer is a load-bearing safety contract. We cover every kinematic-violation class with a Python unit-test fixture that fires the violation, asserts the serializer output text, and asserts the expected Guardian verdict. This is the Convergence 14 test suite. The discipline IS the safety contract: if any fixture fails, the pipeline is not deployable.
+The textual layer is a load-bearing safety contract. The Convergence-14 unit-test suite covers every kinematic-violation class with a Python fixture that fires the violation, asserts the serializer output text, and asserts the expected Guardian verdict; the suite lands in the source repository at `app/backend/tests/test_serializer.py` by camera-ready per the project schedule. The discipline IS the safety contract: if any fixture fails after the suite ships, the pipeline is not deployable.
 
 ### 3.4 The COA-parameterized simultaneity gate
 
@@ -173,7 +173,7 @@ The full pipeline uses eight IBM Granite tools. The TTM forecaster + projection 
 
 ### 4.6 Reproducibility
 
-The complete source tree, including all preprocessing scripts, the CvxpyLayer projection QP construction, the Convergence 14 test suite, the Granite Guardian BYOC rule definitions, the synthetic adaptive-driver fixture, and the FastF1 download + caching pipeline, is published under Apache 2.0 at https://github.com/StephenSook/apex. The full pipeline runs end-to-end on the published Hugging Face Space (deployed Day 9, link added at camera-ready) and via the supplementary `deliverables/apex-demo.ipynb` Colab notebook, both fully containerized. Every coaching report produced by the pipeline carries a provenance footer with model versions, input file SHA-256 hashes, cited FIA Articles + COA Sections, the Granite Guardian audit ID, and the commit SHA of the code that produced it. Re-running any reported result requires only the commit SHA + the published fixture file.
+The complete source tree is published under Apache 2.0 at https://github.com/StephenSook/apex. The frontend coaching surface (Next.js routes, the synthetic adaptive-driver Sarah Reynolds fixture, the shared TypeScript contracts mirroring the backend Pydantic schemas, and the Colab notebook skeleton) is in the repository at submission time. The backend pipeline (CvxpyLayer projection QP construction, the Convergence-14 unit-test suite, the Granite Guardian BYOC rule definitions, and the FastF1 download + caching scripts) lands incrementally per the project's PLAN.md schedule; the camera-ready revision of this paper will cite the exact commit SHA at which every reported result reproduces. The published Hugging Face Space (target deployment per PLAN row 5.1) and the `deliverables/apex-demo.ipynb` Colab notebook will execute the pipeline end-to-end in a browser by camera-ready. Every coaching report produced by the pipeline will carry a provenance footer with model versions, input file SHA-256 hashes, cited FIA Articles + COA Sections, the Granite Guardian audit ID, and the commit SHA of the code that produced it (target ship per PLAN row 5.7). Re-running any reported result will require only the commit SHA + the published fixture file. The accompanying source repository at the time of paper submission contains the spec, type contracts, frontend, fixtures, and submission artifacts; the backend pipeline lands by camera-ready.
 
 ---
 
@@ -190,7 +190,7 @@ The complete source tree, including all preprocessing scripts, the CvxpyLayer pr
 
 - *Synthetic adaptive-driver fixture.* The Sarah Reynolds telemetry + COA are deliberately fictional. Until a real adaptive-driver beta-tester releases telemetry under per-surface consent, the COA-simultaneity-gate effect-size in Table 3b is upper-bounded by the synthetic fixture's design assumptions. Real-world COAs from adaptive-racing programmes may contain envelope structures the synthetic fixture does not exercise.
 - *Public-FastF1 distribution shift.* FastF1 holdouts are Formula 1 telemetry; the TTM forecaster sees no Britcar Trophy or amateur-series telemetry at evaluation time. We rely on TTM's published cross-domain generalization claim; specific motorsport-distribution-shift evaluation is out of scope.
-- *Single-author Granite Guardian rule authorship.* The BYOC rules audited in this paper were written by the authors. A third-party audit of the BYOC rule set against the Convergence 14 fixtures would strengthen the safety-contract claim. We invite such audits and document the BYOC rules in the source repository under `app/backend/apex/guardian/rules/`.
+- *Single-author Granite Guardian rule authorship.* The BYOC rules audited in this paper are written by the authors. A third-party audit of the BYOC rule set against the Convergence-14 fixtures would strengthen the safety-contract claim. We invite such audits; the BYOC rules will land in the source repository at `app/backend/apex/guardian/rules/` by camera-ready per the project schedule.
 
 ### 5.3 Scope of "first" claims
 
@@ -204,22 +204,17 @@ We restate the bounded scope from §1:
 
 ## 6. Conclusion
 
-The differentiable physics-projection layer is a transferable architectural pattern for any deployment where a frozen pretrained foundation model is applied to a safety-critical sensor-data domain it was not pretrained on. We demonstrate the pattern on adaptive-driver motorsport telemetry where the regulatory binding-document (FIA Certificate of Adaptations) is itself parameterizable at the tensor level.
+The differentiable physics-projection layer is an architectural pattern for any deployment where a frozen pretrained foundation model is applied to a safety-critical sensor-data domain it was not pretrained on. We demonstrate the pattern on adaptive-driver motorsport telemetry where the regulatory binding-document (FIA Certificate of Adaptations) is itself parameterizable at the tensor level.
 
-The pattern generalizes:
+We hypothesize the pattern extends to other deployments with crisp physical constraints. Examples that warrant follow-up evaluation include industrial robotics (TSFM-forecast joint angles + torques bounded by safe-operating envelopes), energy-grid load forecasting (Kirchhoff-law projection on grid TSFM forecasts), and autonomous-vehicle trajectory forecasting (sensor-derived state forecasts projected onto physically realizable poses). We deliberately do not extend the pattern to higher-stakes domains (medical advice, financial decisions, judicial outcomes) without domain-specific re-validation, per §8 Ethics.
 
-- *Industrial robotics.* Safe-operating-envelope projection on TSFM-forecast joint angles + torques.
-- *Patient-vitals forecasting.* Physiology-bound constraints (BP, HR, SpO2 ranges) on clinical-foundation-model forecasts.
-- *Energy-grid load forecasting.* Kirchhoff-law projection on grid TSFM forecasts.
-- *Autonomous-vehicle perception fusion.* Sensor-fusion outputs projected onto physically realizable poses + velocities.
-
-In every case, the foundation model stays frozen, the regulatory or physical-law constraints stay parameterizable at inference time, and the audit gate carries a unit-tested safety contract. The architectural pattern is small enough to be added as an inference-time wrapper to any deployed TSFM without retraining cost.
+In each hypothesized case the foundation model stays frozen and the domain-specific constraints stay parameterizable at inference time. The architectural pattern is small enough to be added as an inference-time wrapper to any deployed TSFM without retraining cost, but adaptation to each new domain requires the same Convergence-N serializer-unit-test discipline we developed for motorsport.
 
 ---
 
 ## 7. Reproducibility statement
 
-All experimental code, model weights references, synthetic fixtures, and configuration files required to reproduce every reported result are published at https://github.com/StephenSook/apex under Apache 2.0. The published Hugging Face Space + Colab notebook execute the full pipeline end-to-end in a browser. Every coaching report produced by the pipeline carries a provenance footer with model versions + input file SHA-256 hashes + cited FIA Articles + COA Sections + Granite Guardian audit ID + commit SHA. The Convergence 14 unit-test suite is the in-repository safety contract; any reproducibility audit can re-run the suite via `pytest app/backend/tests/test_serializer.py`.
+Reproducibility is staged. The source tree at https://github.com/StephenSook/apex is Apache 2.0. At the time of paper submission, the frontend coaching surface (Next.js routes, the synthetic Sarah Reynolds fixture, the shared TypeScript contracts mirroring the backend Pydantic schemas, the Colab notebook skeleton at `deliverables/apex-demo.ipynb`, the architecture-spec, and the submission artifacts) is in the repository. The backend pipeline (CvxpyLayer projection QP construction at `app/backend/apex/physics/projection.py`, the Convergence-14 unit-test suite at `app/backend/tests/test_serializer.py`, the Granite Guardian BYOC rules at `app/backend/apex/guardian/rules/`, and the FastF1 download + caching pipeline) lands incrementally per the project's PLAN.md schedule and will be cited by exact commit SHA in the camera-ready revision of this paper. The published Hugging Face Space + Colab notebook will execute the full pipeline end-to-end in a browser by camera-ready (target ship Day 9-10 per PLAN rows 5.1 and 5.2). Every coaching report produced by the pipeline will carry a provenance footer with model versions + input file SHA-256 hashes + cited FIA Articles + COA Sections + Granite Guardian audit ID + commit SHA (target ship per PLAN row 5.7). The Convergence-14 unit-test suite is the in-repository safety contract; once the backend ships per the schedule above, any reproducibility audit can re-run the suite via `pytest app/backend/tests/test_serializer.py`.
 
 ## 8. Ethics statement
 
