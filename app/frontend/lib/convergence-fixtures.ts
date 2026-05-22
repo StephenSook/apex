@@ -76,8 +76,7 @@ export const CONVERGENCE_FIXTURES: ConvergenceFixtureCatalogue = [
   {
     id: "C14-04",
     title: "Jerk bound",
-    summary:
-      "Long_g jumps from +0.6 g at t=8 to -0.8 g at t=9 in one 1-Hz mini-sector. Delta of 1.4 g/s exceeds the V1 jerk bound at 8 m/s^3 (approximately 0.815 g/s).",
+      "Long_g jumps from +0.6 g at t=8 to -0.8 g at t=9 in one 1-Hz mini-sector. Delta of 1.4 g/s exceeds the V1 jerk bound at 8 m/s^3 (approximately 0.815 g/s). 1 Hz fixture is a deliberate demo simplification per arch-spec sampling-rate caveat; production telemetry runs the jerk-bound at >=10 Hz on the raw 50 Hz upstream signal before mini-sector aggregation.",
     violation_class: "jerk_bound",
     detection_stage: "stage_1_qp",
     expected_verdict: "flag",
@@ -124,31 +123,31 @@ export const CONVERGENCE_FIXTURES: ConvergenceFixtureCatalogue = [
     id: "C14-07",
     title: "COA gate: simultaneity forbidden",
     summary:
-      "Telemetry row shows throttle = 0.4 and brake = 2.4 MPa simultaneously, but the driver's COA Section 3(c) flag is set to 0 (simultaneity not permitted). Stage 2 complementarity check fires reject.",
+      "Telemetry row shows throttle = 0.4 and brake = 2.4 MPa simultaneously, but the COA-derived c_overlap flag (derived from approved hand-control hardware specifications) is set to 0 (simultaneity not permitted). Stage 2 complementarity check fires reject.",
     violation_class: "coa_simultaneity",
     detection_stage: "stage_2_feasibility",
     expected_verdict: "reject",
     expected_guardian_reason:
-      "Stage 2 feasibility filter rejected telemetry: brake-throttle simultaneity observed (throttle 0.4 + brake 2.4 MPa) but COA flag = 0 (simultaneity not permitted by adaptation domain). Refer to FIA Appendix L Article 18.3.",
+      "Stage 2 feasibility filter rejected telemetry: brake-throttle simultaneity observed (throttle 0.4 + brake 2.4 MPa) but COA-derived c_overlap flag = 0 (driver's approved hand-control hardware specifications do not permit simultaneous brake-throttle actuation).",
     coa_simul_permitted: false,
     fixture_path: "app/backend/tests/fixtures/convergence-14/C14-07_coa_simul_forbidden.json",
     sample_violation_log_excerpt:
-      'stage:2 class:coa_simultaneity t:11 throttle:0.4 brake_pa:2.4e6 coa_simul_permitted:0 fia_article:"18.3" coa_section:"3(c)"',
+      'stage:2 class:coa_simultaneity t:11 throttle:0.4 brake_pa:2.4e6 c_overlap:0 derivation:"hardware_spec"',
   },
   {
     id: "C14-08",
     title: "COA gate: simultaneity permitted (positive)",
     summary:
-      "Same telemetry as C14-07 (throttle = 0.4 with brake = 2.4 MPa) but COA flag = 1 (Section 3(c) permits brake-throttle simultaneity through corner entry). Stage 2 approves; report renders the tuning recommendation.",
+      "Same telemetry as C14-07 (throttle = 0.4 with brake = 2.4 MPa) but COA-derived c_overlap flag = 1 (driver's approved electronic hand-control hardware permits simultaneous brake-throttle actuation through corner entry). Stage 2 approves; report renders the tuning recommendation.",
     violation_class: "coa_simultaneity",
     detection_stage: "stage_2_feasibility",
     expected_verdict: "approve",
     expected_guardian_reason:
-      "Stage 2 feasibility filter approved telemetry: brake-throttle simultaneity observed (throttle 0.4 + brake 2.4 MPa) within COA Section 3(c) permit window; combined force within friction envelope (lat_g 0.81 + long_g -0.22).",
+      "Stage 2 feasibility filter approved telemetry: brake-throttle simultaneity observed (throttle 0.4 + brake 2.4 MPa) within the COA-derived c_overlap permit window (derived from approved hand-control hardware specifications); combined force within friction envelope (lat_g 0.81 + long_g -0.22).",
     coa_simul_permitted: true,
     fixture_path: "app/backend/tests/fixtures/convergence-14/C14-08_coa_simul_permitted.json",
     sample_violation_log_excerpt:
-      'stage:2 class:coa_simultaneity t:11 throttle:0.4 brake_pa:2.4e6 coa_simul_permitted:1 verdict:approve combined_g:0.84',
+      'stage:2 class:coa_simultaneity t:11 throttle:0.4 brake_pa:2.4e6 c_overlap:1 derivation:"hardware_spec" verdict:approve combined_g:0.84',
   },
 
   // ---- Stage 3: Guardian BYOC text audit catches (4) ---------------------
@@ -240,11 +239,11 @@ export const CONVERGENCE_FIXTURES: ConvergenceFixtureCatalogue = [
     detection_stage: "stage_3_guardian",
     expected_verdict: "approve",
     expected_guardian_reason:
-      "Granite Guardian approved end-to-end fixture: Stage 2 COA-simul-permitted accept + Stage 3 BYOC audit approve + tuning recommendation rendered with FIA Appendix L Article 18.3 + COA Section 3(c) citation.",
+      "Granite Guardian approved end-to-end fixture: Stage 2 COA-derived c_overlap permit accept + Stage 3 BYOC audit approve + tuning recommendation rendered with citation to the driver's approved hand-control hardware specifications.",
     coa_simul_permitted: true,
     fixture_path: "app/backend/tests/fixtures/convergence-14/C14-14_full_loop_sarah.json",
     sample_violation_log_excerpt:
-      'stage:3 class:serializer_integrity closure:end_to_end sarah_fixture:approved fia:"18.3" coa:"3(c)"',
+      'stage:3 class:serializer_integrity closure:end_to_end sarah_fixture:approved c_overlap:1 derivation:"hardware_spec"',
   },
 ];
 

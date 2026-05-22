@@ -130,7 +130,7 @@ The textual layer is a load-bearing safety contract. The Convergence-14 unit-tes
 
 ### 3.4 The COA-parameterized simultaneity gate
 
-The architectural novelty is the binary COA-simultaneity flag as the 9th channel of the TTM input tensor combined with the conditional post-projection feasibility audit described in §3.2 Stage 2. Adaptive drivers running electronic hand-control systems often have Certificates of Adaptations explicitly permitting simultaneous brake-throttle inputs (e.g., the dual-stage trigger pattern described in Section 3(c) of a typical adaptive-driver COA). The same coaching pipeline produces different corrections for adaptive vs. able-bodied drivers, governed by the COA's binding regulatory text. The pipeline runs the same model, the same convex QP projection, and the same audit gate; only the flag value differs at the tensor level. Because the simultaneity gate is complementarity-style and therefore nonconvex, it lives in §3.2 Stage 2 (post-projection feasibility filter), not in the CvxpyLayer-wrapped QP itself.
+The architectural novelty is the binary COA-derived `c_overlap` flag as the 9th channel of the TTM input tensor combined with the conditional post-projection feasibility audit described in §3.2 Stage 2. Adaptive drivers running electronic hand-control systems have Certificates of Adaptations whose hardware-specification sections record the equipment that physically permits simultaneous brake-throttle actuation (for example, the dual-stage trigger pattern documented in the hardware sections of a typical adaptive-driver COA). APEX derives the `c_overlap` flag from these approved hardware specifications via Granite-Docling at parse time. We do not claim that public FIA documents expose a discrete simultaneity field; the flag is derived APEX-side from the adaptation-equipment metadata that the FIA-approved COA already records. The same coaching pipeline produces different corrections for adaptive vs. able-bodied drivers, governed by the COA's binding regulatory text. The pipeline runs the same model, the same convex QP projection, and the same audit gate; only the flag value differs at the tensor level. Because the simultaneity gate is complementarity-style and therefore nonconvex, it lives in §3.2 Stage 2 (post-projection feasibility filter), not in the CvxpyLayer-wrapped QP itself.
 
 ### 3.5 Architecture overview
 
@@ -150,7 +150,7 @@ The §4 prose below specifies the evaluation protocol. The Table 1 / Table 2 / T
 
 **Datasets.**
 
-- *Sarah Reynolds Britcar Trophy 2026 Donington Park GP fixture (synthetic).* A 60-row (1.2-second) 50-Hz telemetry slice extracted from lap 17 of 19 of a plausible adaptive-driver qualifying session for a left-leg-amputee veteran using electronic hand-controls. The slice covers the brake-release-to-throttle-on micro-window at one corner entry, deliberately sized to exercise the COA-simultaneity gate at the smallest fixture footprint we could ship in the repository (full-lap telemetry awaits a real adaptive-driver collaborator per §5.2). Paired with a 9-domain COA JSON conforming to the FIA Appendix L Article 18.3 schema. The fixture is synthetic by design (no real adaptive-driver identity); the lap shape, debrief language, and COA structure are derived from publicly documented Britcar Trophy regulations.
+- *Sarah Reynolds Britcar Trophy 2026 Donington Park GP fixture (synthetic).* A 60-row (1.2-second) 50-Hz telemetry slice extracted from lap 17 of 19 of a plausible adaptive-driver qualifying session for a left-leg-amputee veteran using electronic hand-controls. The slice covers the brake-release-to-throttle-on micro-window at one corner entry, deliberately sized to exercise the COA-simultaneity gate at the smallest fixture footprint we could ship in the repository (full-lap telemetry awaits a real adaptive-driver collaborator per §5.2). Paired with a 9-domain COA JSON whose structure mirrors the FIA Appendix L regulatory anchor for adaptive-equipment homologation. The fixture is synthetic by design (no real adaptive-driver identity); the lap shape, debrief language, and COA structure are derived from publicly documented Britcar Trophy regulations.
 - *FastF1 holdouts.* Five Formula 1 circuits drawn from the FastF1 public dataset. Selection criteria: circuits with at least three completed sessions in the 2024 season, mixed-pace (high-speed + slow-corner) layout, dry weather. Specific circuit list reported in §4.1 at camera-ready.
 
 **Table 1: Dataset summary.** Skeleton; cell values populated at camera-ready.
@@ -331,7 +331,7 @@ Unfunded student work submitted to the IBM SkillsBuild AI Builders Challenge May
   title = {Appendix L to the International Sporting Code: Drivers' Equipment and Certificates of Adaptations},
   author = {{F\'ed\'eration Internationale de l'Automobile}},
   year = {2017},
-  note = {Article 18.3 revision lifted the FIA single-seater ban on disabled drivers in December 2017.}
+  note = {FIA Appendix L is the binding regulation governing adaptive-driver equipment homologation and Certificates of Adaptations; the single-seater ban on disabled drivers was lifted via FIA regulatory revision in December 2017. Specific article citation verified at camera-ready against the current Appendix L PDF.}
 }
 
 @misc{ibm2026granite4instruct,

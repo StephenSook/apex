@@ -89,7 +89,7 @@ Zero-shot multivariate forecaster. Frozen weights, no retraining. NeurIPS 2024 "
 **Input tensor shape:** `(batch_size, context_length, num_channels)` where:
 - `batch_size`: 1 for a single-lap analyze call, > 1 for backfill batches.
 - `context_length`: 24 (one lap of 1-Hz mini-sector aggregates; typical lap covers 20-30 sectors depending on circuit).
-- `num_channels`: 9 → `[throttle_pct, brake_pa, steering_rad, rpm, lat_g, long_g, speed_mps, gear, coa_simul_permitted]`. The 9th channel is a binary flag synthesized from the FIA COA parsed JSON (Section 3(c) of the driver's Certificate of Adaptations); it tells TTM that simultaneous brake-throttle was permitted at that mini-sector, which the channel-independent forecaster otherwise has no way to know.
+- `num_channels`: 9 → `[throttle_pct, brake_pa, steering_rad, rpm, lat_g, long_g, speed_mps, gear, coa_simul_permitted]`. The 9th channel is a binary `c_overlap` flag derived from the approved hand-control hardware specifications recorded in the driver's FIA Certificate of Adaptations (parsed by Granite-Docling at onboarding). It tells TTM that simultaneous brake-throttle is hardware-permitted at that mini-sector, which the channel-independent forecaster otherwise has no way to know. Important: public FIA documents do not expose a discrete simultaneity field; APEX derives this flag from approved adaptation-equipment metadata, not from an explicit FIA-defined boolean.
 
 **Output tensor shape:** `(batch_size, prediction_length, num_channels)` where `prediction_length` defaults to 24 (next session's mini-sector envelope) and `num_channels` matches the input 9.
 
@@ -137,6 +137,8 @@ where `dt = 1.0 s` at 1-Hz mini-sector aggregation. Couples the current-step `a_
 ```
 
 where `jerk_max = 8 m/s^3` (approximately 0.815 g per second; tighter than the upstream human-tolerance ~30 m/s^3 bound because the 1-Hz mini-sector aggregation already smooths intra-second jerk, so a tighter inequality at 1-Hz dt keeps the constraint load-bearing at the spec's sampling rate). Prior-step `a_·[t-1]` treated as exogenous. Pair of linear inequalities, convex. Prevents inter-mini-sector hallucinations where TTM would otherwise forecast physically-implausible sign reversals in long_g or lat_g across adjacent 1-Hz steps. The Convergence-14 fixture C14-04 exercises this bound at the 0.8 g/s headline number; both values reconcile via 8 m/s^3 / 9.81 m/s^2 ≈ 0.815 g/s.
+
+**Sampling-rate caveat (per Rajamani vehicle dynamics + Vinh's physics-ttm-neurips-methods.md §4).** Rate constraints (jerk and steering-rate) in production vehicle-dynamics practice activate at >=10 Hz sampling rates where intra-second driver inputs are not aliased. The C14-04 1 Hz fixture is a deliberate demo simplification: at 1 Hz aggregation, sub-second inputs collapse into the aggregate window and the jerk constraint catches inter-mini-sector sign reversals rather than the full rate violation surface a >=10 Hz pipeline would. Production telemetry deployments should route the jerk-bound at >=10 Hz on the raw 50 Hz upstream signal before mini-sector aggregation. The hackathon demo uses 1 Hz aggregation because the public TTM r2.1 backbone is trained on 1 Hz mini-sector tensors and the inter-mini-sector hallucination surface is the load-bearing failure mode our review process targeted; the >=10 Hz path is the V2 production trajectory documented in `paper/physics-ttm-methods.md`.
 
 **Stage 1 returns:** `(qp_corrected_tensor, qp_violation_log)` where `qp_corrected_tensor` is the projected forecast and `qp_violation_log` is a list of `PhysicsViolation` records (one per step that hit a convex-constraint bound). Differentiable end-to-end through the projection (gradient methods can backprop through Stage 1 if a future user wires the projection layer into a TTM-aware training loop).
 
@@ -284,13 +286,13 @@ interface FIACoa {
   // so it sits at the same nesting depth as driver + vehicle + adaptations.
   // Wave-22 cold review BLOCKER B1 caught the lingering sub-object shape in
   // this spec + PLAN.md Shared Contracts row and aligned both to types.ts.
-  coa_simul_permitted: boolean;     // e.g. true for Sarah Reynolds' COA Section 3(c).
+  coa_simul_permitted: boolean;     // c_overlap flag derived from approved hand-control hardware specs in the parsed COA. e.g. true for Sarah Reynolds' synthetic COA where her Section 3(c) records dual-stage trigger hardware.
   brake_travel_adjustable_mm?: readonly [number, number];   // optional [min, max] in mm.
-  fia_section_refs: ReadonlyArray<string>;   // e.g. ["Article 18.3.2(c)", "Section 3(c)"].
+  fia_section_refs: ReadonlyArray<string>;   // Pointers into the parsed COA structure (e.g. "Appendix-L/3(c)" referring to the FIA Appendix L regulatory anchor + Section 3(c) of the parsed driver-specific COA). Used by the citation chip on the coaching report. Never references a fabricated FIA-internal field.
 }
 
 interface FIAAdaptationDomain {
-  section_id: string;              // e.g. "3.a" referencing Appendix L Article 18.3.2(a).
+  section_id: string;              // Pointer into the parsed COA (e.g. "3.a" referencing Section 3.a of the driver-specific COA document; the FIA Appendix L anchor lives in fia_section_refs above).
   description: string;             // Human-readable summary.
   constraints: ReadonlyArray<string>;  // Free text from Granite-Docling parse.
 }

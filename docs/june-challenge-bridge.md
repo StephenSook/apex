@@ -59,7 +59,7 @@ The pattern is the same. The substitutions are content not architecture.
 - 0:08 - 0:25: Why elite football needs this. Manager debrief windows are 90 seconds at half-time. Player-tracking data is overwhelming. Existing AI tactical tools (Twelve, MatchMetrics, SciSports) treat the data statistically without enforcing kinematic feasibility.
 - 0:25 - 0:42: Hero use case. A specific match moment (e.g., "down 1-0 at half-time, manager has 90 seconds to decide a tactical change"). PhysicsTTM forecasts the next-phase positional envelope. Guardian audits the recommendation against player-role spec.
 - 0:42 - 1:30: Same three-layer architecture, same eight IBM Granite tools, same Convergence-14 safety pattern. The substitution map (above) lives in one slide.
-- 1:30 - 2:00: The killer detail. Where APEX-May's Stage 2 feasibility filter reads the FIA Certificate of Adaptations (citing Appendix L Article 18.3) at tensor level, APEX-June's Stage 2 reads the tactical role-spec at tensor level. First AI to do this for elite football.
+- 1:30 - 2:00: The killer detail. Where APEX-May's Stage 2 feasibility filter reads the FIA Certificate of Adaptations (anchored to FIA Appendix L; c_overlap flag derived from approved hand-control hardware specifications) at tensor level, APEX-June's Stage 2 reads the tactical role-spec at tensor level. First AI to do this for elite football.
 - 2:00 - 2:30: Same UI, different output. Tactical recommendation card with role-spec citation. Phase-of-play forecast chart. Guardian safety stamp.
 - 2:30 - 2:50: Same stack, expanded - now ships for two sports, one architecture.
 - 2:50 - 2:58: Close.
