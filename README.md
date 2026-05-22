@@ -67,9 +67,9 @@ The COA-parameterized simultaneity gate is, to the best of our literature review
 
 Every physics-corrected forecast and recommendation passes through Granite Guardian 4.1 with custom Bring-Your-Own-Classifier rules. The audit log is serialized to plain English with a unit-test suite covering every kinematic violation type (Convergence 14, the load-bearing safety contract). Reasoning trace surfaces in the UI in think-mode. The textual layer is a deliberate design choice with deliberate test coverage.
 
-### 5. Eight IBM tools, all load-bearing
+### 5. Twelve IBM tools, all load-bearing
 
-Granite-Docling, Granite Vision 4.1, Granite TimeSeries TTM r2.1, Granite 4.1 8B Instruct, Granite Guardian 4.1 8B, Langflow (visible orchestration), Docling library, IBM Bob (build accelerator, per the IBM × Scuderia Ferrari case-study precedent). Every tool earns its slot.
+Granite-Docling 258M (FIA COA PDF parser), Granite Vision 4.1 4B (timing-sheet parser), Granite TimeSeries TTM r2.1 (Track 1 of the three-track forecasting ensemble; channel-mix decoder fine-tune per D-010), Granite FlowState 9.1M (Track 2 of the ensemble; sampling-rate-invariant continuous-time SSM per D-010), Granite Embedding R2 149M + 47M (hybrid dense + sparse RAG over vehicle setup guides + racing-theory + adaptive-equipment specs + COA-parsed fixtures per D-016), IBM TSPulse 1M (time-frequency anomaly detector on polyphase phase streams per D-016), Granite 4.1 8B Instruct (race-engineer narrator), Granite Guardian 4.1 8B (BYOC safety audit + D-024 physics-confidence detector verdict downgrade), Granite 4.0 Nano 350M (in-browser WebGPU edge model via Transformers.js per D-019 item 1 + D-021), Langflow (visible orchestration demo facade; D-017 demoted Langflow from runtime to demo facade in favour of LangGraph + MCP + ContextForge), Docling library (open-source IBM Docling conversion + table-extraction layer), IBM Bob (build accelerator per the IBM × Scuderia Ferrari case-study precedent). Every tool earns its slot per wave-30 D-016 stack expansion (the wave-22 baseline was 8 tools; wave-30 added Granite Embedding R2 + IBM TSPulse + Granite FlowState + Granite 4.0 Nano).
 
 ---
 
