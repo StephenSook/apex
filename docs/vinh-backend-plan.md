@@ -411,4 +411,4 @@ This plan was pressure-tested by an llm-council session (TECHNICAL mode, 7 advis
 - **Phase 0 install sequence** reordered (torch CUDA alone first, defer cvxpy) per Executor.
 - **Phase 0 fastf1 cache download** starts in background hour 1 (500MB rate-limited; SRE SPOF flag).
 
-**Council confidence:** MEDIUM, flips to HIGH if G0 spike passes, flips to LOW if G0 spike fails. The single piece of evidence that determines this is the autograd spike result — everything else in this plan is downstream of it.
+**Council confidence (SUPERSEDED per wave-30 lock at section header above):** original council framing pinned confidence to the G0 autograd spike pass/fail. Per wave-30 Maximal Architecture Lock + D-027 SCP go/no-go gate retirement of G0, the canonical confidence predicate is now the D-027 SCP convergence result (3-iteration unrolled SCP through cvxpylayers with 8-tier Pacejka linearisation). Everything else in this plan is downstream of D-027.
