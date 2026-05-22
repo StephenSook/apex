@@ -4,11 +4,11 @@ import {
   renderOgCard,
 } from "../../lib/og-card";
 
-export const runtime = "nodejs";
 export const alt =
   "APEX Analyze | Upload telemetry, COA, and debrief - corner-by-corner coaching report in ~60s";
 export const size = OG_CARD_SIZE;
 export const contentType = OG_CARD_CONTENT_TYPE;
+export const runtime = "nodejs";
 
 export default function OpenGraphImage() {
   return renderOgCard({
