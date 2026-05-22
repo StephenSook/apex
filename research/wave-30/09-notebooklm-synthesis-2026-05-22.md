@@ -1,4 +1,4 @@
-# NotebookLM Synthesis Pass — 2026-05-22 — Maximal Architecture Lock
+# NotebookLM Synthesis Pass, 2026-05-22, Maximal Architecture Lock
 
 Sources loaded (in order): 01-perplexity-prior-art-sweep + 02-gemini-physics-frontier + 03-chatgpt-polyphase-aggregation-gap + 04-claude-connective-tissue-physicsttm + 05-claude-ai-architecture-frontier + 06-claude-decision-brief-five-open-questions + 07-apex-repo-state-snapshot + 08-physicsttm-kinetic-hallucination-mitigation.
 
@@ -6,7 +6,7 @@ Sources loaded (in order): 01-perplexity-prior-art-sweep + 02-gemini-physics-fro
 
 ---
 
-## Question 1 — Frequency-strategy unification
+## Question 1: Frequency-strategy unification
 
 **Prompt:** Three of the loaded sources propose three different frequency strategies for handling raw 50 Hz telemetry. The APEX repo README has committed to 1 Hz mini-sector aggregation. ChatGPT's aggregation-gap source recommends polyphase decomposition to retain all native 50 Hz samples exactly, plus a differentiable 50 Hz feasible-lift physics projector. The AI-architecture pass recommends sampling-rate-invariant Granite FlowState as one of the three forecasting tracks. We are building the maximal architecture with no feasibility cuts, so the answer is not to pick one. Determine the single architecture that lets all three strategies coexist and serve different functions simultaneously. Specify which rate each component operates at, where the rate conversions live, what mathematical guarantees the polyphase path provides over the existing 1 Hz aggregation, and how Granite FlowState's sampling-rate invariance is exploited as a third concurrent path rather than as a replacement.
 
@@ -46,7 +46,7 @@ Retaining the polyphase path alongside the 1 Hz aggregation provides strict math
 
 ---
 
-## Question 2 — Maximal end-to-end architecture
+## Question 2: Maximal end-to-end architecture
 
 **Prompt:** Construct the single maximal coherent end-to-end architecture for APEX integrating the strongest contribution from every loaded source. Give explicit layer ordering from raw telemetry ingestion, through forecasting (the TTM r2.1 channel-mix fine-tuned plus Granite FlowState plus Chronos-2 three-track stack), through the differentiable physics-projection layer (covering all eight tiers from the Gemini source), through the LangGraph plus MCP plus ContextForge agentic orchestration substrate with the tri-agent Agent-as-Judge critic loop and the 12 Granite tools, through Granite Embedding R2 RAG grounding and COA-PDF-derived constraints, and ending in the Granite Guardian safety audit. Name the data contract crossing each layer boundary (including the (B, 30, 14) tensor contract and the FastAPI multipart contract). Place each of the five shouldn't-be-possible moves (WebGPU Granite Nano, aLoRA, GEPA, EAGLE-3, Agent-as-Judge) at the specific layer where it lives. Treat every capability as in-scope.
 
@@ -114,7 +114,7 @@ Retaining the polyphase path alongside the 1 Hz aggregation provides strict math
 
 ---
 
-## Question 3 — Convexity tension resolution
+## Question 3: Convexity tension resolution
 
 **Prompt:** The APEX repo has committed to a two-stage convex-QP-plus-feasibility-filter validator. ChatGPT's aggregation-gap source and Gemini's physics-frontier source both conclude that a truly rich nonlinear vehicle model (full Pacejka combined-slip, transient relaxation length, two-mass thermal, three-component load transfer, double-track, 3D track geometry, aerodynamics, adaptive hand-control simultaneous brake-throttle) is non-convex and requires unrolled sequential-convex programming, not a single clean convex QP. Reconcile these two positions inside the maximal architecture. Specify whether the two-stage convex QP becomes the inner iterate of an outer sequential-convex loop, whether the feasibility filter promotes to a trust-region update, what the convergence criterion is for the outer loop, and which of cvxpylayers, qpth, and theseus is the right differentiable optimization layer for this configuration given that gradients must flow back through the unrolled iterates to the frozen TTM forecast inputs. The v_x-near-zero gradient singularity and the stiff-ODE problem flagged by Gemini must both be addressed.
 
@@ -152,7 +152,7 @@ To solve this, the maximal architecture dictates that for the inner projection s
 
 ---
 
-## Question 4 — NeurIPS central claim
+## Question 4: NeurIPS central claim
 
 **Prompt:** Across the entire loaded corpus, identify the single deepest genuinely novel contribution that is suitable as the central claim of the planned NeurIPS workshop paper. Perplexity's prior-art sweep has already established that no published architecture combines a frozen Tiny Time Mixer with a hard differentiable physics-projection layer, so candidates include but are not limited to: the frozen-TTM-plus-differentiable-physics-projection composition itself, the polyphase 50 Hz feasible-lift projector, the unrolled SCP-inside-foundation-model loop, the tri-agent Agent-as-Judge critic loop applied to physics-grounded forecasts, the kinetic hallucination metric, and the APEX-Bench public benchmark. Pick exactly one as the central claim, justify why it is the strongest novelty given the prior-art sweep, name the headline empirical result that would substantiate it, and identify which two or three of the other candidates become supporting contributions in the same paper rather than separate papers.
 
@@ -172,7 +172,7 @@ To solve this, the maximal architecture dictates that for the inner projection s
 
 ---
 
-## Question 5 — Five remaining open technical questions
+## Question 5: Five remaining open technical questions
 
 **Prompt:** Surface every remaining open technical question that the seven loaded sources do not fully resolve and that must be answered before the maximal architecture can be locked for the 12-day build. Do not soften, defer, or filter for feasibility.
 
