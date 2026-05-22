@@ -60,7 +60,7 @@ Parses the driver's FIA Certificate of Adaptations PDF into structured JSON. Pre
 
 **1a-bis. Docling library (`app/backend/apex/intake/docling_conv.py`)**
 
-Open-source IBM Docling conversion layer (`docling` PyPI package), distinct from the Granite-Docling 258M vision model used in 1a. Wraps PDF + table conversion utilities, OCR fallbacks, and the table-extraction routines that Granite-Docling's vision pass hands off to. Counts as the 8th IBM tool independent of the Granite-Docling model itself per the README + SUBMISSION 8-tool list.
+Open-source IBM Docling conversion layer (`docling` PyPI package), distinct from the Granite-Docling 258M vision model used in 1a. Wraps PDF + table conversion utilities, OCR fallbacks, and the table-extraction routines that Granite-Docling's vision pass hands off to. Counted as a distinct entry in the 12-tool IBM Granite stack per D-016 wave-30 stack expansion (the wave-22 baseline was 8 tools; wave-30 added Granite Embedding R2 + IBM TSPulse + Granite FlowState + Granite 4.0 Nano).
 
 - Role: post-process Granite-Docling raw output into the structured JSON schema; handle non-vision-driven sections (text-only Appendix L preambles, PDF metadata).
 - Output: cleaned `FIACoa` shape (see `app/shared/types.ts`).
@@ -138,7 +138,7 @@ where `dt = 1.0 s` at 1-Hz mini-sector aggregation. Couples the current-step `a_
 
 where `jerk_max = 8 m/s^3` (approximately 0.815 g per second; tighter than the upstream human-tolerance ~30 m/s^3 bound because the 1-Hz mini-sector aggregation already smooths intra-second jerk, so a tighter inequality at 1-Hz dt keeps the constraint load-bearing at the spec's sampling rate). Prior-step `a_·[t-1]` treated as exogenous. Pair of linear inequalities, convex. Prevents inter-mini-sector hallucinations where TTM would otherwise forecast physically-implausible sign reversals in long_g or lat_g across adjacent 1-Hz steps. The Convergence-14 fixture C14-04 exercises this bound at the 0.8 g/s headline number; both values reconcile via 8 m/s^3 / 9.81 m/s^2 ≈ 0.815 g/s.
 
-**Sampling-rate caveat (per Rajamani vehicle dynamics + Vinh's physics-ttm-neurips-methods.md §4).** Rate constraints (jerk and steering-rate) in production vehicle-dynamics practice activate at >=10 Hz sampling rates where intra-second driver inputs are not aliased. The C14-04 1 Hz fixture is a deliberate demo simplification: at 1 Hz aggregation, sub-second inputs collapse into the aggregate window and the jerk constraint catches inter-mini-sector sign reversals rather than the full rate violation surface a >=10 Hz pipeline would. Production telemetry deployments should route the jerk-bound at >=10 Hz on the raw 50 Hz upstream signal before mini-sector aggregation. The hackathon demo uses 1 Hz aggregation because the public TTM r2.1 backbone is trained on 1 Hz mini-sector tensors and the inter-mini-sector hallucination surface is the load-bearing failure mode our review process targeted; the >=10 Hz path is the V2 production trajectory documented in `paper/physics-ttm-methods.md`.
+**Sampling-rate caveat (per Rajamani vehicle dynamics + Vinh's physics-ttm-neurips-methods.md §4).** Rate constraints (jerk and steering-rate) in production vehicle-dynamics practice activate at >=10 Hz sampling rates where intra-second driver inputs are not aliased. The C14-04 1 Hz fixture is a deliberate demo simplification: at 1 Hz aggregation, sub-second inputs collapse into the aggregate window and the jerk constraint catches inter-mini-sector sign reversals rather than the full rate violation surface a >=10 Hz pipeline would. Production telemetry deployments should route the jerk-bound at >=10 Hz on the raw 50 Hz upstream signal before mini-sector aggregation. The hackathon demo uses 1 Hz aggregation because the public TTM r2.1 backbone is trained on 1 Hz mini-sector tensors and the inter-mini-sector hallucination surface is the load-bearing failure mode our review process targeted; the >=10 Hz production trajectory is documented in `paper/physics-ttm-methods.md` per wave-30 D-011 multi-frequency coexistence + D-015 8-tier in-scope physics (all in-scope for 2026-05-31 submission; no deferral hedge).
 
 **Stage 1 returns:** `(qp_corrected_tensor, qp_violation_log)` where `qp_corrected_tensor` is the projected forecast and `qp_violation_log` is a list of `PhysicsViolation` records (one per step that hit a convex-constraint bound). Differentiable end-to-end through the projection (gradient methods can backprop through Stage 1 if a future user wires the projection layer into a TTM-aware training loop).
 
@@ -171,7 +171,7 @@ where `eps` is a small numerical tolerance (specific value committed at Gate G5 
 **Combined returns from Layer 4:** `(corrected_tensor, violation_log)` where `corrected_tensor` is the Stage 1 projected forecast and `violation_log` is `qp_violation_log + feasibility_log`. The serializer (Convergence-14) treats both violation classes uniformly downstream.
 
 **Failure modes:**
-- (pre-mortem row 9) Infeasible Stage 1 QP. V1 catches and logs infeasibility, falls back to the prior-lap baseline. V2 (Day 5+) relaxes the mu bound and logs the relaxation in the Guardian audit so the user knows the recommendation operated on a relaxed envelope.
+- (pre-mortem row 9) Infeasible Stage 1 QP. V1 NumPy floor (APEX Lite ship-floor per D-028) catches and logs infeasibility, falls back to the prior-lap baseline. The galaxy-tier maximal architecture (per D-012 unrolled SCP outer loop + D-022 lexicographic COA constraint hierarchy) relaxes the mu bound via Tier-2/3 elastic slacks and logs the relaxation in the Guardian audit so the user knows the recommendation operated on a relaxed envelope.
 - Stage 2 audit-failure: if the audit flags a violation, the projected tensor still ships downstream; the audit annotates the violation in the log so Layer 5 Guardian can decide approve/flag/reject. The audit never modifies the projected tensor.
 
 ### 5. Granite Guardian 4.1 8B BYOC text audit (`app/backend/apex/guardian/audit.py`)
@@ -199,7 +199,7 @@ Reads the structured English violation log from Layer 2 with custom Bring-Your-O
     "rejected":  "reject"
   },
   "concern_template": "Friction-ellipse breach at step {step}: a_lat={a_lat:.2f}, a_long={a_long:.2f}, max_allowed={max:.2f}.",
-  "block_template":   "Cannot approve recommendation - friction envelope exceeded at step {step}. Re-run with circuit-conditional mu (V2)."
+  "block_template":   "Cannot approve recommendation - friction envelope exceeded at step {step}. Re-run with circuit-conditional mu lookup (galaxy-tier D-015 Tier 5 thermal-conditioned mu)."
 }
 ```
 
@@ -340,7 +340,7 @@ Sign conventions are binding across frontend TypeScript + backend Pydantic. Viol
 
 ## Appendix W30: Wave-30 Maximal Architecture Lock (2026-05-22)
 
-Per Stephen's galaxy ambition directive + 9-source multi-model deep-research synthesis at `research/wave-30/`. Decision-log D-009 through D-027 are the granular locks. This appendix overlays the wave-30 maximal architecture on top of the layered spec above, expanding Layer 2 + Layer 4 + Layer 5 + adding Layer 0 + Layer 7 + Layer 8 conditioning. V2 / V3 / post-hackathon labels are RETIRED. Everything below is in-scope for 2026-05-31.
+Per Stephen's galaxy ambition directive + 9-source multi-model deep-research synthesis at `research/wave-30/`. Decision-log D-009 through D-028 are the granular locks. This appendix overlays the wave-30 maximal architecture on top of the layered spec above, expanding Layer 2 + Layer 4 + Layer 5 + adding Layer 0 + Layer 7 + Layer 8 conditioning. Prior deferral labels are RETIRED per D-009 + D-028. Everything below is in-scope for 2026-05-31.
 
 ### Layer 0 - Edge / Client Plane (NEW per D-019 + D-021)
 
