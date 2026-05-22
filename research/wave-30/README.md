@@ -1,4 +1,4 @@
-# Wave-30 Maximal Architecture Lock — Research Sources
+# Wave-30 Maximal Architecture Lock: Research Sources
 
 7 research sources from the 2026-05-21 / 2026-05-22 multi-model deep research synthesis. This directory is the canonical reference for APEX's maximal architecture as locked by the NotebookLM synthesis at the end of the pass. All downstream PLAN.md rows, decision-log entries D-009 through D-022, paper §3 rewrite, arch-spec maximal expansion, Vinh-handoff rewrite, and frontend type expansion cite these sources.
 
@@ -8,8 +8,8 @@ The numbering matches NotebookLM's source-loading order in `09-notebooklm-synthe
 
 | # | File | Source | Role | Date |
 |---|------|--------|------|------|
-| 01 | `01-perplexity-prior-art-sweep.pdf` | Perplexity Deep Research | Prior-art scout — confirms what already exists in literature + what doesn't (the "confirmed absences" that prove APEX's novelty) | 2026-05-22 |
-| 02 | `02-gemini-physics-frontier-8-tier-stack.pdf` | Gemini 2.5 Pro Deep Research | Maximal vehicle-dynamics math frontier — Pacejka combined-slip, transient tire ODE, two-mass thermal, three-component load transfer, double-track, 3D track geometry, aerodynamics, adaptive hand-controls (8 tiers above current constant-mu floor) | 2026-05-22 |
+| 01 | `01-perplexity-prior-art-sweep.pdf` | Perplexity Deep Research | Prior-art scout: confirms what already exists in literature + what doesn't (the "confirmed absences" that prove APEX's novelty) | 2026-05-22 |
+| 02 | `02-gemini-physics-frontier-8-tier-stack.pdf` | Gemini 2.5 Pro Deep Research | Maximal vehicle-dynamics math frontier: Pacejka combined-slip, transient tire ODE, two-mass thermal, three-component load transfer, double-track, 3D track geometry, aerodynamics, adaptive hand-controls (8 tiers above current constant-mu floor) | 2026-05-22 |
 | 03 | `03-chatgpt-polyphase-aggregation-gap.pdf` | ChatGPT Deep Research | Single hardest sub-problem: 50 Hz raw telemetry to 1 Hz TTM context window without information loss. Recommends polyphase decomposition (50 phase streams, zero information loss) + 50 Hz feasible-lift projector | 2026-05-22 |
 | 04 | `04-claude-connective-tissue-physicsttm.pdf` | Claude Deep Research (wide pass) | Integration architecture connecting forecasting layer + physics-projection layer + Guardian. Locks (B, 30, 14) tensor contract + FastAPI multipart contract + COA-PDF-to-constraint mechanism + cvxpylayers vs qpth vs theseus comparison + 8-tier physics constraint roadmap + 12-day build plan | 2026-05-22 |
 | 05 | `05-claude-ai-architecture-frontier.pdf` | Claude Deep Research (architecture pass) | AI/architecture frontier above the physics layer. Three-track forecasting stack (Granite TTM r2.1 + FlowState + Chronos-2), expanded 12-tool IBM Granite stack, LangGraph + MCP + ContextForge orchestration, tri-agent Agent-as-Judge critic loop, RAG with Granite Embedding R2, LIPS 4-axis evaluation, APEX-Bench public benchmark, 5 shouldn't-be-possible moves (WebGPU Granite Nano + aLoRA + GEPA + EAGLE-3 + Agent-as-Judge) | 2026-05-22 |

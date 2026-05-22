@@ -161,7 +161,7 @@ Every locked decision with rationale + date + scope. Newest first.
 
 **(2) Stiff-ODE problem in transient tire dynamics** (relaxation length L_y / v_x explodes at low speed; Forward-Euler integration oscillates + explodes gradients): inner solve replaces stiff ODE with steady-state algebraic solution. Full transient dynamics deferred to offline validation only. If transient dynamics are strictly required in solver, fall back to differentiable implicit solver (Backward Euler) or torchdiffeq.
 
-**Rationale.** Source 02 Gemini flagged both as build-blocking; source 09 Q3 locked the fixes. These are not "limitations to be documented" — they're engineering hazards that explode the build at runtime if not handled before Vinh writes the SCP code.
+**Rationale.** Source 02 Gemini flagged both as build-blocking; source 09 Q3 locked the fixes. These are not "limitations to be documented": they are engineering hazards that explode the build at runtime if not handled before Vinh writes the SCP code.
 
 **Affected.** Vinh-backend-plan Day 4 + Day 5 implementation. arch-spec Layer 4 numerical-stability appendix. paper §3.2 implementation paragraph.
 
@@ -269,7 +269,7 @@ If any critic flags, IBM Mellea runs Instruct-Validate-Repair (IVR) with `loop_b
 
 ## 2026-05-22 D-022: Lexicographic COA constraint hierarchy with elastic slacks
 
-**Decision.** Conflicting COA constraints resolve via lexicographic hierarchy. Tier-0 (kinematic feasibility — vehicle does not leave the track) + Tier-1 (regulatory safety — no input that would violate FIA Appendix L homologation) are inviolable; the SCP solver crashes the run if these cannot be satisfied. Tier-2 (COA hardware permissions like the c_overlap flag for brake-throttle simultaneity) + Tier-3 (COA hardware constraints like steering-lock limits) relax via elastic slacks if a particular corner becomes kinematically impossible under all of them. The slack variable becomes a Guardian audit signal (the assistant report explicitly names which COA constraint was relaxed and why).
+**Decision.** Conflicting COA constraints resolve via lexicographic hierarchy. Tier-0 (kinematic feasibility: vehicle does not leave the track) + Tier-1 (regulatory safety: no input that would violate FIA Appendix L homologation) are inviolable; the SCP solver crashes the run if these cannot be satisfied. Tier-2 (COA hardware permissions like the c_overlap flag for brake-throttle simultaneity) + Tier-3 (COA hardware constraints like steering-lock limits) relax via elastic slacks if a particular corner becomes kinematically impossible under all of them. The slack variable becomes a Guardian audit signal (the assistant report explicitly names which COA constraint was relaxed and why).
 
 **Rationale.** Source 06 decision brief closes NotebookLM Q5 open question 2. The naive "all-COA-flags-are-hard-constraints" framing breaks the moment a hairpin demands a 270-degree steering input the adaptation only permits 180 degrees of; the solver throws an unhandled exception. The lexicographic + elastic-slack approach keeps Tier-0/1 hard + lets Tier-2/3 negotiate honestly when the geometry forces it.
 
