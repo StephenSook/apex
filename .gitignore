@@ -145,3 +145,7 @@ research/pit-wall-physics-constrained-foundation-models.pdf
 # patterns the script greps for; lives outside the public repo so the watchlist
 # is not itself a public artifact (Codex wave-11 BLOCKER #3).
 scripts/private-denylist.txt
+
+# FastF1 cache (Phase 0 task 0.6). Pre-fetched telemetry, regeneratable;
+# do not commit (~50 MiB per session).
+app/backend/.fastf1_cache/
