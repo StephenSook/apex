@@ -71,12 +71,22 @@ export const metadata: Metadata = {
     "IBM SkillsBuild",
     "motorsport AI",
   ],
+  // Wave-39 codex AXIS 2 close-out: declare canonical + openGraph.url
+  // explicitly so the resolved canonical anchors to apex.race (vs the
+  // Vercel-served alias apex-race.vercel.app), preventing duplicate-
+  // content signals to Google + LinkedIn Open Graph crawlers + the
+  // BeMyApp judge-portal preview from picking the wrong origin. Next
+  // resolves these as relative against metadataBase (= apex.race).
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     title: "APEX | AI race engineer for adaptive racers",
     description:
       "The same IBM Granite stack that ships to Scuderia Ferrari's fan app, pointed at the drivers who need a race engineer most.",
     siteName: "APEX",
     type: "website",
+    url: "/",
     images: [
       {
         url: "/og-architecture.png",
