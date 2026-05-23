@@ -30,22 +30,34 @@ const DOWNGRADE_LABELS: Record<"approve" | "flag", string> = {
 };
 
 export default function PhysicsConfidenceBadge({ confidence }: PhysicsConfidenceBadgeProps) {
-  // Wave-35 A.9 Number.isFinite guard. Non-finite Mahalanobis distance
-  // or non-finite p95 threshold both indicate the detector emitted a
-  // garbage value (most often: NaN from a divide-by-zero in the
-  // covariance inversion). Surface explicitly via role=alert instead
-  // of rendering "NaN" in the chip body.
-  if (
-    !Number.isFinite(confidence.mahalanobis_distance) ||
-    !Number.isFinite(confidence.threshold_p95)
-  ) {
+  // Wave-35 A.9 + wave-36 codex MED Number.isFinite guard. Non-finite
+  // Mahalanobis distance or non-finite p95 threshold both indicate the
+  // detector emitted a garbage value (most often: NaN from a divide-
+  // by-zero in the covariance inversion). Surface explicitly via
+  // role=alert + name the offending field so operators know whether
+  // the upstream bug is in the distance calculation or the threshold
+  // calibration. Both-non-finite case names both fields.
+  const distanceFinite = Number.isFinite(confidence.mahalanobis_distance);
+  const thresholdFinite = Number.isFinite(confidence.threshold_p95);
+  if (!distanceFinite || !thresholdFinite) {
+    let offendingField: string;
+    if (!distanceFinite && !thresholdFinite) {
+      offendingField = "Mahalanobis distance + p95 threshold";
+    } else if (!distanceFinite) {
+      offendingField = "Mahalanobis distance";
+    } else {
+      offendingField = "p95 threshold";
+    }
     return (
       <span
         role="alert"
         className="inline-flex items-center gap-2 rounded-sm border-2 border-accent bg-paper px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-accent"
       >
         <span aria-hidden="true">●</span>
-        <span>Physics-confidence detector emitted non-finite distance; re-run the session.</span>
+        <span>
+          Physics-confidence detector emitted non-finite distance ({offendingField}); re-run the
+          session.
+        </span>
       </span>
     );
   }
