@@ -77,12 +77,12 @@ export const CONVERGENCE_FIXTURES: ConvergenceFixtureCatalogue = [
     id: "C14-04",
     title: "Jerk bound",
     summary:
-      "Long_g jumps from +0.6 g at t=8 to -0.8 g at t=9 in one 1-Hz mini-sector. Delta of 1.4 g/s exceeds the V1 jerk bound at 8 m/s^3 (approximately 0.815 g/s). 1 Hz fixture is a deliberate demo simplification per arch-spec sampling-rate caveat; production telemetry runs the jerk-bound at >=10 Hz on the raw 50 Hz upstream signal before mini-sector aggregation.",
+      "Long_g jumps from +0.6 g at t=8 to -0.8 g at t=9 in one 1-Hz mini-sector. Delta of 1.4 g/s exceeds the jerk bound at 8 m/s^3 (approximately 0.815 g/s). 1 Hz fixture is a deliberate demo simplification per arch-spec sampling-rate caveat; per wave-30 D-011 multi-frequency coexistence, production telemetry runs the jerk-bound at >=10 Hz on the raw 50 Hz upstream signal before mini-sector aggregation.",
     violation_class: "jerk_bound",
     detection_stage: "stage_1_qp",
     expected_verdict: "flag",
     expected_guardian_reason:
-      "Stage 1 QP jerk-bound clamp engaged; projected long_g[9] from -0.8 g to -0.2 g (prev +0.6 g minus the per-step jerk budget of 0.8 g) to respect the V1 jerk bound at 8 m/s^3 over the 1.0 s mini-sector.",
+      "Stage 1 QP jerk-bound clamp engaged; projected long_g[9] from -0.8 g to -0.2 g (prev +0.6 g minus the per-step jerk budget of 0.8 g) to respect the jerk bound at 8 m/s^3 over the 1.0 s mini-sector (D-011 multi-frequency coexistence framing).",
     coa_simul_permitted: null,
     fixture_path: "app/backend/tests/fixtures/convergence-14/C14-04_jerk_bound.json",
     sample_violation_log_excerpt:
