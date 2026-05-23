@@ -1056,8 +1056,31 @@ export interface BackendViolationRecord {
  *
  * Empty log => no violations => FCVR = 0 for this forecast.
  */
-export interface BackendPhysicsViolationLog {
-  readonly records: ReadonlyArray<BackendViolationRecord>;
+/**
+ * Wave-41 B.4 close-out per wave-40 cold-review type-design-analyzer
+ * H.7: generic parameter `TViolationType` enables fixture narrowing.
+ *
+ * Default `= BackendViolationType` preserves backwards compatibility
+ * for code that doesn't care which violation subtypes are present.
+ *
+ * Narrowed usage examples:
+ *
+ *   // Friction-ellipse-only V1 spike log:
+ *   const spike: BackendPhysicsViolationLog<"friction_ellipse_exceeded">;
+ *
+ *   // Specific subset for COA-aware validators:
+ *   type CoaLog = BackendPhysicsViolationLog<
+ *     "coa_simultaneity_violation" | "friction_ellipse_exceeded"
+ *   >;
+ *
+ * Downstream consumers that need to handle "logs from the
+ * friction-ellipse-only V1 spike" vs "logs from the full V2
+ * projector" can now express that distinction at the type level.
+ */
+export interface BackendPhysicsViolationLog<
+  TViolationType extends BackendViolationType = BackendViolationType,
+> {
+  readonly records: ReadonlyArray<BackendViolationRecord & { readonly type: TViolationType }>;
   /**
    * HORIZON from shapes.py; literal-typed per wave-41 B.3 close-out
    * (type-design-analyzer H.5 from wave-40 cold review). Frozen at
