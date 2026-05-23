@@ -7,6 +7,7 @@ import { ConvergenceFixtureGrid } from "../../components/ConvergenceFixtureGrid"
 import EAGLE3LatencyBadge from "../../components/EAGLE3LatencyBadge";
 import EdgeSummary from "../../components/EdgeSummary";
 import { ExtendedPhysicsFixtureGrid } from "../../components/ExtendedPhysicsFixtureGrid";
+import RaceEventsTilesRow from "../../components/RaceEventsTilesRow";
 import GEPAEvolutionPanel from "../../components/GEPAEvolutionPanel";
 import PhysicsConfidenceBadge from "../../components/PhysicsConfidenceBadge";
 import TriAgentCriticPanel from "../../components/TriAgentCriticPanel";
@@ -309,6 +310,9 @@ export default function JudgesPage() {
             binding a non-convex tier to the inner cvxpylayers iterate is a TypeScript compile error.
             Hover any tile to reveal the architecture-spec Appendix W30 cross-reference.
           </p>
+          <div className="mt-8 mb-8">
+            <RaceEventsTilesRow />
+          </div>
           <ExtendedPhysicsFixtureGrid fixtures={EXTENDED_PHYSICS_FIXTURES} />
           <p className="mt-6 font-mono text-xs italic text-muted">
             Grid is display-only. The Vinh-lane SCP outer-loop linearisation lands per PLAN row 2.18
