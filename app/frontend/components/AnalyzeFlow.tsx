@@ -99,22 +99,24 @@ function EdgeModeCallout() {
           id="edge-mode-callout-title"
           className="font-display text-xl tracking-tight text-ink"
         >
-          Try the in-browser edge mode.
+          See all five galaxy-tier moves on /judges.
         </h3>
         <p className="text-sm leading-relaxed text-ink-soft">
-          The wave-38 build ships Granite 4.0 Nano 350M running directly in your browser via
-          WebGPU + Transformers.js v4. The /judges page surfaces the live 5-state inference card
-          (loading / ready / oom / offline / error) + the 30-line Newton friction-ellipse projector
-          visualization. Edge inference is advisory per D-021 server-authoritative reconnect; the
-          canonical APEX pipeline (this /analyze route) remains the source of truth.
+          Wave-30 D-019 enumerates five shouldn&apos;t-be-possible moves; wave-38 shipped move #1
+          (WebGPU Granite 4.0 Nano 350M edge inference via Transformers.js v4) and wave-40 ships
+          the visualization layer for moves #2-4 (Activated LoRA hot-swap, GEPA reflective prompt
+          evolution, EAGLE-3 speculative decoding) plus the tri-agent Agent-as-Judge critic loop
+          for move #5. The /judges page surfaces all five panels in pipeline order. Backend wire-
+          up arrives Day 7-8; mock fixtures render today. The canonical APEX pipeline (this
+          /analyze route) remains the source of truth per D-021 server-authoritative reconnect.
         </p>
       </div>
       <Link
-        href="/judges#edge-summary"
+        href="/judges#galaxy-moves"
         className="inline-flex shrink-0 items-center gap-2 rounded-sm border border-racing-green bg-paper px-4 py-2 font-mono text-xs uppercase tracking-wider text-racing-green transition-colors hover:bg-racing-green hover:text-paper focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
       >
-        Open edge demo
-        <span aria-hidden="true">→</span>
+        Open galaxy panels
+        <span aria-hidden="true">-&gt;</span>
       </Link>
     </aside>
   );
