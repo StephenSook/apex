@@ -75,7 +75,7 @@ function ExtendedPhysicsFixtureTile({ fixture }: ExtendedPhysicsFixtureTileProps
           <span className="ml-2">{fixture.tier_name}</span>
         </h3>
         <span className="rounded-sm border border-rule bg-paper px-2 py-1 font-mono text-[10px] uppercase tracking-wider text-ink-soft">
-          tier {fixture.id.slice(3)}
+          tier {fixture.id.match(/^EP-(\d+)$/)?.[1] ?? "?"}
         </span>
       </header>
       <p className="text-sm leading-relaxed text-ink-soft">{fixture.summary}</p>
