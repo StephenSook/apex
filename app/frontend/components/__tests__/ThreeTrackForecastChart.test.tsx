@@ -94,4 +94,95 @@ describe("ThreeTrackForecastChart", () => {
     expect(screen.getByText(/Three-track forecast has no data/i)).toBeInTheDocument();
     expect(screen.getByText(/Verify upstream telemetry intake/i)).toBeInTheDocument();
   });
+
+  it("renders the non-finite alert when every track value is NaN or Infinity (wave-35 A.3)", () => {
+    const allNonFinite: ThreeTrackForecast = {
+      status: "converged",
+      tracks: [
+        { track: "ttm_channel_mix", forecast: [Number.NaN, Number.NaN] },
+        { track: "flowstate", forecast: [Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY] },
+        { track: "chronos2", forecast: [Number.NaN, Number.NaN], quantiles: [Number.NaN, Number.NaN] },
+      ],
+      ensemble: [Number.NaN, Number.NaN],
+      divergence_sigma: 0,
+    };
+    render(<ThreeTrackForecastChart forecast={allNonFinite} />);
+    const alert = screen.getByRole("alert");
+    expect(alert).toHaveTextContent(/no finite values/i);
+    expect(alert).toHaveTextContent(/Re-run the session/i);
+  });
+
+  it("renders the missing-chronos2 alert when the chronos2 track is absent (wave-35 A.5)", () => {
+    // Cast through unknown to bypass the fixed-arity tuple type; the
+    // runtime check is what we want to verify here (backend bug
+    // emitting an all-TTM tuple).
+    const missingChronos2 = {
+      status: "converged",
+      tracks: [
+        { track: "ttm_channel_mix", forecast: [40.0, 41.0] },
+        { track: "flowstate", forecast: [40.1, 41.1] },
+        { track: "ttm_channel_mix", forecast: [40.2, 41.2] },
+      ],
+      ensemble: [40.1, 41.1],
+      divergence_sigma: 0,
+    } as unknown as ThreeTrackForecast;
+    render(<ThreeTrackForecastChart forecast={missingChronos2} />);
+    const alert = screen.getByRole("alert");
+    expect(alert).toHaveTextContent(/Chronos-2 track/i);
+    expect(alert).toHaveTextContent(/upstream ensemble-construction error/i);
+  });
+
+  it("renders the degenerate-flat envelope note when yMax === yMin (wave-35 A.2)", () => {
+    const flat: ThreeTrackForecast = {
+      status: "converged",
+      tracks: [
+        { track: "ttm_channel_mix", forecast: [42.0, 42.0, 42.0] },
+        { track: "flowstate", forecast: [42.0, 42.0, 42.0] },
+        { track: "chronos2", forecast: [42.0, 42.0, 42.0], quantiles: [42.0, 42.0] },
+      ],
+      ensemble: [42.0, 42.0, 42.0],
+      divergence_sigma: 0,
+    };
+    render(<ThreeTrackForecastChart forecast={flat} />);
+    expect(screen.getByText(/envelope is flat across all three tracks/i)).toBeInTheDocument();
+    expect(screen.getByText(/zero cross-track variance is unusual/i)).toBeInTheDocument();
+  });
+
+  it("renders a single-point Chronos-2 forecast as a circle rather than an envelope (wave-35 A.6)", () => {
+    const singlePoint: ThreeTrackForecast = {
+      status: "converged",
+      tracks: [
+        { track: "ttm_channel_mix", forecast: [42.0] },
+        { track: "flowstate", forecast: [42.1] },
+        { track: "chronos2", forecast: [42.05], quantiles: [40.0, 44.0] },
+      ],
+      ensemble: [42.05],
+      divergence_sigma: 0.1,
+    };
+    const { container } = render(<ThreeTrackForecastChart forecast={singlePoint} />);
+    // Envelope polygon path should NOT be rendered (forecastMeans.length < 2);
+    // a small <circle> at the single Chronos-2 point should be rendered instead.
+    expect(container.querySelector("circle")).toBeInTheDocument();
+  });
+
+  it("does not crash on non-finite chronos2 quantiles; falls back to no envelope (wave-35 A.1)", () => {
+    const nanQuantiles: ThreeTrackForecast = {
+      status: "converged",
+      tracks: [
+        { track: "ttm_channel_mix", forecast: [40.0, 41.0, 42.0] },
+        { track: "flowstate", forecast: [40.1, 41.1, 42.1] },
+        {
+          track: "chronos2",
+          forecast: [40.2, 41.2, 42.2],
+          quantiles: [Number.NaN, Number.NaN, Number.NaN, Number.NaN],
+        },
+      ],
+      ensemble: [40.1, 41.1, 42.1],
+      divergence_sigma: 0.1,
+    };
+    expect(() => render(<ThreeTrackForecastChart forecast={nanQuantiles} />)).not.toThrow();
+    // The chart should still render with the three track lines + ensemble;
+    // only the quantile envelope path should be omitted.
+    expect(screen.getByText("Ensemble converged")).toBeInTheDocument();
+  });
 });
