@@ -1,0 +1,66 @@
+- generic [active] [ref=e1]:
+  - link "Skip to main content" [ref=e2] [cursor=pointer]:
+    - /url: "#main"
+  - main [ref=e3]:
+    - navigation "Breadcrumb" [ref=e4]:
+      - list [ref=e5]:
+        - listitem [ref=e6]:
+          - link "APEX" [ref=e7] [cursor=pointer]:
+            - /url: /
+        - listitem [ref=e8]: /
+        - listitem [ref=e9]: Analyze
+    - region "Upload your session." [ref=e10]:
+      - generic [ref=e11]:
+        - generic [ref=e12]:
+          - paragraph [ref=e13]: Step 1 of 1 · Bring your own session
+          - heading "Upload your session." [level=2] [ref=e14]
+          - paragraph [ref=e15]: Three artefacts. Telemetry CSV from your data logger, the FIA Certificate of Adaptations as a PDF, and a sentence or two from your own debrief. APEX returns a corner-by-corner coaching report inside two minutes.
+        - generic [ref=e16]:
+          - generic [ref=e17]:
+            - generic [ref=e18]:
+              - generic [ref=e19]: Telemetry CSV
+              - button "Telemetry CSV" [ref=e20] [cursor=pointer]:
+                - generic [ref=e21]: Drag a file or press Enter
+                - generic [ref=e22]: Choose a file.
+                - generic [ref=e23]: Up to 50.0 MB.
+              - button [ref=e24]
+              - paragraph [ref=e25]: "50 Hz channels: throttle, brake, steering, RPM, lat-G, long-G, speed, gear, time."
+            - generic [ref=e26]:
+              - generic [ref=e27]: FIA Certificate of Adaptations
+              - button "FIA Certificate of Adaptations" [ref=e28] [cursor=pointer]:
+                - generic [ref=e29]: Drag a file or press Enter
+                - generic [ref=e30]: Choose a file.
+                - generic [ref=e31]: Up to 10.0 MB.
+              - button [ref=e32]
+              - paragraph [ref=e33]: Granite-Docling parses each of the nine adaptation domains and the simultaneity envelope.
+            - generic [ref=e34]:
+              - generic [ref=e35]: Your debrief
+              - textbox "Your debrief" [ref=e36]:
+                - /placeholder: Lost the rears mid-Old Hairpin again. Cannot trail-brake the lever the way I could at Croft.
+              - paragraph [ref=e37]: Two or three sentences from your post-session debrief. APEX cross-references the debrief against the forecast envelope and your COA limits.
+              - paragraph [ref=e38]: 1000 characters left.
+          - generic [ref=e39]:
+            - generic [ref=e40]:
+              - generic [ref=e41]: Driver identifier
+              - textbox "Driver identifier" [ref=e42]:
+                - /placeholder: sarah-reynolds-britcar-2026
+              - paragraph [ref=e43]: Short slug. APEX caches your parsed COA against this identifier so repeat sessions skip the document parse step.
+            - generic [ref=e44]:
+              - generic [ref=e45]:
+                - term [ref=e46]: Telemetry channels
+                - definition [ref=e47]: 8 + time
+              - generic [ref=e48]:
+                - term [ref=e49]: COA domains parsed
+                - definition [ref=e50]: 9 of 9
+              - generic [ref=e51]:
+                - term [ref=e52]: Round-trip target
+                - definition [ref=e53]: < 60 s
+              - generic [ref=e54]:
+                - term [ref=e55]: Backend contract
+                - definition [ref=e56]: app/shared/types.ts
+          - paragraph [ref=e57]: Uploads stay on the APEX backend long enough to produce one coaching report, then drop. The FIA COA is parsed into structured JSON and cached against your driver identifier so re-runs skip the document pass. No telemetry leaves this session.
+          - generic [ref=e58]:
+            - paragraph [ref=e59]: All four fields required
+            - button "Generate coaching report" [disabled] [ref=e60]
+  - button "Open Next.js Dev Tools" [ref=e67] [cursor=pointer]:
+    - img [ref=e68]
