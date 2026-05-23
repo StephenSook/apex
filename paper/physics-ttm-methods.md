@@ -14,22 +14,29 @@ Let \(X_{t-L+1:t} \in \mathbb{R}^{L \times d}\) denote the input telemetry histo
 \hat{Y}_{t+1:t+H} = f_\theta(X_{t-L+1:t}), \quad \hat{Y} \in \mathbb{R}^{H \times d}.
 \]
 
-For each predicted timestep \(h\), the predicted vector is:
+For each predicted timestep \(h\), the predicted vector is the wave-30 D-016 14-channel contract:
 
 \[
 \hat{y}_{h} =
 [
-\hat{v}_{x,h},
-\hat{a}_{x,h},
-\hat{a}_{y,h},
-\hat{\delta}_{h},
-\hat{\omega}_{h},
 \hat{\tau}_{h},
-\hat{b}_{h}
+\hat{b}_{h},
+\hat{\delta}_{h},
+\hat{r}_{h},
+\hat{a}_{y,h},
+\hat{a}_{x,h},
+\hat{v}_{x,h},
+\hat{G}_{h},
+\hat{c}_{\text{overlap},h},
+\hat{F}_{z,h},
+\hat{\mu}_{v,h},
+\hat{\phi}_{h},
+\hat{\beta}_{h},
+\hat{\omega}_{h}
 ]^\top,
 \]
 
-where \(v_x\) is longitudinal speed, \(a_x\) is longitudinal acceleration, \(a_y\) is lateral acceleration, \(\delta\) is steering angle, \(\omega\) is yaw rate, \(\tau \in [0,1]\) is throttle command, and \(b \in [0,1]\) is brake command. If a dataset lacks one of these channels, the paper should state whether the channel is estimated, omitted, or synthetically generated.
+where \(\tau \in [0,1]\) is throttle command, \(b \in [0,1]\) is brake command, \(\delta\) is steering angle (radians, road-wheel), \(r\) is engine RPM, \(a_y\) is lateral acceleration (g), \(a_x\) is longitudinal acceleration (g), \(v_x\) is longitudinal speed (m/s), \(G\) is gear (integer 0-8), \(c_{\text{overlap}} \in \{0, 1\}\) is the COA-derived simultaneity flag, \(F_z\) is per-tire vertical-load aggregate after Tier 4 double-track load-transfer adjustments, \(\mu_v\) is the per-step friction coefficient consumed + updated by Tier 5 tire thermal + Tier 7 Pacejka combined-slip, \(\phi\) is track-frame pitch (radians; Tier 1 3D track geometry input), \(\beta\) is track-frame bank (radians; Tier 1), and \(\omega\) is yaw rate (radians/second; Tier 8 kinematic integration input). The forecast tensor shape is \((B, 30, 14)\) per the wave-30 D-016 channel expansion (the wave-22 baseline was \((B, 24, 9)\); migration pads channels 9-13 with zeros + extends the time axis to 30). The internal SCP solver carries \(T_{\text{surface}} + T_{\text{core}}\) as internal state per Tier 5 (not channels of the input tensor); see paper §3.1 + arch-spec Appendix W30 for the full channel-to-tier binding.
 
 Let \(m\) denote vehicle mass, \(L = l_f + l_r\) wheelbase, \(l_f\) and \(l_r\) front and rear axle distances, \(I_z\) yaw inertia, \(g\) gravitational acceleration, and \(\mu\) the estimated tire-road friction coefficient. For a hackathon demo, these can be fixed nominal constants; for a paper, sensitivity analysis over \(L\), \(\mu\), and acceleration bounds should be reported.
 
@@ -229,28 +236,17 @@ where \(s_k = [\cos(2\pi k/K), \sin(2\pi k/K)]^\top\). With \(K=8\), this become
 
 ### Acceleration and speed coherence
 
-If both speed and acceleration are forecast, finite-difference coherence should be enforced:
+The forward-Euler kinematic step is enforced as a hard equality at the inner SCP iterate:
 
 \[
-v_{x,h+1} = v_{x,h} + a_{x,h}\Delta t + \epsilon_{v,h}.
+v_{x,h+1} = v_{x,h} + a_{x,h}\Delta t.
 \]
 
-As a hard equality, this can overconstrain noisy 1 Hz telemetry. The recommended formulation is a soft penalty:
-
-\[
-\Phi_{\text{kin}}(Y)
-=
-\sum_{h=1}^{H-1}
-\left(
-v_{x,h+1} - v_{x,h} - a_{x,h}\Delta t
-\right)^2.
-\]
-
-This is a convex quadratic term and remains QP-compatible.
+Treating \(v_{x,h}\) as exogenous from the previous step's accepted state and \(a_{x,h}\) as a current-step decision variable makes the equality linear + therefore convex; CvxpyLayer enforces it inside the Stage 1 QP solve (per paper §3.2). The earlier methods draft framed the equality as a soft penalty \(\Phi_{\text{kin}}\) to accommodate noisy 1 Hz telemetry, but the wave-30 architecture absorbs the noise into the SCP outer-loop trust-region (D-027 Powell-ratio acceptance) rather than relaxing the kinematic equality itself.
 
 ### Steering-rate and jerk constraints
 
-At high sampling rates, steering-rate and jerk constraints are useful:
+Steering-rate and jerk constraints are active:
 
 \[
 \left|
@@ -258,17 +254,17 @@ At high sampling rates, steering-rate and jerk constraints are useful:
 \right|
 \le
 \dot{\delta}_{\max},
-\]
-
-\[
+\quad
 \left|
 \frac{a_{x,h} - a_{x,h-1}}{\Delta t}
 \right|
 \le
-j_{\max}.
+j_{\max},
+\quad
+j_{\max} = 8 \text{ m/s}^3 \approx 0.815 \text{ g/s}.
 \]
 
-At 1 Hz, these should be used cautiously because sub-second driver inputs are aliased. The methods section should state that rate constraints are activated for telemetry at \(10\) Hz or higher, while 1 Hz demo telemetry uses box constraints, soft yaw consistency, and soft acceleration-speed coherence. This distinction is consistent with vehicle-modeling work that compares kinematic and dynamic models under different sampling and control settings ([Kinematic and Dynamic Vehicle Models for Autonomous Driving Control Design](https://nuhuo08.github.io/control/IV_KinematicMPC_jason.pdf)).
+The wave-30 D-011 multi-frequency coexistence pattern coordinates rate enforcement across three sampling rates: the 1 Hz mini-sector aggregation of the TTM r2.1 backbone uses the tighter \(j_{\max} = 8 \text{ m/s}^3\) value to keep the constraint load-bearing at the coarser sampling rate, polyphase phase-streams feed TSPulse anomaly detection at higher rates, and Granite FlowState runs the rate constraint at native 50 Hz on the raw upstream signal before mini-sector aggregation. The 1 Hz aggregation caveat is consistent with vehicle-modeling work that compares kinematic and dynamic models under different sampling and control settings ([Kinematic and Dynamic Vehicle Models for Autonomous Driving Control Design](https://nuhuo08.github.io/control/IV_KinematicMPC_jason.pdf)).
 
 ## Brake-throttle and adaptive-control constraints
 
