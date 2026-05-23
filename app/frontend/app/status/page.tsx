@@ -137,11 +137,12 @@ export default function StatusPage() {
             </li>
             <li className="rounded-sm border border-rule bg-paper p-4">
               <p className="font-mono text-xs uppercase tracking-wider text-amber">
-                Day 11 · Vercel deploy URL
+                Day 5 · Vercel deploy URL
               </p>
               <p className="mt-1 text-sm text-ink-soft">
-                apex.race or apex-race.vercel.app (whichever lands first); curl -sI
-                uptime probe.
+                apex.race (canonical; cutover landed wave-38 2026-05-23);
+                apex-race.vercel.app remains as a Vercel-served alias for the
+                pre-cutover preview history. curl -sI uptime probe.
               </p>
             </li>
             <li className="rounded-sm border border-rule bg-paper p-4">
