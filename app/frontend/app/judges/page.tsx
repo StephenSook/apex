@@ -9,6 +9,7 @@ import PhysicsConfidenceBadge from "../../components/PhysicsConfidenceBadge";
 import TriAgentCriticPanel from "../../components/TriAgentCriticPanel";
 import { CONVERGENCE_FIXTURES } from "../../lib/convergence-fixtures";
 import { EXTENDED_PHYSICS_FIXTURES } from "../../lib/extended-physics-fixtures";
+import { IBM_STACK_TUPLES } from "../../lib/ibm-stack";
 import {
   MOCK_PHYSICS_CONFIDENCE,
   MOCK_PHYSICS_CONFIDENCE_OOD,
@@ -93,20 +94,13 @@ const RESOURCES: ReadonlyArray<ResourceLink> = [
   },
 ];
 
-const IBM_STACK: ReadonlyArray<readonly [string, string]> = [
-  ["Granite-Docling 258M", "FIA COA PDF → structured JSON parser."],
-  ["Docling library", "Open-source IBM Docling conversion + table-extraction layer."],
-  ["Granite Vision 4.1 4B", "SRO + Britcar timing-sheet PDF → CSV."],
-  ["Granite TimeSeries TTM r2.1", "Frozen pretrained foundation forecaster + channel-mix decoder fine-tune (Track 1 of D-010 three-track ensemble)."],
-  ["Granite FlowState 9.1M", "Sampling-rate-invariant continuous-time SSM (Track 2 of D-010 three-track ensemble; native 50 Hz)."],
-  ["IBM TSPulse 1M", "Time-frequency anomaly detector on polyphase phase streams (D-016 + Layer 2 anomaly feed to Guardian audit)."],
-  ["Granite Embedding R2 (149M + 47M)", "Hybrid dense + sparse RAG retrieval over vehicle setup guides + racing-theory + adaptive-equipment specs + COA-parsed fixtures (D-016 RAG layer)."],
-  ["Granite 4.1 8B Instruct", "Race-engineer narrator producing the coaching report."],
-  ["Granite Guardian 4.1 8B", "BYOC custom-rule text audit on every physics-corrected forecast + physics-confidence detector verdict downgrade per D-024."],
-  ["Granite 4.0 Nano 350M", "In-browser WebGPU edge model via Transformers.js for offline paddock-summary (D-019 item 1 + D-021 server-authoritative reconnect)."],
-  ["Langflow", "Visible orchestration graph export of the full pipeline (D-017 demoted from runtime to demo facade per wave-30 lock)."],
-  ["IBM Bob", "Build accelerator. We adopt Bob as our codegen-assistance loop in keeping with IBM's publicly-documented watsonx + Granite Ferrari case-study posture toward governed-AI development."],
-];
+// Wave-39 codex MED close-out: the IBM_STACK panel now derives from
+// the shared `lib/ibm-stack.ts` canonical catalog. The /judges panel
+// uses the tuple-form adapter (IBM_STACK_TUPLES) because the legacy
+// JSX in this file expects `[label, role]` tuples. Future tool-
+// count + version-pin changes propagate to /, /judges, paper, deck,
+// README via a single edit to the shared catalog.
+const IBM_STACK: ReadonlyArray<readonly [string, string]> = IBM_STACK_TUPLES;
 
 const QA_CARDS: ReadonlyArray<QaCard> = [
   {

@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { IBM_GRANITE_STACK } from "../lib/ibm-stack";
+
 export default function Home() {
   return (
     <>
@@ -600,21 +602,6 @@ function Stat({ label, value }: { label: string; value: string }) {
 /* Stack badges (IBM Granite tools)                                  */
 /* -------------------------------------------------------------- */
 function StackBadges() {
-  const tools = [
-    { name: "Granite-Docling", v: "258M", role: "FIA COA PDF to structured JSON parser" },
-    { name: "Docling library", v: "latest", role: "Open-source IBM Docling conversion + table-extraction" },
-    { name: "Granite Vision", v: "4.1 4B", role: "SRO + Britcar timing-sheet PDF to CSV" },
-    { name: "Granite TimeSeries TTM", v: "r2.1", role: "Track 1 of D-010 three-track ensemble (frozen + channel-mix decoder)" },
-    { name: "Granite FlowState", v: "9.1M", role: "Track 2 of D-010 (sampling-rate-invariant continuous-time SSM at 50 Hz)" },
-    { name: "IBM TSPulse", v: "1M", role: "Polyphase time-frequency anomaly detector (D-016 Layer 2)" },
-    { name: "Granite Embedding R2", v: "149M + 47M", role: "Hybrid dense + sparse RAG over setup + theory + COA (D-016)" },
-    { name: "Granite Instruct", v: "4.1 8B", role: "Race-engineer narrator producing the coaching report" },
-    { name: "Granite Guardian", v: "4.1 8B", role: "BYOC custom-rule audit + D-024 physics-confidence downgrade" },
-    { name: "Granite 4.0 Nano", v: "350M", role: "In-browser WebGPU edge model via Transformers.js (D-019 + D-021)" },
-    { name: "Langflow", v: "demo facade", role: "Orchestration graph export (D-017 demoted to facade per wave-30)" },
-    { name: "IBM Bob", v: "latest", role: "Build accelerator per IBM Granite Ferrari case-study precedent" },
-  ];
-
   return (
     <section aria-labelledby="stack-title" className="bg-paper">
       <div className="mx-auto max-w-6xl px-6 py-20 lg:px-10 lg:py-24">
@@ -626,14 +613,14 @@ function StackBadges() {
           </h2>
         </div>
         <ul className="grid gap-px bg-rule sm:grid-cols-2 lg:grid-cols-4">
-          {tools.map((t) => (
+          {IBM_GRANITE_STACK.map((t) => (
             <li
               key={t.name}
               className="flex flex-col gap-1 bg-paper-warm p-5"
             >
               <span className="font-display text-lg text-ink">{t.name}</span>
               <span className="font-mono text-xs uppercase tracking-wider text-accent">
-                {t.v}
+                {t.version}
               </span>
               <span className="text-sm text-ink-soft leading-snug pt-1">
                 {t.role}
