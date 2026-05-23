@@ -103,8 +103,9 @@ export default function EAGLE3LatencyBadge({
       {state.status === "disabled" && (
         <p className="text-sm leading-relaxed text-ink-soft">
           Speculative decoding disabled. Vanilla autoregressive vLLM decode is the active
-          path. Enable EAGLE-3 in Phase 4 task 4.4 to hit the G8 15s coaching-report
-          sub-budget on RTX 4060.
+          path. Enable EAGLE-3 in Phase 4 task 4.4 to compress the Granite Instruct
+          narration portion of the G8 15s coaching-report budget on the RTX 3060 Ti
+          operator hardware that D-027 Stage C validated.
         </p>
       )}
 
