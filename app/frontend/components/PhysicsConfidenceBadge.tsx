@@ -12,10 +12,26 @@
  * arrow rendered inline so the reader can see at a glance what the
  * detector did to the Guardian verdict.
  *
- * Wave-35 A.9 + A.10: Number.isFinite guards on the Mahalanobis +
- * p95 threshold values + exhaustiveness throw on the status variant.
- * Non-finite distance or threshold => role=alert chip prompting
- * re-run of the session, rather than rendering "NaN" silently.
+ * Wave-35 A.9: Number.isFinite guards on the Mahalanobis + p95
+ * threshold values; non-finite distance OR threshold renders a
+ * role=alert chip prompting re-run of the session rather than
+ * rendering "NaN" silently. Wave-35 A.10: exhaustiveness throw on
+ * the status discriminator catches new variants at compile time.
+ *
+ * Wave-36 codex MED: alert names the offending field by name so
+ * operators know whether the upstream bug is in the distance
+ * calculation OR the p95 threshold calibration (or both).
+ *
+ * Wave-37 cold-review fixes:
+ * - silent-failure-hunter MED-3: the exhaustiveness switch fires
+ *   BEFORE the Number.isFinite guard so a future status variant
+ *   carrying non-finite values still routes through the never-
+ *   throw + surfaces as a compile-time error rather than silently
+ *   being absorbed by the non-finite alert.
+ * - silent-failure-hunter MED-2: alert text rephrased from "non-
+ *   finite distance" (singular noun) to "non-finite values" (plural
+ *   noun) so the parenthetical "p95 threshold" case does not read
+ *   as "a threshold called a distance."
  */
 
 import type { PhysicsConfidence } from "../../shared/types";
@@ -30,13 +46,31 @@ const DOWNGRADE_LABELS: Record<"approve" | "flag", string> = {
 };
 
 export default function PhysicsConfidenceBadge({ confidence }: PhysicsConfidenceBadgeProps) {
-  // Wave-35 A.9 + wave-36 codex MED Number.isFinite guard. Non-finite
-  // Mahalanobis distance or non-finite p95 threshold both indicate the
-  // detector emitted a garbage value (most often: NaN from a divide-
-  // by-zero in the covariance inversion). Surface explicitly via
-  // role=alert + name the offending field so operators know whether
-  // the upstream bug is in the distance calculation or the threshold
-  // calibration. Both-non-finite case names both fields.
+  // Wave-37 silent-failure-hunter MED-3 reorder: exhaustiveness switch
+  // runs FIRST so the never-throw catches an unknown status variant
+  // even if the variant happens to carry non-finite values. The prior
+  // ordering returned via the non-finite guard before the switch could
+  // observe the new variant, silently routing through the alert chip.
+  let inDistribution: boolean;
+  switch (confidence.status) {
+    case "in_distribution":
+      inDistribution = true;
+      break;
+    case "out_of_distribution":
+      inDistribution = false;
+      break;
+    default: {
+      const _exhaustive: never = confidence;
+      throw new Error(`unknown physics-confidence status: ${String(_exhaustive)}`);
+    }
+  }
+
+  // Wave-35 A.9 Number.isFinite guard (now after the exhaustiveness
+  // switch per wave-37 MED-3). Wave-36 codex MED + wave-37 MED-2: name
+  // the offending field(s) so operators can locate the upstream bug
+  // (distance calc divide-by-zero vs p95 threshold empty-fixture
+  // calibration vs both); rephrase "distance" -> "values" so the
+  // grammar covers the threshold-only branch.
   const distanceFinite = Number.isFinite(confidence.mahalanobis_distance);
   const thresholdFinite = Number.isFinite(confidence.threshold_p95);
   if (!distanceFinite || !thresholdFinite) {
@@ -55,29 +89,11 @@ export default function PhysicsConfidenceBadge({ confidence }: PhysicsConfidence
       >
         <span aria-hidden="true">●</span>
         <span>
-          Physics-confidence detector emitted non-finite distance ({offendingField}); re-run the
+          Physics-confidence detector emitted non-finite values ({offendingField}); re-run the
           session.
         </span>
       </span>
     );
-  }
-
-  // Wave-35 A.10 exhaustiveness throw. Top-of-function switch derives
-  // the inDistribution flag + asserts every variant of PhysicsConfidence
-  // is handled. Adding a new status without updating this switch
-  // errors at compile time on the `never` assignment.
-  let inDistribution: boolean;
-  switch (confidence.status) {
-    case "in_distribution":
-      inDistribution = true;
-      break;
-    case "out_of_distribution":
-      inDistribution = false;
-      break;
-    default: {
-      const _exhaustive: never = confidence;
-      throw new Error(`unknown physics-confidence status: ${String(_exhaustive)}`);
-    }
   }
 
   const borderClass = inDistribution ? "border-racing-green" : "border-amber";

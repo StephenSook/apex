@@ -56,9 +56,11 @@ describe("PhysicsConfidenceBadge", () => {
     };
     render(<PhysicsConfidenceBadge confidence={confidence} />);
     const alert = screen.getByRole("alert");
-    // grep-verified verbatim in PhysicsConfidenceBadge.tsx line 48:
-    // "Physics-confidence detector emitted non-finite distance; ..."
-    expect(alert).toHaveTextContent(/non-finite distance/i);
+    // grep-verified verbatim in PhysicsConfidenceBadge.tsx wave-37 alert text:
+    // "Physics-confidence detector emitted non-finite values ({offendingField}); ..."
+    // Wave-37 silent-failure-hunter MED-2 rephrase: "distance" -> "values"
+    // so the grammar covers the threshold-only branch.
+    expect(alert).toHaveTextContent(/non-finite values/i);
   });
 
   it("renders the non-finite-distance role=alert when mahalanobis_distance is Infinity (wave-35 A.9)", () => {
@@ -69,7 +71,7 @@ describe("PhysicsConfidenceBadge", () => {
     };
     render(<PhysicsConfidenceBadge confidence={confidence} />);
     const alert = screen.getByRole("alert");
-    expect(alert).toHaveTextContent(/non-finite distance/i);
+    expect(alert).toHaveTextContent(/non-finite values/i);
   });
 
   it("renders the non-finite-distance role=alert when threshold_p95 is NaN (wave-35 A.9)", () => {
@@ -82,6 +84,6 @@ describe("PhysicsConfidenceBadge", () => {
     };
     render(<PhysicsConfidenceBadge confidence={confidence} />);
     const alert = screen.getByRole("alert");
-    expect(alert).toHaveTextContent(/non-finite distance/i);
+    expect(alert).toHaveTextContent(/non-finite values/i);
   });
 });
