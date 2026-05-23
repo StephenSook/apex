@@ -128,12 +128,16 @@ export default function EdgeSummary() {
             before fetching the Granite 4.0 Nano 350M ONNX weights from Hugging Face. First load
             is ~5-15 seconds on Chrome 121+ desktop; subsequent loads use the browser HTTP cache.
           </p>
-          <div className="h-1 w-full rounded-sm bg-paper-warm">
+          <div
+            className="relative h-1 w-full overflow-hidden rounded-sm bg-paper-warm"
+            role="progressbar"
+            aria-busy="true"
+            aria-valuetext={`Loading Granite Nano 350M (phase ${
+              edge.status === "loading" && edge.progress >= 0.5 ? "weights" : "probe"
+            })`}
+          >
             <div
-              className="h-1 rounded-sm bg-racing-green"
-              style={{
-                width: `${Math.round((edge.status === "loading" ? edge.progress : 0) * 100)}%`,
-              }}
+              className="apex-edge-indeterminate absolute inset-y-0 left-0 h-1 w-1/3 rounded-sm bg-racing-green"
               aria-hidden="true"
             />
           </div>

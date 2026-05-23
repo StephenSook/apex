@@ -256,11 +256,21 @@ export function useGraniteNanoEdge(): GraniteNanoEdgeState {
           return;
         }
         const message = err instanceof Error ? err.message : String(err);
-        // Wave-38 cascade #8 silent-failure-hunter H-2 close-out:
-        // runtime OOM at pipeline-load time maps to the `oom` state
-        // when the error message names a memory failure; otherwise
-        // routes through the generic `error` state.
-        const isMemoryError = /out of memory|OOM|insufficient|allocation|memory/i.test(message);
+        // Wave-39 silent-failure-hunter H-1+H-2 close-out: tighten the
+        // OOM-pattern detector. The prior regex matched any error
+        // message containing "memory" as a substring (false positives
+        // on network errors mentioning "memory cache" or "in-memory
+        // store") AND missed real WebGPU OOM patterns ("buffer
+        // creation failed", "device lost", "exceeds max..."). Tighter
+        // pattern uses word-boundary anchors on the canonical
+        // out-of-memory tokens + a discrete enumeration of the
+        // WebGPU-specific OOM error strings the @huggingface/
+        // transformers pipeline loader surfaces from the underlying
+        // ORT / WebGPU runtime when buffer headroom is exhausted.
+        const isMemoryError =
+          /\bout of memory\b|\bOOM\b|\bdevice lost\b|buffer creation failed|exceeds max|validation error.*buffer|failed to (?:create|allocate) buffer/i.test(
+            message,
+          );
         if (isMemoryError) {
           setState({
             status: "oom",

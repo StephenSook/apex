@@ -113,6 +113,26 @@ body::before {
 }
 
 /*
+ * Wave-39 silent-failure-hunter H-3 close-out: indeterminate progress
+ * animation for EdgeSummary loading state. Transformers.js v4 pipeline
+ * loader exposes a progress_callback but the wave-38 demo wires only
+ * the discrete probe + load milestones (0.25 + 0.5); the linear bar
+ * between milestones misrepresents actual download progress. An
+ * indeterminate shuttle communicates "work in progress, ETA unknown"
+ * without the false-precision implied by a stalled determinate bar.
+ * prefers-reduced-motion already disables the keyframe above via the
+ * 0.01ms reset; this rule inherits the same disable.
+ */
+@keyframes apex-edge-indeterminate {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(300%); }
+}
+
+.apex-edge-indeterminate {
+  animation: apex-edge-indeterminate 1400ms cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+/*
  * Editorial rule: thin hairline above section labels in display caps.
  */
 .apex-rule {
