@@ -356,3 +356,31 @@ Logged in `logs/day-03-scp-go-no-go.md`.
 **Affected.** Wave-35 plan file E.3 acceptance criterion can now be marked complete (E.3 closure recorded here in lieu of a plan-amendment commit). `~/.claude/projects/-Users-stephensookra-Desktop-IBM-May/memory/feedback_em_dash_zero_tolerance.md` documents the substitution-table exempt categories; D-029 reaffirms shell-command quotation as exempt. No file edits required beyond this decision-log entry.
 
 ---
+
+## 2026-05-23 D-030: D-027 SCP gate Stage C PASS confirms G.1 GREEN BRANCH (galaxy ambition holds)
+
+**Decision.** The D-027 SCP go/no-go gate PASSED on the council v2 reduced spec (Stage C: constant-mu friction ellipse + single SCP iterate). Per the wave-35 G.1/G.2/G.3 branch-application protocol locked at `~/.claude/projects/-Users-stephensookra-Desktop-IBM-May/memory/project_apex_stream_g_d027_branch_application.md`, **G.1 GREEN BRANCH applies.** No D-A revision. No APEX Lite activation. No fallback ladder annotation. Galaxy-tier maximal architecture stays the ship-target through Day 11.
+
+**Result detail (per `logs/day-03-scp-go-no-go.md`, Vinh commit `c97caaa` 2026-05-23 04:58 EDT).** Stage C numeric verdict on the Sarah Reynolds 10-row telemetry stub (RTX 3060 Ti + Windows 11 + Python 3.10.7 + CUDA 12.1):
+
+| Criterion | Council v2 threshold | Observed | Verdict |
+|---|---|---|---|
+| Gradient finite | no NaN/Inf anywhere | True | PASS |
+| Gradient norm bounded | `\|\|grad_L\|\| < 1e4` | 24.12 | PASS |
+| FCVR on Sarah stub | `<= 0.0` | 0.000000 | PASS |
+| TTM output shape | `(1, 30, 14)` per `shapes.py` | `(1, 30, 14)` | PASS |
+| cvxpylayers DPP-compliance | `prob.is_dpp() == True` | asserted in code | PASS |
+
+Total wall-clock of the composed forward + projection + backward = ~1.03s on RTX 3060 Ti, leaving ~13.97s of the G8 15s coaching-report sub-budget for downstream stages (Granite Instruct narration + Guardian audit + provenance assembly).
+
+**Rationale.** The wave-30 maximal architecture's central technical bet (frozen TSFM forecast composed with hard differentiable physics-projection) is implementable on Vinh's hardware. The kinetic-hallucination thesis ships as a working artifact, not paper-grade hand-waving. Pre-committed de-scope rung 1 (cut three-track ensemble FlowState + Chronos-2) DOES NOT FIRE per council v2 reduced-spec gating: Stage C passed cleanly. Three-track ensemble stays on the roadmap; Day-4 work proceeds as planned. Stage A (8-tier Pacejka linearization) + Stage B (3-iteration unrolled SCP) are deferred to Phase 2 Day 4 task 2.12 per council v2 staged rewrite (see D-031 for the deferral rationale + the upstream council citation).
+
+**Affected.**
+
+- `PLAN.md` Open Questions Q-001 + Q-007 statuses flip GREEN. Q-001 (Vinh's git config email) auto-resolved during the Phase 0 commit cluster (vinhbin author commits 836fcf6 through c69753d). Q-007 (APEX Lite EARLY trigger) D-027-condition predicate is now FALSE; Lite-EARLY remains a defined contingency but no trigger fires.
+- `~/.claude/projects/-Users-stephensookra-Desktop-IBM-May/memory/project_apex_wave_30_maximal_architecture.md` updated to record D-027 Stage C PASS + the Day-3 hardware-load proof.
+- Task tracker #90 (Stream G: Confirm D-027 SCP gate result + apply branch) closed completed.
+- `paper/apex-neurips-workshop-2026.md` §3.2 kinetic-hallucination section will cite the Stage C numeric verdict + the Sarah stub fixture (wave-40 Stream D).
+- No frontend code or schema changes triggered by D-030 in isolation; the related schema work lives in D-032 (frontend-backend type alignment) which the Vinh Phase 0 contracts unblock.
+
+---
