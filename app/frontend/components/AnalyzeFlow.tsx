@@ -182,7 +182,15 @@ function buildMockReport(submission: DropzoneSubmission): CoachingReportType {
         "COA-derived c_overlap flag (from the approved hand-control hardware spec in Section 3(c) of the driver's COA) was set across the lap; Stage 2 feasibility filter cleared the brake-throttle simultaneity accordingly.",
         "Tuning delta of -4.0 mm hand-lever brake travel is within recommended manufacturer envelope and does not introduce a forward-Euler kinematic violation in the projected next session.",
       ],
-      audit_id: `audit-${submission.driver_id}-${Date.now().toString(36)}`,
+      // Wave-40 Stream A.8: audit_id now uses crypto.randomUUID() to match
+      // Vinh's `new_audit_id()` Python helper (uuid4().hex per
+      // `app/backend/apex/shared/contracts/violations.py`). Strip the
+      // RFC-4122 hyphens so the wire form mirrors Python uuid4().hex
+      // verbatim. Prior pattern (`audit-{driver_id}-{Date.now()}`) was a
+      // Day-1 frontend mock that drifted from the canonical uuid4 scheme
+      // Vinh shipped in Phase 0 (council v2 Software Lead fix #9 +
+      // wave-40 D-032 frontend-backend type alignment).
+      audit_id: crypto.randomUUID().replace(/-/g, ""),
     },
     provenance: {
       model_versions: {
