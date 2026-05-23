@@ -14,6 +14,13 @@
  * Mirrors the inline ForecastChart pattern in CoachingReport.tsx (SVG +
  * manual path computation + invariant checks + role=alert for invalid
  * envelopes). Editorial-paddock palette consistent.
+ *
+ * Wave-35 A.1-A.6 silent-failure close-out: NaN-quantile guard +
+ * degenerate-envelope amber note + alert-specificity for empty vs NaN +
+ * exhaustiveness throw on status + chronos2 .find undefined alert +
+ * single-point envelope guard with circle rendering. All six fixes
+ * per wave-34 silent-failure-hunter findings H-1 through H-3 + M-1
+ * + M-3 + M-5.
  */
 
 import type {
@@ -38,11 +45,55 @@ const TRACK_STROKES: Record<ForecastTrackName, string> = {
 };
 
 export default function ThreeTrackForecastChart({ forecast }: ThreeTrackForecastChartProps) {
+  // Wave-35 A.4 exhaustiveness throw on forecast.status. Top-of-function
+  // switch derives the converged-flag + asserts at compile time that
+  // every variant of ThreeTrackForecast.status is handled. If a new
+  // variant is added without updating this switch, TypeScript errors
+  // on the `never` assignment.
+  let isConverged: boolean;
+  switch (forecast.status) {
+    case "converged":
+      isConverged = true;
+      break;
+    case "diverged":
+      isConverged = false;
+      break;
+    default: {
+      const _exhaustive: never = forecast;
+      throw new Error(`Unknown forecast status: ${String(_exhaustive)}`);
+    }
+  }
+
+  // Wave-35 A.5 chronos2 .find undefined fallback. The fixed-arity 3-tuple
+  // ThreeTrackForecast.tracks SHOULD contain a chronos2 variant by
+  // construction (per the type), but a backend bug emitting all-TTM tracks
+  // would silently strip the quantile band without a visible signal.
+  // Surface it via role=alert.
+  const chronos = forecast.tracks.find((t) => t.track === "chronos2");
+  if (!chronos) {
+    return (
+      <div
+        role="alert"
+        className="rounded-sm border-2 border-accent bg-paper p-5 text-sm leading-relaxed text-accent"
+      >
+        Three-track forecast missing the Chronos-2 track in the backend response. Re-run the
+        session; this indicates an upstream ensemble-construction error.
+      </div>
+    );
+  }
+
   const allEmpty = forecast.tracks.every((t) => t.forecast.length === 0);
+
+  // Wave-35 A.3 alert specificity. Distinguish all-empty (no data
+  // available) vs all-NaN (physics projection produced data but all
+  // values were non-finite). Different actionable next steps.
   if (allEmpty) {
     return (
-      <div className="rounded-sm border border-rule bg-paper p-5 text-sm text-muted">
-        No three-track forecast available for this session.
+      <div
+        role="status"
+        className="rounded-sm border border-rule bg-paper p-5 text-sm text-muted"
+      >
+        Three-track forecast has no data for this session. Verify upstream telemetry intake.
       </div>
     );
   }
@@ -63,7 +114,7 @@ export default function ThreeTrackForecastChart({ forecast }: ThreeTrackForecast
       });
     }
   });
-  if (forecast.status === "converged") {
+  if (isConverged) {
     forecast.ensemble.forEach((v) => {
       if (Number.isFinite(v)) {
         allValues.push(v);
@@ -77,15 +128,24 @@ export default function ThreeTrackForecastChart({ forecast }: ThreeTrackForecast
         role="alert"
         className="rounded-sm border-2 border-accent bg-paper p-5 text-sm leading-relaxed text-accent"
       >
-        Three-track forecast contained no finite values; physics projection failed the consistency
-        check across all three tracks. Re-run the session.
+        Three-track forecast contained no finite values (every track returned NaN or Infinity);
+        physics projection failed the consistency check across all three tracks. Re-run the
+        session before acting on any output.
       </div>
     );
   }
 
   const yMin = Math.min(...allValues);
   const yMax = Math.max(...allValues);
-  const yRange = yMax - yMin || 1;
+
+  // Wave-35 A.2 degenerate-flat envelope detection. yMax === yMin means
+  // zero cross-track variance (the forecast is identically flat across
+  // every track + the ensemble). Mathematically possible but in
+  // motorsport-telemetry context an unusual signal that should surface
+  // to the operator. Mirrors CoachingReport.tsx:206-211 amber-note
+  // pattern.
+  const isDegenerate = yMax === yMin;
+  const yRange = isDegenerate ? 1 : yMax - yMin;
 
   const horizonLength = Math.max(...forecast.tracks.map((t) => t.forecast.length));
   const W = 800;
@@ -97,18 +157,28 @@ export default function ThreeTrackForecastChart({ forecast }: ThreeTrackForecast
 
   function trackPath(values: ReadonlyArray<number>): string {
     return values
+      .filter((v) => Number.isFinite(v))
       .map((v, idx) => `${idx === 0 ? "M" : "L"} ${xFor(idx).toFixed(2)} ${yFor(v).toFixed(2)}`)
       .join(" ");
   }
 
-  // Quantile bands for the chronos2 track: render envelope between min + max
-  // quantile as a filled polygon path. Per wave-35 B.2 refactor, chronos2
-  // variant carries `quantiles` as a required (non-optional) field, so the
-  // optional-chain shortcut from before is no longer needed.
-  const chronos = forecast.tracks.find((t) => t.track === "chronos2");
+  // Wave-35 A.1 + A.6 quantile envelope: filter finite values + handle
+  // single-point case. If any non-finite quantile leaks through, the
+  // envelope would render NaN coordinates that browsers silently drop;
+  // judges see a missing band with no signal. Pre-filter + return null
+  // signals upstream "no valid envelope to draw" + parent component
+  // does not attempt to render. Same for single-point forecast (line 1
+  // requires at least 2 finite means for a polygon).
   const quantileEnvelope =
-    chronos && chronos.track === "chronos2" && chronos.quantiles.length >= 2 && chronos.forecast.length > 0
+    chronos.quantiles.length >= 2 && chronos.forecast.length > 0
       ? buildQuantileEnvelope(chronos.forecast, chronos.quantiles, xFor, yFor)
+      : null;
+
+  // Wave-35 A.6 single-point Chronos-2 forecast: render circle at the
+  // single point. Mirrors CoachingReport.tsx:218-224 pattern.
+  const chronosSinglePoint =
+    chronos.forecast.length === 1 && Number.isFinite(chronos.forecast[0])
+      ? { x: xFor(0), y: yFor(chronos.forecast[0]) }
       : null;
 
   return (
@@ -120,11 +190,22 @@ export default function ThreeTrackForecastChart({ forecast }: ThreeTrackForecast
         <div>
           <p className="apex-eyebrow">Three-track forecasting ensemble · D-010</p>
           <h3 id="three-track-title" className="font-display text-2xl tracking-tight text-ink">
-            {forecast.status === "converged" ? "Ensemble converged" : "Ensemble diverged"}
+            {isConverged ? "Ensemble converged" : "Ensemble diverged"}
           </h3>
         </div>
-        <DivergenceChip sigma={forecast.divergence_sigma} converged={forecast.status === "converged"} />
+        <DivergenceChip sigma={forecast.divergence_sigma} converged={isConverged} />
       </header>
+
+      {isDegenerate && (
+        <p
+          role="status"
+          className="rounded-sm border-2 border-amber bg-paper p-3 font-mono text-xs leading-relaxed text-amber"
+        >
+          Forecast envelope is flat across all three tracks (zero cross-track variance). This is
+          mathematically possible but unusual for motorsport telemetry; verify the projection
+          before acting on the recommendation.
+        </p>
+      )}
 
       {forecast.status === "diverged" && (
         <p
@@ -147,6 +228,15 @@ export default function ThreeTrackForecastChart({ forecast }: ThreeTrackForecast
       >
         {quantileEnvelope && (
           <path d={quantileEnvelope} className="fill-accent/10 stroke-none" aria-hidden="true" />
+        )}
+        {chronosSinglePoint && (
+          <circle
+            cx={chronosSinglePoint.x}
+            cy={chronosSinglePoint.y}
+            r="4"
+            className="fill-accent stroke-none"
+            aria-hidden="true"
+          />
         )}
         {forecast.tracks.map((track) =>
           track.forecast.length > 0 ? (
@@ -200,26 +290,39 @@ function DivergenceChip({ sigma, converged }: { sigma: number; converged: boolea
   );
 }
 
+/**
+ * Build the Chronos-2 quantile-envelope polygon path. Pre-filters
+ * non-finite values per wave-35 A.1 NaN-quantile guard; returns null
+ * when filtering leaves insufficient finite values to form a polygon
+ * (< 2 quantile values OR < 2 forecast means; single-point forecasts
+ * handled separately by the parent via the circle render path).
+ *
+ * Render envelope as a closed polygon path: upper edge left-to-right +
+ * lower edge right-to-left + close.
+ */
 function buildQuantileEnvelope(
   forecastMeans: ReadonlyArray<number>,
   quantiles: ReadonlyArray<number>,
   xFor: (idx: number) => number,
   yFor: (val: number) => number,
-): string {
-  // Use the min + max of the quantile band as the envelope edges,
-  // applied per-step via the forecastMeans index. This is a coarse
-  // band visualization; the full 21-quantile precision is in the
-  // backend log. Render envelope as a closed polygon path: upper
-  // edge left-to-right + lower edge right-to-left + close.
-  const qMin = Math.min(...quantiles);
-  const qMax = Math.max(...quantiles);
+): string | null {
+  const finiteQuantiles = quantiles.filter((q) => Number.isFinite(q));
+  const finiteMeans = forecastMeans.filter((m) => Number.isFinite(m));
+  // Wave-35 A.1 + A.6 guard: need >= 2 finite quantiles for a band AND
+  // >= 2 finite forecast means for a polygon. Single-point forecasts
+  // handled by the parent circle render; not by this envelope builder.
+  if (finiteQuantiles.length < 2 || finiteMeans.length < 2) {
+    return null;
+  }
+  const qMin = Math.min(...finiteQuantiles);
+  const qMax = Math.max(...finiteQuantiles);
   const half = (qMax - qMin) / 2;
-  const upper = forecastMeans.map((v, idx) => `${idx === 0 ? "M" : "L"} ${xFor(idx).toFixed(2)} ${yFor(v + half).toFixed(2)}`);
-  const lower = [...forecastMeans]
-    .reverse()
-    .map((v, idxRev) => {
-      const idx = forecastMeans.length - 1 - idxRev;
-      return `L ${xFor(idx).toFixed(2)} ${yFor(v - half).toFixed(2)}`;
-    });
+  const upper = finiteMeans.map(
+    (v, idx) => `${idx === 0 ? "M" : "L"} ${xFor(idx).toFixed(2)} ${yFor(v + half).toFixed(2)}`,
+  );
+  const lower = [...finiteMeans].reverse().map((v, idxRev) => {
+    const idx = finiteMeans.length - 1 - idxRev;
+    return `L ${xFor(idx).toFixed(2)} ${yFor(v - half).toFixed(2)}`;
+  });
   return `${upper.join(" ")} ${lower.join(" ")} Z`;
 }
