@@ -3,15 +3,21 @@
  * + D-021 + PLAN row 5.16 G-5.16). Loads the
  * `onnx-community/granite-4.0-350m-ONNX-web` model via
  * @huggingface/transformers v4 pipeline API with device:"webgpu" +
- * dtype:"fp16" + supportsWorker:true (per context7-verified MODELS
- * array entry in the official next-ai-sdk Transformers.js tutorial).
+ * dtype:"fp16". Model card published at
+ * https://huggingface.co/onnx-community/granite-4.0-350m-ONNX-web.
  *
- * Pre-load 1.5 GB WebGPU memory check per pre-mortem row 61: if the
- * browser advertises insufficient WebGPU buffer headroom (heavy
- * neighboring tabs, integrated GPU with shared memory, Safari
- * without enabled flag), the loader degrades to `oom` state +
- * surfaces "Edge mode unavailable, server-only path active" via
- * EdgeSummary.tsx role=alert.
+ * Pre-load WebGPU capability check per pre-mortem row 61: the probe
+ * reads the WebGPU adapter `limits.maxBufferSize` as a CAPABILITY
+ * indicator (single largest allocation the adapter will serve);
+ * this is NOT a measure of total free VRAM. A device with 2 GB
+ * maxBufferSize + heavy neighboring tabs can still OOM at runtime
+ * after passing the check. The check catches the common cases
+ * (Safari without --enable-webgpu, integrated GPU advertising
+ * sub-1.5 GB per-buffer cap, server-side render, missing GPU); the
+ * runtime fallback (`error` state from the pipeline loader catch)
+ * catches the rest. If the check fails, the loader degrades to
+ * `oom` state + surfaces "Edge mode unavailable, server-only path
+ * active" via EdgeSummary.tsx role=alert.
  *
  * Discriminated-union state per the wave-35 B + wave-36 + wave-37
  * + wave-38 Stream A discriminated-unions-over-contradiction
@@ -35,7 +41,7 @@ import { useEffect, useState } from "react";
 
 /**
  * Granite 4.0 Nano 350M model identifier on Hugging Face Hub. The
- * `-ONNX-web` suffix marks the WebGPU-optimised ONNX export with
+ * `-ONNX-web` suffix marks the WebGPU-optimized ONNX export with
  * 4-bit + fp16 weight variants per the onnx-community publication.
  */
 export const GRANITE_NANO_MODEL_ID = "onnx-community/granite-4.0-350m-ONNX-web";
@@ -56,10 +62,13 @@ export type GraniteNanoEdgeState =
   | { readonly status: "error"; readonly message: string };
 
 /**
- * Browser-side capability probe. Returns the available WebGPU buffer
- * headroom in bytes if WebGPU is supported + the adapter advertises a
- * limit; returns null when WebGPU is unavailable (Safari without
- * --enable-webgpu, server-side render, missing GPU).
+ * Browser-side WebGPU capability probe. Returns the adapter's
+ * advertised `limits.maxBufferSize` (the largest single allocation
+ * the adapter will serve) if WebGPU is supported; returns null when
+ * WebGPU is unavailable (Safari without --enable-webgpu, server-
+ * side render, missing GPU). NOTE: maxBufferSize is a per-buffer
+ * capability, not total free VRAM; the runtime pipeline load is
+ * still the source of truth for actual memory feasibility.
  */
 async function probeWebGPUHeadroom(): Promise<number | null> {
   if (typeof navigator === "undefined" || !("gpu" in navigator)) {

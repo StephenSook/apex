@@ -1,9 +1,12 @@
 /**
- * Newton friction-ellipse offline projector (D-021 + PLAN row 5.16).
- * Pure-TS Newton iterate projecting an unconstrained (a_long, a_lat)
- * acceleration pair onto the unit friction-ellipse boundary
- * |(a_lat / (mu_y * g), a_long / (mu_x * g))|_2 <= 1 per paper §3.2
- * Stage 1 friction-ellipse constraint.
+ * Friction-ellipse offline projector (D-021 + PLAN row 5.16). Pure-
+ * TS radial-projection closed-form scaling an unconstrained
+ * (a_long, a_lat) acceleration pair onto the unit friction-ellipse
+ * boundary |(a_lat / (mu_y * g), a_long / (mu_x * g))|_2 <= 1 per
+ * paper §3.2 Stage 1 friction-ellipse constraint. The "iterate"
+ * loop is defensive scaffolding (in case future variants generalize
+ * to non-radial projection); for the unit-friction case implemented
+ * here, the closed-form scale converges in exactly one pass.
  *
  * Runs offline in the browser (no network) when the WebGPU edge mode
  * is active per D-019 item 1. Server-authoritative reconnect logic
@@ -16,12 +19,14 @@
  * - Non-finite (NaN / Infinity) inputs return null per the wave-37
  *   silent-failure pattern lock; caller renders role=alert.
  * - Already-inside-ellipse inputs return unchanged (no projection
- *   needed; identity).
- * - Tikhonov damping epsilon = 1e-6 on the gradient denominator
- *   prevents divide-by-zero when both axes are simultaneously at the
- *   boundary.
- * - Max 8 Newton iterates with 1e-4 convergence tolerance; converges
- *   on the first iterate for unit-friction cases.
+ *   needed; identity short-circuit).
+ * - Numerical floor epsilon = 1e-6 on the magnitude denominator
+ *   prevents divide-by-zero when both axes simultaneously vanish.
+ *   (NOT Tikhonov regularization; the projector is closed-form
+ *   radial scaling, not a gradient-based iterate.)
+ * - Max 8 defensive iterates with 1e-4 convergence tolerance;
+ *   converges on iterate 1 for unit-friction cases (closed-form
+ *   radial scale onto the boundary is exact in one step).
  */
 
 const G = 9.81;
