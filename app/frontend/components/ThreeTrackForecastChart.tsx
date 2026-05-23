@@ -24,7 +24,9 @@
  */
 
 import type {
+  ChronosBand,
   ForecastTrackName,
+  ThreeTrackBand,
   ThreeTrackForecast,
 } from "../../shared/types";
 
@@ -64,13 +66,39 @@ export default function ThreeTrackForecastChart({ forecast }: ThreeTrackForecast
     }
   }
 
-  // Wave-35 A.5 chronos2 .find undefined fallback. The fixed-arity 3-tuple
-  // ThreeTrackForecast.tracks SHOULD contain a chronos2 variant by
-  // construction (per the type), but a backend bug emitting all-TTM tracks
-  // would silently strip the quantile band without a visible signal.
-  // Surface it via role=alert.
-  const chronos = forecast.tracks.find((t) => t.track === "chronos2");
-  if (!chronos) {
+  // Wave-37 silent-failure-hunter H-2: top-of-function guard on
+  // divergence_sigma. forecast.status is backend-computed from sigma;
+  // a backend bug emitting status="converged" alongside sigma=NaN
+  // silently rendered "Ensemble converged" header + a green chip with
+  // "σ unavailable" misleading operators that the converged-vs-diverged
+  // classification was meaningful. Surface non-finite sigma explicitly
+  // via role=alert before any downstream rendering decisions.
+  if (!Number.isFinite(forecast.divergence_sigma)) {
+    return (
+      <div
+        role="alert"
+        className="rounded-sm border-2 border-accent bg-paper p-5 text-sm leading-relaxed text-accent"
+      >
+        Three-track ensemble divergence sigma is non-finite (
+        {String(forecast.divergence_sigma)}); the converged-vs-diverged classification is
+        unreliable. Re-run the session before acting on any output.
+      </div>
+    );
+  }
+
+  // Wave-37 type-design-analyzer H-1: positional tuple-binding (wave-36
+  // A2) types forecast.tracks[2] as ChronosBand directly. Previous code
+  // used `.find` which returned ThreeTrackBand | undefined, losing the
+  // compile-time benefit of the positional binding. Direct positional
+  // access narrows at compile time.
+  //
+  // Runtime guard (wave-35 A.5 originally) still defends against
+  // backend JSON.parse drift where the tuple-position contract is
+  // violated despite the TypeScript type (codex wave-36 H-4 cascade-#5
+  // prediction: type enforcement is at frontend construction, not at
+  // JSON deserialization).
+  const chronos: ChronosBand = forecast.tracks[2];
+  if ((chronos as ThreeTrackBand).track !== "chronos2") {
     return (
       <div
         role="alert"
@@ -197,12 +225,25 @@ export default function ThreeTrackForecastChart({ forecast }: ThreeTrackForecast
       ? buildQuantileEnvelope(chronos.forecast, chronos.quantiles, xFor, yFor)
       : null;
 
-  // Wave-35 A.6 single-point Chronos-2 forecast: render circle at the
-  // single point. Mirrors CoachingReport.tsx:218-224 pattern.
-  const chronosSinglePoint =
-    chronos.forecast.length === 1 && Number.isFinite(chronos.forecast[0])
-      ? { x: xFor(0), y: yFor(chronos.forecast[0]) }
-      : null;
+  // Wave-37 silent-failure-hunter M-1: generalize the wave-35 A.6
+  // single-point Chronos-2 circle pattern to ALL tracks. Multi-segment
+  // trackPath emits "M-only" paths (no L commands) for tracks with one
+  // isolated finite point OR with gaps separating finite points; SVG
+  // strokes nothing for M-only paths so the rendered chart silently
+  // drops those points. Compute isolated-finite-points per track + per
+  // ensemble + render `<circle>` at each so isolated values stay
+  // visible at the correct horizon position.
+  function isolatedPoints(values: ReadonlyArray<number>): Array<{ idx: number; v: number }> {
+    return values
+      .map((v, idx) => ({ v, idx }))
+      .filter(({ v, idx }) => {
+        if (!Number.isFinite(v)) return false;
+        const prevFinite = idx > 0 && Number.isFinite(values[idx - 1]);
+        const nextFinite =
+          idx < values.length - 1 && Number.isFinite(values[idx + 1]);
+        return !prevFinite && !nextFinite;
+      });
+  }
 
   return (
     <section
@@ -252,15 +293,6 @@ export default function ThreeTrackForecastChart({ forecast }: ThreeTrackForecast
         {quantileEnvelope && (
           <path d={quantileEnvelope} className="fill-accent/10 stroke-none" aria-hidden="true" />
         )}
-        {chronosSinglePoint && (
-          <circle
-            cx={chronosSinglePoint.x}
-            cy={chronosSinglePoint.y}
-            r="4"
-            className="fill-accent stroke-none"
-            aria-hidden="true"
-          />
-        )}
         {forecast.tracks.map((track) =>
           track.forecast.length > 0 ? (
             <path
@@ -271,6 +303,18 @@ export default function ThreeTrackForecastChart({ forecast }: ThreeTrackForecast
             />
           ) : null,
         )}
+        {forecast.tracks.flatMap((track) =>
+          isolatedPoints(track.forecast).map(({ idx, v }) => (
+            <circle
+              key={`${track.track}-pt-${idx}`}
+              cx={xFor(idx)}
+              cy={yFor(v)}
+              r="4"
+              className={`${TRACK_STROKES[track.track].replace("stroke-", "fill-")} stroke-none`}
+              aria-hidden="true"
+            />
+          )),
+        )}
         {forecast.status === "converged" && forecast.ensemble.length > 0 && (
           <path
             d={trackPath(forecast.ensemble)}
@@ -278,6 +322,17 @@ export default function ThreeTrackForecastChart({ forecast }: ThreeTrackForecast
             aria-hidden="true"
           />
         )}
+        {forecast.status === "converged" &&
+          isolatedPoints(forecast.ensemble).map(({ idx, v }) => (
+            <circle
+              key={`ensemble-pt-${idx}`}
+              cx={xFor(idx)}
+              cy={yFor(v)}
+              r="5"
+              className="fill-ink stroke-none"
+              aria-hidden="true"
+            />
+          ))}
       </svg>
 
       <ol className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3 font-mono text-xs text-ink-soft">
@@ -302,17 +357,32 @@ export default function ThreeTrackForecastChart({ forecast }: ThreeTrackForecast
 }
 
 function DivergenceChip({ sigma, converged }: { sigma: number; converged: boolean }) {
+  // Wave-37 silent-failure-hunter H-1: 3-state visual treatment.
+  // Previously the chip kept border-racing-green / border-amber via the
+  // converged boolean even when sigma was non-finite, so a backend bug
+  // producing NaN sigma still wore the converged costume + lied about
+  // the classification. Non-finite sigma now produces a border-accent +
+  // role=alert chip that explicitly disclaims the classification.
+  // Defense-in-depth: parent ThreeTrackForecastChart already top-of-
+  // function guards non-finite sigma per wave-37 silent-failure H-2;
+  // this branch fires only if the chip is reused standalone.
+  if (!Number.isFinite(sigma)) {
+    return (
+      <span
+        role="alert"
+        className="rounded-sm border-2 border-accent bg-paper px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-accent"
+      >
+        σ unavailable
+      </span>
+    );
+  }
   const borderClass = converged ? "border-racing-green" : "border-amber";
   const toneClass = converged ? "text-racing-green" : "text-amber";
-  // Wave-36 codex MED: Number.isFinite guard on the sigma chip so a
-  // backend bug producing NaN / Infinity does not render the literal
-  // string "NaN" in the chip body.
-  const sigmaLabel = Number.isFinite(sigma) ? `σ=${sigma.toFixed(2)}` : "σ unavailable";
   return (
     <span
       className={`rounded-sm border ${borderClass} bg-paper px-3 py-1 font-mono text-[11px] uppercase tracking-wider ${toneClass}`}
     >
-      {sigmaLabel}
+      σ={sigma.toFixed(2)}
     </span>
   );
 }
