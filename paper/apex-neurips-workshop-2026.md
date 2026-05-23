@@ -68,7 +68,7 @@ The pipeline runs three layers in series: a frozen TSFM forecaster (extended to 
 
 ### 3.1 Layer 1: frozen Granite TimeSeries TTM r2.1 forecaster
 
-We aggregate raw 50 Hz telemetry to 1-Hz mini-sector tensors of shape `(batch, 30, 14)` per wave-30 D-010 + D-016 expansion (the wave-22 baseline was `(batch, 24, 9)`; wave-30 expanded horizon 24 -> 30 for finer 8-tier SCP convergence grid + channels 9 -> 14 with 5 wave-30 physics-tier additions). The 30 along the time axis corresponds to one lap of 1-Hz mini-sector aggregates at the wave-30 finer discretization (the wave-22 24-sector lock was tuned for V1 single-stage projection-and-audit; wave-30 8-tier unrolled SCP benefits from the 30-sector grid that covers the widest-circuit edge cases). The 14 channels are:
+We aggregate raw 50 Hz telemetry to 1-Hz mini-sector tensors of shape `(batch, 30, 14)` per wave-30 D-010 + D-016 expansion (the wave-22 baseline was `(batch, 24, 9)`; wave-30 expanded horizon 24 -> 30 for finer 8-tier SCP convergence grid + channels 9 -> 14 with 5 wave-30 physics-tier additions). The 30 along the time axis corresponds to one lap of 1-Hz mini-sector aggregates at the wave-30 finer discretization (the wave-22 24-sector lock was tuned for the prior single-stage projection-and-audit; the wave-30 8-tier unrolled SCP outer loop benefits from the 30-sector grid that covers the widest-circuit edge cases). The 14 channels are:
 
 1. `throttle_pct` (percent, 0-100)
 2. `brake_pa` (Pascals)
@@ -232,8 +232,8 @@ A summary pointer only: the §4 evaluation protocol is reproducible from the syn
 
 ### 5.1 Modeling limitations
 
-- V1 friction ellipse uses constant $\mu_v$; wet-track scenarios require V2 circuit-conditional lookup or V3 Pacejka load-dependent slip.
-- COA-simultaneity flag is currently binary; finer-grained domain-specific simultaneity envelopes (e.g., per-axle, per-corner, per-equipment-class) are out of scope for V1. Some COAs document multiple permitted-simultaneity windows that this flag collapses.
+- Friction-ellipse coefficient $\mu_v$ is treated as exogenous per-step input to the convex QP inner iterate; the nonconvex coupling between $\mu_v$ + the Pacejka combined-slip output is captured by the SCP outer-loop linearisation (per D-012) but each individual inner iterate remains a fixed-coefficient convex QP. Sessions with rapidly varying friction (sudden weather change mid-lap, single-corner standing water) may require more SCP outer iterates than the wave-30 fixed unroll budget; the Powell-ratio trust-region adjustment (D-027) recovers but at additional per-lap solver latency.
+- COA-simultaneity flag is binary at the tensor level; finer-grained domain-specific simultaneity envelopes (per-axle, per-corner, per-equipment-class) collapse to the binary value. Some COAs document multiple permitted-simultaneity windows that this representation collapses; the wave-30 D-018 tri-agent critic loop catches the collapse when the recommendation framing references the collapsed window explicitly, but the projection layer treats all simultaneity-permitted steps uniformly.
 - TTM is channel-independent by construction; the projection layer recovers cross-channel relationships at the time-step level but cannot fix mis-aggregation errors at the 1-Hz boundary (sub-second kinetic hallucinations inside a 1-Hz aggregate window remain possible).
 - The Guardian audit is a text-classifier-as-a-safety-gate. We do not claim this approach generalizes to other safety surfaces; we claim it is unit-testable and that the Convergence 14 unit-test suite IS the safety contract for this specific pipeline.
 
