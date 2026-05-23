@@ -117,7 +117,7 @@ export default function ALoRAStatusBadge({
         <p className="text-sm leading-relaxed text-ink-soft">
           No adapter loaded. Base Granite Instruct 4.1 8B handles every generation pass.
           The race-engineer intrinsic adapter loads on first coaching-report request via
-          vLLM's hot-swap path (Phase 4 task 4.5).
+          the vLLM hot-swap path (Phase 4 task 4.5).
         </p>
       )}
 
