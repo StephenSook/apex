@@ -384,3 +384,51 @@ Total wall-clock of the composed forward + projection + backward = ~1.03s on RTX
 - No frontend code or schema changes triggered by D-030 in isolation; the related schema work lives in D-032 (frontend-backend type alignment) which the Vinh Phase 0 contracts unblock.
 
 ---
+
+## 2026-05-23 D-031: Stage A + Stage B deferral to Phase 2 Day 4 task 2.12 (council v2 staged spec)
+
+**Decision.** The D-027 SCP gate's Day 3 spike uses the council v2 reduced spec only (Stage C: constant-mu friction ellipse + single SCP iterate). The two remaining Stage A + Stage B expansions defer to Phase 2 Day 4 task 2.12. The deferral is part of the original council v2 amendment, not a wave-40 scope cut; the galaxy-tier ceiling is preserved.
+
+- **Stage A:** 8-tier Pacejka linearization (per D-012 + D-015 Tier 7). Phase 2 Day 4 task 2.12 expansion.
+- **Stage B:** 3-iteration unrolled SCP outer loop (per D-012). Phase 2 Day 4 task 2.12 expansion.
+- **Stage C:** constant-mu friction ellipse + single SCP iterate. **Shipped 2026-05-23** per D-030 (Vinh commit `c97caaa`; `app/backend/apex/physics/scp_spike.py`).
+
+**Rationale.** Per the council v2 chairman pre-code edit #3 (transcript `council-transcript-20260522-vinh-backend-plan-v2.md`): the Day 3 spike's load-bearing claim is gradient flow through the differentiable physics-projection composition, not full nonconvex constraint enforcement. Stage C answers the load-bearing question (does the composition compile + emit finite, bounded gradients?). Stages A + B answer the precision question (does the projection actually correct realistic violations at production accuracy?). Stage C passing on Day 3 unblocks Stages A + B work on Day 4; Stage C failing would have triggered the D-027 fallback ladder regardless of A + B status.
+
+The Day 3 spike with Stage C only took ~1.03s wall-clock end-to-end. The 8-tier expansion + 3-iteration unroll will increase this; G8 latency budget (15s coaching-report sub-budget) leaves ~13.97s of headroom for Stage A + Stage B + downstream Granite Instruct + Guardian + provenance assembly. Phase 2 Day 4 task 2.12 acceptance criterion: full forecast + 8-tier Pacejka + 3-iterate unrolled SCP + Guardian audit lands within G8 latency budget on Sarah Reynolds 10-row stub.
+
+**Affected.**
+
+- `app/backend/apex/physics/scp_spike.py` (Stage C only; Stages A + B append Phase 2 Day 4).
+- `docs/vinh-backend-plan.md` Phase 2 Day 4 task 2.12 row (already updated per council v2 amendment block at L26).
+- `paper/apex-neurips-workshop-2026.md` §3.2 will cite the council v2 staged-spec rationale + Stage A + Stage B Phase 2 deferral (wave-40 Stream D).
+- Pre-committed de-scope rung 1 (cut three-track ensemble FlowState + Chronos-2) does NOT fire; three-track stays on roadmap.
+
+---
+
+## 2026-05-23 D-032: Frontend-backend type alignment via canonical schema mirror + SCHEMA_VERSION runtime check
+
+**Decision.** Vinh's Phase 0 contract layer (Python schemas in `app/backend/apex/shared/contracts/*` + `app/backend/apex/physics/validator.py` + `app/backend/apex/shared/logging.py`) is the canonical source for inter-layer data shapes. The frontend mirrors these schemas verbatim into `app/shared/types.ts` as `Backend*`-prefixed TypeScript types so the runtime decoder (wave-41 landing in `lib/api-decode.ts`) can translate wire payloads into the same conceptual shape the backend emits. UI-facing types (`GuardianAudit`, `PhysicsViolation`, `CoachingReport`) remain frontend projections optimized for the coaching report rendering pipeline; the decoder bridges Backend* and UI-facing shapes at the fetch boundary.
+
+Version-constants are versioned independently:
+
+- `SHAPES_SCHEMA_VERSION = "0.1.0"` versions the tensor channel meanings (CHANNELS tuple + CHANNEL_TIER_BINDING). Bumps when CHANNELS changes (add/remove/rename).
+- `DIFFERENTIABLE_PROJECTOR_VERSION = "0.1.0"` versions the projector API surface (DifferentiableProjector Protocol method signatures). Bumps when the Protocol changes.
+
+The wave-41 decoder will compare wire-payload `schema_version` against `SHAPES_SCHEMA_VERSION` + throw on mismatch. EdgeSummary's error state will surface the version-mismatch failure to the user. The wave-40 negative-tsc fixture (`app/frontend/tests/types/contract-alignment.test-d.ts`) enforces construction-site invariants at compile time: misshape negatives (wrong literal-union variant, missing required field, type mismatch) fire as TS errors with `@ts-expect-error` directives suppressing cleanly.
+
+**Rationale.** Frontend `shared/types.ts` was written Day 1 for the coaching report UI; Vinh's contracts were written Day 3 for the physics pipeline. Independent evolution risks contract drift at the fetch boundary. Mirroring the canonical schemas into TypeScript with version-constants + a negative-tsc fixture catches drift at three boundaries: compile-time (TS construction-site error), runtime (schema_version mismatch throw at deserialization), + audit-trail (the negative-tsc fixture forces new variants/fields to update both ends).
+
+Layering is intentional: backend contracts are the source of truth for physics-pipeline correctness; frontend projections are the source of truth for UI ergonomics. The decoder is the seam. If Vinh's backend swap (V1 NumPy -> V2 cvxpylayers -> V2 SCP unrolled) changes the wire shape, only the backend-canonical mirror updates; the UI projections + the decoder map stay stable.
+
+**Affected.**
+
+- `app/shared/types.ts` (new Backend* schemas added wave-40 commit `a9f74a4`: CHANNELS + TENSOR_SHAPE + BackendViolationRecord + BackendPhysicsViolationLog + BackendGuardianAudit + ToleranceBands + DifferentiableProjector + StructuredLogEntry).
+- `app/frontend/components/AnalyzeFlow.tsx` audit_id swap from timestamp-base36 to crypto.randomUUID() (wave-40 commit `de7477b`).
+- `app/frontend/tests/types/contract-alignment.test-d.ts` (NEW; wave-40 commit `ccbd049`; 14 @ts-expect-error directives covering 7 schema surfaces).
+- `app/backend/apex/shared/contracts/shapes.py` + `violations.py` + `validator.py` + `projector.py` + `app/backend/apex/shared/logging.py` (Vinh canonical; the schemas the TypeScript mirror tracks).
+- `~/.claude/projects/-Users-stephensookra-Desktop-IBM-May/memory/project_apex_council_v2_amendments.md` (wave-40 Stream C; records the canonical commit map).
+- `paper/apex-neurips-workshop-2026.md` §3.5 + §3.7 will cite the DifferentiableProjector Protocol seam + audit_id correlation pattern (wave-40 Stream D).
+- `lib/api-decode.ts` (wave-41 landing; runtime translation layer).
+
+---
