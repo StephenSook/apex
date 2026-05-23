@@ -79,7 +79,7 @@ function Hero() {
       <div className="mx-auto grid max-w-6xl gap-12 px-6 py-20 lg:grid-cols-12 lg:gap-16 lg:px-10 lg:py-28">
         <div className="lg:col-span-7 flex flex-col gap-6">
           <p className="apex-eyebrow apex-rise" style={{ "--apex-delay": "0ms" } as React.CSSProperties}>
-            IBM SkillsBuild · May Challenge 2026 · Day 1 of 12
+            IBM SkillsBuild · May Challenge 2026 · Day 5 of 12
           </p>
           <h1
             id="hero-title"
@@ -328,7 +328,7 @@ function Architecture() {
       by: "CvxpyLayers QP",
       body:
         "Every forecast step passes through a QP that enforces the friction ellipse, the bicycle model, a forward-Euler kinematic step, a jerk bound, and a circuit-conditional friction lookup. Plus the COA simultaneity flag. When the driver&rsquo;s Certificate of Adaptations permits simultaneous brake and throttle, we permit it. Otherwise enforce.",
-      detail: "differentiable · COA-aware · V1 constant-mu, V2 Pacejka",
+      detail: "differentiable · COA-aware · per-step μ_v (Tier 5 thermal + Tier 7 Pacejka) per D-015",
     },
     {
       n: "03",
@@ -489,14 +489,14 @@ function Differentiators() {
 /* -------------------------------------------------------------- */
 function BuildStatus() {
   const phases = [
-    { n: "0", label: "Bootstrap", day: "Day 1", state: "in progress" as const },
-    { n: "1", label: "Document parsing", day: "Day 2", state: "pending" as const },
-    { n: "2", label: "Physics layer", day: "Days 3-5", state: "pending" as const },
-    { n: "3", label: "Narrator", day: "Day 6", state: "pending" as const },
+    { n: "0", label: "Bootstrap", day: "Day 1", state: "done" as const },
+    { n: "1", label: "Document parsing", day: "Day 2", state: "done" as const },
+    { n: "2", label: "Physics layer + wave-30 lock", day: "Days 3-5", state: "in progress" as const },
+    { n: "3", label: "Narrator + COA gate", day: "Day 6", state: "pending" as const },
     { n: "4", label: "Orchestration + polish", day: "Days 7-8", state: "pending" as const },
-    { n: "5", label: "Demo + deploy", day: "Days 9-10", state: "pending" as const },
-    { n: "6", label: "Submission package", day: "Day 11", state: "pending" as const },
-    { n: "7", label: "Submit", day: "Day 12 (2026-05-31)", state: "pending" as const },
+    { n: "5", label: "Demo + deploy + WebGPU edge", day: "Days 9-10", state: "pending" as const },
+    { n: "6", label: "Submission package + NeurIPS draft", day: "Day 11", state: "pending" as const },
+    { n: "7", label: "Submit + multi-track", day: "Day 12 (2026-05-31)", state: "pending" as const },
   ];
 
   return (
@@ -512,7 +512,7 @@ function BuildStatus() {
             id="status-title"
             className="font-display text-4xl leading-tight text-ink sm:text-5xl"
           >
-            Day 1 of 12, in public.
+            Day 5 of 12, in public.
           </h2>
           <p className="text-base text-ink-soft leading-relaxed pt-2">
             Every commit lands on{" "}
@@ -601,14 +601,18 @@ function Stat({ label, value }: { label: string; value: string }) {
 /* -------------------------------------------------------------- */
 function StackBadges() {
   const tools = [
-    { name: "Granite-Docling", v: "258M", role: "COA structured-doc extraction" },
-    { name: "Granite Vision", v: "4.1 4B", role: "Timing-sheet chart and table extraction" },
-    { name: "Granite TimeSeries TTM", v: "r2.1", role: "Zero-shot multivariate forecasting" },
-    { name: "Granite Instruct", v: "4.1 8B", role: "Race-engineer narrator" },
-    { name: "Granite Guardian", v: "4.1 8B", role: "BYOC custom-rules safety audit" },
-    { name: "Langflow", v: "latest", role: "Visible agentic orchestration" },
-    { name: "Docling", v: "latest", role: "Document conversion layer" },
-    { name: "IBM Bob", v: "latest", role: "Build accelerator (Ferrari precedent)" },
+    { name: "Granite-Docling", v: "258M", role: "FIA COA PDF to structured JSON parser" },
+    { name: "Docling library", v: "latest", role: "Open-source IBM Docling conversion + table-extraction" },
+    { name: "Granite Vision", v: "4.1 4B", role: "SRO + Britcar timing-sheet PDF to CSV" },
+    { name: "Granite TimeSeries TTM", v: "r2.1", role: "Track 1 of D-010 three-track ensemble (frozen + channel-mix decoder)" },
+    { name: "Granite FlowState", v: "9.1M", role: "Track 2 of D-010 (sampling-rate-invariant continuous-time SSM at 50 Hz)" },
+    { name: "IBM TSPulse", v: "1M", role: "Polyphase time-frequency anomaly detector (D-016 Layer 2)" },
+    { name: "Granite Embedding R2", v: "149M + 47M", role: "Hybrid dense + sparse RAG over setup + theory + COA (D-016)" },
+    { name: "Granite Instruct", v: "4.1 8B", role: "Race-engineer narrator producing the coaching report" },
+    { name: "Granite Guardian", v: "4.1 8B", role: "BYOC custom-rule audit + D-024 physics-confidence downgrade" },
+    { name: "Granite 4.0 Nano", v: "350M", role: "In-browser WebGPU edge model via Transformers.js (D-019 + D-021)" },
+    { name: "Langflow", v: "demo facade", role: "Orchestration graph export (D-017 demoted to facade per wave-30)" },
+    { name: "IBM Bob", v: "latest", role: "Build accelerator per IBM Granite Ferrari case-study precedent" },
   ];
 
   return (
@@ -617,7 +621,7 @@ function StackBadges() {
         <div className="mb-12 flex flex-col gap-3 max-w-3xl">
           <p className="apex-eyebrow">IBM stack</p>
           <h2 id="stack-title" className="font-display text-4xl leading-tight text-ink sm:text-5xl">
-            Eight tools.
+            Twelve tools.
             <em className="italic text-racing-green"> Every one load-bearing.</em>
           </h2>
         </div>
@@ -690,7 +694,7 @@ function SiteFooter() {
           </div>
         </div>
         <div className="mt-12 border-t border-paper/10 pt-6 flex flex-wrap items-center justify-between gap-3 font-mono text-[11px] uppercase tracking-wider text-paper/45">
-          <span>Day 1 of 12 · 2026-05-20</span>
+          <span>Day 5 of 12 · 2026-05-23</span>
           <span>The race engineer beyond the finish line.</span>
         </div>
       </div>
