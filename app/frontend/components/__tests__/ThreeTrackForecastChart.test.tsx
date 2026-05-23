@@ -88,6 +88,10 @@ describe("ThreeTrackForecastChart", () => {
       divergence_sigma: 0,
     };
     render(<ThreeTrackForecastChart forecast={empty} />);
-    expect(screen.getByText(/No three-track forecast available/i)).toBeInTheDocument();
+    // Wave-35 A.3 alert specificity: empty-tracks path now renders a
+    // role=status with actionable copy ("Verify upstream telemetry
+    // intake") rather than the prior generic placeholder.
+    expect(screen.getByText(/Three-track forecast has no data/i)).toBeInTheDocument();
+    expect(screen.getByText(/Verify upstream telemetry intake/i)).toBeInTheDocument();
   });
 });
