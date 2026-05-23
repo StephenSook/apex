@@ -440,7 +440,7 @@ function Differentiators() {
     {
       n: "05",
       lead:
-        "Eight IBM Granite tools, every one load-bearing, IBM Bob in the build loop.",
+        "Twelve IBM Granite tools, every one load-bearing, IBM Bob in the build loop.",
       body:
         "Per the IBM × Scuderia Ferrari case-study precedent. We commit Bob session logs to the repo.",
     },
@@ -494,7 +494,7 @@ function BuildStatus() {
     { n: "2", label: "Physics layer + wave-30 lock", day: "Days 3-5", state: "in progress" as const },
     { n: "3", label: "Narrator + COA gate", day: "Day 6", state: "pending" as const },
     { n: "4", label: "Orchestration + polish", day: "Days 7-8", state: "pending" as const },
-    { n: "5", label: "Demo + deploy + WebGPU edge", day: "Days 9-10", state: "pending" as const },
+    { n: "5", label: "Demo + deploy (WebGPU edge ✅ wave-38)", day: "Days 9-10", state: "pending" as const },
     { n: "6", label: "Submission package + NeurIPS draft", day: "Day 11", state: "pending" as const },
     { n: "7", label: "Submit + multi-track", day: "Day 12 (2026-05-31)", state: "pending" as const },
   ];

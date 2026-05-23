@@ -4,9 +4,9 @@
 
 **Artifacts:**
 
-- `judges-edge-summary-wave-38.jpg` (70 KB JPEG viewport screenshot) — top-of-page hero rendering of /judges captured at wave-38 head 4882e8d post-A.7 EdgeSummary section insertion. Confirms the wave-38 build renders without console errors + the page hydrates cleanly.
-- `judges-snapshot-wave-38.yml` (54 KB, 1300+ lines) — Playwright accessibility-tree snapshot covering the full /judges single-page tour with the new wave-38 EdgeSummary section between the tri-agent critic section + Q&A defense pack. Grep this YAML for the EdgeSummary subtree (look for `WebGPU Granite Nano edge inference` heading text + Edge state chip + 1.5 GB pre-check copy + Newton projection diagnostics).
-- `console-wave-38.log` (4 entries) — Playwright console messages. Clean: only React DevTools INFO + HMR connected + Fast Refresh rebuild messages. Zero browser-side errors.
+- `judges-edge-summary-wave-38.jpg` (70 KB JPEG viewport screenshot): top-of-page hero rendering of /judges captured at wave-38 head 4882e8d post-A.7 EdgeSummary section insertion. Confirms the wave-38 build renders without console errors + the page hydrates cleanly.
+- `judges-snapshot-wave-38.yml` (54 KB, 1300+ lines): Playwright accessibility-tree snapshot covering the full /judges single-page tour with the new wave-38 EdgeSummary section between the tri-agent critic section + Q&A defense pack. Grep this YAML for the EdgeSummary subtree (look for `WebGPU Granite Nano edge inference` heading text + Edge state chip + 1.5 GB pre-check copy + Newton projection diagnostics).
+- `console-wave-38.log` (4 entries): Playwright console messages. Clean: only React DevTools INFO + HMR connected + Fast Refresh rebuild messages. Zero browser-side errors.
 
 **EdgeSummary state observed in this capture:**
 

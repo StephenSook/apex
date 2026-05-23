@@ -398,7 +398,7 @@ export default function JudgesPage() {
           <p className="mt-3 max-w-3xl text-base leading-relaxed text-ink-soft">
             Wave-30 decision D-019 item 1 + D-021 lock Granite 4.0 Nano 350M as the in-browser
             edge model via Transformers.js v4 + WebGPU. The 1.5 GB WebGPU buffer pre-check
-            (pre-mortem row 59) gates the model load; if the adapter advertises insufficient
+            (pre-mortem row 61) gates the model load; if the adapter advertises insufficient
             headroom, the chip below degrades to the server-only path. The 30-line Newton
             friction-ellipse projector runs offline alongside the small-LM head; server-
             authoritative reconnect (D-021) overwrites local state on every reconnect so no
