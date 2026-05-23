@@ -180,7 +180,7 @@ export default function EdgeSummary() {
       )}
 
       <p className="font-mono text-[10px] uppercase tracking-wider text-muted">
-        Cross-ref: <span className="text-ink-soft">D-019 item 1 + D-021 + arch-spec Appendix W30 Layer 7</span>
+        Cross-ref: <span className="text-ink-soft">D-019 item 1 + D-021 + arch-spec Appendix W30 Layer 0 (Edge/Client Plane)</span>
       </p>
     </section>
   );

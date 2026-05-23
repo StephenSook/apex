@@ -407,7 +407,7 @@ export default function JudgesPage() {
             <span className="font-mono text-xs text-racing-green">
               docs/architecture-spec.md
             </span>{" "}
-            Appendix W30 Layer 7.
+            Appendix W30 Layer 0 (Edge/Client Plane).
           </p>
           <div className="mt-6">
             <EdgeSummary />
