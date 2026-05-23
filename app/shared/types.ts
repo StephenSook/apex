@@ -731,8 +731,14 @@ export type GuardianSafetyVerdict = TriAgentVerdict & { readonly critic: "guardi
  * wave-35 B.1 refactor. Position 0 MUST be the Physics-Critic verdict,
  * position 1 MUST be Pedagogy-Critic, position 2 MUST be Guardian-Safety.
  * Adding a 4th critic, removing one, or reordering positions becomes a
- * compile error. D-018 locks exactly 3 critics; wave-35 locks the
- * position-to-name mapping at the type level.
+ * compile error AT FRONTEND CONSTRUCTION SITES (per wave-37 cascade-#5
+ * codex H-4 + type-design M-1 + comment-analyzer M-1 qualification:
+ * TypeScript does NOT enforce this at JSON.parse boundaries; backend
+ * drift requires runtime decoder + parse-time guard). D-018 locks
+ * exactly 3 critics; wave-35 locks the position-to-name mapping at the
+ * type level; wave-37 lands the deliberate-misorder negative tsc
+ * fixture at `app/frontend/tests/types/positional-binding.test-d.ts`
+ * to verify the construction-site compile errors actually fire.
  */
 export type TriAgentVerdictPanel = readonly [
   PhysicsCriticVerdict,
@@ -782,34 +788,47 @@ export type PhysicsConfidence =
 export type ForecastTrackName = "ttm_channel_mix" | "flowstate" | "chronos2";
 
 /**
- * Per-track variant types per wave-36 codex HIGH A2 refactor. Each
- * variant is exported as a named alias so the per-position tuple
- * binding in `ThreeTrackForecast.tracks` is enforced at compile time:
- * `tracks` is typed `[TtmBand, FlowStateBand, ChronosBand]` so a
- * backend bug emitting `[chronos2, chronos2, ttm_channel_mix]`
- * (wrong order) becomes a TypeScript error. Mirrors the wave-35 B.1
- * positional binding pattern applied to TriAgentVerdictPanel.
+ * Per-track variant types per wave-36 codex HIGH A2 refactor + wave-37
+ * cascade-#5 TRIPLE-SIGNAL closure (codex H-4 + type-design M-1 +
+ * comment-analyzer M-1). Each variant is exported as a named alias so
+ * the per-position tuple binding in `ThreeTrackForecast.tracks` is
+ * enforced AT CONSTRUCTION SITES BY TYPESCRIPT: a frontend literal
+ * `[chronos2Fixture, chronos2Fixture, ttmFixture]` becomes a TS2322
+ * error at the construction site. Note: TypeScript does NOT enforce
+ * this at JSON.parse / fetch().json() boundaries; backend response
+ * drift must be caught by the runtime guard at the parse boundary
+ * (see `ThreeTrackForecastChart.tsx` for the canonical guard).
+ *
+ * The deliberate-misorder negative tsc fixture lives at
+ * `app/frontend/tests/types/positional-binding.test-d.ts` (per
+ * wave-37 cascade-#5 prediction) + uses `@ts-expect-error` to verify
+ * the construction-site compile errors actually fire.
+ *
+ * Style: `export type` + intersection-friendly object literal, matching
+ * the wave-35 B.1 PhysicsCriticVerdict / PedagogyCriticVerdict /
+ * GuardianSafetyVerdict pattern at types.ts:725-727 (consistent with
+ * the established positional-binding convention in this file).
  */
-export interface TtmBand {
+export type TtmBand = {
   readonly track: "ttm_channel_mix";
   /** Forecast values for the 30-step horizon on the speed_mps channel
    *  (the demo-visible forecast). One value per mini-sector. */
   readonly forecast: ReadonlyArray<number>;
-}
+};
 
-export interface FlowStateBand {
+export type FlowStateBand = {
   readonly track: "flowstate";
   readonly forecast: ReadonlyArray<number>;
-}
+};
 
-export interface ChronosBand {
+export type ChronosBand = {
   readonly track: "chronos2";
   readonly forecast: ReadonlyArray<number>;
   /** Required 21-quantile bands per D-010 Chronos-2 contract. Empty
    *  array allowed when the back-end has no quantile data yet (e.g.
    *  smoke-test fixture) but the field is not optional. */
   readonly quantiles: ReadonlyArray<number>;
-}
+};
 
 /**
  * Discriminated union by `track` name per wave-35 B.2 refactor +
