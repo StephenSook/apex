@@ -1,3 +1,12 @@
+// Wave-41 Lane 1 Stream B.2 + B.6: brand types + literal-range
+// PhysicsTierValue + parser-function constructors all live in
+// app/shared/brands.ts (kept separate to prevent types.ts bloat past
+// 1256-line soft-cap). Decoder boundary (app/frontend/lib/api-decode.ts
+// per wave-41 Stream A) imports parseXxx() validators from brands.ts;
+// types.ts only consumes the branded types + the PhysicsTierValue
+// literal-union.
+import type { PhysicsTierValue } from "./brands";
+
 /**
  * APEX shared API contracts.
  *
@@ -948,7 +957,7 @@ export type ChannelName = (typeof CHANNELS)[number];
  * physics. null = driver input OR vehicle state (no tier; not subject
  * to physics-projection constraints).
  */
-export const CHANNEL_TIER_BINDING: Readonly<Record<ChannelName, number | null>> = {
+export const CHANNEL_TIER_BINDING: Readonly<Record<ChannelName, PhysicsTierValue | null>> = {
   throttle_pct: null,
   brake_pa: null,
   steering_rad: null,
@@ -1042,8 +1051,15 @@ export interface BackendViolationRecord {
  */
 export interface BackendPhysicsViolationLog {
   readonly records: ReadonlyArray<BackendViolationRecord>;
-  /** HORIZON from shapes.py; redundant for audit-trail self-containment. */
-  readonly forecast_step_count: number;
+  /**
+   * HORIZON from shapes.py; literal-typed per wave-41 B.3 close-out
+   * (type-design-analyzer H.5 from wave-40 cold review). Frozen at
+   * the literal `typeof HORIZON` = 30 to catch backend regressions
+   * emitting `forecast_step_count: 25` at compile time. If horizon
+   * ever varies, widen this to a literal union (`30 | <new-literal>`)
+   * not back to `number`.
+   */
+  readonly forecast_step_count: typeof HORIZON;
   readonly engine: ViolationEngine;
 }
 
@@ -1055,9 +1071,10 @@ export interface BackendPhysicsViolationLog {
  * computed at the friction-ellipse level for the D-027 gate).
  */
 export function fcvr(log: BackendPhysicsViolationLog): number {
-  if (log.forecast_step_count === 0) {
-    return 0.0;
-  }
+  // Wave-41 B.3: forecast_step_count is literal-typed `typeof HORIZON` = 30
+  // so the divide-by-zero branch is unreachable by type constraint. The
+  // prior `if (log.forecast_step_count === 0)` guard was dead code under
+  // the literal type; removed to satisfy TS2367.
   const violatedSteps = new Set(log.records.map((r) => r.step));
   return violatedSteps.size / log.forecast_step_count;
 }
