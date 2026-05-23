@@ -45,23 +45,26 @@ export function useConnectivity(onReconnect?: () => void): ConnectivityState {
     return { status: "online" };
   });
 
-  // Wave-38 cascade #8 silent-failure-hunter M-2 close-out + wave-39
-  // codex MED refinement: stash onReconnect in a ref so the event-
-  // listener identity stays stable across re-renders. Prior code re-
-  // bound the listeners on every render when the caller passed an
-  // inline arrow (typical), creating a teardown-rebind window where
-  // 'online' events could be lost OR the microtask-deferred callback
-  // could fire from a stale closure.
+  // Wave-38 cascade #8 silent-failure-hunter M-2 close-out: stash
+  // onReconnect in a ref so the event-listener identity stays stable
+  // across re-renders. Prior code re-bound the listeners on every
+  // render when the caller passed an inline arrow (typical), creating
+  // a teardown-rebind window where 'online' events could be lost OR
+  // the microtask-deferred callback could fire from a stale closure.
   //
-  // Wave-39 refinement: write the ref in the render body instead of
-  // in a useEffect. React 19 guarantees render-body assignments to
-  // refs are safe for non-stateful captures (the ref is mutated, not
-  // a state dependency); writing in the render body removes the one-
-  // tick lag that the useEffect-sync pattern carried (a 'online'
-  // event firing between render-N's commit + render-N's onReconnect-
-  // sync useEffect could capture render-N-1's stale callback).
+  // Wave-39 cascade #9 close-out: re-sync the ref via useEffect (not
+  // render-body assignment). The wave-39 attempt to bypass the one-
+  // tick lag by writing the ref in the render body was rejected by
+  // the React Compiler ESLint rule ("Cannot access refs during render
+  // / Cannot update ref during render"). The useEffect-sync pattern
+  // carries a theoretical one-tick window where render-N's commit
+  // could expose render-N-1's callback, but the microtask deferral
+  // already pushes the actual callback execution past commit, so the
+  // observable race is empty. ESLint compliance wins.
   const onReconnectRef = useRef(onReconnect);
-  onReconnectRef.current = onReconnect;
+  useEffect(() => {
+    onReconnectRef.current = onReconnect;
+  }, [onReconnect]);
 
   // Wave-39 silent-failure-hunter M-1 + M-3 close-out: track mount
   // status via mountedRef so the microtask-deferred callback skips
