@@ -121,4 +121,70 @@ describe("TriAgentCriticPanel", () => {
     expect(alerts.length).toBeGreaterThan(0);
     expect(alerts[0]).toHaveTextContent(/Critic rejected without recorded reasoning/i);
   });
+
+  it("renders the empty-concerns fallback when verdict is flag and flagged_concerns is empty (wave-35 A.8)", () => {
+    const flagEmptyConcerns: TriAgentVerdictPanel = [
+      {
+        critic: "physics",
+        verdict: "flag",
+        reasoning_trace: ["Pacejka residual elevated"],
+        flagged_concerns: [],
+        critic_run_id: "test-physics-flag-empty-1",
+      },
+      {
+        critic: "pedagogy",
+        verdict: "approve",
+        reasoning_trace: ["Coachable"],
+        critic_run_id: "test-pedagogy-approve-flag-empty-1",
+      },
+      {
+        critic: "guardian_safety",
+        verdict: "approve",
+        reasoning_trace: ["Safety pass"],
+        critic_run_id: "test-guardian-safety-approve-flag-empty-1",
+      },
+    ];
+    render(<TriAgentCriticPanel panel={flagEmptyConcerns} />);
+    const alerts = screen.getAllByRole("alert");
+    expect(alerts.length).toBeGreaterThan(0);
+    // grep-verified verbatim in TriAgentCriticPanel.tsx line 165:
+    // "Critic returned a flag verdict without recorded concerns; ..."
+    const target = alerts.find((a) =>
+      /flag verdict without recorded concerns/i.test(a.textContent ?? ""),
+    );
+    expect(target).toBeDefined();
+  });
+
+  it("renders the empty-blocked fallback when verdict is reject and blocked_recommendations is empty (wave-35 A.8)", () => {
+    const rejectEmptyBlocked: TriAgentVerdictPanel = [
+      {
+        critic: "physics",
+        verdict: "approve",
+        reasoning_trace: ["Physics consistent"],
+        critic_run_id: "test-physics-approve-reject-empty-1",
+      },
+      {
+        critic: "pedagogy",
+        verdict: "approve",
+        reasoning_trace: ["Coachable"],
+        critic_run_id: "test-pedagogy-approve-reject-empty-1",
+      },
+      {
+        critic: "guardian_safety",
+        verdict: "reject",
+        reasoning_trace: ["COA conflict"],
+        blocked_recommendations: [],
+        critic_run_id: "test-guardian-safety-reject-empty-1",
+      },
+    ];
+    render(<TriAgentCriticPanel panel={rejectEmptyBlocked} />);
+    const alerts = screen.getAllByRole("alert");
+    expect(alerts.length).toBeGreaterThan(0);
+    // grep-verified verbatim in TriAgentCriticPanel.tsx line 181:
+    // "Critic rejected without recorded blocked recommendations; ..."
+    const target = alerts.find((a) =>
+      /Critic rejected without recorded blocked recommendations/i.test(a.textContent ?? ""),
+    );
+    expect(target).toBeDefined();
+  });
 });
