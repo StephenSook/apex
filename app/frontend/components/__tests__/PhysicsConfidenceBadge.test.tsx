@@ -47,4 +47,41 @@ describe("PhysicsConfidenceBadge", () => {
     render(<PhysicsConfidenceBadge confidence={confidence} />);
     expect(screen.getByText(/→ approve → review/)).toBeInTheDocument();
   });
+
+  it("renders the non-finite-distance role=alert when mahalanobis_distance is NaN (wave-35 A.9)", () => {
+    const confidence: PhysicsConfidence = {
+      status: "in_distribution",
+      mahalanobis_distance: Number.NaN,
+      threshold_p95: 2.5,
+    };
+    render(<PhysicsConfidenceBadge confidence={confidence} />);
+    const alert = screen.getByRole("alert");
+    // grep-verified verbatim in PhysicsConfidenceBadge.tsx line 48:
+    // "Physics-confidence detector emitted non-finite distance; ..."
+    expect(alert).toHaveTextContent(/non-finite distance/i);
+  });
+
+  it("renders the non-finite-distance role=alert when mahalanobis_distance is Infinity (wave-35 A.9)", () => {
+    const confidence: PhysicsConfidence = {
+      status: "in_distribution",
+      mahalanobis_distance: Number.POSITIVE_INFINITY,
+      threshold_p95: 2.5,
+    };
+    render(<PhysicsConfidenceBadge confidence={confidence} />);
+    const alert = screen.getByRole("alert");
+    expect(alert).toHaveTextContent(/non-finite distance/i);
+  });
+
+  it("renders the non-finite-distance role=alert when threshold_p95 is NaN (wave-35 A.9)", () => {
+    const confidence: PhysicsConfidence = {
+      status: "out_of_distribution",
+      mahalanobis_distance: 3.0,
+      threshold_p95: Number.NaN,
+      downgrade_from: "approve",
+      downgrade_to: "review",
+    };
+    render(<PhysicsConfidenceBadge confidence={confidence} />);
+    const alert = screen.getByRole("alert");
+    expect(alert).toHaveTextContent(/non-finite distance/i);
+  });
 });
