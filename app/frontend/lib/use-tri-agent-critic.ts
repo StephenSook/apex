@@ -3,12 +3,14 @@
  * D-018 tri-agent Agent-as-Judge critic loop verdict panel for the
  * /judges + /analyze surfaces.
  *
- * Wave-40 Stream B.4 close-out per the AskUserQuestion "full galaxy-tier
- * pull-forward" answer: the hook lets consumers switch between mock
- * fixtures (today) + the backend fetch (Day 7-8 wire-up) via a single
- * `dataSource` parameter. TriAgentCriticPanel itself remains a pure UI
- * component taking the TriAgentVerdictPanel as a prop; this hook is the
- * data-fetching seam.
+ * Wave-40 Stream B.4 close-out + wave-41 Stream C hardening per the
+ * wave-40 cold-review codex HIGH (live-mode loading-state reset on
+ * source toggle) + silent-failure-hunter H-2 (logging gap +
+ * unsafe-cast removal) + silent-failure-hunter H-3 (AbortController +
+ * timeout). The hook lets consumers switch between mock fixtures +
+ * the backend fetch via a single `dataSource` parameter.
+ * TriAgentCriticPanel remains a pure UI component taking the
+ * TriAgentVerdictPanel as a prop; this hook is the data-fetching seam.
  *
  * Discriminated-union state per the feedback_discriminated_unions_over_
  * contradiction memory rule:
@@ -17,11 +19,24 @@
  *   - error: fetch failed (live mode only); falls back to error state
  *
  * Live mode contract: GET /api/critic returns a JSON-encoded
- * TriAgentVerdictPanel. The wave-41 decoder (lib/api-decode.ts) verifies
- * the response shape at parse time against the canonical
- * TriAgentVerdictPanel positional-binding invariant per types.ts
- * lines 731-747 (Physics at position 0, Pedagogy at position 1,
- * Guardian-Safety at position 2; runtime guard).
+ * TriAgentVerdictPanel. The wave-41 decoder at
+ * `app/frontend/lib/api-decode.ts` validates the response shape at
+ * parse time against the canonical TriAgentVerdictPanel positional-
+ * binding invariant per types.ts (Physics at position 0, Pedagogy at
+ * position 1, Guardian-Safety at position 2; runtime guard).
+ *
+ * Wave-41 Stream C hardening:
+ *   - 10-second AbortController timeout on /api/critic fetch.
+ *   - console.error with full context preservation on every error
+ *     path (no silent failures).
+ *   - Live-mode loading-state reset on source toggle: when source
+ *     flips from "mock_*" to "live", state immediately resets to
+ *     { status: "loading" } so the UI does not flash stale mock data
+ *     during the fetch latency window.
+ *   - Unsafe `as TriAgentVerdictPanel` cast replaced by
+ *     decodeTriAgentVerdictPanel() from the wave-41 decoder.
+ *   - Inline runtime guard removed (decoder handles it; single source
+ *     of truth).
  */
 
 "use client";
@@ -29,6 +44,7 @@
 import { useEffect, useRef, useState } from "react";
 
 import type { TriAgentVerdictPanel } from "../../shared/types";
+import { decodeTriAgentVerdictPanel } from "./api-decode";
 import { MOCK_TRI_AGENT_VERDICT, MOCK_TRI_AGENT_VERDICT_REJECT } from "./mocks/judges-mocks";
 
 export type TriAgentDataSource = "mock_flag" | "mock_reject" | "live";
@@ -43,10 +59,13 @@ const MOCK_FIXTURES: Readonly<Record<"mock_flag" | "mock_reject", TriAgentVerdic
   mock_reject: MOCK_TRI_AGENT_VERDICT_REJECT,
 };
 
+const LIVE_FETCH_TIMEOUT_MS = 10_000;
+
 /**
  * Return a TriAgentVerdictState based on the data source. Mock sources
  * resolve synchronously to the canonical fixtures. The live source
- * issues a GET /api/critic + parses the JSON response.
+ * issues a GET /api/critic + parses the JSON response with a 10s
+ * AbortController timeout + decoder-validated payload.
  */
 export function useTriAgentCriticVerdict(source: TriAgentDataSource): TriAgentVerdictState {
   const [state, setState] = useState<TriAgentVerdictState>(() =>
@@ -55,29 +74,12 @@ export function useTriAgentCriticVerdict(source: TriAgentDataSource): TriAgentVe
       : { status: "ready", panel: MOCK_FIXTURES[source] },
   );
 
-  // Wave-40 cold-review code-reviewer Finding 1 + cascade #9 family
-  // rule: React Compiler ESLint blocks reassigning a let-declared
-  // closure variable after render. Use a mounted ref instead per the
-  // sync-on-reconnect.ts wave-39 pattern.
   const cancelledRef = useRef(false);
+
   useEffect(() => {
     cancelledRef.current = false;
+
     if (source !== "live") {
-      // Wave-40 cascade #8 family rule: react-hooks/set-state-in-effect
-      // blocks synchronous setState() inside useEffect. Defer via
-      // queueMicrotask so the state transition lands AFTER the effect
-      // commits. Same hotfix shape as wave-38 cascade #8 (lazy state
-      // initializer for navigator.onLine) + wave-39 cascade #9
-      // (useEffect-sync of ref-stashed callback). The lazy initializer
-      // above already sets the correct initial state for mock sources;
-      // this branch only fires when `source` changes between mock
-      // values at runtime.
-      //
-      // Wave-40 cold-review code-reviewer Finding 1 + silent-failure-
-      // hunter M-8 close-out: gate the microtask on `cancelled` + return
-      // a cleanup that flips `cancelled` so a rapid source toggle (or
-      // unmount) does not setState on a stale target. Mirrors the
-      // sync-on-reconnect.ts mountedRef pattern from wave-39 cascade #9.
       const targetSource = source;
       queueMicrotask(() => {
         if (cancelledRef.current) return;
@@ -88,54 +90,88 @@ export function useTriAgentCriticVerdict(source: TriAgentDataSource): TriAgentVe
       };
     }
 
+    // Wave-41 Stream C codex HIGH close-out: reset to loading on every
+    // source change into "live" so the UI does not flash stale mock
+    // verdict data during the fetch latency window. Per the cascade #8
+    // family rule, the lazy-initializer state above only sets the
+    // initial mount value; the source-toggle case needs an explicit
+    // reset here via queueMicrotask deferral.
+    queueMicrotask(() => {
+      if (cancelledRef.current) return;
+      setState({ status: "loading" });
+    });
+
+    const controller = new AbortController();
+    const timeoutHandle = setTimeout(() => {
+      controller.abort("timeout");
+    }, LIVE_FETCH_TIMEOUT_MS);
+
     void (async () => {
       try {
-        const response = await fetch("/api/critic");
-        if (cancelledRef.current) {
-          return;
-        }
+        const response = await fetch("/api/critic", { signal: controller.signal });
+        if (cancelledRef.current) return;
         if (!response.ok) {
-          setState({
-            status: "error",
-            message: `Critic backend returned ${response.status} ${response.statusText}.`,
-          });
+          const message = `Critic backend returned ${response.status} ${response.statusText}.`;
+          if (typeof console !== "undefined" && console.error) {
+            console.error("apex.useTriAgentCriticVerdict: response not ok", {
+              status: response.status,
+              statusText: response.statusText,
+              url: response.url,
+            });
+          }
+          setState({ status: "error", message });
           return;
         }
-        const payload = (await response.json()) as TriAgentVerdictPanel;
-        if (cancelledRef.current) {
-          return;
+        const rawPayload: unknown = await response.json();
+        if (cancelledRef.current) return;
+        try {
+          const panel = decodeTriAgentVerdictPanel(rawPayload);
+          setState({ status: "ready", panel });
+        } catch (decodeErr) {
+          const message =
+            decodeErr instanceof Error ? decodeErr.message : String(decodeErr);
+          if (typeof console !== "undefined" && console.error) {
+            console.error("apex.useTriAgentCriticVerdict: decoder rejected payload", {
+              rawPayload,
+              decodeErr,
+            });
+          }
+          setState({ status: "error", message: `Critic decoder rejected payload: ${message}` });
         }
-        // Runtime guard per wave-37 cascade-#5 qualification: TypeScript
-        // does NOT enforce positional binding at JSON.parse boundaries.
-        // The wave-41 decoder will swap the inline guard below for a
-        // proper schema-validated parse; for now check the 3 critic
-        // names + length so a backend regression surfaces in the error
-        // state rather than rendering misordered verdicts.
-        if (
-          !Array.isArray(payload) ||
-          payload.length !== 3 ||
-          payload[0]?.critic !== "physics" ||
-          payload[1]?.critic !== "pedagogy" ||
-          payload[2]?.critic !== "guardian_safety"
-        ) {
-          setState({
-            status: "error",
-            message: "Critic backend returned a misshapen TriAgentVerdictPanel.",
-          });
-          return;
-        }
-        setState({ status: "ready", panel: payload });
       } catch (err) {
-        if (cancelledRef.current) {
+        if (cancelledRef.current) return;
+        const isAbort =
+          err instanceof DOMException && err.name === "AbortError";
+        if (isAbort) {
+          const isTimeout = controller.signal.reason === "timeout";
+          if (isTimeout) {
+            if (typeof console !== "undefined" && console.error) {
+              console.error("apex.useTriAgentCriticVerdict: /api/critic timed out", {
+                timeoutMs: LIVE_FETCH_TIMEOUT_MS,
+              });
+            }
+            setState({
+              status: "error",
+              message: `Critic backend did not respond within ${LIVE_FETCH_TIMEOUT_MS / 1000}s. Check Vinh's FastAPI service health on /status.`,
+            });
+          }
+          // Non-timeout abort = effect cleanup or source change; silent.
           return;
         }
         const message = err instanceof Error ? err.message : String(err);
+        if (typeof console !== "undefined" && console.error) {
+          console.error("apex.useTriAgentCriticVerdict: fetch threw", { err });
+        }
         setState({ status: "error", message: `Critic fetch failed: ${message}.` });
+      } finally {
+        clearTimeout(timeoutHandle);
       }
     })();
 
     return () => {
       cancelledRef.current = true;
+      clearTimeout(timeoutHandle);
+      controller.abort("source-changed");
     };
   }, [source]);
 
