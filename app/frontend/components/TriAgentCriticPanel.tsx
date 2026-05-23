@@ -40,23 +40,55 @@ const CRITIC_DESCRIPTIONS: Record<CriticName, string> = {
     "Granite Guardian 4.1 BYOC safety pass; gates the final verdict downstream.",
 };
 
-const VERDICT_LABELS: Record<TriAgentVerdict["verdict"], string> = {
-  approve: "Approved",
-  flag: "Flagged",
-  reject: "Rejected",
-};
+// Wave-35 A.7 exhaustiveness-throw helpers. Convert the prior Record
+// lookups into switch-based functions so a new verdict variant emits a
+// compile error at the `never` assignment rather than silently
+// rendering an empty string / no border / no tone. Mirrors
+// ExtendedPhysicsFixtureGrid.handlerBarClass pattern.
+function verdictLabel(verdict: TriAgentVerdict["verdict"]): string {
+  switch (verdict) {
+    case "approve":
+      return "Approved";
+    case "flag":
+      return "Flagged";
+    case "reject":
+      return "Rejected";
+    default: {
+      const _exhaustive: never = verdict;
+      throw new Error(`unknown verdict: ${String(_exhaustive)}`);
+    }
+  }
+}
 
-const VERDICT_BORDER: Record<TriAgentVerdict["verdict"], string> = {
-  approve: "border-racing-green",
-  flag: "border-amber",
-  reject: "border-accent",
-};
+function verdictBorder(verdict: TriAgentVerdict["verdict"]): string {
+  switch (verdict) {
+    case "approve":
+      return "border-racing-green";
+    case "flag":
+      return "border-amber";
+    case "reject":
+      return "border-accent";
+    default: {
+      const _exhaustive: never = verdict;
+      throw new Error(`unknown verdict: ${String(_exhaustive)}`);
+    }
+  }
+}
 
-const VERDICT_TONE: Record<TriAgentVerdict["verdict"], string> = {
-  approve: "text-racing-green",
-  flag: "text-amber",
-  reject: "text-accent",
-};
+function verdictTone(verdict: TriAgentVerdict["verdict"]): string {
+  switch (verdict) {
+    case "approve":
+      return "text-racing-green";
+    case "flag":
+      return "text-amber";
+    case "reject":
+      return "text-accent";
+    default: {
+      const _exhaustive: never = verdict;
+      throw new Error(`unknown verdict: ${String(_exhaustive)}`);
+    }
+  }
+}
 
 export default function TriAgentCriticPanel({ panel }: TriAgentCriticPanelProps) {
   const anyFlag = panel.some((v) => v.verdict !== "approve");
@@ -101,7 +133,7 @@ function TriAgentCriticCard({ verdict }: TriAgentCriticCardProps) {
   return (
     <article
       aria-labelledby={`critic-${verdict.critic}-title`}
-      className={`flex h-full w-full flex-col gap-3 rounded-sm border-2 ${VERDICT_BORDER[verdict.verdict]} bg-paper p-4`}
+      className={`flex h-full w-full flex-col gap-3 rounded-sm border-2 ${verdictBorder(verdict.verdict)} bg-paper p-4`}
     >
       <header>
         <h4
@@ -114,24 +146,42 @@ function TriAgentCriticCard({ verdict }: TriAgentCriticCardProps) {
           {CRITIC_DESCRIPTIONS[verdict.critic]}
         </p>
       </header>
-      <p className={`font-display text-xl ${VERDICT_TONE[verdict.verdict]}`}>
-        {VERDICT_LABELS[verdict.verdict]}
+      <p className={`font-display text-xl ${verdictTone(verdict.verdict)}`}>
+        {verdictLabel(verdict.verdict)}
       </p>
 
-      {verdict.verdict === "flag" && verdict.flagged_concerns.length > 0 && (
-        <ConcernList
-          title="Flagged concerns"
-          items={verdict.flagged_concerns}
-          tone="text-amber"
-        />
-      )}
-      {verdict.verdict === "reject" && verdict.blocked_recommendations.length > 0 && (
-        <ConcernList
-          title="Blocked recommendations"
-          items={verdict.blocked_recommendations}
-          tone="text-accent"
-        />
-      )}
+      {verdict.verdict === "flag" &&
+        (verdict.flagged_concerns.length > 0 ? (
+          <ConcernList
+            title="Flagged concerns"
+            items={verdict.flagged_concerns}
+            tone="text-amber"
+          />
+        ) : (
+          <p
+            role="alert"
+            className="rounded-sm border-2 border-amber bg-paper p-2 font-mono text-xs leading-relaxed text-amber"
+          >
+            Critic returned a flag verdict without recorded concerns; treat as provisional
+            pending Mellea IVR repair.
+          </p>
+        ))}
+      {verdict.verdict === "reject" &&
+        (verdict.blocked_recommendations.length > 0 ? (
+          <ConcernList
+            title="Blocked recommendations"
+            items={verdict.blocked_recommendations}
+            tone="text-accent"
+          />
+        ) : (
+          <p
+            role="alert"
+            className="rounded-sm border-2 border-accent bg-paper p-2 font-mono text-xs leading-relaxed text-accent"
+          >
+            Critic rejected without recorded blocked recommendations; do not surface to the
+            driver. Mellea IVR repair will fire on the upstream report.
+          </p>
+        ))}
 
       {verdict.reasoning_trace.length === 0 ? (
         <p role="alert" className="font-mono text-xs leading-relaxed text-accent">
