@@ -30,7 +30,7 @@ After step 5, every push to `main` triggers a preview deploy + a production depl
 
 ```bash
 cd /Users/stephensookra/Desktop/IBM\ May
-vercel --prod   # or simply push to main and let the GitHub integration handle it
+vercel --prod   # alternative: push to main + let the GitHub integration handle it
 ```
 
 Verify:

@@ -396,7 +396,7 @@ Everything else stays in lane and ships per this plan.
 This plan was pressure-tested by an llm-council session (TECHNICAL mode, 7 advisors + 5 peer reviewers + chairman synthesis). Full transcript at [council-transcript-20260522-vinh-backend-plan.md](../council-transcript-20260522-vinh-backend-plan.md).
 
 **Council changes applied:**
-- **Added Gate G0** (autograd-compatibility spike) as a hard blocker before any feature code. Senior-reviewer's caught blind spot; chairman called it "the single highest-leverage finding."
+- **Added Gate G0** (autograd-compatibility spike) as a hard blocker before any feature code. Senior-reviewer's caught blind spot; chairman called it "the single highest-impact finding."
 - **Hardened G3** with golden-text round-trip serializer assertion (Convergence-14 floor). Software Lead fix #4.
 - **Defined G4 holdout** explicitly (laps 4-5, seed=42, channels speed_mps + long_g, per-channel MAE delta). Software Lead fix #5.
 - **Hardened G6** with citation-resolution test (no hallucinated FIA Articles) + provenance contract test (audit_id non-None). Software Lead fixes #6 + #9.

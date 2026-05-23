@@ -70,7 +70,7 @@ Every locked decision with rationale + date + scope. Newest first.
 
 **Rationale.** Stephen explicit on Day 1 (2026-05-20): "Quality over speed. Do not rush things. Make sure you're going through every single skill, every single superpower, every single plugin, every single MCP, every single connector." This rule is the operational implementation of the global hackathon-project-flow Phase 1 principle ("tool-inventory audit BLOCKING before non-trivial tasks"). The project will be won by depth, not by velocity. A 70%-quality feature shipped at Day 11 beats a 90%-quality feature deferred to a hypothetical v2 only when the 70%-quality feature is the ONLY surface that exists; for tasks with quality variance, the rule is "use the highest-impact tools."
 
-**Affected.** Every non-trivial Claude tool-use sequence for the 12-day build. Memory rule installed at `~/.claude/projects/-Users-stephensookra-Desktop-IBM-May/memory/feedback_quality_over_speed.md`. Codex independent review wave 2 Day 1 EOD applied this principle (BLOCKER findings B1 + B2 surfaced because the manual-grep-and-fix sweep was lower-leverage than the Codex adversarial review).
+**Affected.** Every non-trivial Claude tool-use sequence for the 12-day build. Memory rule installed at `~/.claude/projects/-Users-stephensookra-Desktop-IBM-May/memory/feedback_quality_over_speed.md`. Codex independent review wave 2 Day 1 EOD applied this principle (BLOCKER findings B1 + B2 surfaced because the manual-grep-and-fix sweep was less effective than the Codex adversarial review).
 
 ---
 
