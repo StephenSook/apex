@@ -169,14 +169,34 @@ export function useGraniteNanoEdge(): GraniteNanoEdgeState {
   useEffect(() => {
     let cancelled = false;
 
-    // Lazy initializer already handled the offline path; skip load.
-    if (typeof navigator !== "undefined" && navigator.onLine === false) {
-      return () => {
-        cancelled = true;
-      };
-    }
+    // Wave-39 codex AXIS 1 close-out: subscribe to the browser
+    // 'online' event so a load that started offline (lazy initializer
+    // returned `offline` state) re-probes + reloads after reconnect.
+    // Prior code returned early on offline-at-mount + never re-ran
+    // the probe; the EdgeSummary chip stayed stuck at `offline`
+    // forever even after the browser reconnected.
+    const startLoad = () => {
+      // Tighten the typeof window check so SSR safety holds + only
+      // client paths run the WebGPU probe.
+      if (typeof navigator === "undefined" || typeof window === "undefined") {
+        return;
+      }
+      if (navigator.onLine === false) {
+        return;
+      }
+      setState((prev) => {
+        // Only restart the load if currently offline OR initial loading
+        // at progress 0 (lazy-initializer state); preserve ready / oom /
+        // error states from prior probe attempts.
+        if (prev.status === "offline" || (prev.status === "loading" && prev.progress === 0)) {
+          return { status: "loading", progress: 0.25 };
+        }
+        return prev;
+      });
+      void runProbeAndLoad();
+    };
 
-    void (async () => {
+    const runProbeAndLoad = async () => {
       const probe = await probeWebGPUHeadroom();
       if (cancelled) {
         return;
@@ -251,10 +271,25 @@ export function useGraniteNanoEdge(): GraniteNanoEdgeState {
         }
         setState({ status: "error", message });
       }
-    })();
+    };
+
+    // Initial load attempt (skipped if offline at mount; the 'online'
+    // listener below handles the offline -> online transition).
+    if (typeof navigator !== "undefined" && navigator.onLine !== false) {
+      void runProbeAndLoad();
+    }
+
+    // Wave-39 codex AXIS 1 close-out: 'online' event listener
+    // re-triggers the probe + load on offline -> online transition.
+    if (typeof window !== "undefined") {
+      window.addEventListener("online", startLoad);
+    }
 
     return () => {
       cancelled = true;
+      if (typeof window !== "undefined") {
+        window.removeEventListener("online", startLoad);
+      }
     };
   }, []);
 
