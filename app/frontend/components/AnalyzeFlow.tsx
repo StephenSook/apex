@@ -56,10 +56,25 @@ export default function AnalyzeFlow() {
     <>
       <Dropzone onAnalyze={handleAnalyze} isSubmitting={isSubmitting} />
       {report && (
-        <div ref={reportRef} tabIndex={-1} className="outline-none">
-          <CoachingReport report={report} />
+        <>
+          {/*
+            Wave-39 silent-failure-hunter M-2 close-out: EdgeModeCallout
+            previously sat INSIDE this focus-steal div, so when
+            handleAnalyze fired its first-render focus(),
+            scrollIntoView() pair, screen readers announced the entire
+            subtree starting from CoachingReport AND the trailing
+            "Try the in-browser edge mode" callout, burying the actual
+            coaching content under a marketing aside. The callout now
+            sits as a sibling outside the focus-target div, so focus
+            announces only the CoachingReport heading + body; the
+            callout remains keyboard-reachable via the natural document
+            tab order after the report's last interactive element.
+          */}
+          <div ref={reportRef} tabIndex={-1} className="outline-none">
+            <CoachingReport report={report} />
+          </div>
           <EdgeModeCallout />
-        </div>
+        </>
       )}
     </>
   );
