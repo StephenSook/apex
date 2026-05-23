@@ -126,6 +126,44 @@ function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+/**
+ * Wave-40 cascade #10 close-out + silent-failure-hunter H-1: generate a
+ * 32-char lowercase hex audit_id matching Vinh's `new_audit_id()` Python
+ * helper output (uuid4().hex per
+ * `app/backend/apex/shared/contracts/violations.py`). Three failure modes
+ * the bare `crypto.randomUUID()` would have hit:
+ *
+ * 1. Insecure context (HTTP localhost, corporate proxy stripping TLS).
+ *    `crypto.randomUUID` is undefined when `isSecureContext === false`;
+ *    the bare call throws a misleading `TypeError`.
+ * 2. Legacy browsers (Safari < 15.4, Firefox < 95, in-app WebViews) where
+ *    Web Crypto's randomUUID was not yet shipped.
+ * 3. SSR / RSC contexts where `crypto` differs in shape from window.crypto.
+ *
+ * Fallback: `crypto.getRandomValues` is universally available in any
+ * environment that ships Web Crypto at all, so the second branch covers
+ * everything `randomUUID` would have. Manual hex assembly + RFC-4122 v4
+ * bit fixups produce a 32-char hex string indistinguishable from
+ * uuid4().hex. Last-resort throw surfaces a browser-update CTA rather
+ * than ship a low-entropy ID that could collide across sessions.
+ */
+function generateAuditId(): string {
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+    return crypto.randomUUID().replace(/-/g, "");
+  }
+  if (typeof crypto !== "undefined" && typeof crypto.getRandomValues === "function") {
+    const bytes = new Uint8Array(16);
+    crypto.getRandomValues(bytes);
+    // RFC-4122 v4 bit fixups so the hex matches uuid4().hex bitwise.
+    bytes[6] = (bytes[6] & 0x0f) | 0x40;
+    bytes[8] = (bytes[8] & 0x3f) | 0x80;
+    return Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
+  }
+  throw new Error(
+    "APEX requires a browser with Web Crypto support (Safari 15.4+, Firefox 95+, Chrome 92+). Update your browser to run the analyze flow.",
+  );
+}
+
 function buildMockReport(submission: DropzoneSubmission): CoachingReportType {
   return {
     driver_id: submission.driver_id,
@@ -184,15 +222,16 @@ function buildMockReport(submission: DropzoneSubmission): CoachingReportType {
         "COA-derived c_overlap flag (from the approved hand-control hardware spec in Section 3(c) of the driver's COA) was set across the lap; Stage 2 feasibility filter cleared the brake-throttle simultaneity accordingly.",
         "Tuning delta of -4.0 mm hand-lever brake travel is within recommended manufacturer envelope and does not introduce a forward-Euler kinematic violation in the projected next session.",
       ],
-      // Wave-40 Stream A.8: audit_id now uses crypto.randomUUID() to match
-      // Vinh's `new_audit_id()` Python helper (uuid4().hex per
-      // `app/backend/apex/shared/contracts/violations.py`). Strip the
-      // RFC-4122 hyphens so the wire form mirrors Python uuid4().hex
-      // verbatim. Prior pattern (`audit-{driver_id}-{Date.now()}`) was a
-      // Day-1 frontend mock that drifted from the canonical uuid4 scheme
-      // Vinh shipped in Phase 0 (council v2 Software Lead fix #9 +
-      // wave-40 D-032 frontend-backend type alignment).
-      audit_id: crypto.randomUUID().replace(/-/g, ""),
+      // Wave-40 cascade #10 close-out + silent-failure-hunter H-1:
+      // audit_id uses Web Crypto with explicit insecure-context +
+      // legacy-browser fallback. crypto.randomUUID() throws on http://
+      // localhost (judges testing) + on Safari < 15.4 + on any in-app
+      // WebView without Web Crypto. The helper falls back to
+      // getRandomValues + manual hex assembly with RFC-4122 v4 bit
+      // fixups so the output is indistinguishable from uuid4().hex.
+      // Per council v2 Software Lead fix #9 + D-032 frontend-backend
+      // type alignment.
+      audit_id: generateAuditId(),
     },
     provenance: {
       model_versions: {
