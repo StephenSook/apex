@@ -144,8 +144,14 @@ describe("ThreeTrackForecastChart", () => {
       divergence_sigma: 0,
     };
     render(<ThreeTrackForecastChart forecast={flat} />);
+    // Component renders: "Forecast envelope is flat across all three tracks
+    // (zero cross-track variance). This is mathematically possible but
+    // unusual for motorsport telemetry; verify the projection before
+    // acting on the recommendation." Assert each substring that maps to
+    // a single DOM text fragment (the "." period creates a sentence
+    // boundary that breaks any cross-sentence regex matcher).
     expect(screen.getByText(/envelope is flat across all three tracks/i)).toBeInTheDocument();
-    expect(screen.getByText(/zero cross-track variance is unusual/i)).toBeInTheDocument();
+    expect(screen.getByText(/unusual for motorsport telemetry/i)).toBeInTheDocument();
   });
 
   it("renders a single-point Chronos-2 forecast as a circle rather than an envelope (wave-35 A.6)", () => {
