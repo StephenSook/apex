@@ -86,7 +86,11 @@ function ExtendedPhysicsFixtureTile({ fixture }: ExtendedPhysicsFixtureTileProps
         </div>
         <div className="flex flex-col">
           <dt className="text-[10px] uppercase tracking-wider text-muted">Canonical inputs</dt>
-          <dd className="text-ink">{fixture.canonical_inputs.join(" + ")}</dd>
+          <dd className="text-ink">
+            {fixture.canonical_inputs.length > 0
+              ? fixture.canonical_inputs.join(" + ")
+              : "(no canonical inputs declared for this tier)"}
+          </dd>
         </div>
       </dl>
       <details className="group">
@@ -95,14 +99,20 @@ function ExtendedPhysicsFixtureTile({ fixture }: ExtendedPhysicsFixtureTileProps
         </summary>
         <p className="mt-2 text-xs leading-relaxed text-ink-soft">{fixture.formula}</p>
         <p className="mt-2 font-mono text-[11px] uppercase tracking-wider text-muted">Outputs</p>
-        <ul className="mt-1 flex flex-col gap-1 font-mono text-xs leading-relaxed text-ink-soft">
-          {fixture.expected_outputs.map((out, idx) => (
-            <li key={idx} className="flex gap-2">
-              <span aria-hidden="true">{String(idx + 1).padStart(2, "0")}.</span>
-              <span>{out}</span>
-            </li>
-          ))}
-        </ul>
+        {fixture.expected_outputs.length > 0 ? (
+          <ul className="mt-1 flex flex-col gap-1 font-mono text-xs leading-relaxed text-ink-soft">
+            {fixture.expected_outputs.map((out, idx) => (
+              <li key={idx} className="flex gap-2">
+                <span aria-hidden="true">{String(idx + 1).padStart(2, "0")}.</span>
+                <span>{out}</span>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="mt-1 font-mono text-xs leading-relaxed text-muted">
+            (no expected outputs declared for this tier)
+          </p>
+        )}
         <p className="mt-3 font-mono text-[10px] uppercase tracking-wider text-muted">
           Arch-spec ref: <span className="normal-case text-ink-soft">{fixture.arch_spec_ref}</span>
         </p>
