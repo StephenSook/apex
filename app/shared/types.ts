@@ -1032,12 +1032,19 @@ export interface BackendViolationRecord {
   readonly step: number;
   /** One of 14 BACKEND_VIOLATION_TYPES. */
   readonly type: BackendViolationType;
+  /**
+   * Wave-30 D-015 physics tier the violation hit. Tier 0 = COA-derived.
+   * Wave-41 B.5: field order rotated to align with `violations.py:131`
+   * to_text() serializer emission order (`step type tier severity ch=`)
+   * so any TS-side Object.keys()-based round-trip serializer produces
+   * byte-identical output. Prior order (severity before tier) was a
+   * cold-review type-design-analyzer M.6 finding.
+   */
+  readonly tier: number;
   /** Distance past the constraint boundary; non-negative. */
   readonly severity: number;
   /** Subset of CHANNELS at this step; keys are ChannelName instances. */
   readonly channel_values: Readonly<Partial<Record<ChannelName, number>>>;
-  /** Wave-30 D-015 physics tier the violation hit. Tier 0 = COA-derived. */
-  readonly tier: number;
 }
 
 /**
