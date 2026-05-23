@@ -44,18 +44,30 @@ curl -s -o /dev/null -w "%{http_code}\n" https://apex-race.vercel.app/status
 
 All four should return 200. Pre-submit Check 14 (README demo URL) flips WARN → PASS once the README is updated with the live URL.
 
-## Domain swap (Day 11 if apex.race lands)
+## Domain swap (wave-38 2026-05-23: apex.race CUTOVER)
 
-If the `apex.race` domain registration completes before Day 11:
+Wave-38 Stream D landed the apex.race domain cutover ahead of schedule (Day 11 → Day 5 pull-forward). Stephen confirmed DNS pointed to Vercel + GitHub auto-deploy on push to main is the canonical deploy path (no `vercel --prod` CLI run needed).
 
-1. Vercel dashboard → Project Settings → Domains → Add `apex.race`.
-2. Set CNAME at the DNS registrar to `cname.vercel-dns.com`.
-3. Wait for SSL provisioning (Vercel handles automatically, usually < 5 min).
-4. Update `NEXT_PUBLIC_SITE_URL` env var in Vercel project settings to `https://apex.race`.
-5. Push a new commit to trigger redeploy with the new metadataBase.
-6. Update README + /judges + /status references.
+**Cutover steps applied (2026-05-23 wave-38 Stream D):**
 
-If `apex.race` does NOT land in time, the `apex-race.vercel.app` URL stays in production. metadataBase fallback at `app/frontend/app/layout.tsx` already handles this case.
+1. ✅ Vercel dashboard → Project Settings → Domains → `apex.race` + `www.apex.race` added.
+2. ✅ CNAME at DNS registrar pointed to `cname.vercel-dns.com`.
+3. ✅ SSL provisioning auto-completed via Vercel.
+4. ✅ `NEXT_PUBLIC_SITE_URL` env var optionally set to `https://apex.race` in Vercel project settings (the layout.tsx fallback now defaults to `https://apex.race` so the env var is no longer load-bearing).
+5. ✅ Wave-38 commit pushed; auto-redeploy with new metadataBase fired.
+6. 🟡 README + /judges + /status apex.race references audit pending (post-cutover Day 11 polish).
+
+**Smoke-test commands after cutover:**
+
+```bash
+curl -s -o /dev/null -w "%{http_code}\n" https://apex.race/
+curl -s -o /dev/null -w "%{http_code}\n" https://apex.race/analyze
+curl -s -o /dev/null -w "%{http_code}\n" https://apex.race/judges
+curl -s -o /dev/null -w "%{http_code}\n" https://apex.race/status
+curl -s -o /dev/null -w "%{http_code}\n" https://www.apex.race/  # verify redirect to apex.race OR www-canonical
+```
+
+**Fallback path:** the `apex-race.vercel.app` subdomain still resolves as a Vercel-served alias. If apex.race domain has a future DNS / SSL issue, the layout.tsx fallback constant in `resolveSiteUrl()` can be reverted to `https://apex-race.vercel.app` in a single-line commit.
 
 ## Rollback path
 

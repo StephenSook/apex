@@ -24,12 +24,22 @@ const fraunces = Fraunces({
   display: "swap",
 });
 
-// Default to a known-resolvable Vercel URL until apex.race is registered + DNS configured (Q-007).
-// `??` only catches null/undefined; empty-string or invalid-URL env vars still throw inside `new URL()`
-// at module-load time and brick the production build with no hint of the env-var cause.
+// Wave-38 Stream D: apex.race domain DNS confirmed pointed to Vercel
+// 2026-05-23 (Stephen). Fallback updated from the prior
+// apex-race.vercel.app to the canonical apex.race origin so server-
+// rendered metadata (Open Graph + Twitter Card + canonical) emits
+// production URLs even when NEXT_PUBLIC_SITE_URL is unset. The
+// apex-race.vercel.app subdomain still resolves as a Vercel-served
+// alias; the canonical metadataBase is apex.race per the wave-38
+// runbook cutover.
+//
+// `??` only catches null/undefined; empty-string or invalid-URL env
+// vars still throw inside `new URL()` at module-load time and brick
+// the production build with no hint of the env-var cause; try/catch
+// preserves diagnostic + falls back gracefully.
 function resolveSiteUrl(): URL {
   const raw = process.env.NEXT_PUBLIC_SITE_URL?.trim();
-  const fallback = "https://apex-race.vercel.app";
+  const fallback = "https://apex.race";
   if (!raw) return new URL(fallback);
   try {
     return new URL(raw);
