@@ -782,31 +782,44 @@ export type PhysicsConfidence =
 export type ForecastTrackName = "ttm_channel_mix" | "flowstate" | "chronos2";
 
 /**
- * Discriminated union by `track` name per wave-35 B.2 refactor. The
- * chronos2 variant requires `quantiles` (21 per D-010); the other two
- * variants do not carry quantiles. This makes "chronos2 without
- * quantiles" + "ttm_channel_mix with quantiles" both compile errors,
- * lifting the JSDoc-only invariant up to the type level.
+ * Per-track variant types per wave-36 codex HIGH A2 refactor. Each
+ * variant is exported as a named alias so the per-position tuple
+ * binding in `ThreeTrackForecast.tracks` is enforced at compile time:
+ * `tracks` is typed `[TtmBand, FlowStateBand, ChronosBand]` so a
+ * backend bug emitting `[chronos2, chronos2, ttm_channel_mix]`
+ * (wrong order) becomes a TypeScript error. Mirrors the wave-35 B.1
+ * positional binding pattern applied to TriAgentVerdictPanel.
  */
-export type ThreeTrackBand =
-  | {
-      readonly track: "ttm_channel_mix";
-      /** Forecast values for the 30-step horizon on the speed_mps channel
-       *  (the demo-visible forecast). One value per mini-sector. */
-      readonly forecast: ReadonlyArray<number>;
-    }
-  | {
-      readonly track: "flowstate";
-      readonly forecast: ReadonlyArray<number>;
-    }
-  | {
-      readonly track: "chronos2";
-      readonly forecast: ReadonlyArray<number>;
-      /** Required 21-quantile bands per D-010 Chronos-2 contract. Empty
-       *  array allowed when the back-end has no quantile data yet (e.g.
-       *  smoke-test fixture) but the field is not optional. */
-      readonly quantiles: ReadonlyArray<number>;
-    };
+export interface TtmBand {
+  readonly track: "ttm_channel_mix";
+  /** Forecast values for the 30-step horizon on the speed_mps channel
+   *  (the demo-visible forecast). One value per mini-sector. */
+  readonly forecast: ReadonlyArray<number>;
+}
+
+export interface FlowStateBand {
+  readonly track: "flowstate";
+  readonly forecast: ReadonlyArray<number>;
+}
+
+export interface ChronosBand {
+  readonly track: "chronos2";
+  readonly forecast: ReadonlyArray<number>;
+  /** Required 21-quantile bands per D-010 Chronos-2 contract. Empty
+   *  array allowed when the back-end has no quantile data yet (e.g.
+   *  smoke-test fixture) but the field is not optional. */
+  readonly quantiles: ReadonlyArray<number>;
+}
+
+/**
+ * Discriminated union by `track` name per wave-35 B.2 refactor +
+ * wave-36 A2 per-track-named-alias refactor. The chronos2 variant
+ * requires `quantiles` (21 per D-010); the other two variants do not
+ * carry quantiles. This makes "chronos2 without quantiles" +
+ * "ttm_channel_mix with quantiles" both compile errors, lifting the
+ * JSDoc-only invariant up to the type level.
+ */
+export type ThreeTrackBand = TtmBand | FlowStateBand | ChronosBand;
 
 /**
  * Discriminated union by `status`. `converged` carries the ensemble
@@ -818,7 +831,7 @@ export type ThreeTrackBand =
 export type ThreeTrackForecast =
   | {
       readonly status: "converged";
-      readonly tracks: readonly [ThreeTrackBand, ThreeTrackBand, ThreeTrackBand];
+      readonly tracks: readonly [TtmBand, FlowStateBand, ChronosBand];
       /** Ensemble fused forecast (weighted-mean blend with TTM anchor). */
       readonly ensemble: ReadonlyArray<number>;
       /** Cross-track divergence in standard-deviation units. Less than 2.0 = converged. */
@@ -826,7 +839,7 @@ export type ThreeTrackForecast =
     }
   | {
       readonly status: "diverged";
-      readonly tracks: readonly [ThreeTrackBand, ThreeTrackBand, ThreeTrackBand];
+      readonly tracks: readonly [TtmBand, FlowStateBand, ChronosBand];
       /** Cross-track divergence. Greater than or equal to 2.0 = diverged. */
       readonly divergence_sigma: number;
       readonly fallback: "ttm_only" | "weighted_blend_dropping_outlier";
