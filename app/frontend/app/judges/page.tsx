@@ -445,7 +445,7 @@ export default function JudgesPage() {
                 Mock A: flag verdict on Pedagogy-Critic
               </p>
               <div className="mt-2">
-                <TriAgentCriticPanel panel={MOCK_TRI_AGENT_VERDICT} />
+                <TriAgentCriticPanel panel={MOCK_TRI_AGENT_VERDICT} panelId="mock-flag" />
               </div>
             </div>
             <div>
@@ -453,7 +453,10 @@ export default function JudgesPage() {
                 Mock B: reject verdict on Guardian-Safety (COA-conflict)
               </p>
               <div className="mt-2">
-                <TriAgentCriticPanel panel={MOCK_TRI_AGENT_VERDICT_REJECT} />
+                <TriAgentCriticPanel
+                  panel={MOCK_TRI_AGENT_VERDICT_REJECT}
+                  panelId="mock-reject"
+                />
               </div>
             </div>
           </div>

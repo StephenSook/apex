@@ -15,6 +15,8 @@
  * conditionals on optional fields.
  */
 
+import { useId } from "react";
+
 import type {
   CriticName,
   TriAgentVerdict,
@@ -23,6 +25,18 @@ import type {
 
 export interface TriAgentCriticPanelProps {
   readonly panel: TriAgentVerdictPanel;
+  /**
+   * Optional unique panel identifier used to namespace internal DOM IDs.
+   * Required when the page renders more than one TriAgentCriticPanel
+   * (e.g., the /judges page renders the flag-mock + reject-mock side by
+   * side). When omitted, defaults to a stable React.useId() value so
+   * single-render call sites remain valid + accessible without changes.
+   * Wave-36 silent-failure-hunter M-3 fix: prior hardcoded
+   * `id="tri-agent-title"` + `id="critic-${critic}-title"` produced
+   * duplicate DOM IDs across the two /judges renders, violating HTML
+   * spec + breaking aria-labelledby resolution.
+   */
+  readonly panelId?: string;
 }
 
 const CRITIC_LABELS: Record<CriticName, string> = {
@@ -90,17 +104,20 @@ function verdictTone(verdict: TriAgentVerdict["verdict"]): string {
   }
 }
 
-export default function TriAgentCriticPanel({ panel }: TriAgentCriticPanelProps) {
+export default function TriAgentCriticPanel({ panel, panelId }: TriAgentCriticPanelProps) {
+  const fallbackId = useId();
+  const effectivePanelId = panelId ?? fallbackId;
+  const titleId = `${effectivePanelId}-tri-agent-title`;
   const anyFlag = panel.some((v) => v.verdict !== "approve");
   return (
     <section
-      aria-labelledby="tri-agent-title"
+      aria-labelledby={titleId}
       className="flex flex-col gap-4 rounded-sm border border-rule bg-paper p-5"
     >
       <header className="flex items-baseline justify-between gap-3">
         <div>
           <p className="apex-eyebrow">Tri-agent Agent-as-Judge critic loop · D-018</p>
-          <h3 id="tri-agent-title" className="font-display text-2xl tracking-tight text-ink">
+          <h3 id={titleId} className="font-display text-2xl tracking-tight text-ink">
             Three-critic verdict panel
           </h3>
         </div>
@@ -117,7 +134,7 @@ export default function TriAgentCriticPanel({ panel }: TriAgentCriticPanelProps)
       <ol className="grid gap-4 sm:grid-cols-3">
         {panel.map((verdict) => (
           <li key={verdict.critic} className="flex">
-            <TriAgentCriticCard verdict={verdict} />
+            <TriAgentCriticCard verdict={verdict} panelId={effectivePanelId} />
           </li>
         ))}
       </ol>
@@ -127,17 +144,19 @@ export default function TriAgentCriticPanel({ panel }: TriAgentCriticPanelProps)
 
 interface TriAgentCriticCardProps {
   readonly verdict: TriAgentVerdict;
+  readonly panelId: string;
 }
 
-function TriAgentCriticCard({ verdict }: TriAgentCriticCardProps) {
+function TriAgentCriticCard({ verdict, panelId }: TriAgentCriticCardProps) {
+  const cardTitleId = `${panelId}-critic-${verdict.critic}-title`;
   return (
     <article
-      aria-labelledby={`critic-${verdict.critic}-title`}
+      aria-labelledby={cardTitleId}
       className={`flex h-full w-full flex-col gap-3 rounded-sm border-2 ${verdictBorder(verdict.verdict)} bg-paper p-4`}
     >
       <header>
         <h4
-          id={`critic-${verdict.critic}-title`}
+          id={cardTitleId}
           className="font-display text-lg text-ink"
         >
           {CRITIC_LABELS[verdict.critic]}
