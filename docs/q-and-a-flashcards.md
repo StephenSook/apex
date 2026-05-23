@@ -74,10 +74,18 @@
 - If a question doesn't match a card exactly, redirect to the closest card. Don't ad-lib.
 - After a 3-hostile-pass, the team can ad-lib variations because the core answers are locked.
 
-## Catch-all flashcard (Card 6, drafted Day 9 after dress rehearsal)
+## Catch-all flashcard (Card 6, updated 2026-05-23 Day 5 post wave-40)
 
-For questions outside the 5 cards: "We deliberately scope-limited APEX V1 to the COA + TTM + two-stage projection-and-audit pattern, with V1 / V2 / V3 boundaries documented in the architecture spec at `docs/architecture-spec.md` and the bounded-scope statement in the paper at §5.3. Happy to walk through where your question intersects the V1 boundary."
+For questions outside the 5 cards: "Wave-30 locked the maximal architecture: 8-tier physics + three-track forecasting ensemble + twelve-tool IBM Granite stack + LangGraph orchestration + tri-agent Agent-as-Judge critic loop + five shouldn't-be-possible moves (WebGPU Granite Nano, Activated LoRA hot-swap, GEPA reflective prompt evolution, EAGLE-3 speculative decoding, Agent-as-Judge tri-agent critic). All five are in-scope; no V2 or V3 labels. The bounded-scope statement at paper §5.3 + the architecture spec at `docs/architecture-spec.md` Appendix W30 list the explicit non-claims. Happy to walk through where your question intersects the in-scope galaxy."
+
+## Card 7 (drafted 2026-05-23 Day 5 post Phase 0 handoff)
+
+"Vinh shipped the Phase 0 contract layer Day 3 night: shapes.py (the canonical (B, 30, 14) tensor + 14-channel CHANNELS enum + CHANNEL_TIER_BINDING + SCHEMA_VERSION), violations.py (PhysicsViolationLog + GuardianAudit with uuid4().hex audit_id + 14 ViolationType literals), validator.py (V1 NumPy validator signatures + ToleranceBands per the council v2 channel-specific tolerance fix), projector.py (DifferentiableProjector Protocol seam letting us swap V1 NumPy + V2 cvxpylayers + future qpth / theseus without touching consumers; PROTOCOL_VERSION distinct from SCHEMA_VERSION), logging.py (audit_id-correlated JSON log lines via Python contextvar + per-line ts + level + logger + event + audit_id + commit_sha + models snapshot), and scp_spike.py (the D-027 Stage C constant-mu single-iterate gradient-flow proof that emitted gradient finite True + ||grad_L|| = 24.12 below the council v2 1e4 threshold + FCVR = 0 on the Sarah Reynolds 10-row stub). Frontend mirrors live in `app/shared/types.ts` as Backend* prefixed TypeScript types + a negative-tsc fixture at `tests/types/contract-alignment.test-d.ts` catches schema drift at compile time. The wave-41 decoder at `lib/api-decode.ts` swaps mock fixtures for live backend payloads when Vinh wires the FastAPI endpoints Day 7-8."
+
+## Card 8 (drafted 2026-05-23 Day 5 post galaxy-moves surface pull-forward)
+
+"Wave-30 D-019 enumerates five shouldn't-be-possible moves; wave-38 shipped move #1 (WebGPU Granite Nano 350M edge inference via Transformers.js v4 on /judges + on /analyze with the 30-line Newton friction-ellipse projector for the offline path per D-021 server-authoritative reconnect). Wave-40 shipped the visualization surfaces for moves #2 (Activated LoRA hot-swap adapter status badge with rank + alpha + lambda + swap-round-trip-ms), #3 (GEPA reflective prompt evolution panel with candidate count + APEX-Bench faithfulness gradient over N iterations + selected prompt diff render), #4 (EAGLE-3 speculative decoding latency badge with speedup + accepted-token-rate + draft rank), and #5 polish on the tri-agent Agent-as-Judge critic loop via a new useTriAgentCriticVerdict data-source hook so the Day 7-8 backend wire-up is a fetch swap, not a build-from-zero. All five panels render in pipeline order on /judges between the IBM stack panel + the edge mode chip."
 
 ---
 
-_Last updated: 2026-05-20 Day 1 EOD by Stephen. Mirrors `project_apex_qa_killshots.md` in memory. Update both in lockstep on any wording change._
+_Last updated: 2026-05-23 Day 5 by Stephen. Mirrors `project_apex_qa_killshots.md` in memory. Update both in lockstep on any wording change. Wave-40 Stream E.4 added Cards 6 update + Card 7 (Phase 0 handoff) + Card 8 (galaxy moves surface pull-forward)._
