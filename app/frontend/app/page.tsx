@@ -102,6 +102,12 @@ function Hero() {
             ships to Scuderia Ferrari&rsquo;s ~400 million fans in the hands of the
             drivers who need a race engineer the most.
           </p>
+          <p
+            className="max-w-xl font-mono text-xs uppercase tracking-wider text-muted apex-rise"
+            style={{ "--apex-delay": "300ms" } as React.CSSProperties}
+          >
+            Built for race engineers, drivers, adaptive-racing coaches, and grassroots programs.
+          </p>
           <div
             className="flex flex-wrap gap-3 pt-2 apex-rise"
             style={{ "--apex-delay": "360ms" } as React.CSSProperties}
