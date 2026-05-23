@@ -55,7 +55,7 @@ export default function ThreeTrackForecastChart({ forecast }: ThreeTrackForecast
         allValues.push(v);
       }
     });
-    if (track.quantiles) {
+    if (track.track === "chronos2") {
       track.quantiles.forEach((v) => {
         if (Number.isFinite(v)) {
           allValues.push(v);
@@ -101,11 +101,13 @@ export default function ThreeTrackForecastChart({ forecast }: ThreeTrackForecast
       .join(" ");
   }
 
-  // Quantile bands for the chronos2 track (if present): render envelope between
-  // first and last quantile as a filled polygon path.
+  // Quantile bands for the chronos2 track: render envelope between min + max
+  // quantile as a filled polygon path. Per wave-35 B.2 refactor, chronos2
+  // variant carries `quantiles` as a required (non-optional) field, so the
+  // optional-chain shortcut from before is no longer needed.
   const chronos = forecast.tracks.find((t) => t.track === "chronos2");
   const quantileEnvelope =
-    chronos && chronos.quantiles && chronos.quantiles.length >= 2 && chronos.forecast.length > 0
+    chronos && chronos.track === "chronos2" && chronos.quantiles.length >= 2 && chronos.forecast.length > 0
       ? buildQuantileEnvelope(chronos.forecast, chronos.quantiles, xFor, yFor)
       : null;
 

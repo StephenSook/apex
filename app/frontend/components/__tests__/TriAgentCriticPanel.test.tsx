@@ -9,16 +9,19 @@ const allApprove: TriAgentVerdictPanel = [
     critic: "physics",
     verdict: "approve",
     reasoning_trace: ["Friction ellipse OK", "Bicycle model OK"],
+    critic_run_id: "test-physics-approve-1",
   },
   {
     critic: "pedagogy",
     verdict: "approve",
     reasoning_trace: ["Recommendation is coachable"],
+    critic_run_id: "test-pedagogy-approve-1",
   },
   {
     critic: "guardian_safety",
     verdict: "approve",
     reasoning_trace: ["No safety concerns"],
+    critic_run_id: "test-guardian-safety-approve-1",
   },
 ];
 
@@ -28,16 +31,19 @@ const anyFlag: TriAgentVerdictPanel = [
     verdict: "flag",
     reasoning_trace: ["Pacejka linearisation residual elevated"],
     flagged_concerns: ["Tier 7 residual exceeds 0.1 friction-coefficient units"],
+    critic_run_id: "test-physics-flag-1",
   },
   {
     critic: "pedagogy",
     verdict: "approve",
     reasoning_trace: ["Coaching narrative is clear"],
+    critic_run_id: "test-pedagogy-approve-2",
   },
   {
     critic: "guardian_safety",
     verdict: "approve",
     reasoning_trace: ["Safety pass clean"],
+    critic_run_id: "test-guardian-safety-approve-2",
   },
 ];
 
@@ -46,17 +52,20 @@ const anyReject: TriAgentVerdictPanel = [
     critic: "physics",
     verdict: "approve",
     reasoning_trace: ["Physics consistent"],
+    critic_run_id: "test-physics-approve-2",
   },
   {
     critic: "pedagogy",
     verdict: "approve",
     reasoning_trace: ["Coachable"],
+    critic_run_id: "test-pedagogy-approve-3",
   },
   {
     critic: "guardian_safety",
     verdict: "reject",
     reasoning_trace: ["Recommendation conflicts with COA Section 3(c) hardware spec"],
     blocked_recommendations: ["Reduce brake travel by 4 mm"],
+    critic_run_id: "test-guardian-safety-reject-1",
   },
 ];
 
@@ -92,16 +101,19 @@ describe("TriAgentCriticPanel", () => {
         verdict: "reject",
         reasoning_trace: [],
         blocked_recommendations: ["something"],
+        critic_run_id: "test-physics-reject-empty-trace-1",
       },
       {
         critic: "pedagogy",
         verdict: "approve",
         reasoning_trace: ["fine"],
+        critic_run_id: "test-pedagogy-approve-4",
       },
       {
         critic: "guardian_safety",
         verdict: "approve",
         reasoning_trace: ["fine"],
+        critic_run_id: "test-guardian-safety-approve-3",
       },
     ];
     render(<TriAgentCriticPanel panel={emptyTrace} />);

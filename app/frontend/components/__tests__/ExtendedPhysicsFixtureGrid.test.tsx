@@ -23,7 +23,9 @@ describe("ExtendedPhysicsFixtureGrid", () => {
     expect(screen.getByText(/SCP inner iterate/i)).toBeInTheDocument();
     expect(screen.getByText(/COA constraint layer/i)).toBeInTheDocument();
     expect(screen.getByText(/Internal state evolution/i)).toBeInTheDocument();
-    expect(screen.getByText(/Steady-state algebraic substitution/i)).toBeInTheDocument();
+    // EP-06 formula text contains "Steady-state algebraic substitution" verbatim
+    // in addition to the handler-attribution dd label, so use getAllByText.
+    expect(screen.getAllByText(/Steady-state algebraic substitution/i).length).toBeGreaterThan(0);
   });
 
   it("renders the canonical inputs as monospace channel lists", () => {

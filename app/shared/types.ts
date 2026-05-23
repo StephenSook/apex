@@ -687,35 +687,58 @@ export type CriticName = "physics" | "pedagogy" | "guardian_safety";
  * Discriminated union by verdict tag (mirrors `GuardianAudit` pattern
  * one level up). Illegal states unrepresentable: `flagged_concerns`
  * only appears on `"flag"`, `blocked_recommendations` only appears on
- * `"reject"`, `"approve"` carries no list. The TriAgentCriticPanel
- * component can `switch (verdict.verdict)` and TypeScript exhausts
- * the cases.
+ * `"reject"`, `"approve"` carries no list. Every variant carries a
+ * `critic_run_id` (wave-35 B.3 addition) mirroring `GuardianAudit.audit_id`
+ * pattern so Mellea IVR repair loops can dedupe per-critic outputs across
+ * retries. The TriAgentCriticPanel component can `switch (verdict.verdict)`
+ * and TypeScript exhausts the cases.
  */
 export type TriAgentVerdict =
   | {
       readonly critic: CriticName;
       readonly verdict: "approve";
       readonly reasoning_trace: ReadonlyArray<string>;
+      readonly critic_run_id: string;
     }
   | {
       readonly critic: CriticName;
       readonly verdict: "flag";
       readonly reasoning_trace: ReadonlyArray<string>;
       readonly flagged_concerns: ReadonlyArray<string>;
+      readonly critic_run_id: string;
     }
   | {
       readonly critic: CriticName;
       readonly verdict: "reject";
       readonly reasoning_trace: ReadonlyArray<string>;
       readonly blocked_recommendations: ReadonlyArray<string>;
+      readonly critic_run_id: string;
     };
 
 /**
- * Fixed-arity 3-tuple of critic verdicts. Adding a 4th critic or removing
- * one becomes a compile error at the panel-rendering site. D-018 locks
- * exactly 3 critics (Physics + Pedagogy + Guardian-Safety).
+ * Per-critic variant types narrowing `TriAgentVerdict` by `critic` name
+ * (wave-35 B.1 addition). Enables positional binding on
+ * `TriAgentVerdictPanel` so a backend bug emitting `[physics, physics,
+ * physics]` becomes a TypeScript compile error at the panel-construction
+ * site instead of a runtime duplicate-critic surprise.
  */
-export type TriAgentVerdictPanel = readonly [TriAgentVerdict, TriAgentVerdict, TriAgentVerdict];
+export type PhysicsCriticVerdict = TriAgentVerdict & { readonly critic: "physics" };
+export type PedagogyCriticVerdict = TriAgentVerdict & { readonly critic: "pedagogy" };
+export type GuardianSafetyVerdict = TriAgentVerdict & { readonly critic: "guardian_safety" };
+
+/**
+ * Fixed-arity 3-tuple of critic verdicts with POSITIONAL binding per
+ * wave-35 B.1 refactor. Position 0 MUST be the Physics-Critic verdict,
+ * position 1 MUST be Pedagogy-Critic, position 2 MUST be Guardian-Safety.
+ * Adding a 4th critic, removing one, or reordering positions becomes a
+ * compile error. D-018 locks exactly 3 critics; wave-35 locks the
+ * position-to-name mapping at the type level.
+ */
+export type TriAgentVerdictPanel = readonly [
+  PhysicsCriticVerdict,
+  PedagogyCriticVerdict,
+  GuardianSafetyVerdict,
+];
 
 // ---------------------------------------------------------------------------
 // Wave-30 physics-confidence detector (D-024)
@@ -758,14 +781,32 @@ export type PhysicsConfidence =
  */
 export type ForecastTrackName = "ttm_channel_mix" | "flowstate" | "chronos2";
 
-export interface ThreeTrackBand {
-  readonly track: ForecastTrackName;
-  /** Forecast values for the 30-step horizon on the speed_mps channel
-   *  (the demo-visible forecast). One value per mini-sector. */
-  readonly forecast: ReadonlyArray<number>;
-  /** Optional 21-quantile bands; populated only on Chronos-2 (Track 3). */
-  readonly quantiles?: ReadonlyArray<number>;
-}
+/**
+ * Discriminated union by `track` name per wave-35 B.2 refactor. The
+ * chronos2 variant requires `quantiles` (21 per D-010); the other two
+ * variants do not carry quantiles. This makes "chronos2 without
+ * quantiles" + "ttm_channel_mix with quantiles" both compile errors,
+ * lifting the JSDoc-only invariant up to the type level.
+ */
+export type ThreeTrackBand =
+  | {
+      readonly track: "ttm_channel_mix";
+      /** Forecast values for the 30-step horizon on the speed_mps channel
+       *  (the demo-visible forecast). One value per mini-sector. */
+      readonly forecast: ReadonlyArray<number>;
+    }
+  | {
+      readonly track: "flowstate";
+      readonly forecast: ReadonlyArray<number>;
+    }
+  | {
+      readonly track: "chronos2";
+      readonly forecast: ReadonlyArray<number>;
+      /** Required 21-quantile bands per D-010 Chronos-2 contract. Empty
+       *  array allowed when the back-end has no quantile data yet (e.g.
+       *  smoke-test fixture) but the field is not optional. */
+      readonly quantiles: ReadonlyArray<number>;
+    };
 
 /**
  * Discriminated union by `status`. `converged` carries the ensemble

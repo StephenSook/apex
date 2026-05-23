@@ -19,6 +19,7 @@ const MOCK_TRI_AGENT_VERDICT: TriAgentVerdictPanel = [
       "Forward-Euler kinematic step (Tier 8) consistent across 30-step horizon.",
       "Two-mass thermal model (Tier 5) T_surface evolves within ambient + warmup bounds.",
     ],
+    critic_run_id: "mock-physics-001",
   },
   {
     critic: "pedagogy",
@@ -30,6 +31,7 @@ const MOCK_TRI_AGENT_VERDICT: TriAgentVerdictPanel = [
     flagged_concerns: [
       "Add one-sentence trail-braking definition for first-time adaptive racers.",
     ],
+    critic_run_id: "mock-pedagogy-001",
   },
   {
     critic: "guardian_safety",
@@ -38,6 +40,7 @@ const MOCK_TRI_AGENT_VERDICT: TriAgentVerdictPanel = [
       "FIA Appendix L compliance preserved across all COA-derived constraints.",
       "Physics-projection envelope within Tier-0 + Tier-1 inviolable bounds.",
     ],
+    critic_run_id: "mock-guardian-safety-001",
   },
 ];
 

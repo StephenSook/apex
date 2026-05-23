@@ -82,7 +82,7 @@ describe("ThreeTrackForecastChart", () => {
       tracks: [
         { track: "ttm_channel_mix", forecast: [] },
         { track: "flowstate", forecast: [] },
-        { track: "chronos2", forecast: [] },
+        { track: "chronos2", forecast: [], quantiles: [] },
       ],
       ensemble: [],
       divergence_sigma: 0,
