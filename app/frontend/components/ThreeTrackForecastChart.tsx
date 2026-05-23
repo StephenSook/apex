@@ -114,7 +114,10 @@ export default function ThreeTrackForecastChart({ forecast }: ThreeTrackForecast
       });
     }
   });
-  if (isConverged) {
+  // TypeScript only narrows ThreeTrackForecast via the discriminator
+  // (forecast.status) directly, not through derived boolean variables
+  // like isConverged. Re-narrow inline to access forecast.ensemble.
+  if (forecast.status === "converged") {
     forecast.ensemble.forEach((v) => {
       if (Number.isFinite(v)) {
         allValues.push(v);
