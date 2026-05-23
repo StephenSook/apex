@@ -36,7 +36,7 @@ For each predicted timestep \(h\), the predicted vector is the wave-30 D-016 14-
 ]^\top,
 \]
 
-where \(\tau \in [0,1]\) is throttle command, \(b \in [0,1]\) is brake command, \(\delta\) is steering angle (radians, road-wheel), \(r\) is engine RPM, \(a_y\) is lateral acceleration (g), \(a_x\) is longitudinal acceleration (g), \(v_x\) is longitudinal speed (m/s), \(G\) is gear (integer 0-8), \(c_{\text{overlap}} \in \{0, 1\}\) is the COA-derived simultaneity flag, \(F_z\) is per-tire vertical-load aggregate after Tier 4 double-track load-transfer adjustments, \(\mu_v\) is the per-step friction coefficient consumed + updated by Tier 5 tire thermal + Tier 7 Pacejka combined-slip, \(\phi\) is track-frame pitch (radians; Tier 1 3D track geometry input), \(\beta\) is track-frame bank (radians; Tier 1), and \(\omega\) is yaw rate (radians/second; Tier 8 kinematic integration input). The forecast tensor shape is \((B, 30, 14)\) per the wave-30 D-016 channel expansion (the wave-22 baseline was \((B, 24, 9)\); migration pads channels 9-13 with zeros + extends the time axis to 30). The internal SCP solver carries \(T_{\text{surface}} + T_{\text{core}}\) as internal state per Tier 5 (not channels of the input tensor); see paper §3.1 + arch-spec Appendix W30 for the full channel-to-tier binding.
+where the symbols above are the SCP solver's internal-variable form (normalized for numerical conditioning) of the wave-30 D-016 raw channel contract used in paper §3.1: \(\tau \in [0,1]\) is normalized throttle (derived from `throttle_pct` ∈ [0, 100] via \(\tau = \text{throttle\_pct} / 100\)); \(b \in [0,1]\) is normalized brake (derived from `brake_pa` ∈ [0, max_brake_pa] via \(b = \text{brake\_pa} / \text{max\_brake\_pa}\) where max_brake_pa is the per-vehicle calibration constant); \(\delta\) is steering angle (radians, road-wheel); \(r\) is engine RPM; \(a_y\) is lateral acceleration (g); \(a_x\) is longitudinal acceleration (g); \(v_x\) is longitudinal speed (m/s); \(G\) is gear (integer 0-8); \(c_{\text{overlap}} \in \{0, 1\}\) is the COA-derived simultaneity flag; \(F_z\) is per-tire vertical-load aggregate after Tier 4 double-track load-transfer adjustments; \(\mu_v\) is the per-step friction coefficient consumed + updated by Tier 5 tire thermal + Tier 7 Pacejka combined-slip; \(\phi\) is track-frame pitch (radians; Tier 1 3D track geometry input); \(\beta\) is track-frame bank (radians; Tier 1); and \(\omega\) is yaw rate (radians/second; Tier 8 kinematic integration input). The forecast tensor shape is \((B, 30, 14)\) per the wave-30 D-016 channel expansion (the wave-22 baseline was \((B, 24, 9)\); migration pads channels 9-13 with zeros + extends the time axis to 30). The raw paper §3.1 channel names (`throttle_pct`, `brake_pa`) map one-to-one to the solver's internal \((\tau, b)\) variables via the normalization adapter above; the tensor channels themselves remain the raw `throttle_pct` / `brake_pa` units at the (B, 30, 14) boundary, with normalization happening inside the SCP solver. The internal SCP solver also carries \(T_{\text{surface}} + T_{\text{core}}\) as internal state per Tier 5 (not channels of the input tensor); see paper §3.1 + arch-spec Appendix W30 for the full channel-to-tier binding.
 
 Let \(m\) denote vehicle mass, \(L = l_f + l_r\) wheelbase, \(l_f\) and \(l_r\) front and rear axle distances, \(I_z\) yaw inertia, \(g\) gravitational acceleration, and \(\mu\) the estimated tire-road friction coefficient. For a hackathon demo, these can be fixed nominal constants; for a paper, sensitivity analysis over \(L\), \(\mu\), and acceleration bounds should be reported.
 
@@ -335,8 +335,6 @@ Y^* =
 +
 \lambda_{\text{yaw}}\Phi_{\text{yaw-lin}}(Y)
 +
-\lambda_{\text{kin}}\Phi_{\text{kin}}(Y)
-+
 \lambda_{\text{BT}}\Phi_{\text{BT}}(Y;c_{\text{overlap}})
 \]
 
@@ -350,6 +348,8 @@ a_{x,\min} \le a_{x,h} \le a_{x,\max},
 |\delta_h| \le \delta_{\max},
 \quad
 0 \le \tau_h,b_h \le 1,
+\quad
+v_{x,h+1} = v_{x,h} + a_{x,h}\Delta t,
 \]
 
 \[
