@@ -11,6 +11,11 @@
  * out-of-distribution = amber chip with downgrade-from / downgrade-to
  * arrow rendered inline so the reader can see at a glance what the
  * detector did to the Guardian verdict.
+ *
+ * Wave-35 A.9 + A.10: Number.isFinite guards on the Mahalanobis +
+ * p95 threshold values + exhaustiveness throw on the status variant.
+ * Non-finite distance or threshold => role=alert chip prompting
+ * re-run of the session, rather than rendering "NaN" silently.
  */
 
 import type { PhysicsConfidence } from "../../shared/types";
@@ -25,7 +30,44 @@ const DOWNGRADE_LABELS: Record<"approve" | "flag", string> = {
 };
 
 export default function PhysicsConfidenceBadge({ confidence }: PhysicsConfidenceBadgeProps) {
-  const inDistribution = confidence.status === "in_distribution";
+  // Wave-35 A.9 Number.isFinite guard. Non-finite Mahalanobis distance
+  // or non-finite p95 threshold both indicate the detector emitted a
+  // garbage value (most often: NaN from a divide-by-zero in the
+  // covariance inversion). Surface explicitly via role=alert instead
+  // of rendering "NaN" in the chip body.
+  if (
+    !Number.isFinite(confidence.mahalanobis_distance) ||
+    !Number.isFinite(confidence.threshold_p95)
+  ) {
+    return (
+      <span
+        role="alert"
+        className="inline-flex items-center gap-2 rounded-sm border-2 border-accent bg-paper px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-accent"
+      >
+        <span aria-hidden="true">●</span>
+        <span>Physics-confidence detector emitted non-finite distance; re-run the session.</span>
+      </span>
+    );
+  }
+
+  // Wave-35 A.10 exhaustiveness throw. Top-of-function switch derives
+  // the inDistribution flag + asserts every variant of PhysicsConfidence
+  // is handled. Adding a new status without updating this switch
+  // errors at compile time on the `never` assignment.
+  let inDistribution: boolean;
+  switch (confidence.status) {
+    case "in_distribution":
+      inDistribution = true;
+      break;
+    case "out_of_distribution":
+      inDistribution = false;
+      break;
+    default: {
+      const _exhaustive: never = confidence;
+      throw new Error(`unknown physics-confidence status: ${String(_exhaustive)}`);
+    }
+  }
+
   const borderClass = inDistribution ? "border-racing-green" : "border-amber";
   const toneClass = inDistribution ? "text-racing-green" : "text-amber";
   const distance = confidence.mahalanobis_distance.toFixed(2);
