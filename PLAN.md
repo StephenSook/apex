@@ -315,54 +315,54 @@ Gate-map definitions. Each `G-<Phase>.<RowNumber>` cross-references the PLAN pha
 
 **Phase 0 + Phase 2 single-letter gates (wave-22 baseline):**
 
-- **G1** — TTM smoke test. Row 0.13 + vinh-backend-plan §Phase 0 row 0.7. Acceptance: Granite TimeSeries TTM r2.1 loads on RTX 4060 + zero-shot inference on 5-lap FastF1 export logs in `logs/day-03-ttm-smoke.md`. Owner: Vinh.
-- **G1b** — Granite 4.1 8B Q4 GGUF latency bench. vinh-backend-plan §Phase 0 row 0.8. Acceptance: tokens/sec on 300-word coaching-report prompt logged in `logs/day-03-granite-latency.md`. Owner: Vinh.
-- **G1c** — Three-track ensemble zero-shot smoke (D-010). Rows 2.15 + 2.16. Acceptance: Granite FlowState 9.1M + Amazon Chronos-2 21-quantile band each render within 30s on Sarah Reynolds fixture per `logs/day-04-g1c-three-track-smoke.md`. Owner: Vinh.
-- **G3** — V1 NumPy validator catches 5 impossibilities + approves 5 valid + round-trip serializer assertion. Row 2.2. Owner: Vinh.
-- **G4** — Zero-shot TTM vs seasonal-naive MAE bake-off on FastF1 holdouts. Row 2.6 (bumped to Day-2 parallel spike per Codex critique #2). Owner: Vinh.
-- **G5** — Granite Guardian catches same 5 impossibilities as validator. Row 2.11. Owner: Vinh.
-- **G5.5** — Physics-confidence detector (D-024). Row 2.19. Acceptance: Mahalanobis distance flags Pacejka mismatch on injected-incorrect-.tir fixture; Guardian downgrades SAFE → REVIEW; calibration threshold = 95th-percentile from Sarah fixture distribution per pre-mortem row 59. Owner: Vinh. Day 6 EOD.
-- **G6** — Sarah end-to-end coaching report produces provenance footer + audit_id non-None + every citation resolves to fixture COA. Row 3.4. Owner: both. Day 6.
-- **G6.5** — cvxpylayers Windows install fallback. vinh-backend-plan §Phase 2 (Council fix). Owner: Vinh.
-- **G7** — Langflow visualisation renders at 1920x1080. Row 4.3 (D-017 demoted Langflow to demo facade per wave-30; visual deliverable unchanged). Owner: Vinh.
-- **G8** — Demo loop fits 60s wall-clock on RTX 4060. Row 4.8 (D-019 item 4 EAGLE-3 tightens sub-budget to 15s within the 60s envelope). Owner: Vinh.
-- **G9** — Dress-rehearsal 1 gates checklist (v0 plays + HF loads < 90s + Colab executes + sim-rig streams). Row 5.6. Owner: both. Day 9.
-- **G10** — v1 video <= 3:00 + audio clean + 1080p + sim-rig stable. Row 5.12. Owner: both. Day 10.
-- **G11** — Pre-submit checklist (PLAN §Pre-submit Checklist). Acceptance: all 10+ checklist items pass + CI green per-job + zero em-dash + zero AI-tone blocklist hits + per-track entry verification. Owner: both. Day 11.
+- **G1:** TTM smoke test. Row 0.13 + vinh-backend-plan §Phase 0 row 0.7. Acceptance: Granite TimeSeries TTM r2.1 loads on RTX 4060 + zero-shot inference on 5-lap FastF1 export logs in `logs/day-03-ttm-smoke.md`. Owner: Vinh.
+- **G1b:** Granite 4.1 8B Q4 GGUF latency bench. vinh-backend-plan §Phase 0 row 0.8. Acceptance: tokens/sec on 300-word coaching-report prompt logged in `logs/day-03-granite-latency.md`. Owner: Vinh.
+- **G1c:** Three-track ensemble zero-shot smoke (D-010). Rows 2.15 + 2.16. Acceptance: Granite FlowState 9.1M + Amazon Chronos-2 21-quantile band each render within 30s on Sarah Reynolds fixture per `logs/day-04-g1c-three-track-smoke.md`. Owner: Vinh.
+- **G3:** V1 NumPy validator catches 5 impossibilities + approves 5 valid + round-trip serializer assertion. Row 2.2. Owner: Vinh.
+- **G4:** Zero-shot TTM vs seasonal-naive MAE bake-off on FastF1 holdouts. Row 2.6 (bumped to Day-2 parallel spike per Codex critique #2). Owner: Vinh.
+- **G5:** Granite Guardian catches same 5 impossibilities as validator. Row 2.11. Owner: Vinh.
+- **G5.5:** Physics-confidence detector (D-024). Row 2.19. Acceptance: Mahalanobis distance flags Pacejka mismatch on injected-incorrect-.tir fixture; Guardian downgrades SAFE → REVIEW; calibration threshold = 95th-percentile from Sarah fixture distribution per pre-mortem row 59. Owner: Vinh. Day 6 EOD.
+- **G6:** Sarah end-to-end coaching report produces provenance footer + audit_id non-None + every citation resolves to fixture COA. Row 3.4. Owner: both. Day 6.
+- **G6.5:** cvxpylayers Windows install fallback. vinh-backend-plan §Phase 2 (Council fix). Owner: Vinh.
+- **G7:** Langflow visualisation renders at 1920x1080. Row 4.3 (D-017 demoted Langflow to demo facade per wave-30; visual deliverable unchanged). Owner: Vinh.
+- **G8:** Demo loop fits 60s wall-clock on RTX 4060. Row 4.8 (D-019 item 4 EAGLE-3 tightens sub-budget to 15s within the 60s envelope). Owner: Vinh.
+- **G9:** Dress-rehearsal 1 gates checklist (v0 plays + HF loads < 90s + Colab executes + sim-rig streams). Row 5.6. Owner: both. Day 9.
+- **G10:** v1 video <= 3:00 + audio clean + 1080p + sim-rig stable. Row 5.12. Owner: both. Day 10.
+- **G11:** Pre-submit checklist (PLAN §Pre-submit Checklist). Acceptance: all 10+ checklist items pass + CI green per-job + zero em-dash + zero AI-tone blocklist hits + per-track entry verification. Owner: both. Day 11.
 
 **Phase 2 wave-30 architecture gates (D-009 through D-016):**
 
-- **G-2.14** — Polyphase phase-stream decomposition (D-011 multi-frequency coexistence). Row 2.14. Acceptance: `(B, 50, 30, 14)` Path B tensor + `(B, 30, 14)` Path A tensor produced from Sarah Reynolds raw telemetry without information loss; `test_polyphase.py` verifies bit-exact round-trip. Owner: Vinh.
-- **G-2.15** — Granite FlowState Track 2 integration (D-010). Row 2.15. Acceptance: FlowState 9.1M forecast renders within 30s on RTX 4060; tensor shape matches Sync Point 1. Owner: Vinh.
-- **G-2.16** — Amazon Chronos-2 Track 3 integration (D-010). Row 2.16. Acceptance: 21-quantile bands render as `(B, 30, 14, 21)` tensor on Sarah Reynolds fixture; empirical-coverage calibration on 5-lap FastF1 holdouts. Owner: Vinh.
-- **G-2.17** — Three-track ensemble fusion (D-010). Row 2.17. Acceptance: ensemble MAE beats best single track on at least 3 of 5 FastF1 holdouts; divergence > 2 sigma triggers TTM-only fallback per pre-mortem row 57. Owner: Vinh.
-- **G-2.18** — 8-tier physics SCP outer-loop convergence (D-012 + D-015). Row 2.18. Acceptance: all 8 tiers linearize without error on Sarah Reynolds fixture across the 30-step horizon; per-tier convergence-trace logged for D-027 prototype. Owner: Vinh.
-- **G-2.19** — Physics-confidence detector calibration (D-024; same surface as G5.5). Row 2.19. Owner: Vinh.
-- **G-2.20** — IBM TSPulse anomaly detector (D-016). Row 2.20. Acceptance: TSPulse anomaly tensor produced on Sarah Reynolds polyphase output; clean-fixture low-anomaly + injected-glitch high-anomaly sanity check passes. Owner: Vinh.
+- **G-2.14:** Polyphase phase-stream decomposition (D-011 multi-frequency coexistence). Row 2.14. Acceptance: `(B, 50, 30, 14)` Path B tensor + `(B, 30, 14)` Path A tensor produced from Sarah Reynolds raw telemetry without information loss; `test_polyphase.py` verifies bit-exact round-trip. Owner: Vinh.
+- **G-2.15:** Granite FlowState Track 2 integration (D-010). Row 2.15. Acceptance: FlowState 9.1M forecast renders within 30s on RTX 4060; tensor shape matches Sync Point 1. Owner: Vinh.
+- **G-2.16:** Amazon Chronos-2 Track 3 integration (D-010). Row 2.16. Acceptance: 21-quantile bands render as `(B, 30, 14, 21)` tensor on Sarah Reynolds fixture; empirical-coverage calibration on 5-lap FastF1 holdouts. Owner: Vinh.
+- **G-2.17:** Three-track ensemble fusion (D-010). Row 2.17. Acceptance: ensemble MAE beats best single track on at least 3 of 5 FastF1 holdouts; divergence > 2 sigma triggers TTM-only fallback per pre-mortem row 57. Owner: Vinh.
+- **G-2.18:** 8-tier physics SCP outer-loop convergence (D-012 + D-015). Row 2.18. Acceptance: all 8 tiers linearize without error on Sarah Reynolds fixture across the 30-step horizon; per-tier convergence-trace logged for D-027 prototype. Owner: Vinh.
+- **G-2.19:** Physics-confidence detector calibration (D-024; same surface as G5.5). Row 2.19. Owner: Vinh.
+- **G-2.20:** IBM TSPulse anomaly detector (D-016). Row 2.20. Acceptance: TSPulse anomaly tensor produced on Sarah Reynolds polyphase output; clean-fixture low-anomaly + injected-glitch high-anomaly sanity check passes. Owner: Vinh.
 
 **Phase 4 wave-30 orchestration gates (D-017 + D-018 + D-019):**
 
-- **G-4.12** — LangGraph stateful state-machine graph (D-017). Row 4.12. Acceptance: state machine executes Sarah Reynolds fixture end-to-end; per-node latency in `logs/day-07-langgraph.md`. Owner: Vinh.
-- **G-4.13** — MCP tool-routing (D-017). Row 4.13. Acceptance: each MCP server responds to test invocation from LangGraph node; logs in `logs/day-07-mcp.md`. Owner: Vinh.
-- **G-4.14** — IBM ContextForge orchestration router (D-017). Row 4.14. Acceptance: 3 coaching-mode requests (adaptive / veteran / grassroots) route to correct LLM path with mode-specific aLoRA hot-swap. Owner: Vinh.
-- **G-4.15** — Langflow demo facade export (D-017 demoted; same visual surface as G7). Row 4.15. Acceptance: LangGraph state machine renders as Langflow-compatible JSON for deck slide 6 + /judges. Owner: Vinh.
-- **G-4.16** — Granite Embedding R2 RAG layer (D-016). Row 4.16. Acceptance: hybrid dense + sparse retrieval returns top-5 relevant chunks on 10 test queries within 200ms p95. Owner: Vinh.
-- **G-4.17** — aLoRA hot-swap adapter (D-019 item 2). Row 4.17. Acceptance: aLoRA hot-swap latency < 500ms; specialized + base-model coaching reports compared side-by-side on 3 fixtures. Owner: Vinh.
-- **G-4.18** — EAGLE-3 speculative decoding (D-019 item 4). Row 4.18. Acceptance: tokens/sec measured on 300-word coaching prompt; speedup vs base verified (paper reports 2.5-3.7x typical). Owner: Vinh.
-- **G-4.19** — GEPA reflective prompt optimization via DSPy (D-019 item 3). Row 4.19. Acceptance: pre/post APEX-Bench faithfulness > 5% improvement; optimized prompts version-tagged per D-023 MLPerf protocol. Owner: Vinh.
-- **G-4.20** — Tri-agent Agent-as-Judge critic loop (D-018 + D-019 item 5). Row 4.20. Acceptance: all 3 critics emit verdict + reasoning trace; tri-agent agreement rate > 70% on 10 fixture coaching reports. Owner: Vinh.
-- **G-4.21** — IBM Mellea Instruct-Validate-Repair (D-018). Row 4.21. Acceptance: repair-rate > 80% on 10 fixture flagged-coaching-reports with `loop_budget = 3`; budget exhaustion logged + downgrades final Guardian verdict to REVIEW. Owner: Vinh.
+- **G-4.12:** LangGraph stateful state-machine graph (D-017). Row 4.12. Acceptance: state machine executes Sarah Reynolds fixture end-to-end; per-node latency in `logs/day-07-langgraph.md`. Owner: Vinh.
+- **G-4.13:** MCP tool-routing (D-017). Row 4.13. Acceptance: each MCP server responds to test invocation from LangGraph node; logs in `logs/day-07-mcp.md`. Owner: Vinh.
+- **G-4.14:** IBM ContextForge orchestration router (D-017). Row 4.14. Acceptance: 3 coaching-mode requests (adaptive / veteran / grassroots) route to correct LLM path with mode-specific aLoRA hot-swap. Owner: Vinh.
+- **G-4.15:** Langflow demo facade export (D-017 demoted; same visual surface as G7). Row 4.15. Acceptance: LangGraph state machine renders as Langflow-compatible JSON for deck slide 6 + /judges. Owner: Vinh.
+- **G-4.16:** Granite Embedding R2 RAG layer (D-016). Row 4.16. Acceptance: hybrid dense + sparse retrieval returns top-5 relevant chunks on 10 test queries within 200ms p95. Owner: Vinh.
+- **G-4.17:** aLoRA hot-swap adapter (D-019 item 2). Row 4.17. Acceptance: aLoRA hot-swap latency < 500ms; specialized + base-model coaching reports compared side-by-side on 3 fixtures. Owner: Vinh.
+- **G-4.18:** EAGLE-3 speculative decoding (D-019 item 4). Row 4.18. Acceptance: tokens/sec measured on 300-word coaching prompt; speedup vs base verified (paper reports 2.5-3.7x typical). Owner: Vinh.
+- **G-4.19:** GEPA reflective prompt optimization via DSPy (D-019 item 3). Row 4.19. Acceptance: pre/post APEX-Bench faithfulness > 5% improvement; optimized prompts version-tagged per D-023 MLPerf protocol. Owner: Vinh.
+- **G-4.20:** Tri-agent Agent-as-Judge critic loop (D-018 + D-019 item 5). Row 4.20. Acceptance: all 3 critics emit verdict + reasoning trace; tri-agent agreement rate > 70% on 10 fixture coaching reports. Owner: Vinh.
+- **G-4.21:** IBM Mellea Instruct-Validate-Repair (D-018). Row 4.21. Acceptance: repair-rate > 80% on 10 fixture flagged-coaching-reports with `loop_budget = 3`; budget exhaustion logged + downgrades final Guardian verdict to REVIEW. Owner: Vinh.
 
 **Phase 5 wave-30 edge gate (D-019 item 1 + D-021):**
 
-- **G-5.16** — WebGPU Granite 4.0 Nano 350M edge inference (D-019 item 1 + D-021 server-authoritative reconnect scope cut). Row 5.16. Acceptance: Nano loads + emits paddock summary in browser within 90s cold-start on Chrome 121+ desktop; 30-line Newton friction-ellipse projector runs offline; server overwrites on reconnect (no mechanical recommendations offline). Owner: Stephen.
+- **G-5.16:** WebGPU Granite 4.0 Nano 350M edge inference (D-019 item 1 + D-021 server-authoritative reconnect scope cut). Row 5.16. Acceptance: Nano loads + emits paddock summary in browser within 90s cold-start on Chrome 121+ desktop; 30-line Newton friction-ellipse projector runs offline; server overwrites on reconnect (no mechanical recommendations offline). Owner: Stephen.
 
 **Phase 6 wave-30 benchmark gates (D-026):**
 
-- **G-6.13** — APEX-Bench public benchmark release. Acceptance: 50-lap multi-class benchmark + Apache 2.0 release alongside paper; reproducibility harness lands in `app/backend/apex_bench/`. Owner: Vinh + Stephen.
-- **G-6.14** — LIPS 4-axis ablation table. Acceptance: 4-axis ablation (frozen-vs-fine-tuned + 8-tier-vs-3-tier + tri-agent-vs-single + Guardian-on-vs-off) lands in paper §4.3 with Sarah Reynolds + FastF1 holdout numbers. Owner: Vinh + Stephen.
+- **G-6.13:** APEX-Bench public benchmark release. Acceptance: 50-lap multi-class benchmark + Apache 2.0 release alongside paper; reproducibility harness lands in `app/backend/apex_bench/`; deterministic seed locks committed alongside fixture data; RTX 4060 vs Apple M2 variance report published with tolerance bands per D-023 MLPerf protocol; PLAN row 6.13 acceptance criteria all satisfied. Owner: Vinh + Stephen.
+- **G-6.14:** LIPS 4-axis ablation table. Acceptance: 4-axis ablation (frozen-vs-fine-tuned + 8-tier-vs-3-tier + tri-agent-vs-single + Guardian-on-vs-off) lands in paper §4.3 with Sarah Reynolds + FastF1 holdout numbers. Owner: Vinh + Stephen.
 
-**D-027 Day-3 SCP go/no-go gate** is the single most important checkpoint in the 12-day build (per `docs/decision-log.md` D-027). Not numbered as a `G-<Phase>.<Row>` because it sits ABOVE the Phase 2 gate ladder — Phase 2 G-2.18 + downstream Phase 4-6 gates all depend on D-027 PASS or one of the fallback ladder rungs (per D-028 galaxy-tier vs APEX Lite ship-floor pattern lock).
+**D-027 Day-3 SCP go/no-go gate** is the single most important checkpoint in the 12-day build (per `docs/decision-log.md` D-027). Not numbered as a `G-<Phase>.<Row>` because it sits ABOVE the Phase 2 gate ladder. Phase 2 G-2.18 + downstream Phase 4-6 gates all depend on D-027 PASS or one of the fallback ladder rungs (per D-028 galaxy-tier vs APEX Lite ship-floor pattern lock).
 
 ---
 
