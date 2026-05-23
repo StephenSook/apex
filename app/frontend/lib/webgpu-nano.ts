@@ -197,6 +197,17 @@ export function useGraniteNanoEdge(): GraniteNanoEdgeState {
     };
 
     const runProbeAndLoad = async () => {
+      // Wave-39 silent-failure-hunter M-3 close-out: wrap the entire
+      // probe + load lifecycle in a try/catch so any unhandled error
+      // (most notably the exhaustiveness `_exhaustive: never` throw
+      // if a new WebGPUProbeResult variant lands without a switch
+      // arm) surfaces in the EdgeSummary error state with context
+      // instead of bubbling silently to window.onunhandledrejection.
+      // The wave-38 design relied on the surrounding `void
+      // runProbeAndLoad()` swallowing any thrown rejection; this
+      // catch closes the gap so even the never-throw path emits a
+      // visible operator-facing error message.
+      try {
       const probe = await probeWebGPUHeadroom();
       if (cancelled) {
         return;
@@ -280,6 +291,24 @@ export function useGraniteNanoEdge(): GraniteNanoEdgeState {
           return;
         }
         setState({ status: "error", message });
+      }
+      } catch (err) {
+        // Wave-39 silent-failure-hunter M-3 close-out: outer catch
+        // for unhandled rejections originating from the exhaustiveness
+        // throw OR a future probe-helper async edge case. Surfaces a
+        // visible operator-facing error in EdgeSummary instead of a
+        // silent window.onunhandledrejection log.
+        if (cancelled) {
+          return;
+        }
+        const message = err instanceof Error ? err.message : String(err);
+        if (typeof console !== "undefined" && console.error) {
+          console.error("useGraniteNanoEdge runProbeAndLoad threw:", err);
+        }
+        setState({
+          status: "error",
+          message: `Edge inference startup failed: ${message}. Re-run the session.`,
+        });
       }
     };
 
