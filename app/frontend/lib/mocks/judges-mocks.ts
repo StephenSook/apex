@@ -17,6 +17,9 @@
  * design per docs/sarah-reynolds-persona.md + consent-log.md §1.
  */
 
+import type { ALoRAStatus } from "../../components/ALoRAStatusBadge";
+import type { EAGLE3State } from "../../components/EAGLE3LatencyBadge";
+import type { GEPAOptimization } from "../../components/GEPAEvolutionPanel";
 import type { PhysicsConfidence, TriAgentVerdictPanel } from "../../../shared/types";
 
 export const MOCK_TRI_AGENT_VERDICT: TriAgentVerdictPanel = [
@@ -111,4 +114,54 @@ export const MOCK_PHYSICS_CONFIDENCE_OOD: PhysicsConfidence = {
   threshold_p95: 2.5,
   downgrade_from: "approve",
   downgrade_to: "review",
+};
+
+/**
+ * Wave-40 Stream B.1 aLoRA active adapter mock (D-019 item 2).
+ * Demonstrates the discriminated-union active variant with a
+ * sub-200 ms hot-swap round-trip (pre-mortem row 67 success
+ * criterion). Cites NeurIPS-2024-area aLoRA work per
+ * docs/decision-log.md D-019 item 2 framing.
+ */
+export const MOCK_ALORA_STATUS_ACTIVE: ALoRAStatus = {
+  status: "active",
+  adapter_name: "race-engineer-intrinsic-v1",
+  rank: 8,
+  alpha: 16,
+  lambda: 0.5,
+  swap_ms: 142,
+};
+
+/**
+ * Wave-40 Stream B.2 GEPA optimization mock (D-019 item 3). Five
+ * iterations evolving the race-engineer narration prompt against
+ * APEX-Bench faithfulness p95 (0.74 baseline -> 0.91 final). Cites
+ * the 2025 DSPy GEPA work per docs/decision-log.md D-019 item 3.
+ */
+export const MOCK_GEPA_OPTIMIZATION: GEPAOptimization = {
+  run_id: "gepa-run-2026-05-23-001",
+  base_prompt_id: "race-engineer-base-v1",
+  base_faithfulness_p95: 0.74,
+  iterations: [
+    { iteration: 1, candidates_evaluated: 8, faithfulness_p95: 0.78, selected_prompt_id: "gepa-001" },
+    { iteration: 2, candidates_evaluated: 8, faithfulness_p95: 0.83, selected_prompt_id: "gepa-014" },
+    { iteration: 3, candidates_evaluated: 8, faithfulness_p95: 0.87, selected_prompt_id: "gepa-021" },
+    { iteration: 4, candidates_evaluated: 4, faithfulness_p95: 0.89, selected_prompt_id: "gepa-027" },
+    { iteration: 5, candidates_evaluated: 4, faithfulness_p95: 0.91, selected_prompt_id: "gepa-031" },
+  ],
+  final_prompt_id: "gepa-031",
+  final_faithfulness_p95: 0.91,
+};
+
+/**
+ * Wave-40 Stream B.3 EAGLE-3 active speculative-decode mock (D-019
+ * item 4). 3.2x speedup + 78% accepted-token-rate + draft rank 4
+ * per the arXiv:2503.01840 verified envelope (2.5-3.7x typical band).
+ */
+export const MOCK_EAGLE3_ACTIVE: EAGLE3State = {
+  status: "active",
+  speedup_x: 3.2,
+  accepted_token_rate: 0.78,
+  draft_rank: 4,
+  draft_model: "granite-instruct-4.1-draft-rank-4",
 };
