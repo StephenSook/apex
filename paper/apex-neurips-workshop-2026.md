@@ -127,6 +127,19 @@ where $L$ is the vehicle wheelbase (BMW M240i Britcar Trophy: $L = 2.69$ m) and 
 
 The two-stage architecture preserves end-to-end differentiability through Stage 1 (the differentiable surface that gradient methods can backprop through if a future user wires the projection layer into a TTM-aware training loop) while keeping the nonconvex audit constraints in Stage 2 honest as a separate accept/reject filter on the projected tensor. Stage 2 is not differentiable through the audit decisions; differentiability claims in this paper apply only to Stage 1.
 
+**The 8-tier physics in-scope (per wave-30 D-015).** The unrolled SCP outer loop applies first-order Taylor linearisation around the previous iterate to handle non-convex tier interactions; each inner iterate is a fixed-coefficient convex QP solved via the CvxpyLayer-wrapped solver. The full 8-tier stack:
+
+1. *3D track geometry (Tier 1).* Gravity-vector projection from GPS pitch + bank channels (`pitch_rad`, `bank_rad` per D-016); adds banking-conditional friction-ellipse rotation.
+2. *Aerodynamics (Tier 2).* Pitch-sensitive front/rear downforce $F_{z,\text{aero}} = \tfrac{1}{2} \rho_{\text{air}} C_l(\text{pitch}) A v^2$; expands the friction-ellipse per axle as $(F_{z,\text{static}} + F_{z,\text{aero}}) \mu_v$.
+3. *Adaptive hand-controls (Tier 3).* Disable the $\text{throttle} \cdot \text{brake} = 0$ complementarity when `c_overlap = 1`; replace with a `c_overlap`-conditional lexicographic constraint per D-022.
+4. *Double-track load transfer (Tier 4).* Per-corner elastic weight transfer $\Delta F_{z,\text{lat}} = m a_y h_{cg} / (2 \cdot \text{track})$ and $\Delta F_{z,\text{long}} = m a_x h_{cg} / \text{wheelbase}$; per-corner friction-ellipse becomes per-corner-$F_z$.
+5. *Tire thermal + degradation (Tier 5).* Two-mass thermal ODE evolves $T_{\text{surface}}$ + $T_{\text{core}}$ as internal SCP state (not channels of the input tensor); peak $\mu_v$ is modulated by $T_{\text{surface}}$ and lap-count degradation.
+6. *Transient tire dynamics (Tier 6).* Relaxation-length ODE $\tau_y \dot{s}_y + s_y = s_{y,\text{ss}}$ collapsed to steady-state algebraic substitution per D-014 (stiff-ODE numerical hazard mitigation); full transient reserved for offline validation.
+7. *Full Pacejka combined-slip (Tier 7).* Magic-Formula heart-shape boundaries $F_x, F_y = \text{pacejka}(s_x, s_y, F_z, \mu_v, T_{\text{surface}})$; linearised at each SCP outer-loop step and the inner iterate enforces the linearised half-spaces.
+8. *Kinematic integration (Tier 8).* Newton-compliant $m \dot{v} = F_{\text{total}}$ + $\dot{\omega} = F_{\text{lat}} \cdot \text{arm} / I_z$; enforces consistency across the 30-step horizon.
+
+Each iterate re-linearises around the updated state; the Powell ratio acceptance criterion (D-027 trust-region scheme: $\rho = \text{actual} / \text{predicted}$ reduction; accept if $\rho > 0.25$, expand if $\rho > 0.75$, shrink if $0 \leq \rho \leq 0.25$, reject + shrink if $\rho < 0$) determines when the SCP iterate converges. The cross-reference for the engineering implementation is `docs/architecture-spec.md` Appendix W30 Layer 4.
+
 ### 3.3 Layer 3: Granite Guardian Bring-Your-Own-Classifier text audit
 
 The projection layer's violation log is serialized to plain-English using a deliberate text template (the "Convergence 14" serializer, named after the 14 distinct kinematic-violation classes we enumerate). The serialized log is read by Granite Guardian 4.1 under custom BYOC rules, which emits a discriminated `verdict` of `"approve"`, `"flag"`, or `"reject"` along with a reasoning trace and verdict-specific concern lists.
