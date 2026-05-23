@@ -158,11 +158,31 @@ export default function ThreeTrackForecastChart({ forecast }: ThreeTrackForecast
     PAD + (idx * (W - 2 * PAD)) / Math.max(1, horizonLength - 1);
   const yFor = (val: number) => H - PAD - ((val - yMin) / yRange) * (H - 2 * PAD);
 
+  // Wave-36 BLOCKER fix per cold-review dual-signal (codex MED A1 +
+  // silent-failure-hunter H-1). Previous trackPath implementation
+  // filtered non-finite values then mapped surviving values to
+  // contiguous M/L commands; `xFor(idx)` was called with the post-
+  // filter index, so [40, NaN, 42] rendered as M(x=0,y=40) L(x=1,y=42)
+  // instead of M(x=0,y=40) M(x=2,y=42). The forecast was silently
+  // corrupted: surviving points re-anchored to wrong horizon positions.
+  //
+  // New behavior: preserve ORIGINAL horizon index; emit "M" at every
+  // gap (multi-segment polyline). Non-finite values produce a visible
+  // gap in the rendered line instead of silently shifting subsequent
+  // points leftward.
   function trackPath(values: ReadonlyArray<number>): string {
-    return values
-      .filter((v) => Number.isFinite(v))
-      .map((v, idx) => `${idx === 0 ? "M" : "L"} ${xFor(idx).toFixed(2)} ${yFor(v).toFixed(2)}`)
-      .join(" ");
+    const segments: string[] = [];
+    let lastFinite = false;
+    values.forEach((v, idx) => {
+      if (!Number.isFinite(v)) {
+        lastFinite = false;
+        return;
+      }
+      const command = lastFinite ? "L" : "M";
+      segments.push(`${command} ${xFor(idx).toFixed(2)} ${yFor(v).toFixed(2)}`);
+      lastFinite = true;
+    });
+    return segments.join(" ");
   }
 
   // Wave-35 A.1 + A.6 quantile envelope: filter finite values + handle
@@ -284,11 +304,15 @@ export default function ThreeTrackForecastChart({ forecast }: ThreeTrackForecast
 function DivergenceChip({ sigma, converged }: { sigma: number; converged: boolean }) {
   const borderClass = converged ? "border-racing-green" : "border-amber";
   const toneClass = converged ? "text-racing-green" : "text-amber";
+  // Wave-36 codex MED: Number.isFinite guard on the sigma chip so a
+  // backend bug producing NaN / Infinity does not render the literal
+  // string "NaN" in the chip body.
+  const sigmaLabel = Number.isFinite(sigma) ? `σ=${sigma.toFixed(2)}` : "σ unavailable";
   return (
     <span
       className={`rounded-sm border ${borderClass} bg-paper px-3 py-1 font-mono text-[11px] uppercase tracking-wider ${toneClass}`}
     >
-      σ={sigma.toFixed(2)}
+      {sigmaLabel}
     </span>
   );
 }
