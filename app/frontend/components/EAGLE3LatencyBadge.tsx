@@ -11,8 +11,13 @@
  * benchmark-dependent; D-019 item 4 cites the verified 2.5-3.7x
  * typical band per the paper's primary evaluation + the up-to-5.9x
  * Llama-3.3-70B outlier). APEX integrates EAGLE-3 onto vLLM Layer 6
- * to hit the G8 15s coaching-report sub-budget on the RTX 4060
- * production target.
+ * to compress the Granite Instruct narration portion of the G8 15s
+ * coaching-report budget. The D-027 Stage C composition spike measured
+ * ~1.03 s wall-clock for the frozen-TTM forecast + cvxpylayers
+ * projection + backward pass on Vinh's RTX 3060 Ti operator hardware
+ * (logs/day-03-scp-go-no-go.md), leaving ~13.97 s of the G8 budget for
+ * narration + Guardian audit + provenance assembly; EAGLE-3 compresses
+ * the narration leg of that remainder.
  *
  * Discriminated-union state (2 variants for the binary mode + 1
  * error variant; per feedback_discriminated_unions_over_contradiction):
