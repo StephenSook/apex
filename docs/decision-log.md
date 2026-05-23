@@ -346,3 +346,13 @@ Logged in `logs/day-03-scp-go-no-go.md`.
 **Affected.** Project-wide posture. Cross-references: PLAN.md Q-004 + Q-007 triggers + Phase 0 row 0.13a D-027 gate Notes + footer wave-attribution language. `docs/vinh-backend-plan.md` guiding principle 1 + Phase 0 goal + gate map + kill-switch table. `docs/apex-lite-contingency.md` (Lite scope detail). `docs/pre-mortem.md` row 63 (pattern-lock origin entry, kept for traceability). `~/.claude/projects/-Users-stephensookra-Desktop-IBM-May/memory/feedback_galaxy_ambition_no_deferrals.md` + `project_apex_wave_30_maximal_architecture.md` (memory cross-reference). Future waves: every decision-log entry can cite D-028 when scope decisions hit the galaxy-vs-Lite seam.
 
 ---
+
+## 2026-05-23 D-029: Wave-37 plan-gap BLOCKER #4 closure (bemyapp-devlog path resolution + shell-quote em-dash exempt)
+
+**Decision.** Wave-37 plan-gap-scanner BLOCKER #4 (`bemyapp-devlog-day-4-to-12-scaffolds.md:226` em-dash sweep blocked on missing path) is closed as N/A. The file DOES exist at `docs/outreach-drafts/bemyapp-devlog-day-4-to-12-scaffolds.md` (the wave-35 plan referenced the wrong directory; the file is under `docs/outreach-drafts/` not `docs/` root). The single em-dash on line 226 sits inside a `grep -c "—"` shell-command quotation block + is EXEMPT per the CLAUDE.md substitution table category "code blocks + quoted source material where the original author wrote em-dash" (em-dash here IS the grep target literal, not composed prose).
+
+**Rationale.** Wave-37 plan-gap-scanner flagged the missing path because the wave-35 plan E.3 referenced `bemyapp-devlog-day-4-to-12-scaffolds.md:226` without the `docs/outreach-drafts/` subdirectory prefix. The file was created during wave-22 night-late outreach scaffolding + lives in `docs/outreach-drafts/` alongside other outreach drafts (Day 1 + Day 2 devlogs + cold emails). Wave-38 E.3 verified the file's existence via `find docs -iname "*bemyapp*devlog*"` + read the line 226 context: the em-dash is inside an instruction line `grep -c "—" docs/outreach-drafts/bemyapp-devlog-day-N-final.md` which is a shell-command quotation matching the same exempt category as PLAN.md line 290's `git grep -c "—" paper/physics-ttm-methods.md` reference. No em-dash sweep needed; the wave-30 zero-em-dash-in-prose rule is preserved.
+
+**Affected.** Wave-35 plan file E.3 acceptance criterion can now be marked complete (E.3 closure recorded here in lieu of a plan-amendment commit). `~/.claude/projects/-Users-stephensookra-Desktop-IBM-May/memory/feedback_em_dash_zero_tolerance.md` documents the substitution-table exempt categories; D-029 reaffirms shell-command quotation as exempt. No file edits required beyond this decision-log entry.
+
+---
