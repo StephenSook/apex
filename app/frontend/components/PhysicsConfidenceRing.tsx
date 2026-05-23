@@ -1,0 +1,85 @@
+"use client";
+
+/**
+ * PhysicsConfidenceRing: prominent display variant of the D-024
+ * Mahalanobis-distance physics-confidence detector. Renders a
+ * conic-gradient ring with the distance value at center + the
+ * existing PhysicsConfidenceBadge inline below for accessibility
+ * semantics + downgrade-arrow context.
+ *
+ * Wave-41 Stream F.2 close-out per the competitor field deep-dive
+ * memory `project_apex_competitor_field_may_challenge.md` steal-list
+ * HIGH-value item #2 (AI Race Engineer Copilot ConfidenceCard.jsx:
+ * 32-38 conic-gradient ring + animated pulse pattern). APEX adapts
+ * the visual idea to surface the Mahalanobis distance as a percent-
+ * of-p95-threshold filled ring rather than the raw distance number;
+ * a fuller ring means closer to the OOD boundary.
+ *
+ * Pure CSS animation: conic-gradient background + keyframe pulse
+ * defined in globals.css (apex-confidence-pulse). No Framer Motion
+ * dependency added; the ring uses standard CSS transforms.
+ *
+ * Sub-tier accessibility: the ring is decorative (aria-hidden) +
+ * the inner numeric text + the wrapped PhysicsConfidenceBadge carry
+ * the full screen-reader semantics. Visual-only consumers see the
+ * ring; assistive-tech consumers get the existing badge text +
+ * Mahalanobis distance verbatim.
+ */
+
+import type { PhysicsConfidence } from "../../shared/types";
+import PhysicsConfidenceBadge from "./PhysicsConfidenceBadge";
+
+export interface PhysicsConfidenceRingProps {
+  readonly confidence: PhysicsConfidence;
+}
+
+export default function PhysicsConfidenceRing({ confidence }: PhysicsConfidenceRingProps) {
+  // Defensive guard for non-finite inputs; PhysicsConfidenceBadge below
+  // also handles this case but the ring needs early-out to avoid
+  // NaN.toFixed in the percent calculation.
+  const distanceFinite = Number.isFinite(confidence.mahalanobis_distance);
+  const thresholdFinite = Number.isFinite(confidence.threshold_p95);
+  if (!distanceFinite || !thresholdFinite) {
+    return <PhysicsConfidenceBadge confidence={confidence} />;
+  }
+
+  // Ratio of measured distance to p95 threshold, clamped to [0, 1.5]
+  // so an out-of-distribution session with distance > threshold still
+  // produces a visually meaningful ring (overfill clamped).
+  const rawRatio = confidence.mahalanobis_distance / confidence.threshold_p95;
+  const ratio = Math.max(0, Math.min(1.5, rawRatio));
+  const fillDegrees = Math.min(360, ratio * 240);
+
+  const isOOD = confidence.status === "out_of_distribution";
+  const fillColor = isOOD ? "var(--color-amber, #D9A441)" : "var(--color-racing-green, #0A2818)";
+  const trackColor = "var(--color-rule, rgba(15, 20, 16, 0.12))";
+
+  // Conic gradient: filled arc + remaining track. CSS variable consumed
+  // by the animated background.
+  const ringStyle: React.CSSProperties = {
+    background: `conic-gradient(${fillColor} 0deg ${fillDegrees}deg, ${trackColor} ${fillDegrees}deg 360deg)`,
+  };
+
+  return (
+    <div className="flex flex-col items-center gap-3">
+      <div
+        aria-hidden="true"
+        className="apex-confidence-ring relative flex h-32 w-32 items-center justify-center rounded-full"
+        style={ringStyle}
+      >
+        <div className="flex h-24 w-24 flex-col items-center justify-center rounded-full bg-paper">
+          <span className="font-mono text-[10px] uppercase tracking-wider text-muted">
+            Mahalanobis
+          </span>
+          <span className="font-display text-2xl tracking-tight text-ink">
+            {confidence.mahalanobis_distance.toFixed(2)}
+          </span>
+          <span className="font-mono text-[9px] uppercase tracking-wider text-muted">
+            p95 {confidence.threshold_p95.toFixed(2)}
+          </span>
+        </div>
+      </div>
+      <PhysicsConfidenceBadge confidence={confidence} />
+    </div>
+  );
+}

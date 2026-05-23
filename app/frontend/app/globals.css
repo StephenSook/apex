@@ -133,6 +133,24 @@ body::before {
 }
 
 /*
+ * Wave-41 Stream F.2: PhysicsConfidenceRing conic-gradient subtle
+ * opacity pulse so the "live detector" framing reads visually even
+ * when the Mahalanobis value is static between sessions. Pulse stays
+ * subtle (0.85-1.0 opacity range over 2400ms) so it doesn't compete
+ * with the apex-rise entry animation OR the apex-edge-indeterminate
+ * loading shuttle. prefers-reduced-motion disables this rule via the
+ * 0.01ms reset above.
+ */
+@keyframes apex-confidence-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.85; }
+}
+
+.apex-confidence-ring {
+  animation: apex-confidence-pulse 2400ms ease-in-out infinite;
+}
+
+/*
  * Editorial rule: thin hairline above section labels in display caps.
  */
 .apex-rule {
