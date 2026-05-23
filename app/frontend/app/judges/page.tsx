@@ -50,6 +50,57 @@ const MOCK_PHYSICS_CONFIDENCE: PhysicsConfidence = {
   threshold_p95: 2.5,
 };
 
+// Wave-35 A.13 reject-verdict mock for /judges visualisation. Demonstrates
+// the discriminated-union tag narrowing on Guardian-Safety reject (FIA
+// Appendix L COA-section conflict surfaces blocked_recommendations rather
+// than the flag/approve verdict extras). Pairs with the approve-flag-
+// approve mock above so judges see both panel states side-by-side.
+const MOCK_TRI_AGENT_VERDICT_REJECT: TriAgentVerdictPanel = [
+  {
+    critic: "physics",
+    verdict: "approve",
+    reasoning_trace: [
+      "SCP outer-loop converged in 2 iterates with Powell ratio rho = 0.74 within trust-region tolerance.",
+      "Tier 7 Pacejka linearisation residual within 0.04 friction-coefficient units; below the 0.10 flag threshold.",
+    ],
+    critic_run_id: "mock-physics-reject-002",
+  },
+  {
+    critic: "pedagogy",
+    verdict: "approve",
+    reasoning_trace: [
+      "Recommendation is coachable; references trail-braking technique with the adaptive-driver context preamble.",
+    ],
+    critic_run_id: "mock-pedagogy-reject-002",
+  },
+  {
+    critic: "guardian_safety",
+    verdict: "reject",
+    reasoning_trace: [
+      "Recommendation conflicts with the driver's FIA Certificate of Adaptations Section 3(c) hardware-spec entry.",
+      "COA-permitted brake-throttle simultaneity gate is open in the projection but the recommendation requests a hardware change that would close it.",
+    ],
+    blocked_recommendations: [
+      "Reduce brake-pedal travel by 4 mm (would invalidate the existing hand-control mapping per COA Section 3(c)).",
+    ],
+    critic_run_id: "mock-guardian-safety-reject-002",
+  },
+];
+
+// Wave-35 A.14 out-of-distribution physics-confidence mock for /judges
+// visualisation. Demonstrates the downgrade arrow rendering (approve ->
+// review) when the Mahalanobis distance exceeds the p95 threshold derived
+// from the Sarah Reynolds fixture distribution. Pairs with the in-
+// distribution mock above so judges see both detector states side-by-
+// side.
+const MOCK_PHYSICS_CONFIDENCE_OOD: PhysicsConfidence = {
+  status: "out_of_distribution",
+  mahalanobis_distance: 3.92,
+  threshold_p95: 2.5,
+  downgrade_from: "approve",
+  downgrade_to: "review",
+};
+
 export const metadata: Metadata = {
   title: "Judges' Tour · APEX",
   description:
@@ -374,14 +425,37 @@ export default function JudgesPage() {
             (TriAgentVerdictPanel = three TriAgentVerdict instances; verdict-tag narrowing + empty-
             reasoning-trace fallback per GuardianAudit one level up).
           </p>
-          <div className="mt-6 flex flex-wrap items-center gap-3">
-            <PhysicsConfidenceBadge confidence={MOCK_PHYSICS_CONFIDENCE} />
-            <span className="font-mono text-xs text-muted">
-              D-024 Mahalanobis-distance detector verdict for the mock session below.
-            </span>
+          <div className="mt-6 flex flex-col gap-3">
+            <div className="flex flex-wrap items-center gap-3">
+              <PhysicsConfidenceBadge confidence={MOCK_PHYSICS_CONFIDENCE} />
+              <span className="font-mono text-xs text-muted">
+                D-024 in-distribution mock: Guardian verdict preserved.
+              </span>
+            </div>
+            <div className="flex flex-wrap items-center gap-3">
+              <PhysicsConfidenceBadge confidence={MOCK_PHYSICS_CONFIDENCE_OOD} />
+              <span className="font-mono text-xs text-muted">
+                D-024 out-of-distribution mock: Guardian verdict downgraded from approve to review.
+              </span>
+            </div>
           </div>
-          <div className="mt-6">
-            <TriAgentCriticPanel panel={MOCK_TRI_AGENT_VERDICT} />
+          <div className="mt-6 flex flex-col gap-6">
+            <div>
+              <p className="font-mono text-[11px] uppercase tracking-wider text-muted">
+                Mock A: flag verdict on Pedagogy-Critic
+              </p>
+              <div className="mt-2">
+                <TriAgentCriticPanel panel={MOCK_TRI_AGENT_VERDICT} />
+              </div>
+            </div>
+            <div>
+              <p className="font-mono text-[11px] uppercase tracking-wider text-muted">
+                Mock B: reject verdict on Guardian-Safety (COA-conflict)
+              </p>
+              <div className="mt-2">
+                <TriAgentCriticPanel panel={MOCK_TRI_AGENT_VERDICT_REJECT} />
+              </div>
+            </div>
           </div>
           <p className="mt-6 font-mono text-xs italic text-muted">
             Panel data is mock for /judges visualisation. Vinh-lane backend at{" "}
