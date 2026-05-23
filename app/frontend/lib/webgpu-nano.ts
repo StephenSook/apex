@@ -62,31 +62,63 @@ export type GraniteNanoEdgeState =
   | { readonly status: "error"; readonly message: string };
 
 /**
- * Browser-side WebGPU capability probe. Returns the adapter's
- * advertised `limits.maxBufferSize` (the largest single allocation
- * the adapter will serve) if WebGPU is supported; returns null when
- * WebGPU is unavailable (Safari without --enable-webgpu, server-
- * side render, missing GPU). NOTE: maxBufferSize is a per-buffer
- * capability, not total free VRAM; the runtime pipeline load is
- * still the source of truth for actual memory feasibility.
+ * Tagged-union result of the WebGPU capability probe (wave-38 cascade
+ * #8 silent-failure-hunter H-1 close-out). Prior code collapsed three
+ * distinct failure modes into a single `null` return + a generic
+ * "WebGPU unavailable" message, misleading users + suppressing
+ * adapter-error diagnostics. Each variant carries the data its
+ * EdgeSummary state-mapper needs to render a distinct user-facing
+ * message.
  */
-async function probeWebGPUHeadroom(): Promise<number | null> {
+export type WebGPUProbeResult =
+  | { readonly kind: "no_webgpu" }
+  | { readonly kind: "no_adapter" }
+  | { readonly kind: "adapter_error"; readonly error: unknown }
+  | { readonly kind: "ok"; readonly max_buffer_size: number };
+
+/**
+ * Browser-side WebGPU capability probe. Returns a tagged-union result
+ * distinguishing the three failure modes (WebGPU API absent, adapter
+ * request returned null, adapter request threw) from the success path
+ * (adapter advertises a non-null `limits.maxBufferSize`). Caller maps
+ * each variant to a distinct EdgeSummary state.
+ *
+ * NOTE per wave-38 cascade #8 silent-failure-hunter H-2: maxBufferSize
+ * is the WebGPU spec's PER-BUFFER capability limit (the largest single
+ * allocation the adapter will serve), NOT a measure of total free
+ * VRAM. A 6 GB discrete GPU typically advertises 2 GiB maxBufferSize
+ * (the spec default); an integrated iGPU advertises far less. The
+ * runtime pipeline load remains the source of truth for actual memory
+ * feasibility; this probe catches the obvious cases (Safari without
+ * flag, integrated GPU under-cap, server-side render, missing GPU).
+ */
+async function probeWebGPUHeadroom(): Promise<WebGPUProbeResult> {
   if (typeof navigator === "undefined" || !("gpu" in navigator)) {
-    return null;
+    return { kind: "no_webgpu" };
   }
   const gpu = (navigator as Navigator & { gpu?: { requestAdapter: () => Promise<unknown> } }).gpu;
   if (!gpu) {
-    return null;
+    return { kind: "no_webgpu" };
   }
   try {
     const adapter = await gpu.requestAdapter();
     if (!adapter || typeof adapter !== "object") {
-      return null;
+      return { kind: "no_adapter" };
     }
     const limits = (adapter as { limits?: { maxBufferSize?: number } }).limits;
-    return typeof limits?.maxBufferSize === "number" ? limits.maxBufferSize : null;
-  } catch {
-    return null;
+    if (typeof limits?.maxBufferSize !== "number") {
+      return { kind: "no_adapter" };
+    }
+    return { kind: "ok", max_buffer_size: limits.maxBufferSize };
+  } catch (err) {
+    // Wave-38 cascade #8 silent-failure-hunter N-1: preserve the
+    // underlying adapter error message for dev visibility instead of
+    // swallowing the exception silently. CLAUDE.md anti-pattern check:
+    // empty catch blocks are never acceptable.
+    if (typeof console !== "undefined" && console.warn) {
+      console.warn("WebGPU adapter probe threw:", err);
+    }
+    return { kind: "adapter_error", error: err };
   }
 }
 
@@ -145,26 +177,54 @@ export function useGraniteNanoEdge(): GraniteNanoEdgeState {
     }
 
     void (async () => {
-      const available = await probeWebGPUHeadroom();
+      const probe = await probeWebGPUHeadroom();
       if (cancelled) {
         return;
       }
-      if (available === null) {
-        setState({
-          status: "error",
-          message: "WebGPU unavailable in this browser; the edge demo requires Chrome 121+ or equivalent.",
-        });
-        return;
+      // Wave-38 cascade #8 silent-failure-hunter H-1 close-out: each
+      // probe failure variant maps to a distinct user-facing message
+      // so operators can locate the upstream cause (missing browser
+      // API vs no adapter vs adapter exception).
+      switch (probe.kind) {
+        case "no_webgpu":
+          setState({
+            status: "error",
+            message:
+              "WebGPU unavailable in this browser. The edge demo requires Chrome 121+ or equivalent with WebGPU enabled.",
+          });
+          return;
+        case "no_adapter":
+          setState({
+            status: "error",
+            message:
+              "WebGPU adapter request returned no compatible adapter. Check GPU driver + BIOS WebGPU support.",
+          });
+          return;
+        case "adapter_error": {
+          const adapterMessage =
+            probe.error instanceof Error ? probe.error.message : String(probe.error);
+          setState({
+            status: "error",
+            message: `WebGPU adapter probe failed: ${adapterMessage}. Re-run the session.`,
+          });
+          return;
+        }
+        case "ok":
+          break;
+        default: {
+          const _exhaustive: never = probe;
+          throw new Error(`unknown WebGPU probe result: ${String(_exhaustive)}`);
+        }
       }
-      if (available < WEBGPU_MEMORY_FLOOR_BYTES) {
+      if (probe.max_buffer_size < WEBGPU_MEMORY_FLOOR_BYTES) {
         setState({
           status: "oom",
-          available_bytes: available,
+          available_bytes: probe.max_buffer_size,
           required_bytes: WEBGPU_MEMORY_FLOOR_BYTES,
         });
         return;
       }
-      setState({ status: "loading", progress: 0.25 });
+      setState({ status: "loading", progress: 0.5 });
       try {
         await loadGraniteNanoPipeline();
         if (cancelled) {
@@ -176,6 +236,19 @@ export function useGraniteNanoEdge(): GraniteNanoEdgeState {
           return;
         }
         const message = err instanceof Error ? err.message : String(err);
+        // Wave-38 cascade #8 silent-failure-hunter H-2 close-out:
+        // runtime OOM at pipeline-load time maps to the `oom` state
+        // when the error message names a memory failure; otherwise
+        // routes through the generic `error` state.
+        const isMemoryError = /out of memory|OOM|insufficient|allocation|memory/i.test(message);
+        if (isMemoryError) {
+          setState({
+            status: "oom",
+            available_bytes: probe.max_buffer_size,
+            required_bytes: WEBGPU_MEMORY_FLOOR_BYTES,
+          });
+          return;
+        }
         setState({ status: "error", message });
       }
     })();

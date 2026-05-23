@@ -22,7 +22,7 @@
 
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export type ConnectivityState =
   | { readonly status: "online" }
@@ -45,6 +45,18 @@ export function useConnectivity(onReconnect?: () => void): ConnectivityState {
     return { status: "online" };
   });
 
+  // Wave-38 cascade #8 silent-failure-hunter M-2 close-out: stash
+  // onReconnect in a ref so listener identity stays stable across
+  // re-renders. Prior code re-bound the event listeners on every
+  // render when the caller passed an inline arrow callback (typical),
+  // creating a teardown-rebind window where 'online' events could be
+  // lost OR the microtask-deferred callback could fire from a stale
+  // closure after an unrelated re-render swapped it.
+  const onReconnectRef = useRef(onReconnect);
+  useEffect(() => {
+    onReconnectRef.current = onReconnect;
+  }, [onReconnect]);
+
   useEffect(() => {
     if (typeof window === "undefined") {
       return;
@@ -54,8 +66,21 @@ export function useConnectivity(onReconnect?: () => void): ConnectivityState {
         if (prev.status === "offline") {
           // Defer the callback to a microtask so any callback-driven
           // state mutations land AFTER the connectivity state update.
-          if (onReconnect) {
-            queueMicrotask(onReconnect);
+          const cb = onReconnectRef.current;
+          if (cb) {
+            queueMicrotask(() => {
+              // Wave-38 cascade #8 silent-failure-hunter M-3 close-
+              // out: wrap the deferred callback so a thrown error
+              // surfaces with context instead of an unhandled rejection
+              // on window.onunhandledrejection with no source signal.
+              try {
+                cb();
+              } catch (err) {
+                if (typeof console !== "undefined" && console.error) {
+                  console.error("useConnectivity onReconnect threw:", err);
+                }
+              }
+            });
           }
           return { status: "online" };
         }
@@ -76,7 +101,7 @@ export function useConnectivity(onReconnect?: () => void): ConnectivityState {
       window.removeEventListener("online", handleOnline);
       window.removeEventListener("offline", handleOffline);
     };
-  }, [onReconnect]);
+  }, []);
 
   return state;
 }

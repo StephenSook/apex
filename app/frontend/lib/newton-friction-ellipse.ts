@@ -81,5 +81,13 @@ export function projectOntoFrictionEllipse(
     proj_long = a_long * scale;
     proj_lat = a_lat * scale;
   }
+  // Wave-38 cascade #8 silent-failure-hunter N-4 close-out: final
+  // isFinite guard prevents the non-converged branch from emitting
+  // NaN / Infinity into the EdgeSummary ReadyPanel under extreme
+  // floating-point underflow (a_long = 1e-300 etc.). Caller renders
+  // role=alert when this branch returns null.
+  if (!Number.isFinite(proj_long) || !Number.isFinite(proj_lat)) {
+    return null;
+  }
   return { a_long: proj_long, a_lat: proj_lat, iterates: MAX_ITERATES, converged: false };
 }
