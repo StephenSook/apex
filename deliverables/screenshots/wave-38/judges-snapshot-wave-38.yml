@@ -1,0 +1,768 @@
+- generic [active] [ref=e1]:
+  - link "Skip to main content" [ref=e2] [cursor=pointer]:
+    - /url: "#main"
+  - main [ref=e3]:
+    - generic [ref=e5]:
+      - paragraph [ref=e6]: IBM SkillsBuild AI Builders Challenge · May 2026 · Judges’ tour
+      - heading "APEX, in one page." [level=1] [ref=e7]
+      - paragraph [ref=e8]: Everything you need to evaluate APEX in five minutes. Live demo first, video second, architecture and Q&A defense pack below. Submission deadline 2026-05-31, 11:59 PM ET.
+      - paragraph [ref=e9]: "Hero use case: Sarah Reynolds, a fictional persona (RAF veteran, left-leg amputee, Britcar Trophy 2026, #34 BMW M240i with electronic hand-controls)."
+    - region "Five-second resource map." [ref=e10]:
+      - generic [ref=e11]:
+        - heading "Five-second resource map." [level=2] [ref=e12]
+        - list [ref=e13]:
+          - listitem [ref=e14]:
+            - link [ref=e15] [cursor=pointer]:
+              - /url: /analyze
+              - article [ref=e16]:
+                - generic [ref=e17]:
+                  - heading "Live demo" [level=3] [ref=e18]
+                  - generic [ref=e19]: Live
+                - paragraph [ref=e20]: Three-slot upload → corner-by-corner coaching report in ~60s on Granite.
+                - paragraph [ref=e21]: /analyze
+          - listitem [ref=e22]:
+            - link [ref=e23] [cursor=pointer]:
+              - /url: /sim-rig
+              - article [ref=e24]:
+                - generic [ref=e25]:
+                  - heading "Live sim-rig stream" [level=3] [ref=e26]
+                  - generic [ref=e27]: Live
+                - paragraph [ref=e28]: 20 Hz adaptive-controls telemetry tile. Synthetic Sarah Reynolds Donington lap today; live WebSocket Day 9.
+                - paragraph [ref=e29]: /sim-rig
+          - listitem [ref=e30]:
+            - article [ref=e31]:
+              - generic [ref=e32]:
+                - heading "3-minute submission video" [level=3] [ref=e33]
+                - generic [ref=e34]: Pending
+              - paragraph [ref=e35]: YouTube unlisted URL lands Day 10 (2026-05-29) production take.
+              - paragraph [ref=e36]: URL pending
+          - listitem [ref=e37]:
+            - article [ref=e38]:
+              - generic [ref=e39]:
+                - heading "30-second highlight clip" [level=3] [ref=e40]
+                - generic [ref=e41]: Pending
+              - paragraph [ref=e42]: Cut from the 3-min video for judges who only watch 30s. Lands Day 10.
+              - paragraph [ref=e43]: URL pending
+          - listitem [ref=e44]:
+            - article [ref=e45]:
+              - generic [ref=e46]:
+                - heading "Pitch deck PDF" [level=3] [ref=e47]
+                - generic [ref=e48]: Pending
+              - paragraph [ref=e49]: Playwright HTML→PDF render Day 11. Editorial-paddock palette throughout.
+              - paragraph [ref=e50]: URL pending
+          - listitem [ref=e51]:
+            - link [ref=e52] [cursor=pointer]:
+              - /url: https://github.com/StephenSook/apex
+              - article [ref=e53]:
+                - generic [ref=e54]:
+                  - heading "Public GitHub repo" [level=3] [ref=e55]
+                  - generic [ref=e56]: Live
+                - paragraph [ref=e57]: Apache 2.0, public Day 1, 220+ atomic commits across the 12-day build window.
+                - paragraph [ref=e58]: https://github.com/StephenSook/apex
+          - listitem [ref=e59]:
+            - link [ref=e60] [cursor=pointer]:
+              - /url: https://github.com/StephenSook/apex/blob/main/docs/methodology.md
+              - article [ref=e61]:
+                - generic [ref=e62]:
+                  - heading "Methodology trace" [level=3] [ref=e63]
+                  - generic [ref=e64]: Live
+                - paragraph [ref=e65]: Sookra Methodology 7-phase trace from recon to submission, with verification log.
+                - paragraph [ref=e66]: https://github.com/StephenSook/apex/blob/main/docs/methodology.md
+          - listitem [ref=e67]:
+            - link [ref=e68] [cursor=pointer]:
+              - /url: https://github.com/StephenSook/apex/blob/main/docs/architecture-spec.md
+              - article [ref=e69]:
+                - generic [ref=e70]:
+                  - heading "Architecture spec" [level=3] [ref=e71]
+                  - generic [ref=e72]: Live
+                - paragraph [ref=e73]: Three-layer pipeline with a two-stage projection-and-audit middle layer; Figure 1 inline below.
+                - paragraph [ref=e74]: https://github.com/StephenSook/apex/blob/main/docs/architecture-spec.md
+          - listitem [ref=e75]:
+            - link [ref=e76] [cursor=pointer]:
+              - /url: "#convergence-14"
+              - article [ref=e77]:
+                - generic [ref=e78]:
+                  - heading "Convergence 14 fixture grid" [level=3] [ref=e79]
+                  - generic [ref=e80]: Live
+                - paragraph [ref=e81]: Display of the 14-fixture safety-contract catalogue. 4 Stage 1, 4 Stage 2, 4 Stage 3, 2 round-trip integrity.
+                - paragraph [ref=e82]: "#convergence-14"
+          - listitem [ref=e83]:
+            - link [ref=e84] [cursor=pointer]:
+              - /url: https://github.com/StephenSook/apex/blob/main/paper/apex-neurips-workshop-2026.md
+              - article [ref=e85]:
+                - generic [ref=e86]:
+                  - heading "NeurIPS Workshop paper draft" [level=3] [ref=e87]
+                  - generic [ref=e88]: Live
+                - paragraph [ref=e89]: Publication-readable §1-§3 + §5-§13 draft. §4 Experiments cell values fill at camera-ready.
+                - paragraph [ref=e90]: https://github.com/StephenSook/apex/blob/main/paper/apex-neurips-workshop-2026.md
+          - listitem [ref=e91]:
+            - link [ref=e92] [cursor=pointer]:
+              - /url: https://github.com/StephenSook/apex/blob/main/docs/pre-mortem.md
+              - article [ref=e93]:
+                - generic [ref=e94]:
+                  - heading "Pre-mortem journal" [level=3] [ref=e95]
+                  - generic [ref=e96]: Live
+                - paragraph [ref=e97]: Running failure-mode journal. 40+ entries, ~15 ✅ mitigations shipped, 3 accepted residual risks.
+                - paragraph [ref=e98]: https://github.com/StephenSook/apex/blob/main/docs/pre-mortem.md
+    - region "The twelve IBM tools, each with a role." [ref=e99]:
+      - generic [ref=e100]:
+        - heading "The twelve IBM tools, each with a role." [level=2] [ref=e101]
+        - generic [ref=e102]:
+          - generic [ref=e103]:
+            - term [ref=e104]: Granite-Docling 258M
+            - definition [ref=e105]: FIA COA PDF → structured JSON parser.
+          - generic [ref=e106]:
+            - term [ref=e107]: Docling library
+            - definition [ref=e108]: Open-source IBM Docling conversion + table-extraction layer.
+          - generic [ref=e109]:
+            - term [ref=e110]: Granite Vision 4.1 4B
+            - definition [ref=e111]: SRO + Britcar timing-sheet PDF → CSV.
+          - generic [ref=e112]:
+            - term [ref=e113]: Granite TimeSeries TTM r2.1
+            - definition [ref=e114]: Frozen pretrained foundation forecaster + channel-mix decoder fine-tune (Track 1 of D-010 three-track ensemble).
+          - generic [ref=e115]:
+            - term [ref=e116]: Granite FlowState 9.1M
+            - definition [ref=e117]: Sampling-rate-invariant continuous-time SSM (Track 2 of D-010 three-track ensemble; native 50 Hz).
+          - generic [ref=e118]:
+            - term [ref=e119]: IBM TSPulse 1M
+            - definition [ref=e120]: Time-frequency anomaly detector on polyphase phase streams (D-016 + Layer 2 anomaly feed to Guardian audit).
+          - generic [ref=e121]:
+            - term [ref=e122]: Granite Embedding R2 (149M + 47M)
+            - definition [ref=e123]: Hybrid dense + sparse RAG retrieval over vehicle setup guides + racing-theory + adaptive-equipment specs + COA-parsed fixtures (D-016 RAG layer).
+          - generic [ref=e124]:
+            - term [ref=e125]: Granite 4.1 8B Instruct
+            - definition [ref=e126]: Race-engineer narrator producing the coaching report.
+          - generic [ref=e127]:
+            - term [ref=e128]: Granite Guardian 4.1 8B
+            - definition [ref=e129]: BYOC custom-rule text audit on every physics-corrected forecast + physics-confidence detector verdict downgrade per D-024.
+          - generic [ref=e130]:
+            - term [ref=e131]: Granite 4.0 Nano 350M
+            - definition [ref=e132]: In-browser WebGPU edge model via Transformers.js for offline paddock-summary (D-019 item 1 + D-021 server-authoritative reconnect).
+          - generic [ref=e133]:
+            - term [ref=e134]: Langflow
+            - definition [ref=e135]: Visible orchestration graph export of the full pipeline (D-017 demoted from runtime to demo facade per wave-30 lock).
+          - generic [ref=e136]:
+            - term [ref=e137]: IBM Bob
+            - definition [ref=e138]: Build accelerator. We adopt Bob as our codegen-assistance loop in keeping with IBM's publicly-documented watsonx + Granite Ferrari case-study posture toward governed-AI development.
+    - region "The pipeline, one diagram." [ref=e139]:
+      - generic [ref=e140]:
+        - heading "The pipeline, one diagram." [level=2] [ref=e141]
+        - paragraph [ref=e142]: Frozen Granite TimeSeries TTM r2.1 forecaster, wrapped in a two-stage projection-and-audit layer (Stage 1 differentiable CvxpyLayer convex QP for friction-ellipse + forward-Euler + jerk bound; Stage 2 post-projection feasibility filter for bicycle-model coupling + the COA-parameterized brake-throttle simultaneity gate), audited by Granite Guardian 4.1 with custom BYOC rules, narrated by Granite 4.1 8B Instruct. Source diagram lives at docs/architecture-diagram.mmd in the repository; Figure 1 in the NeurIPS Workshop paper draft is the same artifact.
+        - figure "Figure 1 (vector via SVG with PNG raster fallback). Download the raster copy at figure-1-architecture.png for reuse." [ref=e143]:
+          - generic:
+            - 'img "APEX pipeline architecture: driver inputs (telemetry CSV, FIA Certificate of Adaptations PDF, written debrief) feed a one-time onboarding stage (Granite-Docling + Granite Vision) and the 60-second post-race coaching loop (1-Hz aggregator into Granite TimeSeries TTM r2.1 into Stage 1 differentiable convex QP into Stage 2 post-projection feasibility filter into Granite Guardian text audit into Granite 4.1 8B Instruct narrator). Outputs are a corner-by-corner coaching report, tuning recommendation with COA section citation, next-session envelope forecast, and Guardian safety stamp with reasoning trace."'
+          - generic [ref=e144]:
+            - text: Figure 1 (vector via SVG with PNG raster fallback). Download the raster copy at
+            - link "figure-1-architecture.png" [ref=e145] [cursor=pointer]:
+              - /url: /figures/figure-1-architecture.png
+            - text: for reuse.
+    - region "Convergence 14 · the safety contract." [ref=e146]:
+      - generic [ref=e147]:
+        - heading "Convergence 14 · the safety contract." [level=2] [ref=e148]
+        - paragraph [ref=e149]: "Decision-log D-A names the Convergence 14 fixture suite as the load-bearing safety contract. The catalogue below is the Stephen-lane display of the 14-fixture safety-contract specification: 4 at the Stage 1 convex QP boundary, 4 at the Stage 2 feasibility-filter boundary, 4 at the Stage 3 Granite Guardian BYOC text-audit boundary, plus 2 round-trip integrity fixtures that close the convergence loop. The Vinh-lane assertion suite at app/backend/tests/test_serializer.py lands per PLAN rows 2.9c + 4.2, with fixture files at app/backend/tests/fixtures/convergence-14/. Each fixture asserts the violation, the serializer output, and the Granite Guardian verdict. Click any row to see the expected Guardian verdict reason and the serialized violation-log excerpt the fixture targets."
+        - list [ref=e150]:
+          - listitem [ref=e151]:
+            - article [ref=e152]:
+              - generic [ref=e154]:
+                - heading "C14-01Friction ellipse lateral" [level=3] [ref=e155]
+                - generic [ref=e156]: flag
+              - paragraph [ref=e157]: Lateral g of 1.8 with brake near zero and steering near zero exceeds the constant-mu friction ellipse on a dry-tarmac circuit.
+              - generic [ref=e158]:
+                - generic [ref=e159]:
+                  - term [ref=e160]: Violation class
+                  - definition [ref=e161]: Friction ellipse
+                - generic [ref=e162]:
+                  - term [ref=e163]: Detection stage
+                  - definition [ref=e164]: Stage 1 · convex QP
+                - generic [ref=e165]:
+                  - term [ref=e166]: COA simul
+                  - definition [ref=e167]: not applicable
+                - generic [ref=e168]:
+                  - term [ref=e169]: Fixture file
+                  - definition [ref=e170]: app/backend/tests/fixtures/convergence-14/C14-01_friction_ellipse_lateral.json
+              - group [ref=e171]:
+                - generic "Guardian verdict reason" [ref=e172] [cursor=pointer]
+          - listitem [ref=e173]:
+            - article [ref=e174]:
+              - generic [ref=e176]:
+                - heading "C14-02Friction ellipse longitudinal" [level=3] [ref=e177]
+                - generic [ref=e178]: flag
+              - paragraph [ref=e179]: Longitudinal g of negative 1.5 (braking) combined with steering of 0.3 rad exceeds the friction-ellipse envelope at the corner-entry boundary.
+              - generic [ref=e180]:
+                - generic [ref=e181]:
+                  - term [ref=e182]: Violation class
+                  - definition [ref=e183]: Friction ellipse
+                - generic [ref=e184]:
+                  - term [ref=e185]: Detection stage
+                  - definition [ref=e186]: Stage 1 · convex QP
+                - generic [ref=e187]:
+                  - term [ref=e188]: COA simul
+                  - definition [ref=e189]: not applicable
+                - generic [ref=e190]:
+                  - term [ref=e191]: Fixture file
+                  - definition [ref=e192]: app/backend/tests/fixtures/convergence-14/C14-02_friction_ellipse_longitudinal.json
+              - group [ref=e193]:
+                - generic "Guardian verdict reason" [ref=e194] [cursor=pointer]
+          - listitem [ref=e195]:
+            - article [ref=e196]:
+              - generic [ref=e198]:
+                - heading "C14-03Forward-Euler monotonicity" [level=3] [ref=e199]
+                - generic [ref=e200]: flag
+              - paragraph [ref=e201]: "Forecast claims speed increases from 40 m/s to 50 m/s with long_g pinned at zero across two 1-Hz mini-sectors. Forward-Euler equality fails: speed_{t+1} must equal speed_t + a_long_t * dt."
+              - generic [ref=e202]:
+                - generic [ref=e203]:
+                  - term [ref=e204]: Violation class
+                  - definition [ref=e205]: Forward-Euler
+                - generic [ref=e206]:
+                  - term [ref=e207]: Detection stage
+                  - definition [ref=e208]: Stage 1 · convex QP
+                - generic [ref=e209]:
+                  - term [ref=e210]: COA simul
+                  - definition [ref=e211]: not applicable
+                - generic [ref=e212]:
+                  - term [ref=e213]: Fixture file
+                  - definition [ref=e214]: app/backend/tests/fixtures/convergence-14/C14-03_forward_euler_monotonicity.json
+              - group [ref=e215]:
+                - generic "Guardian verdict reason" [ref=e216] [cursor=pointer]
+          - listitem [ref=e217]:
+            - article [ref=e218]:
+              - generic [ref=e220]:
+                - heading "C14-04Jerk bound" [level=3] [ref=e221]
+                - generic [ref=e222]: flag
+              - paragraph [ref=e223]: Long_g jumps from +0.6 g at t=8 to -0.8 g at t=9 in one 1-Hz mini-sector. Delta of 1.4 g/s exceeds the jerk bound at 8 m/s^3 (approximately 0.815 g/s). 1 Hz fixture is a deliberate demo simplification per arch-spec sampling-rate caveat; per wave-30 D-011 multi-frequency coexistence, production telemetry runs the jerk-bound at >=10 Hz on the raw 50 Hz upstream signal before mini-sector aggregation.
+              - generic [ref=e224]:
+                - generic [ref=e225]:
+                  - term [ref=e226]: Violation class
+                  - definition [ref=e227]: Jerk bound
+                - generic [ref=e228]:
+                  - term [ref=e229]: Detection stage
+                  - definition [ref=e230]: Stage 1 · convex QP
+                - generic [ref=e231]:
+                  - term [ref=e232]: COA simul
+                  - definition [ref=e233]: not applicable
+                - generic [ref=e234]:
+                  - term [ref=e235]: Fixture file
+                  - definition [ref=e236]: app/backend/tests/fixtures/convergence-14/C14-04_jerk_bound.json
+              - group [ref=e237]:
+                - generic "Guardian verdict reason" [ref=e238] [cursor=pointer]
+          - listitem [ref=e239]:
+            - article [ref=e240]:
+              - generic [ref=e242]:
+                - 'heading "C14-05Bicycle: lateral g without steering" [level=3] [ref=e243]'
+                - generic [ref=e244]: reject
+              - paragraph [ref=e245]: Forecast claims lat_g = 0.5 g with steering_rad = 0.0 at speed 15 m/s. Bicycle-model coupling makes lateral g impossible without nonzero steering at low slip.
+              - generic [ref=e246]:
+                - generic [ref=e247]:
+                  - term [ref=e248]: Violation class
+                  - definition [ref=e249]: Bicycle model
+                - generic [ref=e250]:
+                  - term [ref=e251]: Detection stage
+                  - definition [ref=e252]: Stage 2 · feasibility filter
+                - generic [ref=e253]:
+                  - term [ref=e254]: COA simul
+                  - definition [ref=e255]: not applicable
+                - generic [ref=e256]:
+                  - term [ref=e257]: Fixture file
+                  - definition [ref=e258]: app/backend/tests/fixtures/convergence-14/C14-05_bicycle_no_steering.json
+              - group [ref=e259]:
+                - generic "Guardian verdict reason" [ref=e260] [cursor=pointer]
+          - listitem [ref=e261]:
+            - article [ref=e262]:
+              - generic [ref=e264]:
+                - 'heading "C14-06Bicycle: magnitude mismatch" [level=3] [ref=e265]'
+                - generic [ref=e266]: reject
+              - paragraph [ref=e267]: Steering of 0.005 rad at speed 30 m/s would yield lat_g of about 0.17 g under low-slip kinematic approximation (a_lat = v^2 * tan(delta) / L; here 900 * 0.005 / 2.7 / 9.81 = 0.170 g). Forecast instead asserts lat_g = 0.8 g. Magnitude mismatch flags the bicycle-coupling audit.
+              - generic [ref=e268]:
+                - generic [ref=e269]:
+                  - term [ref=e270]: Violation class
+                  - definition [ref=e271]: Bicycle model
+                - generic [ref=e272]:
+                  - term [ref=e273]: Detection stage
+                  - definition [ref=e274]: Stage 2 · feasibility filter
+                - generic [ref=e275]:
+                  - term [ref=e276]: COA simul
+                  - definition [ref=e277]: not applicable
+                - generic [ref=e278]:
+                  - term [ref=e279]: Fixture file
+                  - definition [ref=e280]: app/backend/tests/fixtures/convergence-14/C14-06_bicycle_magnitude.json
+              - group [ref=e281]:
+                - generic "Guardian verdict reason" [ref=e282] [cursor=pointer]
+          - listitem [ref=e283]:
+            - article [ref=e284]:
+              - generic [ref=e286]:
+                - 'heading "C14-07COA gate: simultaneity forbidden" [level=3] [ref=e287]'
+                - generic [ref=e288]: reject
+              - paragraph [ref=e289]: Telemetry row shows throttle = 0.4 and brake = 2.4 MPa simultaneously, but the COA-derived c_overlap flag (derived from approved hand-control hardware specifications) is set to 0 (simultaneity not permitted). Stage 2 complementarity check fires reject.
+              - generic [ref=e290]:
+                - generic [ref=e291]:
+                  - term [ref=e292]: Violation class
+                  - definition [ref=e293]: COA simultaneity
+                - generic [ref=e294]:
+                  - term [ref=e295]: Detection stage
+                  - definition [ref=e296]: Stage 2 · feasibility filter
+                - generic [ref=e297]:
+                  - term [ref=e298]: COA simul
+                  - definition [ref=e299]: forbidden
+                - generic [ref=e300]:
+                  - term [ref=e301]: Fixture file
+                  - definition [ref=e302]: app/backend/tests/fixtures/convergence-14/C14-07_coa_simul_forbidden.json
+              - group [ref=e303]:
+                - generic "Guardian verdict reason" [ref=e304] [cursor=pointer]
+          - listitem [ref=e305]:
+            - article [ref=e306]:
+              - generic [ref=e308]:
+                - 'heading "C14-08COA gate: simultaneity permitted (positive)" [level=3] [ref=e309]'
+                - generic [ref=e310]: approve
+              - paragraph [ref=e311]: Same telemetry as C14-07 (throttle = 0.4 with brake = 2.4 MPa) but COA-derived c_overlap flag = 1 (driver's approved electronic hand-control hardware permits simultaneous brake-throttle actuation through corner entry). Stage 2 approves; report renders the tuning recommendation.
+              - generic [ref=e312]:
+                - generic [ref=e313]:
+                  - term [ref=e314]: Violation class
+                  - definition [ref=e315]: COA simultaneity
+                - generic [ref=e316]:
+                  - term [ref=e317]: Detection stage
+                  - definition [ref=e318]: Stage 2 · feasibility filter
+                - generic [ref=e319]:
+                  - term [ref=e320]: COA simul
+                  - definition [ref=e321]: permitted
+                - generic [ref=e322]:
+                  - term [ref=e323]: Fixture file
+                  - definition [ref=e324]: app/backend/tests/fixtures/convergence-14/C14-08_coa_simul_permitted.json
+              - group [ref=e325]:
+                - generic "Guardian verdict reason" [ref=e326] [cursor=pointer]
+          - listitem [ref=e327]:
+            - article [ref=e328]:
+              - generic [ref=e330]:
+                - 'heading "C14-09Physical envelope: negative speed" [level=3] [ref=e331]'
+                - generic [ref=e332]: reject
+              - paragraph [ref=e333]: Forecast tensor channel speed_mps contains a value of -3.0 at t=22. Granite Guardian's physical-envelope BYOC rule fires reject on any speed < 0.
+              - generic [ref=e334]:
+                - generic [ref=e335]:
+                  - term [ref=e336]: Violation class
+                  - definition [ref=e337]: Physical envelope
+                - generic [ref=e338]:
+                  - term [ref=e339]: Detection stage
+                  - definition [ref=e340]: Stage 3 · Granite Guardian audit
+                - generic [ref=e341]:
+                  - term [ref=e342]: COA simul
+                  - definition [ref=e343]: not applicable
+                - generic [ref=e344]:
+                  - term [ref=e345]: Fixture file
+                  - definition [ref=e346]: app/backend/tests/fixtures/convergence-14/C14-09_negative_speed.json
+              - group [ref=e347]:
+                - generic "Guardian verdict reason" [ref=e348] [cursor=pointer]
+          - listitem [ref=e349]:
+            - article [ref=e350]:
+              - generic [ref=e352]:
+                - 'heading "C14-10Physical envelope: circuit max speed" [level=3] [ref=e353]'
+                - generic [ref=e354]: flag
+              - paragraph [ref=e355]: Forecast tensor channel speed_mps contains a value of 110 m/s (about 396 km/h) on a circuit whose homologated maximum is 95 m/s. Guardian fires flag.
+              - generic [ref=e356]:
+                - generic [ref=e357]:
+                  - term [ref=e358]: Violation class
+                  - definition [ref=e359]: Physical envelope
+                - generic [ref=e360]:
+                  - term [ref=e361]: Detection stage
+                  - definition [ref=e362]: Stage 3 · Granite Guardian audit
+                - generic [ref=e363]:
+                  - term [ref=e364]: COA simul
+                  - definition [ref=e365]: not applicable
+                - generic [ref=e366]:
+                  - term [ref=e367]: Fixture file
+                  - definition [ref=e368]: app/backend/tests/fixtures/convergence-14/C14-10_speed_exceeds_circuit_max.json
+              - group [ref=e369]:
+                - generic "Guardian verdict reason" [ref=e370] [cursor=pointer]
+          - listitem [ref=e371]:
+            - article [ref=e372]:
+              - generic [ref=e374]:
+                - 'heading "C14-11Physical envelope: gear vs engine state" [level=3] [ref=e375]'
+                - generic [ref=e376]: flag
+              - paragraph [ref=e377]: Telemetry row has rpm = 0 with speed = 38 m/s in gear 4. Drivetrain decoupled while in gear violates the engine-state envelope. Guardian flags.
+              - generic [ref=e378]:
+                - generic [ref=e379]:
+                  - term [ref=e380]: Violation class
+                  - definition [ref=e381]: Physical envelope
+                - generic [ref=e382]:
+                  - term [ref=e383]: Detection stage
+                  - definition [ref=e384]: Stage 3 · Granite Guardian audit
+                - generic [ref=e385]:
+                  - term [ref=e386]: COA simul
+                  - definition [ref=e387]: not applicable
+                - generic [ref=e388]:
+                  - term [ref=e389]: Fixture file
+                  - definition [ref=e390]: app/backend/tests/fixtures/convergence-14/C14-11_drivetrain_decoupled.json
+              - group [ref=e391]:
+                - generic "Guardian verdict reason" [ref=e392] [cursor=pointer]
+          - listitem [ref=e393]:
+            - article [ref=e394]:
+              - generic [ref=e396]:
+                - 'heading "C14-12Physical envelope: throttle saturation" [level=3] [ref=e397]'
+                - generic [ref=e398]: flag
+              - paragraph [ref=e399]: Forecast tensor reports throttle_pct = 1.07 at t=14 (above the 0.0..1.0 unit-normalized envelope). Guardian flags as a clamp candidate.
+              - generic [ref=e400]:
+                - generic [ref=e401]:
+                  - term [ref=e402]: Violation class
+                  - definition [ref=e403]: Physical envelope
+                - generic [ref=e404]:
+                  - term [ref=e405]: Detection stage
+                  - definition [ref=e406]: Stage 3 · Granite Guardian audit
+                - generic [ref=e407]:
+                  - term [ref=e408]: COA simul
+                  - definition [ref=e409]: not applicable
+                - generic [ref=e410]:
+                  - term [ref=e411]: Fixture file
+                  - definition [ref=e412]: app/backend/tests/fixtures/convergence-14/C14-12_throttle_saturation.json
+              - group [ref=e413]:
+                - generic "Guardian verdict reason" [ref=e414] [cursor=pointer]
+          - listitem [ref=e415]:
+            - article [ref=e416]:
+              - generic [ref=e418]:
+                - heading "C14-13Serializer round-trip integrity" [level=3] [ref=e419]
+                - generic [ref=e420]: approve
+              - paragraph [ref=e421]: Synthetic violation tensor written to text log, parsed back to tensor, re-serialized; the parsed-then-re-serialized log is byte-identical to the original. Guardian's verdict on both forms is identical.
+              - generic [ref=e422]:
+                - generic [ref=e423]:
+                  - term [ref=e424]: Violation class
+                  - definition [ref=e425]: Serializer integrity
+                - generic [ref=e426]:
+                  - term [ref=e427]: Detection stage
+                  - definition [ref=e428]: Stage 3 · Granite Guardian audit
+                - generic [ref=e429]:
+                  - term [ref=e430]: COA simul
+                  - definition [ref=e431]: not applicable
+                - generic [ref=e432]:
+                  - term [ref=e433]: Fixture file
+                  - definition [ref=e434]: app/backend/tests/fixtures/convergence-14/C14-13_serializer_roundtrip.json
+              - group [ref=e435]:
+                - generic "Guardian verdict reason" [ref=e436] [cursor=pointer]
+          - listitem [ref=e437]:
+            - article [ref=e438]:
+              - generic [ref=e440]:
+                - 'heading "C14-14Convergence: COA + physics + Guardian closure" [level=3] [ref=e441]'
+                - generic [ref=e442]: approve
+              - paragraph [ref=e443]: "End-to-end Sarah Reynolds fixture: COA-permitted simultaneity row (C14-08) passes Stage 2 + reaches Stage 3 + receives Guardian approve verdict + tuning recommendation rendered with COA citation. Closes the full safety-contract loop."
+              - generic [ref=e444]:
+                - generic [ref=e445]:
+                  - term [ref=e446]: Violation class
+                  - definition [ref=e447]: Serializer integrity
+                - generic [ref=e448]:
+                  - term [ref=e449]: Detection stage
+                  - definition [ref=e450]: Stage 3 · Granite Guardian audit
+                - generic [ref=e451]:
+                  - term [ref=e452]: COA simul
+                  - definition [ref=e453]: permitted
+                - generic [ref=e454]:
+                  - term [ref=e455]: Fixture file
+                  - definition [ref=e456]: app/backend/tests/fixtures/convergence-14/C14-14_full_loop_sarah.json
+              - group [ref=e457]:
+                - generic "Guardian verdict reason" [ref=e458] [cursor=pointer]
+        - paragraph [ref=e459]: Grid is display-only. The Vinh-lane test suite at the path above is the assertion source of truth.
+    - region "Eight-tier physics implementation." [ref=e460]:
+      - generic [ref=e461]:
+        - heading "Eight-tier physics implementation." [level=2] [ref=e462]
+        - paragraph [ref=e463]: Wave-30 decision D-015 locked the eight-tier physics stack in-scope for the 2026-05-31 submission. Each tier surfaces below as one tile with its plain-text formula, canonical input channels, expected outputs, and the handler that owns it inside the unrolled SCP outer loop per D-012. The class-to-handler binding lives on the ExtendedPhysicsFixture discriminated union at app/shared/types.ts; mis- binding a non-convex tier to the inner cvxpylayers iterate is a TypeScript compile error. Hover any tile to reveal the architecture-spec Appendix W30 cross-reference.
+        - list [ref=e464]:
+          - listitem [ref=e465]:
+            - article [ref=e466]:
+              - generic [ref=e468]:
+                - heading "EP-013D track geometry" [level=3] [ref=e469]
+                - generic [ref=e470]: tier 01
+              - paragraph [ref=e471]: Track elevation + bank + pitch project the gravity vector onto the vehicle frame so the effective vertical load varies corner-by-corner instead of being a flat 9.81 m/s^2.
+              - generic [ref=e472]:
+                - generic [ref=e473]:
+                  - term [ref=e474]: Handler
+                  - definition [ref=e475]: SCP outer-loop linearisation
+                - generic [ref=e476]:
+                  - term [ref=e477]: Canonical inputs
+                  - definition [ref=e478]: pitch_rad + bank_rad + speed_mps
+              - group [ref=e479]:
+                - generic "Formula + outputs" [ref=e480] [cursor=pointer]
+          - listitem [ref=e481]:
+            - article [ref=e482]:
+              - generic [ref=e484]:
+                - heading "EP-02Aerodynamics" [level=3] [ref=e485]
+                - generic [ref=e486]: tier 02
+              - paragraph [ref=e487]: Aero downforce + drag scale with v^2; downforce adds to vertical load (Tier 4), drag opposes forward acceleration (Tier 8).
+              - generic [ref=e488]:
+                - generic [ref=e489]:
+                  - term [ref=e490]: Handler
+                  - definition [ref=e491]: SCP outer-loop linearisation
+                - generic [ref=e492]:
+                  - term [ref=e493]: Canonical inputs
+                  - definition [ref=e494]: speed_mps
+              - group [ref=e495]:
+                - generic "Formula + outputs" [ref=e496] [cursor=pointer]
+          - listitem [ref=e497]:
+            - article [ref=e498]:
+              - generic [ref=e500]:
+                - heading "EP-03Adaptive hand-controls" [level=3] [ref=e501]
+                - generic [ref=e502]: tier 03
+              - paragraph [ref=e503]: FIA Certificate of Adaptations parsed at onboarding derives the brake-throttle simultaneity flag + steering-lock limits + clutch-lever travel range; these feed the lexicographic Tier-2 + Tier-3 COA constraints per D-022 elastic-slack hierarchy.
+              - generic [ref=e504]:
+                - generic [ref=e505]:
+                  - term [ref=e506]: Handler
+                  - definition [ref=e507]: COA constraint layer (lexicographic)
+                - generic [ref=e508]:
+                  - term [ref=e509]: Canonical inputs
+                  - definition [ref=e510]: coa_simul_permitted + throttle_pct + brake_pa + steering_rad
+              - group [ref=e511]:
+                - generic "Formula + outputs" [ref=e512] [cursor=pointer]
+          - listitem [ref=e513]:
+            - article [ref=e514]:
+              - generic [ref=e516]:
+                - heading "EP-04Double-track load transfer" [level=3] [ref=e517]
+                - generic [ref=e518]: tier 04
+              - paragraph [ref=e519]: Lateral acceleration shifts vertical load between left + right tires; longitudinal acceleration shifts between front + rear axles. Each tire's vertical load updates per-step so Tier 7 Pacejka uses the correct F_z.
+              - generic [ref=e520]:
+                - generic [ref=e521]:
+                  - term [ref=e522]: Handler
+                  - definition [ref=e523]: SCP outer-loop linearisation
+                - generic [ref=e524]:
+                  - term [ref=e525]: Canonical inputs
+                  - definition [ref=e526]: lat_g + long_g + speed_mps + fz_total (computed)
+              - group [ref=e527]:
+                - generic "Formula + outputs" [ref=e528] [cursor=pointer]
+          - listitem [ref=e529]:
+            - article [ref=e530]:
+              - generic [ref=e532]:
+                - heading "EP-05Tire thermal + degradation" [level=3] [ref=e533]
+                - generic [ref=e534]: tier 05
+              - paragraph [ref=e535]: Two-mass thermal model evolves tire-core + tire-surface temperatures inside the SCP solver (NOT an input channel of the 14-channel tensor); peak friction coefficient mu_v modulates with T_surface + lap-count.
+              - generic [ref=e536]:
+                - generic [ref=e537]:
+                  - term [ref=e538]: Handler
+                  - definition [ref=e539]: Internal state evolution
+                - generic [ref=e540]:
+                  - term [ref=e541]: Canonical inputs
+                  - definition [ref=e542]: mu_v (consumed + updated) + speed_mps + lap-count metadata
+              - group [ref=e543]:
+                - generic "Formula + outputs" [ref=e544] [cursor=pointer]
+          - listitem [ref=e545]:
+            - article [ref=e546]:
+              - generic [ref=e548]:
+                - heading "EP-06Transient tire dynamics" [level=3] [ref=e549]
+                - generic [ref=e550]: tier 06
+              - paragraph [ref=e551]: Stiff-ODE tire-relaxation transient (lateral slip catches up to steering input with time constant tau_y) is collapsed to steady-state algebraic per D-014 numerical-hazard resolution; full transient model reserved for offline validation only.
+              - generic [ref=e552]:
+                - generic [ref=e553]:
+                  - term [ref=e554]: Handler
+                  - definition [ref=e555]: Steady-state algebraic substitution
+                - generic [ref=e556]:
+                  - term [ref=e557]: Canonical inputs
+                  - definition [ref=e558]: lat_g + steering_rad + speed_mps
+              - group [ref=e559]:
+                - generic "Formula + outputs" [ref=e560] [cursor=pointer]
+          - listitem [ref=e561]:
+            - article [ref=e562]:
+              - generic [ref=e564]:
+                - heading "EP-07Full Pacejka combined-slip" [level=3] [ref=e565]
+                - generic [ref=e566]: tier 07
+              - paragraph [ref=e567]: Pacejka Magic Formula produces tire forces F_x + F_y from longitudinal + lateral slip + vertical load + friction coefficient + tire-surface temperature; combined-slip boundary forms the heart-shape friction-ellipse generalisation in 2D.
+              - generic [ref=e568]:
+                - generic [ref=e569]:
+                  - term [ref=e570]: Handler
+                  - definition [ref=e571]: SCP outer-loop linearisation
+                - generic [ref=e572]:
+                  - term [ref=e573]: Canonical inputs
+                  - definition [ref=e574]: lat_g + long_g + fz_total + mu_v + speed_mps + steering_rad + T_surface (internal)
+              - group [ref=e575]:
+                - generic "Formula + outputs" [ref=e576] [cursor=pointer]
+          - listitem [ref=e577]:
+            - article [ref=e578]:
+              - generic [ref=e580]:
+                - heading "EP-08Kinematic integration" [level=3] [ref=e581]
+                - generic [ref=e582]: tier 08
+              - paragraph [ref=e583]: "Forward-Euler kinematic step ties acceleration to speed evolution + position-integration: speed[t+1] = speed[t] + a_long[t] * dt. Newton-compliant + lives in the convex inner iterate (the only tier that is natively convex)."
+              - generic [ref=e584]:
+                - generic [ref=e585]:
+                  - term [ref=e586]: Handler
+                  - definition [ref=e587]: SCP inner iterate (convex QP)
+                - generic [ref=e588]:
+                  - term [ref=e589]: Canonical inputs
+                  - definition [ref=e590]: long_g + speed_mps + yaw_rate
+              - group [ref=e591]:
+                - generic "Formula + outputs" [ref=e592] [cursor=pointer]
+        - paragraph [ref=e593]:
+          - text: Grid is display-only. The Vinh-lane SCP outer-loop linearisation lands per PLAN row 2.18 with file paths at
+          - generic [ref=e594]: "app/backend/apex/physics/tier_{1..8}.py"
+          - text: and app/backend/apex/physics/scp_outer.py.
+    - region "Tri-agent Agent-as-Judge critic loop." [ref=e595]:
+      - generic [ref=e596]:
+        - heading "Tri-agent Agent-as-Judge critic loop." [level=2] [ref=e597]
+        - paragraph [ref=e598]: Wave-30 decision D-018 + D-019 item 5 lock the three-critic panel (Physics-Critic + Pedagogy-Critic + Guardian-Safety) running in parallel on the draft coaching report. If any critic flags, IBM Mellea Instruct-Validate-Repair fires with loop_budget = 3 until the panel approves. Verified CoachingReport then proceeds to the Layer 8 final Guardian audit per D-A. The mock panel below renders the discriminated-union pattern from app/shared/types.ts (TriAgentVerdictPanel = three TriAgentVerdict instances; verdict-tag narrowing + empty- reasoning-trace fallback per GuardianAudit one level up).
+        - generic [ref=e599]:
+          - generic [ref=e600]:
+            - 'generic "Physics confidence: in-distribution, Mahalanobis distance 1.84 (95th-percentile threshold 2.50)" [ref=e601]':
+              - generic [ref=e602]: ●
+              - generic [ref=e603]: Physics-confidence · in-distribution
+              - generic [ref=e604]: M=1.84 / p95=2.50
+            - generic [ref=e605]: "D-024 in-distribution mock: Guardian verdict preserved."
+          - generic [ref=e606]:
+            - 'generic "Physics confidence: out-of-distribution, Mahalanobis distance 3.92 (95th-percentile threshold 2.50)" [ref=e607]':
+              - generic [ref=e608]: ●
+              - generic [ref=e609]: Physics-confidence · out-of-distribution
+              - generic [ref=e610]: M=3.92 / p95=2.50
+              - generic [ref=e611]: → approve → review
+            - generic [ref=e612]: "D-024 out-of-distribution mock: Guardian verdict downgraded from approve to review."
+        - generic [ref=e613]:
+          - generic [ref=e614]:
+            - paragraph [ref=e615]: "Mock A: flag verdict on Pedagogy-Critic"
+            - region "Three-critic verdict panel" [ref=e617]:
+              - generic [ref=e618]:
+                - generic [ref=e619]:
+                  - paragraph [ref=e620]: Tri-agent Agent-as-Judge critic loop · D-018
+                  - heading "Three-critic verdict panel" [level=3] [ref=e621]
+                - generic [ref=e622]: Mellea IVR repair triggered
+              - list [ref=e623]:
+                - listitem [ref=e624]:
+                  - article "Physics-Critic" [ref=e625]:
+                    - generic [ref=e626]:
+                      - heading "Physics-Critic" [level=4] [ref=e627]
+                      - paragraph [ref=e628]: Granite Instruct fine-tune; reads the projected tensor + violation log + challenges the draft report's physics claims.
+                    - paragraph [ref=e629]: Approved
+                    - group [ref=e630]:
+                      - generic "Reasoning trace (3 steps)" [ref=e631] [cursor=pointer]
+                - listitem [ref=e632]:
+                  - article "Pedagogy-Critic" [ref=e633]:
+                    - generic [ref=e634]:
+                      - heading "Pedagogy-Critic" [level=4] [ref=e635]
+                      - paragraph [ref=e636]: Granite Instruct fine-tune; reads the draft + COA structure + challenges the recommendation's coachability.
+                    - paragraph [ref=e637]: Flagged
+                    - generic [ref=e638]:
+                      - paragraph [ref=e639]: Flagged concerns
+                      - list [ref=e640]:
+                        - listitem [ref=e641]:
+                          - generic [ref=e642]: ·
+                          - generic [ref=e643]: Add one-sentence trail-braking definition for first-time adaptive racers.
+                    - group [ref=e644]:
+                      - generic "Reasoning trace (2 steps)" [ref=e645] [cursor=pointer]
+                      - list [ref=e646]:
+                        - listitem [ref=e647]:
+                          - generic [ref=e648]: "01."
+                          - generic [ref=e649]: Coaching narrative reads correct but assumes prior trail-braking technique knowledge.
+                        - listitem [ref=e650]:
+                          - generic [ref=e651]: "02."
+                          - generic [ref=e652]: Adaptive-driver context not centred in the recommendation framing.
+                - listitem [ref=e653]:
+                  - article "Guardian-Safety" [ref=e654]:
+                    - generic [ref=e655]:
+                      - heading "Guardian-Safety" [level=4] [ref=e656]
+                      - paragraph [ref=e657]: Granite Guardian 4.1 BYOC safety pass; gates the final verdict downstream.
+                    - paragraph [ref=e658]: Approved
+                    - group [ref=e659]:
+                      - generic "Reasoning trace (2 steps)" [ref=e660] [cursor=pointer]
+          - generic [ref=e661]:
+            - paragraph [ref=e662]: "Mock B: reject verdict on Guardian-Safety (COA-conflict)"
+            - region "Three-critic verdict panel" [ref=e664]:
+              - generic [ref=e665]:
+                - generic [ref=e666]:
+                  - paragraph [ref=e667]: Tri-agent Agent-as-Judge critic loop · D-018
+                  - heading "Three-critic verdict panel" [level=3] [ref=e668]
+                - generic [ref=e669]: Mellea IVR repair triggered
+              - list [ref=e670]:
+                - listitem [ref=e671]:
+                  - article "Physics-Critic" [ref=e672]:
+                    - generic [ref=e673]:
+                      - heading "Physics-Critic" [level=4] [ref=e674]
+                      - paragraph [ref=e675]: Granite Instruct fine-tune; reads the projected tensor + violation log + challenges the draft report's physics claims.
+                    - paragraph [ref=e676]: Approved
+                    - group [ref=e677]:
+                      - generic "Reasoning trace (2 steps)" [ref=e678] [cursor=pointer]
+                - listitem [ref=e679]:
+                  - article "Pedagogy-Critic" [ref=e680]:
+                    - generic [ref=e681]:
+                      - heading "Pedagogy-Critic" [level=4] [ref=e682]
+                      - paragraph [ref=e683]: Granite Instruct fine-tune; reads the draft + COA structure + challenges the recommendation's coachability.
+                    - paragraph [ref=e684]: Approved
+                    - group [ref=e685]:
+                      - generic "Reasoning trace (1 step)" [ref=e686] [cursor=pointer]
+                - listitem [ref=e687]:
+                  - article "Guardian-Safety" [ref=e688]:
+                    - generic [ref=e689]:
+                      - heading "Guardian-Safety" [level=4] [ref=e690]
+                      - paragraph [ref=e691]: Granite Guardian 4.1 BYOC safety pass; gates the final verdict downstream.
+                    - paragraph [ref=e692]: Rejected
+                    - generic [ref=e693]:
+                      - paragraph [ref=e694]: Blocked recommendations
+                      - list [ref=e695]:
+                        - listitem [ref=e696]:
+                          - generic [ref=e697]: ·
+                          - generic [ref=e698]: Reduce brake-pedal travel by 4 mm (would invalidate the existing hand-control mapping per COA Section 3(c)).
+                    - group [ref=e699]:
+                      - generic "Reasoning trace (2 steps)" [ref=e700] [cursor=pointer]
+                      - list [ref=e701]:
+                        - listitem [ref=e702]:
+                          - generic [ref=e703]: "01."
+                          - generic [ref=e704]: Recommendation conflicts with the driver's FIA Certificate of Adaptations Section 3(c) hardware-spec entry.
+                        - listitem [ref=e705]:
+                          - generic [ref=e706]: "02."
+                          - generic [ref=e707]: COA-permitted brake-throttle simultaneity gate is open in the projection but the recommendation requests a hardware change that would close it.
+        - paragraph [ref=e708]: Panel data is mock for /judges visualisation. Vinh-lane backend at app/backend/apex/critics/ produces real verdicts per PLAN row 4.20; Mellea IVR repair loop per row 4.21.
+    - region "WebGPU Granite Nano edge inference." [ref=e709]:
+      - generic [ref=e710]:
+        - heading "WebGPU Granite Nano edge inference." [level=2] [ref=e711]
+        - paragraph [ref=e712]: Wave-30 decision D-019 item 1 + D-021 lock Granite 4.0 Nano 350M as the in-browser edge model via Transformers.js v4 + WebGPU. The 1.5 GB WebGPU buffer pre-check (pre-mortem row 59) gates the model load; if the adapter advertises insufficient headroom, the chip below degrades to the server-only path. The 30-line Newton friction-ellipse projector runs offline alongside the small-LM head; server- authoritative reconnect (D-021) overwrites local state on every reconnect so no mechanical recommendations are emitted from the offline path. Arch-spec cross- reference at docs/architecture-spec.md Appendix W30 Layer 7.
+        - region "Granite 4.0 Nano 350M in your browser" [ref=e714]:
+          - generic [ref=e715]:
+            - generic [ref=e716]:
+              - paragraph [ref=e717]: WebGPU edge inference · D-019 item 1 · D-021
+              - heading "Granite 4.0 Nano 350M in your browser" [level=3] [ref=e718]
+            - generic [ref=e719]: Loading
+          - paragraph [ref=e721]: Probing WebGPU adapter for 1.50 GB buffer headroom before fetching the Granite 4.0 Nano 350M ONNX weights from Hugging Face. First load is ~5-15 seconds on Chrome 121+ desktop; subsequent loads use the browser HTTP cache.
+          - paragraph [ref=e723]: "Cross-ref: D-019 item 1 + D-021 + arch-spec Appendix W30 Layer 7"
+        - paragraph [ref=e724]: Edge inference is advisory per D-021. The canonical APEX pipeline runs server-side through Vinh-lane backend at app/backend/apex/; the edge path lowers the barrier for journalists + adaptive-driver coaches to demo the pipeline without an RTX-4060 install.
+    - region "Q&A defense pack." [ref=e725]:
+      - generic [ref=e726]:
+        - heading "Q&A defense pack." [level=2] [ref=e727]
+        - paragraph [ref=e728]: The five hostile questions we rehearsed three times each. Cards are public; the internal canonical source lives in the team’s private memory.
+        - list [ref=e729]:
+          - listitem [ref=e730]:
+            - article [ref=e731]:
+              - generic [ref=e732]:
+                - generic [ref=e733]: Card 01
+                - heading "Deep Dynamics differentiator" [level=3] [ref=e734]
+              - paragraph [ref=e735]: Q. Deep Dynamics already trains a physics-informed neural network on race telemetry. Why is APEX different?
+              - paragraph [ref=e736]: "A. Deep Dynamics retrains a bespoke PINN. APEX takes a frozen pretrained foundation model (Granite TimeSeries TTM, NeurIPS 2024) and wraps its outputs in a differentiable CvxpyLayer QP at inference. We do not retrain. The physics enforcement is post-hoc projection, not training-time regularisation. That makes our pattern transferable: any future TSFM gets the same physics envelope without re-training."
+          - listitem [ref=e737]:
+            - article [ref=e738]:
+              - generic [ref=e739]:
+                - generic [ref=e740]: Card 02
+                - heading "Kinetic Hallucination" [level=3] [ref=e741]
+              - paragraph [ref=e742]: Q. TTM was pretrained on weather + retail. Why would it forecast valid motorsport telemetry at all?
+              - paragraph [ref=e743]: A. It does not, by itself. Without constraints TTM can forecast 4G lateral with zero steering or speed increasing at zero throttle. That is the Kinetic Hallucination problem. The differentiable physics-projection layer (friction ellipse + bicycle model + forward-Euler kinematic step) projects every forecast step onto the feasible manifold. Granite Guardian audits the structured text log of every projection correction. Convergence 14 is the serializer unit-test suite that verifies the physics-violation log is faithful.
+          - listitem [ref=e744]:
+            - article [ref=e745]:
+              - generic [ref=e746]:
+                - generic [ref=e747]: Card 03
+                - heading "Serialization integrity" [level=3] [ref=e748]
+              - paragraph [ref=e749]: Q. What stops the projection layer from silently corrupting the forecast it claims to correct?
+              - paragraph [ref=e750]: "A. Convergence 14: a Python unit-test suite that fires every kinematic violation type (friction-ellipse breach, bicycle-model breach, jerk-bound breach, COA-simultaneity breach) and verifies the serialized text log Guardian receives matches the projection layer's internal record. Day 5-6 ship target. Without this suite, the projection layer is a black box. With it, every claim is testable."
+          - listitem [ref=e751]:
+            - article [ref=e752]:
+              - generic [ref=e753]:
+                - generic [ref=e754]: Card 04
+                - heading "COA-parameterized simultaneity" [level=3] [ref=e755]
+              - paragraph [ref=e756]: Q. Why not just use Track Titan or Trophi.ai if you already have telemetry-aware AI race engineers?
+              - paragraph [ref=e757]: A. Existing tools assume able-bodied physics. They encode throttle * brake = 0 because no able-bodied driver presses both at once. Adaptive drivers do, when their FIA Certificate of Adaptations (governed by Appendix L of the International Sporting Code) permits simultaneity through their hand-control or paddle-shift system. APEX reads the COA at tensor level. When the COA permits simultaneity, the projection layer permits it. When the COA does not, the constraint enforces. Same coaching pipeline says different things for different drivers based on what their COA says they are allowed to do.
+          - listitem [ref=e758]:
+            - article [ref=e759]:
+              - generic [ref=e760]:
+                - generic [ref=e761]: Card 05
+                - heading "Latency budget" [level=3] [ref=e762]
+              - paragraph [ref=e763]: Q. 60 seconds on RTX 4060. Will it run on the judge's machine?
+              - paragraph [ref=e764]: "A. The 60-second budget is the post-race coaching loop on RTX 4060: TTM forecast + projection + Guardian audit + Instruct narration. Granite-Docling + Granite Vision (the document parsers) run once at onboarding and cache to disk. The judge runs the Hugging Face Space deploy (Day 9) or the Colab notebook (Day 9) for a zero-install demo. Both keep the same 60-second loop. The Colab notebook removes the local GPU requirement entirely."
+    - region "Two-person team." [ref=e765]:
+      - generic [ref=e766]:
+        - heading "Two-person team." [level=2] [ref=e767]
+        - generic [ref=e768]:
+          - generic [ref=e769]:
+            - term [ref=e770]: Frontend, pitch, project architecture, narrative
+            - definition [ref=e771]: Stephen Sookra
+            - paragraph [ref=e772]: Computer Science, Kennesaw State University
+          - generic [ref=e773]:
+            - term [ref=e774]: Backend, ML pipeline, FastAPI, Langflow, Infrastructure
+            - definition [ref=e775]: Vinh Le
+            - paragraph [ref=e776]: Computer Science, Kennesaw State University
+    - generic [ref=e778]:
+      - paragraph [ref=e779]: APEX
+      - paragraph [ref=e780]: The race engineer for the drivers who do not have one.
+      - paragraph [ref=e781]: Apache 2.0 · github.com/StephenSook/apex · Built on IBM Granite
