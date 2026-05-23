@@ -78,12 +78,12 @@ We aggregate raw 50 Hz telemetry to 1-Hz mini-sector tensors of shape `(batch, 3
 6. `long_g` (g; positive = forward acceleration)
 7. `speed_mps` (meters per second)
 8. `gear` (integer 0-8)
-9. `coa_simul_permitted` (binary 0/1, synthesized from the driver's FIA Certificate of Adaptations parsed JSON)
-10. `fz_total` (Newtons; per-tire vertical-load aggregate after Tier 4 double-track load-transfer adjustments per wave-30 D-015)
+9. `coa_overlap_flag` (binary 0/1, synthesized from the driver's FIA Certificate of Adaptations parsed JSON; canonical per `app/backend/apex/shared/contracts/shapes.py`)
+10. `tire_load_n` (Newtons; per-tire vertical-load aggregate after Tier 4 double-track load-transfer adjustments per wave-30 D-015)
 11. `mu_v` (per-step friction coefficient consumed + updated by Tier 5 tire thermal model + Tier 7 Pacejka combined-slip per wave-30 D-015)
-12. `pitch_rad` (radians; track-frame pitch consumed by Tier 1 3D track geometry gravity projection per wave-30 D-015)
-13. `bank_rad` (radians; track-frame bank consumed by Tier 1 3D track geometry per wave-30 D-015)
-14. `yaw_rate` (radians per second; consumed by Tier 8 kinematic integration per wave-30 D-015)
+12. `track_pitch_rad` (radians; track-frame pitch consumed by Tier 1 3D track geometry gravity projection per wave-30 D-015)
+13. `track_bank_rad` (radians; track-frame bank consumed by Tier 1 3D track geometry per wave-30 D-015)
+14. `yaw_rate_rad_s` (radians per second; consumed by Tier 8 kinematic integration per wave-30 D-015)
 
 The forecaster is loaded from `ibm-granite/granite-timeseries-ttm-r2` and never retrained (frozen weights per the NeurIPS central claim of frozen-TSFM + hard differentiable physics-projection composition per D-025). The output tensor matches the input shape `(batch, 30, 14)` per wave-30 D-010 + D-016 (the wave-22 (batch, 24, 9) lock is superseded; existing wave-22 fixtures + tests pad channels 9-13 with zeros + extend time axis to 30 by repeating the last mini-sector value per the migration plan in arch-spec Appendix W30 Sync Point 1 contract).
 
@@ -129,7 +129,7 @@ The two-stage architecture preserves end-to-end differentiability through Stage 
 
 **The 8-tier physics in-scope (per wave-30 D-015).** The unrolled SCP outer loop applies first-order Taylor linearisation around the previous iterate to handle non-convex tier interactions; each inner iterate is a fixed-coefficient convex QP solved via the CvxpyLayer-wrapped solver. The full 8-tier stack:
 
-1. *3D track geometry (Tier 1).* Gravity-vector projection from GPS pitch + bank channels (`pitch_rad`, `bank_rad` per D-016); adds banking-conditional friction-ellipse rotation.
+1. *3D track geometry (Tier 1).* Gravity-vector projection from GPS pitch + bank channels (`track_pitch_rad`, `track_bank_rad` per D-016); adds banking-conditional friction-ellipse rotation.
 2. *Aerodynamics (Tier 2).* Pitch-sensitive front/rear downforce $F_{z,\text{aero}} = \tfrac{1}{2} \rho_{\text{air}} C_l(\text{pitch}) A v^2$; expands the friction-ellipse per axle as $(F_{z,\text{static}} + F_{z,\text{aero}}) \mu_v$.
 3. *Adaptive hand-controls (Tier 3).* Disable the $\text{throttle} \cdot \text{brake} = 0$ complementarity when `c_overlap = 1`; replace with a `c_overlap`-conditional lexicographic constraint per D-022.
 4. *Double-track load transfer (Tier 4).* Per-corner elastic weight transfer $\Delta F_{z,\text{lat}} = m a_y h_{cg} / (2 \cdot \text{track})$ and $\Delta F_{z,\text{long}} = m a_x h_{cg} / \text{wheelbase}$; per-corner friction-ellipse becomes per-corner-$F_z$.
