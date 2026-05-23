@@ -26,7 +26,7 @@
 
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import type { TriAgentVerdictPanel } from "../../shared/types";
 import { MOCK_TRI_AGENT_VERDICT, MOCK_TRI_AGENT_VERDICT_REJECT } from "./mocks/judges-mocks";
@@ -55,7 +55,13 @@ export function useTriAgentCriticVerdict(source: TriAgentDataSource): TriAgentVe
       : { status: "ready", panel: MOCK_FIXTURES[source] },
   );
 
+  // Wave-40 cold-review code-reviewer Finding 1 + cascade #9 family
+  // rule: React Compiler ESLint blocks reassigning a let-declared
+  // closure variable after render. Use a mounted ref instead per the
+  // sync-on-reconnect.ts wave-39 pattern.
+  const cancelledRef = useRef(false);
   useEffect(() => {
+    cancelledRef.current = false;
     if (source !== "live") {
       // Wave-40 cascade #8 family rule: react-hooks/set-state-in-effect
       // blocks synchronous setState() inside useEffect. Defer via
@@ -66,18 +72,26 @@ export function useTriAgentCriticVerdict(source: TriAgentDataSource): TriAgentVe
       // above already sets the correct initial state for mock sources;
       // this branch only fires when `source` changes between mock
       // values at runtime.
+      //
+      // Wave-40 cold-review code-reviewer Finding 1 + silent-failure-
+      // hunter M-8 close-out: gate the microtask on `cancelled` + return
+      // a cleanup that flips `cancelled` so a rapid source toggle (or
+      // unmount) does not setState on a stale target. Mirrors the
+      // sync-on-reconnect.ts mountedRef pattern from wave-39 cascade #9.
       const targetSource = source;
       queueMicrotask(() => {
+        if (cancelledRef.current) return;
         setState({ status: "ready", panel: MOCK_FIXTURES[targetSource] });
       });
-      return;
+      return () => {
+        cancelledRef.current = true;
+      };
     }
 
-    let cancelled = false;
     void (async () => {
       try {
         const response = await fetch("/api/critic");
-        if (cancelled) {
+        if (cancelledRef.current) {
           return;
         }
         if (!response.ok) {
@@ -88,7 +102,7 @@ export function useTriAgentCriticVerdict(source: TriAgentDataSource): TriAgentVe
           return;
         }
         const payload = (await response.json()) as TriAgentVerdictPanel;
-        if (cancelled) {
+        if (cancelledRef.current) {
           return;
         }
         // Runtime guard per wave-37 cascade-#5 qualification: TypeScript
@@ -112,7 +126,7 @@ export function useTriAgentCriticVerdict(source: TriAgentDataSource): TriAgentVe
         }
         setState({ status: "ready", panel: payload });
       } catch (err) {
-        if (cancelled) {
+        if (cancelledRef.current) {
           return;
         }
         const message = err instanceof Error ? err.message : String(err);
@@ -121,7 +135,7 @@ export function useTriAgentCriticVerdict(source: TriAgentDataSource): TriAgentVe
     })();
 
     return () => {
-      cancelled = true;
+      cancelledRef.current = true;
     };
   }, [source]);
 
