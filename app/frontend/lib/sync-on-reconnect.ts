@@ -45,22 +45,37 @@ export function useConnectivity(onReconnect?: () => void): ConnectivityState {
     return { status: "online" };
   });
 
-  // Wave-38 cascade #8 silent-failure-hunter M-2 close-out: stash
-  // onReconnect in a ref so listener identity stays stable across
-  // re-renders. Prior code re-bound the event listeners on every
-  // render when the caller passed an inline arrow callback (typical),
-  // creating a teardown-rebind window where 'online' events could be
-  // lost OR the microtask-deferred callback could fire from a stale
-  // closure after an unrelated re-render swapped it.
+  // Wave-38 cascade #8 silent-failure-hunter M-2 close-out + wave-39
+  // codex MED refinement: stash onReconnect in a ref so the event-
+  // listener identity stays stable across re-renders. Prior code re-
+  // bound the listeners on every render when the caller passed an
+  // inline arrow (typical), creating a teardown-rebind window where
+  // 'online' events could be lost OR the microtask-deferred callback
+  // could fire from a stale closure.
+  //
+  // Wave-39 refinement: write the ref in the render body instead of
+  // in a useEffect. React 19 guarantees render-body assignments to
+  // refs are safe for non-stateful captures (the ref is mutated, not
+  // a state dependency); writing in the render body removes the one-
+  // tick lag that the useEffect-sync pattern carried (a 'online'
+  // event firing between render-N's commit + render-N's onReconnect-
+  // sync useEffect could capture render-N-1's stale callback).
   const onReconnectRef = useRef(onReconnect);
-  useEffect(() => {
-    onReconnectRef.current = onReconnect;
-  }, [onReconnect]);
+  onReconnectRef.current = onReconnect;
+
+  // Wave-39 silent-failure-hunter M-1 + M-3 close-out: track mount
+  // status via mountedRef so the microtask-deferred callback skips
+  // execution if the component unmounted between the 'online' event
+  // handler firing + the microtask executing. Without the guard, the
+  // callback fires post-unmount + can setState on an unmounted parent
+  // OR throw against a stale React context.
+  const mountedRef = useRef(true);
 
   useEffect(() => {
     if (typeof window === "undefined") {
       return;
     }
+    mountedRef.current = true;
     const handleOnline = () => {
       setState((prev) => {
         if (prev.status === "offline") {
@@ -69,6 +84,12 @@ export function useConnectivity(onReconnect?: () => void): ConnectivityState {
           const cb = onReconnectRef.current;
           if (cb) {
             queueMicrotask(() => {
+              // Wave-39 M-1 close-out: skip the deferred callback if
+              // the component unmounted between handleOnline firing
+              // + this microtask executing.
+              if (!mountedRef.current) {
+                return;
+              }
               // Wave-38 cascade #8 silent-failure-hunter M-3 close-
               // out: wrap the deferred callback so a thrown error
               // surfaces with context instead of an unhandled rejection
@@ -98,8 +119,17 @@ export function useConnectivity(onReconnect?: () => void): ConnectivityState {
     window.addEventListener("online", handleOnline);
     window.addEventListener("offline", handleOffline);
     return () => {
+      // Wave-39 silent-failure-hunter M-1 close-out: flip mountedRef
+      // BEFORE removing the listeners so any in-flight microtask sees
+      // the unmount before it dereferences onReconnectRef. Clear the
+      // ref afterward so a late-firing 'online' event handler (queued
+      // between mountedRef flip + listener removal) cannot dereference
+      // a stale callback if React's strict-mode double-invoke fires
+      // the effect cleanup twice.
+      mountedRef.current = false;
       window.removeEventListener("online", handleOnline);
       window.removeEventListener("offline", handleOffline);
+      onReconnectRef.current = undefined;
     };
   }, []);
 
