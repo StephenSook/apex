@@ -1278,9 +1278,28 @@ export interface StructuredLogEntryCanonical {
   readonly audit_id: string;
   /** Git rev-parse --short HEAD; "unknown" when git unavailable. */
   readonly commit_sha: string;
-  /** Library version snapshot (cached per process). */
-  readonly models: Readonly<Record<string, string>>;
+  /**
+   * Library version snapshot (cached per process). Wave-41 B.7:
+   * value type tightened from `string` to `LibraryVersion`
+   * (semver OR one of three sentinel literals: "unknown" /
+   * "no_version_attr" / "not_installed" per logging.py:91-98).
+   * Catches sentinel typos like "not-installed" at compile time.
+   */
+  readonly models: Readonly<Record<string, LibraryVersion>>;
 }
+
+/**
+ * Library version snapshot value type per `logging.py:91-98`
+ * model_versions() output. Either a semver string OR one of three
+ * Python sentinels emitted by the fallback paths (no __version__
+ * attribute on the module, ImportError on the module, "unknown"
+ * fallback in `commit_sha()`). Wave-41 B.7 close-out.
+ */
+export type LibraryVersion =
+  | `${number}.${number}.${number}`
+  | "unknown"
+  | "no_version_attr"
+  | "not_installed";
 
 /**
  * Caller-supplied kwargs from `logger.info("event.name", k=v, k2=v2)`
