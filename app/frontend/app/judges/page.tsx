@@ -2,9 +2,12 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 
+import ALoRAStatusBadge from "../../components/ALoRAStatusBadge";
 import { ConvergenceFixtureGrid } from "../../components/ConvergenceFixtureGrid";
+import EAGLE3LatencyBadge from "../../components/EAGLE3LatencyBadge";
 import EdgeSummary from "../../components/EdgeSummary";
 import { ExtendedPhysicsFixtureGrid } from "../../components/ExtendedPhysicsFixtureGrid";
+import GEPAEvolutionPanel from "../../components/GEPAEvolutionPanel";
 import PhysicsConfidenceBadge from "../../components/PhysicsConfidenceBadge";
 import TriAgentCriticPanel from "../../components/TriAgentCriticPanel";
 import { CONVERGENCE_FIXTURES } from "../../lib/convergence-fixtures";
@@ -311,6 +314,38 @@ export default function JudgesPage() {
             Grid is display-only. The Vinh-lane SCP outer-loop linearisation lands per PLAN row 2.18
             with file paths at <span className="not-italic">app/backend/apex/physics/tier_{`{1..8}`}.py</span>
             and <span className="not-italic">app/backend/apex/physics/scp_outer.py</span>.
+          </p>
+        </div>
+      </section>
+
+      <section
+        id="galaxy-moves"
+        aria-labelledby="galaxy-moves-title"
+        className="border-b border-rule bg-paper"
+      >
+        <div className="mx-auto max-w-6xl px-6 py-16 lg:px-10 lg:py-20">
+          <h2 id="galaxy-moves-title" className="font-display text-3xl tracking-tight text-ink">
+            Galaxy-tier inference and adaptation moves.
+          </h2>
+          <p className="mt-3 max-w-3xl text-base leading-relaxed text-ink-soft">
+            Decision-log D-019 enumerates five shouldn&apos;t-be-possible moves that lift APEX from
+            a hackathon submission into a research-paper-grade artifact. The wave-38 build shipped
+            move #1 (WebGPU Granite Nano 350M, Layer 0; surfaced below). Wave-40 ships the
+            visualization layer for moves #2 (Activated LoRA hot-swap, Layer 6), #3 (GEPA
+            reflective prompt evolution, Layer 5), and #4 (EAGLE-3 speculative decoding, Layer 6
+            inference). Move #5 (Agent-as-Judge tri-agent critic loop, Layer 7) renders one
+            section below. Each panel here uses mock fixtures today; backend wire-up arrives
+            Day 7-8 per <span className="font-mono text-xs text-racing-green">docs/vinh-backend-plan.md</span>
+            Phase 4 tasks 4.4 (EAGLE-3) + 4.5 (aLoRA) + 4.6 (GEPA artifact read).
+          </p>
+          <div className="mt-8 flex flex-col gap-6">
+            <ALoRAStatusBadge />
+            <GEPAEvolutionPanel />
+            <EAGLE3LatencyBadge />
+          </div>
+          <p className="mt-6 font-mono text-xs italic text-muted">
+            Panels are mock for wave-40 /judges visualisation. Real fetch swaps land Day 7-8 per
+            <span className="not-italic"> docs/decision-log.md D-019 + D-032</span>.
           </p>
         </div>
       </section>
