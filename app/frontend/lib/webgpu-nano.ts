@@ -109,16 +109,27 @@ async function defaultPipelineLoader(): Promise<unknown> {
  * surfaces `offline` per D-021 reconnect contract.
  */
 export function useGraniteNanoEdge(): GraniteNanoEdgeState {
-  const [state, setState] = useState<GraniteNanoEdgeState>({
-    status: "loading",
-    progress: 0,
+  // Wave-38 cascade-#8 hotfix: lazy state initializer for offline
+  // detection. Prior code used `setState({status: "offline"})`
+  // synchronously inside useEffect which the React 19 + Next.js 16
+  // ESLint rule blocks ("Calling setState synchronously within an
+  // effect can trigger cascading renders"). Lazy initializer is the
+  // canonical pattern: derive initial state from navigator.onLine at
+  // first render; useEffect only handles the load path. SSR safe:
+  // typeof navigator check returns "loading" on the server; client
+  // hydration runs the same check + matches.
+  const [state, setState] = useState<GraniteNanoEdgeState>(() => {
+    if (typeof navigator !== "undefined" && navigator.onLine === false) {
+      return { status: "offline", reconnect_pending: true };
+    }
+    return { status: "loading", progress: 0 };
   });
 
   useEffect(() => {
     let cancelled = false;
 
+    // Lazy initializer already handled the offline path; skip load.
     if (typeof navigator !== "undefined" && navigator.onLine === false) {
-      setState({ status: "offline", reconnect_pending: true });
       return () => {
         cancelled = true;
       };
