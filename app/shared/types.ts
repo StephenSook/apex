@@ -1249,18 +1249,23 @@ export interface DifferentiableProjector {
 }
 
 // ---- Wave-40 StructuredLogEntry (mirror logging.py) --------------------
+// Wave-41 B.1 close-out per wave-40 cold-review type-design-analyzer
+// BLOCKER B.1: prior single-interface form mixed canonical declared
+// fields with the `[extras: string]: unknown` index signature, which
+// collapsed `keyof StructuredLogEntry` to `string` + made literal-
+// narrowing on declared fields impossible. Split into a frozen
+// canonical block + a typed extras bag + an intersection alias so
+// the wave-41 decoder can iterate `keyof StructuredLogEntryCanonical`
+// for known-field validation + collect remaining keys into a
+// separately-typed extras bag.
 
 /**
- * One JSON line emitted by Vinh's `logging.py` _AuditJSONFormatter.
- * Schema mirrors the Python format() method output verbatim. The
- * `/status` page consumes these via type guards filtering on the
- * `event` field.
- *
- * Caller-supplied kwargs (logger.info("ev", k=v, k2=v2)) appear as
- * top-level fields per the `extras` spread in the Python formatter;
- * those are represented here via the `extras` index signature.
+ * Frozen canonical schema for one JSON line from
+ * `app/backend/apex/shared/logging.py` _AuditJSONFormatter. Decoder
+ * uses `keyof StructuredLogEntryCanonical` for known-field iteration;
+ * unknown keys collect into the `StructuredLogEntryExtras` bag.
  */
-export interface StructuredLogEntry {
+export interface StructuredLogEntryCanonical {
   /** ISO 8601 UTC seconds precision. */
   readonly ts: string;
   /** Python logging level. */
@@ -1275,6 +1280,23 @@ export interface StructuredLogEntry {
   readonly commit_sha: string;
   /** Library version snapshot (cached per process). */
   readonly models: Readonly<Record<string, string>>;
-  /** Caller-supplied keyword args spread as top-level fields. */
-  readonly [extras: string]: unknown;
 }
+
+/**
+ * Caller-supplied kwargs from `logger.info("event.name", k=v, k2=v2)`
+ * spread as top-level JSON fields per `logging.py` _StructuredAdapter
+ * lines 138-147. Decoder collects keys not in
+ * `StructuredLogEntryCanonical` into this bag. Wave-41 B.1 close-out
+ * separates this from the canonical schema so `keyof
+ * StructuredLogEntryCanonical` retains its narrowed literal-union
+ * shape.
+ */
+export type StructuredLogEntryExtras = Readonly<Record<string, unknown>>;
+
+/**
+ * Wire-fidelity union: canonical declared fields + extras bag. Used
+ * at consumer sites that need the full payload shape. Decoders that
+ * iterate known fields should narrow to
+ * `StructuredLogEntryCanonical` first.
+ */
+export type StructuredLogEntry = StructuredLogEntryCanonical & StructuredLogEntryExtras;
