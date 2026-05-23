@@ -10,6 +10,7 @@
  * `fetch("/api/analyze", { body: formData })` call returning `AnalyzeResponse`.
  */
 
+import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import type { CoachingReport as CoachingReportType } from "../../shared/types";
@@ -57,9 +58,50 @@ export default function AnalyzeFlow() {
       {report && (
         <div ref={reportRef} tabIndex={-1} className="outline-none">
           <CoachingReport report={report} />
+          <EdgeModeCallout />
         </div>
       )}
     </>
+  );
+}
+
+/**
+ * Wave-38 Stream C cross-link: surfaces the WebGPU Granite Nano edge
+ * mode (D-019 item 1 + D-021) on the /analyze response panel so
+ * judges who interact with the live demo see the galaxy-tier
+ * shouldn't-be-possible move + can navigate to /judges#edge-summary
+ * for the in-browser inference card.
+ */
+function EdgeModeCallout() {
+  return (
+    <aside
+      aria-labelledby="edge-mode-callout-title"
+      className="mx-auto mt-8 flex max-w-6xl flex-col gap-3 rounded-sm border border-rule bg-paper-warm p-5 sm:flex-row sm:items-center sm:justify-between sm:gap-6 lg:mt-12"
+    >
+      <div className="flex flex-col gap-1">
+        <p className="apex-eyebrow">D-019 item 1 · D-021 · galaxy-tier</p>
+        <h3
+          id="edge-mode-callout-title"
+          className="font-display text-xl tracking-tight text-ink"
+        >
+          Try the in-browser edge mode.
+        </h3>
+        <p className="text-sm leading-relaxed text-ink-soft">
+          The wave-38 build ships Granite 4.0 Nano 350M running directly in your browser via
+          WebGPU + Transformers.js v4. The /judges page surfaces the live 5-state inference card
+          (loading / ready / oom / offline / error) + the 30-line Newton friction-ellipse projector
+          visualization. Edge inference is advisory per D-021 server-authoritative reconnect; the
+          canonical APEX pipeline (this /analyze route) remains the source of truth.
+        </p>
+      </div>
+      <Link
+        href="/judges#edge-summary"
+        className="inline-flex shrink-0 items-center gap-2 rounded-sm border border-racing-green bg-paper px-4 py-2 font-mono text-xs uppercase tracking-wider text-racing-green transition-colors hover:bg-racing-green hover:text-paper focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
+      >
+        Open edge demo
+        <span aria-hidden="true">→</span>
+      </Link>
+    </aside>
   );
 }
 
