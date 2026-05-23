@@ -863,3 +863,368 @@ export type ThreeTrackForecast =
       readonly divergence_sigma: number;
       readonly fallback: "ttm_only" | "weighted_blend_dropping_outlier";
     };
+
+// ---------------------------------------------------------------------------
+// Wave-40 backend canonical schemas (Phase-0 handoff; mirror Vinh's
+// `app/backend/apex/shared/contracts/*` + `app/backend/apex/physics/validator.py`
+// + `app/backend/apex/shared/logging.py` Python contract layer)
+// ---------------------------------------------------------------------------
+//
+// These types mirror Vinh's Phase 0 Python contracts verbatim so the
+// frontend can decode wire payloads (JSON) into the same conceptual shape
+// the backend emits. The UI-facing projections above (GuardianAudit,
+// PhysicsViolation, CoachingReport) remain unchanged: the frontend
+// decoder in `lib/api-decode.ts` (wave-41 landing) will translate
+// Backend* shapes into the UI projections at the fetch boundary.
+//
+// SCHEMA_VERSION + PROTOCOL_VERSION freezes bump when the canonical
+// schemas change. Runtime decoder checks them on deserialization;
+// version mismatch throws + the EdgeSummary error state surfaces.
+//
+// Wave-40 D-032 locks this layering. Vinh-canonical = backend; Stephen-
+// canonical = frontend; decoder bridges them. Cross-reference:
+// `app/backend/apex/shared/contracts/shapes.py` (CHANNELS + TENSOR_SHAPE),
+// `app/backend/apex/shared/contracts/violations.py` (PhysicsViolationLog
+// + GuardianAudit), `app/backend/apex/physics/validator.py` (ToleranceBands),
+// `app/backend/apex/shared/contracts/projector.py` (DifferentiableProjector
+// Protocol seam), `app/backend/apex/shared/logging.py` (audit_id JSON).
+//
+// ---------------------------------------------------------------------------
+
+// ---- Wave-30 D-016 tensor-shape canonical (mirrors shapes.py) ----------
+
+/**
+ * SCHEMA_VERSION bumps when CHANNELS changes (add/remove/rename). The
+ * frontend decoder MUST compare the wire payload's `schema_version`
+ * field against this constant + throw if mismatched. Mirrors
+ * `app/backend/apex/shared/contracts/shapes.py` SCHEMA_VERSION.
+ */
+export const SHAPES_SCHEMA_VERSION = "0.1.0" as const;
+
+/**
+ * Wave-30 D-016 contract: (batch, horizon=30 steps, channels=14). The
+ * leading null is the dynamic batch dimension. Horizon is 30 timesteps
+ * at 1 Hz aggregation (D-010 horizon expansion; was 24 pre-wave-30).
+ * Channel count is 14 (D-016; was 9 pre-wave-30). Mirrors
+ * `shapes.py` TENSOR_SHAPE.
+ */
+export const TENSOR_SHAPE = [null, 30, 14] as const;
+
+export const HORIZON = 30 as const;
+export const CHANNEL_COUNT = 14 as const;
+
+/**
+ * 14-tuple of channel names per `shapes.py` CHANNELS. Order is
+ * load-bearing: the channel-axis index of each name is its position in
+ * this tuple. Use `channel_index()` for rename-safe slicing.
+ */
+export const CHANNELS = [
+  "throttle_pct",
+  "brake_pa",
+  "steering_rad",
+  "rpm",
+  "lat_g",
+  "long_g",
+  "speed_mps",
+  "gear",
+  "coa_overlap_flag",
+  "tire_load_n",
+  "mu_v",
+  "track_pitch_rad",
+  "track_bank_rad",
+  "yaw_rate_rad_s",
+] as const;
+
+/**
+ * Channel name string-literal union derived from the CHANNELS tuple.
+ * Compile-time exhaustive: a typo at a CHANNELS index lookup is a
+ * TS error.
+ */
+export type ChannelName = (typeof CHANNELS)[number];
+
+/**
+ * Channel-to-physics-tier binding per D-015 + `shapes.py`
+ * CHANNEL_TIER_BINDING. Tier 0 = COA-derived constraint. Tiers 1-8 =
+ * physics. null = driver input OR vehicle state (no tier; not subject
+ * to physics-projection constraints).
+ */
+export const CHANNEL_TIER_BINDING: Readonly<Record<ChannelName, number | null>> = {
+  throttle_pct: null,
+  brake_pa: null,
+  steering_rad: null,
+  rpm: null,
+  lat_g: 8,
+  long_g: 8,
+  speed_mps: 8,
+  gear: null,
+  coa_overlap_flag: 0,
+  tire_load_n: 4,
+  mu_v: 5,
+  track_pitch_rad: 1,
+  track_bank_rad: 1,
+  yaw_rate_rad_s: 8,
+};
+
+/**
+ * Return the channel-axis index for a named channel. Use this in
+ * slicing rather than hard-coding integers; rename-safe. Mirrors
+ * `shapes.py` channel_index().
+ */
+export function channel_index(name: ChannelName): number {
+  return CHANNELS.indexOf(name);
+}
+
+// ---- Wave-40 backend violation taxonomy (Convergence-14) ---------------
+
+/**
+ * 14-tuple of violation type names per `violations.py` VIOLATION_TYPES.
+ * Order matches the Python tuple. Reordering OR adding entries is a
+ * SCHEMA_VERSION bump on `shapes.py` policy.
+ */
+export const BACKEND_VIOLATION_TYPES = [
+  "friction_ellipse_exceeded",
+  "forward_euler_inconsistent",
+  "bicycle_kinematic_break",
+  "coa_simultaneity_violation",
+  "jerk_bound_exceeded",
+  "tire_load_negative",
+  "tire_thermal_diverged",
+  "yaw_rate_kinematic_break",
+  "speed_below_pit_minimum",
+  "track_geometry_oob",
+  "gear_ratio_inconsistent",
+  "aerodynamic_load_inverted",
+  "lateral_load_transfer_oob",
+  "longitudinal_load_transfer_oob",
+] as const;
+
+export type BackendViolationType = (typeof BACKEND_VIOLATION_TYPES)[number];
+
+/**
+ * Engine identifier per `violations.py` PhysicsViolationLog.engine. V1
+ * NumPy validator + V2 cvxpylayers projector + V2 SCP unrolled all emit
+ * the same ViolationRecord shape; the engine field tells the consumer
+ * which produced this log so byte-determinism diffs cross-engine.
+ */
+export type ViolationEngine = "v1_numpy" | "v2_cvxpylayers" | "v2_scp_unrolled";
+
+/**
+ * One violation at one forecast step. Mirrors `violations.py`
+ * ViolationRecord frozen dataclass. Frozen at the type level via
+ * `readonly` on every field; equality is structural per round-trip
+ * serializer assertion (Convergence-14 floor).
+ *
+ * Field order is the serialization order per `violations.py`
+ * to_text() canonical-form spec; the frontend decoder MUST preserve
+ * declaration order when serializing back for golden-fixture tests.
+ */
+export interface BackendViolationRecord {
+  /** Forecast horizon step index, 0..29 per HORIZON. */
+  readonly step: number;
+  /** One of 14 BACKEND_VIOLATION_TYPES. */
+  readonly type: BackendViolationType;
+  /** Distance past the constraint boundary; non-negative. */
+  readonly severity: number;
+  /** Subset of CHANNELS at this step; keys are ChannelName instances. */
+  readonly channel_values: Readonly<Partial<Record<ChannelName, number>>>;
+  /** Wave-30 D-015 physics tier the violation hit. Tier 0 = COA-derived. */
+  readonly tier: number;
+}
+
+/**
+ * The full per-forecast violation log emitted by validator or projector.
+ * Mirrors `violations.py` PhysicsViolationLog. Engine-agnostic by
+ * construction: V1 NumPy + V2 cvxpylayers + V2 SCP unrolled all emit
+ * this exact shape; `to_text()` produces byte-identical output for the
+ * same records regardless of producer.
+ *
+ * Empty log => no violations => FCVR = 0 for this forecast.
+ */
+export interface BackendPhysicsViolationLog {
+  readonly records: ReadonlyArray<BackendViolationRecord>;
+  /** HORIZON from shapes.py; redundant for audit-trail self-containment. */
+  readonly forecast_step_count: number;
+  readonly engine: ViolationEngine;
+}
+
+/**
+ * Forecast Constraint Violation Rate: fraction of horizon steps with at
+ * least one violation. Pure TypeScript port of `violations.py`
+ * PhysicsViolationLog.fcvr() so the frontend can compute the FCVR
+ * client-side from a decoded log (matches the metric scp_spike.py
+ * computed at the friction-ellipse level for the D-027 gate).
+ */
+export function fcvr(log: BackendPhysicsViolationLog): number {
+  if (log.forecast_step_count === 0) {
+    return 0.0;
+  }
+  const violatedSteps = new Set(log.records.map((r) => r.step));
+  return violatedSteps.size / log.forecast_step_count;
+}
+
+/** True when the log has zero violation records. Mirrors `violations.py` is_empty(). */
+export function isEmptyViolationLog(log: BackendPhysicsViolationLog): boolean {
+  return log.records.length === 0;
+}
+
+// ---- Wave-40 backend GuardianAudit (mirror violations.py) --------------
+
+/**
+ * Guardian verdict literal union mirroring `violations.py`
+ * GuardianVerdict. Distinct from the UI-facing
+ * `GuardianAudit.verdict` (approve|flag|reject) above: the backend
+ * emits SAFE|REVIEW|BLOCK at the physics-pipeline boundary; the
+ * frontend decoder maps SAFE -> "approve", REVIEW -> "flag",
+ * BLOCK -> "reject" at the fetch boundary.
+ */
+export type BackendGuardianVerdict = "SAFE" | "REVIEW" | "BLOCK";
+
+/**
+ * Granite Guardian 4.1 BYOC custom-rules audit verdict. Mirrors
+ * `violations.py` GuardianAudit frozen dataclass.
+ *
+ * `audit_id` is the canonical uuid4().hex string set once at
+ * Guardian.audit() entry; never null per council v2 Software Lead
+ * fix #9. The provenance footer (Phase 3 task 3.6) asserts non-null
+ * on this field; Phase 3 task 3.6b is the contract test.
+ *
+ * `physics_confidence` is the Mahalanobis-distance detector output
+ * from D-024: low confidence -> Guardian downgrades SAFE to REVIEW
+ * even if the violation log is empty.
+ */
+export interface BackendGuardianAudit {
+  /** uuid4 hex string from Vinh's new_audit_id() helper; never empty. */
+  readonly audit_id: string;
+  readonly verdict: BackendGuardianVerdict;
+  /** Think-mode trace for UI surface. */
+  readonly reasoning: string;
+  /** Subset of BYOC rule IDs that fired. */
+  readonly triggered_rules: ReadonlyArray<string>;
+  /** D-024 Mahalanobis detector output; null when detector skipped. */
+  readonly physics_confidence: number | null;
+  /** ISO 8601 UTC timestamp with seconds precision. */
+  readonly audited_at_iso: string;
+}
+
+// ---- Wave-40 ToleranceBands (mirror validator.py) ----------------------
+
+/**
+ * Channel-specific tolerance bands for the forward-Euler consistency
+ * check per council v2 Software Lead fix #7. Defaults below derived
+ * for the 1 Hz aggregation rate (D-011 path A); the polyphase 50 Hz
+ * path (D-011 path B) reduces these bounds ~50x per
+ * `ToleranceBands.for_polyphase_50hz()`. Mirrors `validator.py`
+ * ToleranceBands frozen dataclass.
+ */
+export interface ToleranceBands {
+  /** 1g * 1s quantization ceiling at 1 Hz. */
+  readonly delta_v_band_mps: number;
+  /** 1g change per step at 1 Hz. */
+  readonly delta_long_g_band: number;
+  /** mu_nominal grip ceiling. */
+  readonly delta_lat_g_band: number;
+  /** Max steering rate at 1 Hz. */
+  readonly delta_steering_rad_band: number;
+  /** Max yaw-rate change at 1 Hz. */
+  readonly delta_yaw_rate_rad_s_band: number;
+}
+
+/**
+ * Default tolerance bands for the 1 Hz mini-sector aggregation path
+ * (D-011 path A; the macroscopic backbone). Factory pure-function
+ * port of `validator.py` ToleranceBands.for_1hz_aggregation().
+ */
+export function toleranceBandsFor1hzAggregation(): ToleranceBands {
+  return {
+    delta_v_band_mps: 9.8,
+    delta_long_g_band: 1.0,
+    delta_lat_g_band: 1.2,
+    delta_steering_rad_band: 0.5,
+    delta_yaw_rate_rad_s_band: 1.5,
+  };
+}
+
+/**
+ * Tolerance bands for the polyphase 50 Hz path (D-011 path B). At 50 Hz
+ * the per-step Delta-v ceiling shrinks from 1g*1s = 9.8 m/s to
+ * 1g*0.02s = 0.196 m/s. Same physics, finer time resolution. Mirrors
+ * `validator.py` ToleranceBands.for_polyphase_50hz().
+ */
+export function toleranceBandsForPolyphase50hz(): ToleranceBands {
+  return {
+    delta_v_band_mps: 0.196,
+    delta_long_g_band: 0.02,
+    delta_lat_g_band: 0.024,
+    delta_steering_rad_band: 0.01,
+    delta_yaw_rate_rad_s_band: 0.03,
+  };
+}
+
+// ---- Wave-40 DifferentiableProjector Protocol (mirror projector.py) ----
+
+/**
+ * PROTOCOL_VERSION bumps when the projector API surface changes
+ * (method add/remove, return type shift). Distinct from
+ * SHAPES_SCHEMA_VERSION which versions the tensor channel meanings.
+ * Mirrors `projector.py` PROTOCOL_VERSION.
+ */
+export const DIFFERENTIABLE_PROJECTOR_VERSION = "0.1.0" as const;
+
+/**
+ * Result of a projector.project() call mirroring `projector.py`
+ * ProjectionResult (defined later in shared.contracts at the
+ * implementation site). The corrected forecast tensor + the per-step
+ * violation log.
+ */
+export interface ProjectionResult {
+  /** Projected forecast tensor; preserves TENSOR_SHAPE. */
+  readonly corrected_forecast: ReadonlyArray<ReadonlyArray<number>>;
+  /** Per-step violation log. */
+  readonly violation_log: BackendPhysicsViolationLog;
+}
+
+/**
+ * DifferentiableProjector Protocol seam per council v2 chairman
+ * synthesis: D-013 hard-locks cvxpylayers but the only fallback baked
+ * into the plan was paper-survival, not code-survival. This Protocol
+ * is the swap seam for V1 NumPy / V2 cvxpylayers / future qpth /
+ * future theseus. Mirrors `projector.py` DifferentiableProjector
+ * Protocol.
+ */
+export interface DifferentiableProjector {
+  /** True if .backward() can flow through this projector. */
+  readonly is_differentiable: boolean;
+  /** Project a forecast onto the physics-feasible set. */
+  project(forecast: ReadonlyArray<ReadonlyArray<number>>): ProjectionResult;
+}
+
+// ---- Wave-40 StructuredLogEntry (mirror logging.py) --------------------
+
+/**
+ * One JSON line emitted by Vinh's `logging.py` _AuditJSONFormatter.
+ * Schema mirrors the Python format() method output verbatim. The
+ * `/status` page consumes these via type guards filtering on the
+ * `event` field.
+ *
+ * Caller-supplied kwargs (logger.info("ev", k=v, k2=v2)) appear as
+ * top-level fields per the `extras` spread in the Python formatter;
+ * those are represented here via the `extras` index signature.
+ */
+export interface StructuredLogEntry {
+  /** ISO 8601 UTC seconds precision. */
+  readonly ts: string;
+  /** Python logging level. */
+  readonly level: "DEBUG" | "INFO" | "WARNING" | "ERROR" | "CRITICAL";
+  /** Qualified Python module name (e.g. "apex.physics.scp_spike"). */
+  readonly logger: string;
+  /** Short snake_case event name passed as the log message. */
+  readonly event: string;
+  /** Audit-id correlation per council v2 SRE peer fix; "no_audit" when outside an audit_context() block. */
+  readonly audit_id: string;
+  /** Git rev-parse --short HEAD; "unknown" when git unavailable. */
+  readonly commit_sha: string;
+  /** Library version snapshot (cached per process). */
+  readonly models: Readonly<Record<string, string>>;
+  /** Caller-supplied keyword args spread as top-level fields. */
+  readonly [extras: string]: unknown;
+}
