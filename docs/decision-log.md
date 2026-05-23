@@ -26,7 +26,7 @@ Every locked decision with rationale + date + scope. Newest first.
 
 ## 2026-05-20 D-003: Galaxy-tier scope rule
 
-**Decision.** Nothing post-hackathon. Nothing stretch. Every enhancement, paper draft, beta-tester quote, June bridge architecture, live sim-rig mode, Colab notebook, judges-tour page, status dashboard, methodology trace, IBM Consulting outreach, multi-track submission entry. All in scope by 2026-05-31 11:59 PM ET.
+**Decision.** Nothing post-hackathon. Nothing stretch. Every enhancement, paper draft, beta-tester quote, live sim-rig mode, Colab notebook, judges-tour page, status dashboard, methodology trace, IBM Consulting outreach, multi-track submission entry. All in scope by 2026-05-31 11:59 PM ET. **Note (wave-38 2026-05-23):** June Challenge bridge architecture was originally in the D-003 enumeration; retired per Stephen explicit "the June challenge does not deal with anything that the May challenge deals with. F1, the June challenge is a whole other, different challenge itself." APEX is May Challenge only.
 
 **Rationale.** Stephen explicit: "We're aiming for the galaxy, not the moon. Nothing should be post-hackathon; everything should be within the scope right now so we can have the best project ever." This reframes the 12-day plan from default-scope to all-in-scope. A feature shipped at 70% quality on Day 11 beats a feature deferred to a v2 that judges never see.
 

@@ -46,7 +46,7 @@ Day 6: End-to-end Sarah Reynolds canned case runs. Gate G6 = the Core 6 ship-blo
 
 Day 7: Langflow visible orchestration graph exports. Deck draft v0 + 3-min pitch script storyboard. LinkedIn DM beta-tester escalation (Day 3 already actioned, this is Day-5 follow-up).
 
-Day 8: June Challenge bridge architecture doc. Latency closure under 60s on RTX 4060. Deck draft v1 with all 13 mandatory edits from Phase 4.5 synthesis.
+Day 8: Latency closure under 60s on RTX 4060. Deck draft v1 with all 13 mandatory edits from Phase 4.5 synthesis.
 
 Day 9: Hugging Face Space deploy. Colab notebook publishes. Sim-rig WebSocket integration. Dress rehearsal 1.
 

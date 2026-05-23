@@ -252,7 +252,7 @@ npm run dev   # http://localhost:3000
 | 1 - Document parsing (Docling + Vision) | Day 2 | 🟡 Vinh-side pending. Stephen-side: Dropzone UI ✅, /analyze route ✅, pre-mortem.md live (48+ entries), README structure audit ✅. |
 | 2 - Physics layer (NumPy V1 → CvxpyLayer V2 + Guardian) | Days 3-5 | 🟡 Vinh-side pending. Stephen-side: CoachingReport + TuningCard + GuardianAudit frontend components ✅. Gate G4 spike bumped to Day-2 parallel. |
 | 3 - Narrator (Granite 4.1 8B Instruct + COA flag) | Day 6 | 🟡 Sarah Reynolds persona narrative ✅ Day 1 EOD. Backend integration Vinh-side. |
-| 4 - Orchestration + polish (Langflow + caching + June bridge) | Days 7-8 | 🟡 3-min pitch script ✅, June Challenge bridge doc ✅, Langflow + caching Vinh-side. |
+| 4 - Orchestration + polish (Langflow + caching) | Days 7-8 | 🟡 3-min pitch script ✅, Langflow + caching Vinh-side. |
 | 5 - Demo + deploy (HF + Colab + sim-rig + video) | Days 9-10 | 🟡 Sim-rig frontend scaffold ✅, Colab notebook skeleton ✅, demo-video storyboard ✅, Vercel config + runbook ✅. HF Space + sim-rig WebSocket backend + production video take Day 9-10. |
 | 6 - Submission package (judges page + methodology + NeurIPS draft) | Day 11 | 🟡 /judges + /status routes ✅ Day 1 EOD pull-forward. Methodology trace + architecture-spec + pre-mortem ✅; NeurIPS Workshop paper publication-readable draft 🟡 (§4 Experiments tables Day 9-10; Day-11 polish remains for final polish). BeMyApp 1920x600 banner ✅. |
 | 7 - Submit | Day 12 (2026-05-31) | ⬜ pending. BeMyApp form payload draft ready at NeuroPit-depth. |

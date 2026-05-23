@@ -109,8 +109,6 @@ Latency closure. EAGLE-3 speculative decoding + aLoRA hot-swap together tighten 
 
 GEPA reflective prompt optimisation via DSPy ran offline against APEX-Bench faithfulness metric. Optimised system prompts version-tagged for reproducibility per D-023 MLPerf protocol.
 
-June Challenge bridge architecture doc landed at docs/june-challenge-bridge.md. PhysicsTTM extends to FIFA World Cup player-tracking telemetry: player x/y/v/a maps to throttle/brake/lat-G/long-G channels; max-human-acceleration + max-turn-rate replace friction-ellipse + bicycle-model constraints; IBM Granite stack roles preserved one-for-one.
-
 Deck draft v1 with all 13 mandatory edits from Phase 4.5 synthesis applied.
 
 IBM SkillsBuild Discord technical-depth post fired in #may-challenge-and-labs.

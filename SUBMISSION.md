@@ -80,7 +80,7 @@ Methodology: Sookra Methodology v3.3 with seven phases of competitive recon (six
 
 ### What's next for APEX
 
-A NeurIPS Workshop paper draft is in `paper/apex-neurips-workshop-2026.md` (drafted Day 11, polish post-submission). A formal data-partnership conversation with a UK adaptive racing programme, a veteran motorsport rehabilitation programme, or Operation Motorsport is the next post-submission move. The architectural pattern (frozen TSFM + physics projection) extends to any high-frequency sensor domain. The June Challenge bridge document in `docs/june-challenge-bridge.md` outlines the FIFA World Cup player-tracking deployment.
+A NeurIPS Workshop paper draft is in `paper/apex-neurips-workshop-2026.md` (drafted Day 11, polish post-submission). A formal data-partnership conversation with a UK adaptive racing programme, a veteran motorsport rehabilitation programme, or Operation Motorsport is the next post-submission move.
 
 ---
 

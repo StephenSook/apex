@@ -35,7 +35,7 @@ The pattern generalises. APEX is the racing instance. The same governed-foundati
 - Patient-vitals forecasting in clinical settings (foundation model + physiology-bound constraints + clinical-policy audit)
 - Energy-grid load forecasting (foundation model + Kirchhoff-law projection + grid-safety audit)
 
-The full architectural spec is at `docs/architecture-spec.md` in the repo. The June Challenge bridge doc at `docs/june-challenge-bridge.md` maps the same pattern to FIFA World Cup player-tracking telemetry.
+The full architectural spec is at `docs/architecture-spec.md` in the repo.
 
 If any of this lines up with IBM Consulting work in flight, I'd welcome a 30-minute conversation. We are not asking for funding or sponsorship. We are asking whether the pattern (governed Granite-stack + domain physics layer + Guardian audit) is something IBM Consulting would consider seeding as a reference architecture for the verticals listed above.
 
