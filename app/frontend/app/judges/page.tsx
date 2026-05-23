@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { ConvergenceFixtureGrid } from "../../components/ConvergenceFixtureGrid";
+import EdgeSummary from "../../components/EdgeSummary";
 import { ExtendedPhysicsFixtureGrid } from "../../components/ExtendedPhysicsFixtureGrid";
 import PhysicsConfidenceBadge from "../../components/PhysicsConfidenceBadge";
 import TriAgentCriticPanel from "../../components/TriAgentCriticPanel";
@@ -464,6 +465,45 @@ export default function JudgesPage() {
             Panel data is mock for /judges visualisation. Vinh-lane backend at{" "}
             <span className="not-italic">app/backend/apex/critics/</span> produces real verdicts per
             PLAN row 4.20; Mellea IVR repair loop per row 4.21.
+          </p>
+        </div>
+      </section>
+
+      <section
+        id="edge-summary"
+        aria-labelledby="edge-summary-section-title"
+        className="border-b border-rule bg-paper"
+      >
+        <div className="mx-auto max-w-6xl px-6 py-16 lg:px-10 lg:py-20">
+          <h2
+            id="edge-summary-section-title"
+            className="font-display text-3xl tracking-tight text-ink"
+          >
+            WebGPU Granite Nano edge inference.
+          </h2>
+          <p className="mt-3 max-w-3xl text-base leading-relaxed text-ink-soft">
+            Wave-30 decision D-019 item 1 + D-021 lock Granite 4.0 Nano 350M as the in-browser
+            edge model via Transformers.js v4 + WebGPU. The 1.5 GB WebGPU buffer pre-check
+            (pre-mortem row 59) gates the model load; if the adapter advertises insufficient
+            headroom, the chip below degrades to the server-only path. The 30-line Newton
+            friction-ellipse projector runs offline alongside the small-LM head; server-
+            authoritative reconnect (D-021) overwrites local state on every reconnect so no
+            mechanical recommendations are emitted from the offline path. Arch-spec cross-
+            reference at{" "}
+            <span className="font-mono text-xs text-racing-green">
+              docs/architecture-spec.md
+            </span>{" "}
+            Appendix W30 Layer 7.
+          </p>
+          <div className="mt-6">
+            <EdgeSummary />
+          </div>
+          <p className="mt-6 font-mono text-xs italic text-muted">
+            Edge inference is advisory per D-021. The canonical APEX pipeline runs server-side
+            through Vinh-lane backend at{" "}
+            <span className="not-italic">app/backend/apex/</span>; the edge path lowers the
+            barrier for journalists + adaptive-driver coaches to demo the pipeline without an
+            RTX-4060 install.
           </p>
         </div>
       </section>
