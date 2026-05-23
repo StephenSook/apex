@@ -159,7 +159,10 @@ const validProjector: DifferentiableProjector = {
   is_differentiable: true,
   project(_forecast) {
     return {
-      corrected_forecast: [[0.5, 0.42]],
+      // Wave-40 type-design B.2 close-out: 3-D (batch, horizon, channels)
+      // per ForecastTensor3D contract; the wave-40 mirror previously typed
+      // this as 2-D which silently dropped the batch axis.
+      corrected_forecast: [[[0.5, 0.42]]],
       violation_log: { records: [], forecast_step_count: 30, engine: "v2_cvxpylayers" },
     };
   },
@@ -169,6 +172,9 @@ assertProjector(validProjector);
 // @ts-expect-error wave-40 type-design HIGH: missing project() method.
 const incompleteProjector: DifferentiableProjector = { is_differentiable: false };
 void incompleteProjector;
+
+// @ts-expect-error wave-40 type-design B.2 close-out: 2-D forecast violates ForecastTensor3D batch-axis preservation per `app/backend/apex/shared/contracts/projector.py:39`.
+assertProjector({ is_differentiable: true, project: () => ({ corrected_forecast: [[0.5, 0.42]], violation_log: { records: [], forecast_step_count: 30, engine: "v2_cvxpylayers" } }) });
 
 // ---------------------------------------------------------------------------
 // StructuredLogEntry

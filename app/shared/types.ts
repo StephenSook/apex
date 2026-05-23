@@ -1171,14 +1171,40 @@ export function toleranceBandsForPolyphase50hz(): ToleranceBands {
 export const DIFFERENTIABLE_PROJECTOR_VERSION = "0.1.0" as const;
 
 /**
+ * 3-D (batch, horizon, channels) tensor as nested arrays per
+ * `shapes.py` TENSOR_SHAPE = (None, 30, 14). Outer = batch (dynamic),
+ * middle = HORIZON (30 steps), inner = CHANNEL_COUNT (14 channels).
+ * Length invariants are enforced by the wave-41 decoder at the wire
+ * boundary, not by the type system (TS lacks dependent types for
+ * nested-length checks).
+ *
+ * Wave-40 cold-review type-design B.2 close-out: the prior
+ * `ReadonlyArray<ReadonlyArray<number>>` (2-D) silently dropped the
+ * batch axis vs `projector.py:39` Protocol contract ("MUST preserve
+ * the (B, 30, 14) shape end-to-end"). The 2-D form is now a separate
+ * `ForecastTensor2D` alias for the V1 NumPy validator entry point
+ * which explicitly operates on a single batch slice.
+ */
+export type ForecastTensor3D = ReadonlyArray<ReadonlyArray<ReadonlyArray<number>>>;
+
+/**
+ * 2-D (horizon, channels) tensor for the V1 NumPy validator entry
+ * point per `validator.py:166-167` ("shape (horizon, channels) per
+ * shapes.TENSOR_SHAPE (drop batch axis)"). Distinct from
+ * `ForecastTensor3D` which is the projector-level contract.
+ */
+export type ForecastTensor2D = ReadonlyArray<ReadonlyArray<number>>;
+
+/**
  * Result of a projector.project() call mirroring `projector.py`
  * ProjectionResult (defined later in shared.contracts at the
- * implementation site). The corrected forecast tensor + the per-step
- * violation log.
+ * implementation site). The corrected forecast tensor preserves the
+ * 3-D (batch, horizon, channels) shape end-to-end per the Protocol
+ * contract; the violation log is the engine-agnostic per-step record.
  */
 export interface ProjectionResult {
-  /** Projected forecast tensor; preserves TENSOR_SHAPE. */
-  readonly corrected_forecast: ReadonlyArray<ReadonlyArray<number>>;
+  /** Projected forecast tensor; preserves TENSOR_SHAPE (B, 30, 14). */
+  readonly corrected_forecast: ForecastTensor3D;
   /** Per-step violation log. */
   readonly violation_log: BackendPhysicsViolationLog;
 }
@@ -1194,8 +1220,8 @@ export interface ProjectionResult {
 export interface DifferentiableProjector {
   /** True if .backward() can flow through this projector. */
   readonly is_differentiable: boolean;
-  /** Project a forecast onto the physics-feasible set. */
-  project(forecast: ReadonlyArray<ReadonlyArray<number>>): ProjectionResult;
+  /** Project a forecast onto the physics-feasible set (preserves (B, 30, 14) shape). */
+  project(forecast: ForecastTensor3D): ProjectionResult;
 }
 
 // ---- Wave-40 StructuredLogEntry (mirror logging.py) --------------------
