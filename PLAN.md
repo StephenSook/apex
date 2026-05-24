@@ -9,11 +9,15 @@
 
 ---
 
-## Status snapshot (last sync 2026-05-21 PM, Day 2)
+## Status snapshot (last sync 2026-05-24 Day 6 wave-43 mid-execution)
 
 This snapshot is the at-a-glance reality check for anyone reading PLAN.md fresh.
 
-**Phase 0 - Bootstrap:** 🟡 IN PROGRESS (Day 2, Vinh side only).
+**Wave-43 mid-execution Day 6 EOD:** 4 commits shipped (Lane A2 quick-wins) + Lane B2 mid-flight + Lane D2 + E2 + G2.1 + C2 + F2 + G2 + H2 queued per `~/.claude/plans/all-right-i-want-rippling-moon.md`. Total wave-43 estimate 46-62 atomic commits + Obsidian discipline.
+
+**Wave totals across the 12-day arc:** wave-22 through wave-43 inclusive. Wave-41 33 commits + wave-42 24 commits + wave-43 4 commits to date = 61 commits across the wave-41/42/43 arc alone. CI HEAD green; cascade #11 + #12 closed; cascade #13 pending Lane F2.
+
+**Phase 0 - Bootstrap:** ✅ DONE Day 3 per wave-40 Vinh 18-commit Phase 0 close-out (D-027 Stage C PASS at ||grad L|| = 24.12 + FCVR = 0 on RTX 3060 Ti).
 Row IDs below match the Phase 0 build table further down (rows 0.1 through 0.19); this snapshot just collapses the table to the load-bearing items. M11 wave-24 closure: D-prefix dropped so status + table share one ID scheme.
 - 0.1 Lock APEX name (rename from PIT WALL): ✅ DONE
 - 0.2 Init GitHub monorepo: ✅ DONE (https://github.com/StephenSook/apex live)
@@ -24,19 +28,19 @@ Row IDs below match the Phase 0 build table further down (rows 0.1 through 0.19)
 - 0.4 Hand Vinh the briefing PDF + repo URL: ✅ DONE (committed at `docs/briefing-for-vinh.pdf`)
 - 0.13 Vinh TTM smoke test (Gate G1): ⬜ pending (Vinh-side, once he accepts repo invite). APEX Lite EARLY trigger Q-007 active at Day 2 noon ET if Vinh-unresponsive.
 
-**Phase 1 - Document parsing (Day 2, Vinh):** ⬜ pending Vinh side. Stephen-lane Dropzone UI + /analyze route + pre-mortem.md all pulled forward to Day 1 EOD per galaxy-tier rule and now live.
+**Phase 1 - Document parsing (Day 4-5, Vinh):** 🟡 in progress. Vinh task 1.1-1.6 + 1.9 COA parsing + simultaneity-flag extraction ownership; Stephen task 1.7 OpenRouter Granite API plumbing (wave-42 commit 7179dc1) + 1.8 streaming-response handler (wave-42 commit dc5bd7e) shipped. Stream M.3 spec handoff at docs/wave-41-backend-spec-handoff.md.
 
-**Phase 2 - Physics layer (Days 3-5, Vinh):** ⬜ pending Vinh side. CoachingReport + GuardianAudit + TuningCard frontend components all pulled forward to Days 1-2 and shipped against shared/types.ts contracts. Gate G4 bumped to Day 2 parallel spike per Codex critique #2.
+**Phase 2 - Physics layer (Days 3-5, Vinh):** 🟡 partial. Vinh Phase 0 contracts shipped (shapes.py + violations.py + projector.py + logging.py + validator.py + scp_spike.py). Phase 2 V1 NumPy + V2 cvxpylayers full implementation Days 4-5. CoachingReport + GuardianAudit + TuningCard + frontend wire-boundary decoder (api-decode.ts) shipped against canonical Backend* schemas.
 
-**Phase 3 - Narrator (Day 6, Vinh):** 🟡 partial. Sarah Reynolds persona narrative ✅ (Day 1 EOD pull-forward, Stephen-lane). Vinh data fixtures + integration Day 6.
+**Phase 3 - Narrator (Day 6, both):** 🟡 partial. Sarah Reynolds persona narrative ✅. Sarah Reynolds COA fixture stub shipped wave-42 (82d1f85; canonical FIACoa shape per wave-43 G2.1). OpenRouter Granite plumbing shipped (wave-42 F.C + F.D); AICopilotChat single-turn QA surface shipped (wave-42 F.4) + /api/openrouter-stream route shipped (wave-42 89da297 + cold-review fixes df3109d/b87f618).
 
-**Phase 4 - Orchestration + polish (Days 7-8, both):** 🟡 partial. 3-min pitch script v0 ✅ Day 1 EOD pull-forward; 4 of 5 remaining Phase 4.5 mandatory edits applied wave-19 evening. Langflow export + Convergence-14 + 60s latency Vinh-side Day 7-8.
+**Phase 4 - Orchestration + polish (Days 7-8, both):** 🟡 mid-flight. 5-tab AnalyzeFlow restructure shipped (wave-42 1c95ab5). 5 shouldn't-be-possible moves frontend surfaces all live (EdgeSummary + ALoRAStatusBadge + GEPAEvolutionPanel + EAGLE3LatencyBadge + TriAgentCriticPanel). Recharts triple-panel + Granite citation footer + Watson TTS walkie-talkie + race-event tiles + what-if-replay all shipped wave-41/42 Lane A. Cascade #12 6-agent cold review dispatched wave-42 + 5 BLOCKERs closed inline.
 
-**Phase 5 - Demo + deploy (Days 9-10, both):** 🟡 partial. Vercel config + runbook ✅ Day 2 PM pull-forward. Colab notebook skeleton ✅ Day 2 PM (Stretch S4). Sim-rig frontend scaffold + /sim-rig route ✅ Day 2 PM (Stretch S1 frontend slice). Demo video storyboard ✅ Day 2 PM. HF Space + sim-rig WebSocket backend + production video take Day 9-10.
+**Phase 5 - Demo + deploy (Days 9-10, both):** 🟡 mid-flight. apex.race Vercel production deploy live (wave-38 cutover). Colab walkthrough at deliverables/apex-demo.ipynb. /judges + /analyze + /status + /sim-rig all live. 3-min demo video script + 11-frame deck PDF + 30-second highlight clip storyboard pending wave-43 Lane C2.J. HF Space + sim-rig WebSocket backend + production video record Day 10-11.
 
-**Phase 6 - Submission package (Day 11, both):** 🟡 partial. /judges + /status routes ✅ Day 1 EOD pull-forward. methodology.md Phase 6+7 expansion + cross-references ✅ Day 2 PM. pre-mortem.md ✅ live with 40+ entries (Day 11 final polish remains). NeurIPS paper outline ✅ Day 2 PM (S10 skeleton; Day 11 readable-draft expansion remains). External-tool passes Day 11.
+**Phase 6 - Submission package (Day 11, both):** 🟡 mid-flight. /judges + /status routes ✅. methodology.md + paper §3.1-§3.7 substantive (wave-42 §3.5 5-moves + §3.6 council v2 + §3.7 telemetry shipped). pre-mortem.md 40+ entries. NeurIPS paper §3 wave-42 expansion shipped. BeMyApp submission payload + multi-track checklist + decision-log D-001 through D-040 shipped. External-tool final passes Day 11 (Lane G2.5 + G2.6).
 
-**Phase 7 - Submit (Day 12, both):** ⬜ pending. Multi-track BeMyApp form + IBM Consulting cold email + retrospective. HARD DEADLINE 11:59 PM ET.
+**Phase 7 - Submit (Day 12, both):** ⬜ pending. Multi-track BeMyApp form submit + IBM Consulting cold email + retrospective. HARD DEADLINE 2026-05-31 23:59 ET. Cascade #13 6-agent dispatch (wave-43 Lane F2) + G2.6 apex.race smoke-test verify gate Day 11 morning before record.
 
 **Critical-path Vinh deps still open:**
 1. Accept collaborator invite
