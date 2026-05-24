@@ -4,6 +4,28 @@ Every locked decision with rationale + date + scope. Newest first.
 
 ---
 
+## 2026-05-24 D-042: Wave-43 G2.6 BLOCKING operator-action item, apex.race DNS NXDOMAIN
+
+**Decision.** Wave-43 G2.6 Vercel apex.race smoke test surfaced a SUBMISSION-CRITICAL blocker: `dig apex.race +short` returns empty + `nslookup apex.race` returns NXDOMAIN. The domain is either unregistered OR registered without DNS pointing at the Vercel deployment. README + paper + 3-min script + 30s storyboard + deck + BeMyApp payload all reference `https://apex.race` as the live demo URL.
+
+**Cautionary precedent.** Per Discord 2026-05-23/24 intel, the PitWall competitor (Ashish; F1 Race Strategy Copilot; HuggingFace Spaces deployment) is publicly hitting OpenRouter rate-limits with screenshots showing "site unavailable" errors. Judges seeing a similar NXDOMAIN on apex.race would be instant credibility loss + DQ-grade for a "live demo" submission category.
+
+**Operator-action items (Stephen, BEFORE 2026-05-30 EOD):**
+
+1. Register `apex.race` domain via Namecheap / Cloudflare / Vercel-direct (24-48h DNS propagation budget)
+2. Point apex.race + www.apex.race A/CNAME records at Vercel project DNS targets
+3. Vercel dashboard → project → Settings → Domains → add apex.race + verify SSL cert auto-provisions
+4. Verify in incognito (logged-out): `https://apex.race`, `/judges`, `/analyze`, `/status` all return 200 + render
+5. Curl smoke: `curl -sI https://apex.race` returns `200 OK` + `Strict-Transport-Security` header
+
+**Fallback if apex.race registration blocks:** revert README + deck + storyboard URLs to the Vercel default deployment URL (e.g. `apex-stephensook.vercel.app`) at T-24h before submission. Patch payload doc + 3-min script Beat 8 + 30s storyboard Beat 5 + BeMyApp form payload. Single mass-rename operation; do not leave any stale apex.race reference.
+
+**Wave-43 close-out status (as of D-042 entry).** 25 commits shipped wave-43 across 8 lanes (cumulative Lane A2 + B2 + D2 + E2 + G2.1 + G2.2 D-041 + G2.4 AI-tone + G2.5 README + 3 C2 vitest badges + cascade-#13 2-commit fix-forward). HEAD CI green. Remaining queue: Lane C2 8 remaining vitest specs + Playwright fidelity specs + video record + deck PDF + Lane G2.6 (THIS entry's operator action) + Lane H2 Obsidian session memory (Claude Memory note written) + APEX MOC pointer + project_apex_wave_30_maximal_architecture wave-43 amendment + MEMORY.md refresh.
+
+**Affected.** Submission credibility (apex.race must resolve by 2026-05-31 23:59 ET). README + paper + 3-min script + 30s storyboard + deck PDF + BeMyApp payload all have apex.race references; either domain resolves OR mass-rename to vercel.app URL fallback.
+
+---
+
 ## 2026-05-24 D-041: Wave-43 mega-wave close-out (Lane D2 + E2 + G2.1 + C2 partials + cascade #13)
 
 **Decision.** Wave-43 mega-wave 18-commit close-out lands the following lanes:
