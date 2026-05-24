@@ -82,6 +82,50 @@ This is a follow-on Vercel-architectural correction queued for post-submission i
 
 ---
 
+## 2026-05-24 D-046: Wave-43 Vercel MCP validation of D-045 + APEX-project-doesn't-exist confirmation
+
+**Decision.** Vercel MCP server (mcp__plugin_vercel_vercel) authenticated + queried Stephen's Vercel account 2026-05-24 ~18:10 ET. Surfaced verified state:
+
+- Team: `ssookra-7703's projects` (`team_2qTzvz9OIGdUuoCkvzgY0sQR`)
+- 7 existing Vercel projects: `stephensook-novatorem` + `trace-forensic-search` + `portfolio` + `frontend` (vite) + `app` (nextjs; serves an unrelated Privy+EVM dApp at `app-psi-pied.vercel.app`) + `nest-portfolio` + `v0-portfolio`
+- **NO project named "apex" exists.** PLAN.md row 5 "Vercel apex.race production deploy live (wave-38 cutover)" is aspirational; APEX has never been deployed.
+
+**Vercel MCP capability boundary.** The MCP exposes list/inspect/get-logs surfaces + `check_domain_availability_and_price` + `web_fetch_vercel_url` + `deploy_to_vercel` (which only returns CLI instructions, not actual deploy execution). Project creation + repo-link require Vercel dashboard OR interactive `vercel link` + `vercel --prod` from Stephen's terminal. Both Claude-unshippable; Stephen-only.
+
+**Updated operator-action precision (replaces D-042 + D-045 prose):**
+
+OPTION A — Vercel dashboard (3-5 min, recommended):
+1. https://vercel.com/new → Import Git Repository → `StephenSook/apex`
+2. Framework Preset: Next.js auto-detected per `vercel.json`
+3. Root Directory: leave at repo root (vercel.json `buildCommand` already does `cd app/frontend`)
+4. Click Deploy
+5. Assigned URL pattern: `apex-ssookra-7703s-projects.vercel.app` per Stephen's existing project-naming convention
+
+OPTION B — Vercel CLI:
+```
+npm i -g vercel@latest
+cd "/Users/stephensookra/Desktop/IBM May"
+vercel link
+vercel --prod
+```
+
+Both yield a `*.vercel.app` URL at $0 cost.
+
+**Post-deploy mass-rename** in one atomic commit:
+- README.md (live demo URL + badge)
+- paper/apex-neurips-workshop-2026.md (§7 reproducibility)
+- deliverables/demo-video-script-3min.md (Beat 8 close)
+- deliverables/demo-video-30s-storyboard.md (Beat 5 close)
+- deliverables/deck-source.html + deliverables/deck-2026-05.pdf (F1 + F11)
+- deliverables/bemyapp-submission-payload.md
+- docs/decision-log.md D-042 + D-045 + this entry note the post-deploy URL
+
+**Lesson locked + memory rule shipped.** Per Stephen explicit 2026-05-24 ~18:00 ET methodology lock: MANDATORY exhaustive tool-inventory audit BEFORE every non-trivial task. Memory entry at `~/.claude/projects/-Users-stephensookra-Desktop-IBM-May/memory/feedback_exhaustive_tool_inventory_before_every_task.md`. The Vercel MCP + vercel:deployment-expert sub-agent + vercel:ai-architect + vercel:performance-optimizer stack was available to Claude throughout wave-43 + un-used; cost Stephen +1 session-turn of catching the miss. The new rule operationalizes D-007 BLOCKING into a per-task-enumerate-all-tools template.
+
+**Cost of the miss this session arc.** ~1 turn of clarification + 1 D-045 reframing commit + 1 D-046 validation commit (this entry) + a new memory rule write. All recoverable; future tasks must NOT repeat the miss.
+
+---
+
 ## 2026-05-24 D-045: Wave-43 D-042 reframing — apex.race is OPTIONAL brand polish, NOT submission-blocking
 
 **Decision.** Re-read of D-042 surfaced a framing error. apex.race custom domain is NOT a submission-blocker because Vercel provides a free auto-assigned `*.vercel.app` URL for every deployment. apex.race is OPTIONAL BRAND POLISH (we already own brand wordmark + editorial-paddock identity; the custom .race TLD is a finishing touch, not a requirement). Per Stephen explicit framing 2026-05-24: "Can't we just run a random Vercel URL that we don't even have to pay for for number 1?"
