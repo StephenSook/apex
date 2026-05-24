@@ -82,7 +82,34 @@ This is a follow-on Vercel-architectural correction queued for post-submission i
 
 ---
 
-## 2026-05-24 D-042: Wave-43 G2.6 BLOCKING operator-action item, apex.race DNS NXDOMAIN
+## 2026-05-24 D-045: Wave-43 D-042 reframing — apex.race is OPTIONAL brand polish, NOT submission-blocking
+
+**Decision.** Re-read of D-042 surfaced a framing error. apex.race custom domain is NOT a submission-blocker because Vercel provides a free auto-assigned `*.vercel.app` URL for every deployment. apex.race is OPTIONAL BRAND POLISH (we already own brand wordmark + editorial-paddock identity; the custom .race TLD is a finishing touch, not a requirement). Per Stephen explicit framing 2026-05-24: "Can't we just run a random Vercel URL that we don't even have to pay for for number 1?"
+
+**Actual blocking item:** Vercel deployment must EXIST + be reachable. Current state per probes 2026-05-24 17:45 ET: `apex-stephensook.vercel.app` returns 404 + `apex-stephen-sookra.vercel.app` returns 404 + `apex.vercel.app` returns 200 BUT serves an unrelated Vue.js app owned by another Vercel account. Implication: APEX has NEVER been deployed to Vercel; the wave-38 cutover note in PLAN.md row 5 is aspirational, not actual.
+
+**Operator-action (Stephen, BEFORE 2026-05-30 EOD, ~$0 cost):**
+
+1. Run `vercel` CLI install if not present: `npm i -g vercel@latest`
+2. From repo root: `vercel login` then `vercel link` to associate with a (free) Vercel account
+3. `vercel --prod` (deploys + assigns `*.vercel.app` URL)
+4. Read the assigned URL (e.g. `apex-stephensookra.vercel.app`)
+5. Verify in incognito (logged-out): `/judges` + `/analyze` + `/status` all return 200 + render
+6. Update README + paper + 3-min script + 30s storyboard + deck + BeMyApp payload to reference the assigned Vercel URL (one-line search-replace)
+7. OPTIONAL post-submission: register apex.race + DNS-point + Vercel domain-add for the polished URL
+
+**Why this is now NOT blocking:**
+
+- Vercel free tier provides production hosting with the `*.vercel.app` URL at $0
+- Judges accessing `*.vercel.app` URL see identical project with identical functionality
+- 2026 judge sentiment (April Guo Anthropic + semgrep 2026 hackathon-effect) shifted toward "feels like a product" — a stable `*.vercel.app` URL pointing at a working build IS product-grade
+- Vercel default URL pattern is well-recognized by 2026 hackathon judges who deploy similar projects themselves
+
+**D-042 reframing:** the BLOCKING flag in D-042 misframed the constraint. apex.race custom domain registration is not required for submission. ONLY the Vercel deployment itself is. Per no-time-pressure rule + galaxy ambition: deploy to Vercel now via free tier; brand polish via apex.race registration is post-submission iteration.
+
+---
+
+## 2026-05-24 D-042: Wave-43 G2.6 operator-action item, apex.race DNS NXDOMAIN (SUPERSEDED-FRAMING by D-045; actual operator-action still required)
 
 **Decision.** Wave-43 G2.6 Vercel apex.race smoke test surfaced a SUBMISSION-CRITICAL blocker: `dig apex.race +short` returns empty + `nslookup apex.race` returns NXDOMAIN. The domain is either unregistered OR registered without DNS pointing at the Vercel deployment. README + paper + 3-min script + 30s storyboard + deck + BeMyApp payload all reference `https://apex.race` as the live demo URL.
 
