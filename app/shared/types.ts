@@ -1215,8 +1215,26 @@ export type BackendGuardianAudit =
  * path (D-011 path B) reduces these bounds ~50x per
  * `ToleranceBands.for_polyphase_50hz()`. Mirrors `validator.py`
  * ToleranceBands frozen dataclass.
+ *
+ * Wave-42 Lane E.M.2 path tag (Stream M2 backend-coord follow-up;
+ * Vinh-coord status pending). `path` discriminator identifies which
+ * aggregation regime the bands derive from so downstream consumers
+ * can branch behavior on the path without re-deriving from the
+ * numerical magnitudes:
+ *   - "1hz_aggregation": macroscopic backbone (D-011 path A).
+ *   - "polyphase_50hz": polyphase 50 Hz path (D-011 path B); bands
+ *     scaled down ~50x from the 1 Hz baseline.
+ *   - "flowstate_rate_invariant": rate-invariant bands per the
+ *     FlowState 3-track ensemble (D-018 ensemble member 2).
+ * Frontend ships the tagged type today; Vinh adds the `path` field
+ * to Python @classmethod factories in his next sync window.
  */
-export interface ToleranceBands {
+export type ToleranceBandsPath =
+  | "1hz_aggregation"
+  | "polyphase_50hz"
+  | "flowstate_rate_invariant";
+
+type ToleranceBandsCore = {
   /** 1g * 1s quantization ceiling at 1 Hz. */
   readonly delta_v_band_mps: number;
   /** 1g change per step at 1 Hz. */
@@ -1227,7 +1245,9 @@ export interface ToleranceBands {
   readonly delta_steering_rad_band: number;
   /** Max yaw-rate change at 1 Hz. */
   readonly delta_yaw_rate_rad_s_band: number;
-}
+};
+
+export type ToleranceBands = ToleranceBandsCore & { readonly path: ToleranceBandsPath };
 
 /**
  * Default tolerance bands for the 1 Hz mini-sector aggregation path
@@ -1236,6 +1256,7 @@ export interface ToleranceBands {
  */
 export function toleranceBandsFor1hzAggregation(): ToleranceBands {
   return {
+    path: "1hz_aggregation",
     delta_v_band_mps: 9.8,
     delta_long_g_band: 1.0,
     delta_lat_g_band: 1.2,
@@ -1252,11 +1273,32 @@ export function toleranceBandsFor1hzAggregation(): ToleranceBands {
  */
 export function toleranceBandsForPolyphase50hz(): ToleranceBands {
   return {
+    path: "polyphase_50hz",
     delta_v_band_mps: 0.196,
     delta_long_g_band: 0.02,
     delta_lat_g_band: 0.024,
     delta_steering_rad_band: 0.01,
     delta_yaw_rate_rad_s_band: 0.03,
+  };
+}
+
+/**
+ * Rate-invariant tolerance bands for the FlowState 3-track ensemble
+ * (D-018 ensemble member 2). FlowState normalizes per-step deltas
+ * against the underlying sample rate so the bands are invariant
+ * across 1 Hz vs 50 Hz aggregation regimes. Mirrors `validator.py`
+ * ToleranceBands.for_flowstate_rate_invariant() per the wave-42
+ * Lane E.M.2 type-spec PR (Vinh-coord follow-up; Python factory
+ * lands in his next sync window).
+ */
+export function toleranceBandsForFlowstateRateInvariant(): ToleranceBands {
+  return {
+    path: "flowstate_rate_invariant",
+    delta_v_band_mps: 1.96,
+    delta_long_g_band: 0.2,
+    delta_lat_g_band: 0.24,
+    delta_steering_rad_band: 0.1,
+    delta_yaw_rate_rad_s_band: 0.3,
   };
 }
 

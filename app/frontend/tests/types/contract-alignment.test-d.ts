@@ -169,7 +169,10 @@ assertAudit({ audit_id: "x", verdict: "SAFE", reasoning: "", triggered_rules: "r
 // ToleranceBands
 // ---------------------------------------------------------------------------
 
+// Wave-42 Lane E.M.2: ToleranceBands now requires path tag per the
+// discriminated-union convention. Fixture covers all 3 path literals.
 assertBands({
+  path: "1hz_aggregation",
   delta_v_band_mps: 9.8,
   delta_long_g_band: 1.0,
   delta_lat_g_band: 1.2,
@@ -177,11 +180,35 @@ assertBands({
   delta_yaw_rate_rad_s_band: 1.5,
 });
 
+assertBands({
+  path: "polyphase_50hz",
+  delta_v_band_mps: 0.196,
+  delta_long_g_band: 0.02,
+  delta_lat_g_band: 0.024,
+  delta_steering_rad_band: 0.01,
+  delta_yaw_rate_rad_s_band: 0.03,
+});
+
+assertBands({
+  path: "flowstate_rate_invariant",
+  delta_v_band_mps: 1.96,
+  delta_long_g_band: 0.2,
+  delta_lat_g_band: 0.24,
+  delta_steering_rad_band: 0.1,
+  delta_yaw_rate_rad_s_band: 0.3,
+});
+
 // @ts-expect-error wave-40 type-design HIGH: missing delta_yaw_rate_rad_s_band.
-assertBands({ delta_v_band_mps: 9.8, delta_long_g_band: 1.0, delta_lat_g_band: 1.2, delta_steering_rad_band: 0.5 });
+assertBands({ path: "1hz_aggregation", delta_v_band_mps: 9.8, delta_long_g_band: 1.0, delta_lat_g_band: 1.2, delta_steering_rad_band: 0.5 });
 
 // @ts-expect-error wave-40 type-design HIGH: all bands must be number.
-assertBands({ delta_v_band_mps: "9.8", delta_long_g_band: 1.0, delta_lat_g_band: 1.2, delta_steering_rad_band: 0.5, delta_yaw_rate_rad_s_band: 1.5 });
+assertBands({ path: "1hz_aggregation", delta_v_band_mps: "9.8", delta_long_g_band: 1.0, delta_lat_g_band: 1.2, delta_steering_rad_band: 0.5, delta_yaw_rate_rad_s_band: 1.5 });
+
+// @ts-expect-error wave-42 Lane E.M.2: path tag is required.
+assertBands({ delta_v_band_mps: 9.8, delta_long_g_band: 1.0, delta_lat_g_band: 1.2, delta_steering_rad_band: 0.5, delta_yaw_rate_rad_s_band: 1.5 });
+
+// @ts-expect-error wave-42 Lane E.M.2: path tag must be one of the 3 valid literals.
+assertBands({ path: "invented_path", delta_v_band_mps: 9.8, delta_long_g_band: 1.0, delta_lat_g_band: 1.2, delta_steering_rad_band: 0.5, delta_yaw_rate_rad_s_band: 1.5 });
 
 // ---------------------------------------------------------------------------
 // DifferentiableProjector (Protocol seam)
