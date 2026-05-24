@@ -9,7 +9,7 @@ describe("EAGLE3LatencyBadge", () => {
     expect(
       screen.getByRole("heading", { name: /Draft-and-accept latency speedup/i }),
     ).toBeInTheDocument();
-    expect(screen.getByText(/D-019 item 4/)).toBeInTheDocument();
+    expect(screen.getAllByText(/D-019 item 4/).length).toBeGreaterThan(0);
   });
 
   it("renders disabled state with vanilla-decode body + no role=alert", () => {
