@@ -39,17 +39,30 @@
  *    critic loop; replays feed the critic for what-if defensibility)
  */
 
-"use client";
+// Wave-41 cascade-#11 fix-forward: dropped "use client" directive +
+// switched brand-type imports to type-only. The prior shape imported
+// runtime parser functions (parseHorizonStep + parsePhysicsTier +
+// parseSeverity) from app/shared/brands which Turbopack 16 production
+// build cannot resolve when this module is transitively pulled into
+// the client browser bundle via WhatIfReplayPanel.tsx ("use client").
+// Type-only imports are erased at compile time + never enter the
+// runtime bundle; Turbopack does not need to resolve them. Mock-
+// fixture construction casts at the boundary (`as unknown as
+// HorizonStep`) which is safe because the values are in-memory test
+// data, not wire-boundary inputs that need parser validation.
+//
+// CI runs a22737f + f04abba + c34df06 cascade-failed before this
+// fix.
 
-import {
-  parseHorizonStep,
-  parsePhysicsTier,
-  parseSeverity,
-} from "../../shared/brands";
 import type {
   BackendPhysicsViolationLog,
   ConvergenceFixture,
 } from "../../shared/types";
+import type {
+  HorizonStep,
+  PhysicsTier,
+  Severity,
+} from "../../shared/brands";
 
 /**
  * One mutation applied to a Convergence-14 fixture. Each mutation
@@ -146,10 +159,10 @@ export function runWhatIfReplay(
     !mutatedFixture.coa_simul_permitted
       ? [
           {
-            step: parseHorizonStep(3),
+            step: 3 as unknown as HorizonStep,
             type: "coa_simultaneity_violation",
-            tier: parsePhysicsTier(0),
-            severity: parseSeverity(0.42),
+            tier: 0 as unknown as PhysicsTier,
+            severity: 0.42 as unknown as Severity,
             channel_values: {
               throttle_pct: 12.0,
               brake_pa: 8200.0,
