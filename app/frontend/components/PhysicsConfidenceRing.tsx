@@ -36,10 +36,17 @@ export interface PhysicsConfidenceRingProps {
 export default function PhysicsConfidenceRing({ confidence }: PhysicsConfidenceRingProps) {
   // Defensive guard for non-finite inputs; PhysicsConfidenceBadge below
   // also handles this case but the ring needs early-out to avoid
-  // NaN.toFixed in the percent calculation.
+  // NaN.toFixed in the percent calculation. Wave-41 cascade-#11 codex
+  // HIGH#4: require threshold_p95 > 0 (not just finite) to avoid
+  // `distance / 0 === Infinity` (produces `NaNdeg` conic-gradient) or
+  // `0 / 0 === NaN` corruption in the ring math. Falls back to the
+  // badge variant when threshold is non-positive (e.g. D-024 detector
+  // skipped at low-data session OR dev-mode bypass produced
+  // threshold_p95 = 0 from an empty fixture distribution).
   const distanceFinite = Number.isFinite(confidence.mahalanobis_distance);
-  const thresholdFinite = Number.isFinite(confidence.threshold_p95);
-  if (!distanceFinite || !thresholdFinite) {
+  const thresholdPositive =
+    Number.isFinite(confidence.threshold_p95) && confidence.threshold_p95 > 0;
+  if (!distanceFinite || !thresholdPositive) {
     return <PhysicsConfidenceBadge confidence={confidence} />;
   }
 
