@@ -84,6 +84,23 @@ import {
 // single decoder import surface for all wire-boundary checks.
 export const expectSchemaVersion = _expectSchemaVersion;
 
+/**
+ * Wave-41 cascade-#11 plan-gap-scanner BLOCKER#3 close-out. Plan
+ * §Stream A listed `expectProtocolVersion(...)` as a required export
+ * distinct from `expectSchemaVersion(...)`. The actual operation is
+ * the same strict-equality SemVer compare; this thin wrapper exists
+ * to make consumer-site call intent explicit (projector-protocol-
+ * version checks vs shapes-schema-version checks) so reading a stack
+ * trace tells you which contract drifted.
+ */
+export function expectProtocolVersion(
+  wire: SemVer,
+  expected: SemVer,
+  contextLabel: string,
+): void {
+  _expectSchemaVersion(wire, expected, contextLabel);
+}
+
 // Branded versions of audit_id are exposed via parseAuditId from brands.ts.
 // Branded ProjectionResult forecast tensor stays nested ReadonlyArray<...>.
 
@@ -586,14 +603,32 @@ export interface VersionedWirePayload {
  * still enforce structural invariants.
  */
 export function assertWirePayloadVersions(payload: VersionedWirePayload): void {
+  let checkedAny = false;
   if (payload.schema_version !== undefined) {
     expectSchemaVersion(payload.schema_version, SHAPES_SCHEMA_VERSION, "schema_version");
+    checkedAny = true;
   }
   if (payload.protocol_version !== undefined) {
-    expectSchemaVersion(
+    expectProtocolVersion(
       payload.protocol_version,
       DIFFERENTIABLE_PROJECTOR_VERSION,
       "protocol_version",
+    );
+    checkedAny = true;
+  }
+
+  // Wave-41 cascade-#11 HIGH H6 (codex HIGH + silent-failure-hunter
+  // M-3): warn-not-fatal when both version fields are missing. Per
+  // the D-A frozen-contract policy + the Stream M.3 spec handoff, all
+  // wire payloads ship versioned. Missing both fields signals a
+  // misconfigured endpoint or stale build; surfacing in DevTools
+  // without breaking the demo so operators can correlate the warning
+  // with a downstream contract drift instead of letting an unversioned
+  // payload flow silently.
+  if (!checkedAny && typeof console !== "undefined" && console.warn) {
+    console.warn(
+      "apex.decode.assertWirePayloadVersions: payload omitted both schema_version + protocol_version. Per D-A frozen-contract policy, all wire payloads should ship versioned; this warning indicates a misconfigured endpoint or stale build.",
+      { payload },
     );
   }
 }
