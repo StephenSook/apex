@@ -101,12 +101,17 @@ function severityLabel(severity: CitationLine["severity"]): string {
   }
 }
 
-export default function GraniteCitationFooter({ report }: GraniteCitationFooterProps) {
-  // report.driver_id consumed for the section heading to anchor the chain
-  // to the specific coaching session; satisfies "per-recommendation"
-  // intent even though the chain is rendered consolidated.
-  const driverId = report.driver_id;
-
+export default function GraniteCitationFooter(_props: GraniteCitationFooterProps) {
+  // Wave-42 cascade-fix-forward 1c95ab5: dropped the driverId reference
+  // from the section subhead. Prior render duplicated the report.driver_id
+  // span already shown in the CoachingReport header which caused
+  // `getByText("sarah-reynolds-britcar-2026")` assertions in 3 test files
+  // (AnalyzeFlow.test.tsx + AnalyzeFlow.error.test.tsx + CoachingReport.
+  // test.tsx) to fail with "Found multiple elements with the text" per
+  // the cascade #1 family pattern. The citation chain is session-scoped
+  // implicitly via its placement inside CoachingReport; the driver-id
+  // anchor was redundant. _props prefix per @typescript-eslint convention
+  // since the prop is intentionally unused after the fix-forward.
   return (
     <section
       aria-labelledby="granite-citation-footer-title"
@@ -125,8 +130,7 @@ export default function GraniteCitationFooter({ report }: GraniteCitationFooterP
         <p className="pt-1 text-xs leading-relaxed text-ink-soft">
           Every coaching recommendation above traces back to a Granite
           Embedding R2 retrieved passage. Audit the chain from claim to
-          source for{" "}
-          <span className="font-mono text-xs text-racing-green">{driverId}</span>.
+          source via the citation list below.
         </p>
       </header>
       <ul className="flex flex-col gap-3">
