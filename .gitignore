@@ -22,6 +22,7 @@ eggs/
 lib/
 lib64/
 !app/frontend/lib/
+!app/frontend/tests/lib/
 parts/
 sdist/
 var/
