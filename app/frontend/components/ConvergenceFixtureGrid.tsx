@@ -5,6 +5,7 @@ import type {
   ConvergenceFixtureCatalogue,
   ConvergenceViolationClass,
 } from "../../shared/types";
+import WhatIfReplayPanel from "./WhatIfReplayPanel";
 
 const VIOLATION_LABELS: Record<ConvergenceViolationClass, string> = {
   friction_ellipse: "Friction ellipse",
@@ -134,6 +135,9 @@ function ConvergenceFixtureTile({ fixture }: ConvergenceFixtureTileProps) {
           {fixture.sample_violation_log_excerpt}
         </pre>
       </details>
+      {fixture.violation_class === "coa_simultaneity" && (
+        <WhatIfReplayPanel fixture={fixture} />
+      )}
     </article>
   );
 }
