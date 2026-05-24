@@ -305,8 +305,9 @@ function EdgeModeCallout() {
           the visualization layer for moves #2-4 (Activated LoRA hot-swap, GEPA reflective prompt
           evolution, EAGLE-3 speculative decoding) plus the tri-agent Agent-as-Judge critic loop
           for move #5. The /judges page surfaces all five panels in pipeline order. Backend wire-
-          up arrives Day 7-8; mock fixtures render today. The canonical APEX pipeline (this
-          /analyze route) remains the source of truth per D-021 server-authoritative reconnect.
+          up follows per Vinh Phase 1 handoff; mock fixtures render today. The canonical APEX
+          pipeline (this /analyze route) remains the source of truth per D-021 server-authoritative
+          reconnect.
         </p>
       </div>
       <Link
