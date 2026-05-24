@@ -75,13 +75,23 @@ const DEFAULT_VOICE = "en-US_HenryV3Voice";
 
 /**
  * Resolve cache path for a given audit_id. Atomic-write contract:
- * write to {audit_id}.mp3.tmp then rename to {audit_id}.mp3 so HEAD
- * probes never see a half-written file.
+ * write to a per-request unique tempfile then rename to
+ * {audit_id}.mp3 so HEAD probes never see a half-written file.
+ *
+ * Wave-43 cascade-#13 F2 HIGH#2 close-out per codex adversarial:
+ * the prior shape used `{audit_id}.mp3.tmp` shared across concurrent
+ * requests for the same audit_id, so two POSTs interleaving
+ * writeFile + rename could ENOENT the loser OR cross-corrupt the
+ * final MP3. Per-request unique suffix (PID + timestamp + random)
+ * makes each tempfile distinct; both renames target the same final
+ * path (POSIX-atomic; identical input + identical FFmpeg pipeline =
+ * identical output bytes; overwrite is a no-op semantically).
  */
 function cachePaths(auditId: string): { final: string; temp: string } {
+  const uniqueSuffix = `${process.pid}.${Date.now()}.${Math.random().toString(36).slice(2, 10)}`;
   return {
     final: join(CACHE_DIR, `${auditId}.mp3`),
-    temp: join(CACHE_DIR, `${auditId}.mp3.tmp`),
+    temp: join(CACHE_DIR, `${auditId}.${uniqueSuffix}.mp3.tmp`),
   };
 }
 
