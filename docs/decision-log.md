@@ -524,3 +524,24 @@ Cascade #12 fix-wave residual queued for next session: openrouter-client 5xx/429
 **Affected.** All wave-42 commit SHAs cited above + the cascade-#12 fix-wave commits + this entry. Memory rule `feedback_ci_green_per_push_verify_or_cascade.md` cascade #12 section to land Day 7 morning per the next-session entry order.
 
 ---
+
+## 2026-05-24 D-040: Wave-42 cold-review-2 BLOCKER B-1 HARD-COMPLIANCE close-out + wave-43 plan-mode entry
+
+**Decision.** Post-D-039 wave-42 cold-review-2 comment-analyzer agent surfaced 1 HARD-COMPLIANCE BLOCKER B-1: invented FIA Article numbers (18.3.2 + 18.3.3 + 18.3.5 + 18.3.7) across 3 production surfaces violated the project CLAUDE.md "No invented FIA Article numbers" rule. Closed inline via commit 0baa161 (4 fabricated article numbers eliminated; softened to "FIA Appendix L adaptive-equipment provisions (article TBD per published revision)" pattern; Certificate of Approval typo corrected to Certificate of Adaptations per APEX canon).
+
+Post-B-1 close-out, wave-43 plan-mode entry locked at `~/.claude/plans/all-right-i-want-rippling-moon.md` per Stephen explicit galaxy-ambition mandate ("best possible project + nothing post-hackathon + use every necessary tool + aim for the galaxy"). Wave-43 absorbs 8 parallel lanes: Lane A2 cold-review-2 quick-wins (5 commits including this D-040) + Lane B2 Lane B finish (3 commits) + Lane C2 tests + video + deck + memory (13 commits) + Lane D2 cascade-#12 HIGH + MED residual fix-wave (12 commits) + Lane E2 production Watson TTS endpoint + Stream M.3 spec extension (3 commits) + Lane F2 cascade-#13 6-agent dispatch + fix-wave (6 to 12 commits) + Lane G2 pre-submission infrastructure including canonical FIACoa shape + D-041 + D-042 + final sweep + apex.race deploy verify (6 commits) + Lane H2 Obsidian session memory + memory rule updates (non-git). Total estimate 46 to 62 atomic commits + Obsidian discipline.
+
+Cold-review-2 cross-corroborated finding cluster across 6 agents (codex + silent-failure-hunter + type-design-analyzer + code-reviewer + comment-analyzer + plan-gap-scanner) summary:
+
+- BLOCKER tier (5 closed inline): chat /api/openrouter-stream route runtime declaration + ReadableStream consumer cancel respect + decodeChatCompletionResponse runtime decoder + BLOCK variant destructure-and-spread + chat-model placeholder check + B-1 FIA Article fabrication elimination.
+- HIGH tier residual queued for Lane D2 (8 items): openrouter-stream monotonic generation counter + decoder error-shape array + null + 5xx/429 retry response.body cancel + decoder usage validation + AICopilotChat answered-state collapse + CoachingReportLiveCharts memo drop + openrouter-client stream:boolean drop + AbortSignal server-side threading.
+- MED tier residual queued for Lane D2 + G2 (10+ items): Watson HEAD fetch error logging + speechSynthesis lifecycle + WatsonTtsRadio + AnalyzeFlow exhaustive-switch defaults + ToleranceBands acknowledged-and-doc + route.ts predicate narrow + tab CSS-hidden state preservation + ResizeObserver mock callback capture + 5 comment-analyzer doc-accuracy items.
+- NIT tier residual: 12 commit subjects over 100 char (behavioral; enforce wave-43 onward) + 3 bundled commits (atomic-discipline behavioral; enforce wave-43 onward).
+
+**Rationale.** Comment-analyzer agent caught the HARD-COMPLIANCE breach before submission deadline. Per project CLAUDE.md "No invented FIA Article numbers. Verify via FIA.com or research/ PDFs." rule + the wave-29 softening pattern: APEX derives the simultaneity flag from approved hardware specifications + medical-finding fields (not from per-article references); the appendix governs the COA framework but per-article enumeration is owned by FIA-published documentation.
+
+Wave-43 plan locked under no-time-pressure rule + galaxy-ambition (calendar dates are facts; rationing-narrative is the violation). Sequencing respects token budget via 6-phase plan + per-phase parallel-execution capacity + Read-all-then-Edit-all-then-commit batch pattern.
+
+**Affected.** Wave-42 commits 0baa161 (B-1 close-out) + this D-040 entry. Wave-43 plan at `~/.claude/plans/all-right-i-want-rippling-moon.md`. Lane H2.4 cascade #12 + #13 memory-rule additions. Lane G2.1 canonical FIACoa shape (touches `app/shared/types.ts` + `fixtures/personas/sarah-reynolds-coa-stub.json`).
+
+---
