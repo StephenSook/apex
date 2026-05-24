@@ -94,9 +94,11 @@ describe("guardian-audit-log", () => {
   });
 
   it("emitWithAuditGuard does NOT call emit when appendVerdict throws (storage quota)", () => {
-    const setItemSpy = vi.spyOn(window.localStorage, "setItem").mockImplementation(() => {
-      throw new Error("QuotaExceededError");
-    });
+    const setItemSpy = vi
+      .spyOn(Storage.prototype, "setItem")
+      .mockImplementation(() => {
+        throw new Error("QuotaExceededError");
+      });
     const emitMock = vi.fn();
     expect(() => emitWithAuditGuard(sampleVerdict, "quota-commit", emitMock)).toThrow(
       /localStorage write failed/i,
