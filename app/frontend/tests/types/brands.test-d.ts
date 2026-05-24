@@ -137,6 +137,18 @@ assertSeverity(0.124);
 // @ts-expect-error wave-41 B.8: cannot wire Severity through MahalanobisConfidence-typed slot.
 assertMahalanobisConfidence(parseSeverity(0.124));
 
+// Wave-41 cascade-#11 NIT N4 close-out per type-design-analyzer:
+// additional cross-brand wiring tests for CommitSha against Severity
+// + MahalanobisConfidence slots. Closes the negative-fixture coverage
+// gap on CommitSha (only AuditId + Severity collision was previously
+// exercised).
+
+// @ts-expect-error cascade-#11 N4: cannot wire CommitSha through Severity-typed slot.
+assertSeverity(parseCommitSha("c97caaa"));
+
+// @ts-expect-error cascade-#11 N4: cannot wire CommitSha through MahalanobisConfidence-typed slot.
+assertMahalanobisConfidence(parseCommitSha("c97caaa"));
+
 // ---------------------------------------------------------------------------
 // SemVer template-literal + expectSchemaVersion
 // ---------------------------------------------------------------------------

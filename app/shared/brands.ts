@@ -114,11 +114,15 @@ declare const __mahalanobisBrand: unique symbol;
 
 /**
  * Mahalanobis-distance output from the D-024 physics-confidence
- * detector. Range `[0, +Infinity)`. Mirrors
+ * detector. Non-negative finite number OR null. Mirrors
  * `app/backend/apex/shared/contracts/violations.py:176`
- * `physics_confidence: float | None`. Negative values + NaN + Infinity
- * are corruption + must throw at the decoder boundary, not propagate
- * through Guardian downgrade logic.
+ * `physics_confidence: float | None`. Negative values + NaN +
+ * Infinity are corruption + must throw at the decoder boundary, not
+ * propagate through Guardian downgrade logic. (Wave-41 cascade-#11
+ * NIT N6 doc fix: prior `[0, +Infinity)` bracket-notation was
+ * misleading since Infinity is rejected by the Number.isFinite check
+ * in parseMahalanobisConfidence; "non-negative finite" is the
+ * accurate constraint.)
  */
 export type MahalanobisConfidence = number & { readonly [__mahalanobisBrand]: never };
 
@@ -281,7 +285,22 @@ export function expectSchemaVersion(wire: SemVer, expected: SemVer, contextLabel
 // Re-export sentinel constants for consumer pattern matching
 // ---------------------------------------------------------------------------
 
+// Wave-41 cascade-#11 NIT N1 close-out per type-design-analyzer:
+// LibraryVersion sentinel literals exposed via the SENTINELS const
+// for consumer pattern-matching parity with the AuditId + CommitSha
+// sentinels. Per `app/backend/apex/shared/logging.py:91-98`
+// model_versions() output paths: "unknown" fallback at commit_sha
+// failure path; "no_version_attr" when the module has no __version__
+// attribute; "not_installed" on ImportError. Matches the
+// LibraryVersion union members in `app/shared/types.ts`.
+const LIBRARY_VERSION_UNKNOWN_SENTINEL = "unknown" as const;
+const LIBRARY_VERSION_NO_VERSION_ATTR_SENTINEL = "no_version_attr" as const;
+const LIBRARY_VERSION_NOT_INSTALLED_SENTINEL = "not_installed" as const;
+
 export const SENTINELS = Object.freeze({
   AUDIT_ID_NO_AUDIT: NO_AUDIT_SENTINEL,
   COMMIT_SHA_UNKNOWN: COMMIT_SHA_UNKNOWN_SENTINEL,
+  LIBRARY_VERSION_UNKNOWN: LIBRARY_VERSION_UNKNOWN_SENTINEL,
+  LIBRARY_VERSION_NO_VERSION_ATTR: LIBRARY_VERSION_NO_VERSION_ATTR_SENTINEL,
+  LIBRARY_VERSION_NOT_INSTALLED: LIBRARY_VERSION_NOT_INSTALLED_SENTINEL,
 });

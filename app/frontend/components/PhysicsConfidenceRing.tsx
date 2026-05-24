@@ -57,9 +57,17 @@ export default function PhysicsConfidenceRing({ confidence }: PhysicsConfidenceR
   const ratio = Math.max(0, Math.min(1.5, rawRatio));
   const fillDegrees = Math.min(360, ratio * 240);
 
+  // Wave-41 cascade-#11 NIT N5 close-out per code-reviewer N1: drop
+  // hex fallbacks on var() declarations for consistency with the rest
+  // of the codebase (EdgeSummary + RaceEventsTilesRow + other
+  // editorial-paddock-palette consumers use bare var() without fallback
+  // because the CSS variables are defined unconditionally at :root in
+  // globals.css). The fallbacks were a defensive holdover from the
+  // initial F.2 commit; dropping them aligns the file with the project
+  // pattern + reduces visual-token duplication.
   const isOOD = confidence.status === "out_of_distribution";
-  const fillColor = isOOD ? "var(--color-amber, #D9A441)" : "var(--color-racing-green, #0A2818)";
-  const trackColor = "var(--color-rule, rgba(15, 20, 16, 0.12))";
+  const fillColor = isOOD ? "var(--color-amber)" : "var(--color-racing-green)";
+  const trackColor = "var(--color-rule)";
 
   // Conic gradient: filled arc + remaining track. CSS variable consumed
   // by the animated background.
