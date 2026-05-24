@@ -18,11 +18,18 @@
  *   - ready: stream done; `full` carries the complete response
  *   - error: fetch / decode failure; `message` carries the reason
  *
- * Per-effect-local `let cancelled = false` closure pattern per
- * cascade-#11 hook-hardening fix on `app/frontend/lib/use-tri-agent-
- * critic.ts`. Each effect run owns its own cancelled flag so stale
- * fetch chunks resolving after a prompt-change effect cleanup do
- * not overwrite new-prompt state.
+ * Monotonic generation-counter via useRef per wave-43 cascade-#12
+ * silent-failure-hunter H-R2-1 close-out. Each effect run increments
+ * `reqIdRef.current` + captures its own currentReqId; every await
+ * boundary checks `reqIdRef.current !== currentReqId` before writing
+ * state. This shape closes a real race that per-effect-local
+ * `let cancelled = false` cannot: concurrent prompts (e.g. user
+ * types "A" then immediately "B" before "A" effect cleanup fires)
+ * race for the same setState. Monotonic counter ensures only the
+ * latest-by-construction effect run writes state regardless of
+ * fetch-resolution arrival order. The cleanup function still
+ * increments the counter for parity with the prior per-effect-local
+ * cleanup behavior; abort + clearTimeout still fire.
  *
  * Timeout: 60s default (LLM streaming latency higher than single-shot
  * critic; the streaming chunks accumulate over the full response so
@@ -36,7 +43,7 @@
  * use-tri-agent-critic.ts pattern.
  */
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export type OpenRouterStreamState =
   | { readonly status: "idle" }
@@ -61,6 +68,7 @@ export function useOpenRouterStream(
   const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS;
 
   const [state, setState] = useState<OpenRouterStreamState>({ status: "idle" });
+  const reqIdRef = useRef(0);
 
   useEffect(() => {
     if (prompt === null) {
@@ -75,9 +83,10 @@ export function useOpenRouterStream(
       return;
     }
 
-    let cancelled = false;
+    reqIdRef.current += 1;
+    const currentReqId = reqIdRef.current;
     queueMicrotask(() => {
-      if (cancelled) return;
+      if (reqIdRef.current !== currentReqId) return;
       setState({ status: "streaming", partial: "" });
     });
 
@@ -93,11 +102,11 @@ export function useOpenRouterStream(
           signal: controller.signal,
         });
 
-        if (cancelled) return;
+        if (reqIdRef.current !== currentReqId) return;
 
         if (!response.ok) {
           const errorBody = await response.text().catch(() => "<no body>");
-          if (cancelled) return;
+          if (reqIdRef.current !== currentReqId) return;
           setState({
             status: "error",
             message: `apex.openrouter-stream: ${response.status} ${response.statusText}; body=${errorBody}`,
@@ -119,7 +128,7 @@ export function useOpenRouterStream(
 
         while (true) {
           const { done, value } = await reader.read();
-          if (cancelled) {
+          if (reqIdRef.current !== currentReqId) {
             await reader.cancel().catch(() => undefined);
             return;
           }
@@ -132,10 +141,10 @@ export function useOpenRouterStream(
         const finalChunk = decoder.decode();
         if (finalChunk.length > 0) accumulator += finalChunk;
 
-        if (cancelled) return;
+        if (reqIdRef.current !== currentReqId) return;
         setState({ status: "ready", full: accumulator });
       } catch (err) {
-        if (cancelled) return;
+        if (reqIdRef.current !== currentReqId) return;
         if (err instanceof DOMException && err.name === "AbortError") {
           const isTimeout = controller.signal.reason === TIMEOUT_REASON;
           if (isTimeout) {
@@ -155,7 +164,11 @@ export function useOpenRouterStream(
     })();
 
     return () => {
-      cancelled = true;
+      // Wave-43 D2.1: increment reqIdRef so the next effect run + any
+      // still-in-flight awaits from this run see the staleness check
+      // diverge from currentReqId. AbortController + clearTimeout still
+      // fire for fetch cancel + timer cleanup.
+      reqIdRef.current += 1;
       clearTimeout(timeoutHandle);
       controller.abort("hook-cleanup");
     };
