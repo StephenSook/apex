@@ -21,6 +21,7 @@ import type {
   NextSessionForecast,
 } from "../../shared/types";
 
+import CoachingReportLiveCharts from "./CoachingReportLiveCharts";
 import GraniteCitationFooter from "./GraniteCitationFooter";
 import GuardianAudit from "./GuardianAudit";
 import TuningCard from "./TuningCard";
@@ -57,6 +58,7 @@ export default function CoachingReport({ report }: CoachingReportProps) {
           <div className="lg:col-span-2 flex flex-col gap-6">
             <CornerList corners={report.corners} />
             <ForecastChart forecast={report.forecast} />
+            <CoachingReportLiveCharts report={report} />
           </div>
           <aside className="flex flex-col gap-6">
             <TuningCard tuning={report.tuning_delta} />
