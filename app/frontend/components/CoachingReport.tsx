@@ -21,12 +21,13 @@ import type {
   NextSessionForecast,
 } from "../../shared/types";
 
+import type { AuditId } from "../../shared/brands";
+
 import CoachingReportLiveCharts from "./CoachingReportLiveCharts";
 import GraniteCitationFooter from "./GraniteCitationFooter";
 import GuardianAudit from "./GuardianAudit";
 import TuningCard from "./TuningCard";
 import WatsonTtsRadio from "../lib/watson-tts-radio";
-import { parseAuditId } from "../../shared/brands";
 
 export interface CoachingReportProps {
   readonly report: CoachingReportType;
@@ -80,18 +81,20 @@ export default function CoachingReport({ report }: CoachingReportProps) {
 }
 
 /**
- * Parse the audit_id from any source into a branded AuditId, falling
- * back to the "no_audit" sentinel for non-canonical inputs (test
- * fixtures, legacy reports). The WatsonTtsRadio still mounts + the
- * walkie-talkie surface renders; audit_id is purely a cache-key in
- * the wider system + the sentinel is the documented null-equivalent.
+ * Validate the audit_id from any source, falling back to the
+ * "no_audit" sentinel for non-canonical inputs (test fixtures, legacy
+ * reports). The WatsonTtsRadio still mounts + the walkie-talkie
+ * surface renders; audit_id is purely a cache-key in the wider system
+ * + the sentinel is the documented null-equivalent. Wave-43 cascade-#17
+ * inline validator instead of parseAuditId import to dodge Turbopack
+ * client-bundle cross-tree resolution issue per cascade #11 family.
  */
-function safeParseAuditId(raw: string): ReturnType<typeof parseAuditId> {
-  try {
-    return parseAuditId(raw);
-  } catch {
-    return parseAuditId("no_audit");
+const AUDIT_ID_HEX = /^[0-9a-f]{32}$/;
+function safeParseAuditId(raw: string): AuditId {
+  if (raw === "no_audit" || AUDIT_ID_HEX.test(raw)) {
+    return raw as unknown as AuditId;
   }
+  return "no_audit" as unknown as AuditId;
 }
 
 /**
