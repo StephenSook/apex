@@ -179,94 +179,101 @@ export default function AnalyzeFlow() {
                   })}
                 </nav>
                 <div role="tabpanel" aria-labelledby="analyze-tabs-title" className="flex-1">
-                  {activeTab === "coaching" && (
+                  {/*
+                    Wave-43 D2.12 + D2.10b close-out per silent-failure
+                    M-R2-3 + type-design M1 + M3 cross-corroboration:
+                    all 5 panes render always; inactive ones toggle to
+                    display:none. Preserves per-tab state (Chat
+                    textarea content + ResizeObserver-mounted chart
+                    sizing + scroll position) across tab switches.
+                    Prior shape unmounted inactive panes so a user
+                    typing in Chat lost the draft when switching to
+                    Coaching + back. Exhaustive-switch over
+                    activeTab is now structurally unnecessary; the
+                    className-toggle is the exhaustive surface (any
+                    new tab needs both a TABS entry + a panel block
+                    here, mirroring the prior pattern).
+                  */}
+                  <div className={activeTab === "coaching" ? "" : "hidden"}>
                     <CoachingReport report={report} />
-                  )}
-                  {activeTab === "tuning" && (
-                    <div className={tabPaneClass()}>
-                      <h3 className="font-display text-2xl tracking-tight text-ink">
-                        Tuning recommendation
-                      </h3>
-                      <p className="mt-2 mb-6 text-sm leading-relaxed text-ink-soft">
-                        Hyperparameter delta from the friction-ellipse Stage 1
-                        QP projection. Every recommendation cites a COA section
-                        and an FIA Article via the provenance footer below.
-                      </p>
-                      <TuningCard tuning={report.tuning_delta} />
-                    </div>
-                  )}
-                  {activeTab === "forecast" && (
-                    <div className={tabPaneClass()}>
-                      <h3 className="font-display text-2xl tracking-tight text-ink">
-                        Next-session forecast
-                      </h3>
-                      <p className="mt-2 mb-6 text-sm leading-relaxed text-ink-soft">
-                        Pace envelope across {report.forecast.length} mini-sector
-                        {report.forecast.length === 1 ? "" : "s"}. Mean
-                        projection through the centre; 90 percent confidence
-                        band on either side. Physics-projection feasibility
-                        check enforced at every step.
-                      </p>
-                      <dl className="grid grid-cols-2 gap-x-6 gap-y-3 font-mono text-xs">
-                        <div>
-                          <dt className="text-[10px] uppercase tracking-wider text-muted">
-                            Mini-sectors
-                          </dt>
-                          <dd className="text-base text-ink">
-                            {report.forecast.length}
-                          </dd>
-                        </div>
-                        <div>
-                          <dt className="text-[10px] uppercase tracking-wider text-muted">
-                            Mean min
-                          </dt>
-                          <dd className="text-base text-ink">
-                            {Math.min(...report.forecast.map((p) => p.mean)).toFixed(2)} s
-                          </dd>
-                        </div>
-                        <div>
-                          <dt className="text-[10px] uppercase tracking-wider text-muted">
-                            Mean max
-                          </dt>
-                          <dd className="text-base text-ink">
-                            {Math.max(...report.forecast.map((p) => p.mean)).toFixed(2)} s
-                          </dd>
-                        </div>
-                        <div>
-                          <dt className="text-[10px] uppercase tracking-wider text-muted">
-                            Coverage
-                          </dt>
-                          <dd className="text-base text-ink">90 percent envelope</dd>
-                        </div>
-                      </dl>
-                      <p className="mt-6 text-xs leading-relaxed text-ink-soft">
-                        Full chart rendering lives in the Coaching tab via the
-                        existing ForecastChart SVG; the Forecast tab summarises
-                        the envelope at a glance.
-                      </p>
-                    </div>
-                  )}
-                  {activeTab === "audit" && (
-                    <div className="flex flex-col gap-6">
-                      <div className={tabPaneClass()}>
-                        <h3 className="font-display text-2xl tracking-tight text-ink">
-                          Granite Guardian verdict
-                        </h3>
-                        <p className="mt-2 mb-6 text-sm leading-relaxed text-ink-soft">
-                          Granite Guardian 4.1 BYOC custom-rules audit on the
-                          combined Stage 1 + Stage 2 violation log. Verdict +
-                          reasoning trace + verdict-specific concern list.
-                        </p>
-                        <GuardianAudit audit={report.audit} />
+                  </div>
+                  <div className={activeTab === "tuning" ? tabPaneClass() : `${tabPaneClass()} hidden`}>
+                    <h3 className="font-display text-2xl tracking-tight text-ink">
+                      Tuning recommendation
+                    </h3>
+                    <p className="mt-2 mb-6 text-sm leading-relaxed text-ink-soft">
+                      Hyperparameter delta from the friction-ellipse Stage 1
+                      QP projection. Every recommendation cites a COA section
+                      and an FIA Article via the provenance footer below.
+                    </p>
+                    <TuningCard tuning={report.tuning_delta} />
+                  </div>
+                  <div className={activeTab === "forecast" ? tabPaneClass() : `${tabPaneClass()} hidden`}>
+                    <h3 className="font-display text-2xl tracking-tight text-ink">
+                      Next-session forecast
+                    </h3>
+                    <p className="mt-2 mb-6 text-sm leading-relaxed text-ink-soft">
+                      Pace envelope across {report.forecast.length} mini-sector
+                      {report.forecast.length === 1 ? "" : "s"}. Mean
+                      projection through the centre; 90 percent confidence
+                      band on either side. Physics-projection feasibility
+                      check enforced at every step.
+                    </p>
+                    <dl className="grid grid-cols-2 gap-x-6 gap-y-3 font-mono text-xs">
+                      <div>
+                        <dt className="text-[10px] uppercase tracking-wider text-muted">
+                          Mini-sectors
+                        </dt>
+                        <dd className="text-base text-ink">
+                          {report.forecast.length}
+                        </dd>
                       </div>
-                      <GraniteCitationFooter report={report} />
-                    </div>
-                  )}
-                  {activeTab === "chat" && (
+                      <div>
+                        <dt className="text-[10px] uppercase tracking-wider text-muted">
+                          Mean min
+                        </dt>
+                        <dd className="text-base text-ink">
+                          {Math.min(...report.forecast.map((p) => p.mean)).toFixed(2)} s
+                        </dd>
+                      </div>
+                      <div>
+                        <dt className="text-[10px] uppercase tracking-wider text-muted">
+                          Mean max
+                        </dt>
+                        <dd className="text-base text-ink">
+                          {Math.max(...report.forecast.map((p) => p.mean)).toFixed(2)} s
+                        </dd>
+                      </div>
+                      <div>
+                        <dt className="text-[10px] uppercase tracking-wider text-muted">
+                          Coverage
+                        </dt>
+                        <dd className="text-base text-ink">90 percent envelope</dd>
+                      </div>
+                    </dl>
+                    <p className="mt-6 text-xs leading-relaxed text-ink-soft">
+                      Full chart rendering lives in the Coaching tab via the
+                      existing ForecastChart SVG; the Forecast tab summarises
+                      the envelope at a glance.
+                    </p>
+                  </div>
+                  <div className={activeTab === "audit" ? "flex flex-col gap-6" : "flex flex-col gap-6 hidden"}>
                     <div className={tabPaneClass()}>
-                      <AICopilotChat panelId="analyze-chat" />
+                      <h3 className="font-display text-2xl tracking-tight text-ink">
+                        Granite Guardian verdict
+                      </h3>
+                      <p className="mt-2 mb-6 text-sm leading-relaxed text-ink-soft">
+                        Granite Guardian 4.1 BYOC custom-rules audit on the
+                        combined Stage 1 + Stage 2 violation log. Verdict +
+                        reasoning trace + verdict-specific concern list.
+                      </p>
+                      <GuardianAudit audit={report.audit} />
                     </div>
-                  )}
+                    <GraniteCitationFooter report={report} />
+                  </div>
+                  <div className={activeTab === "chat" ? tabPaneClass() : `${tabPaneClass()} hidden`}>
+                    <AICopilotChat panelId="analyze-chat" />
+                  </div>
                 </div>
               </div>
             </section>
