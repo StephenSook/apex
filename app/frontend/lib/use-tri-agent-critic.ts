@@ -41,7 +41,7 @@
 
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 import type { TriAgentVerdictPanel } from "../../shared/types";
 import { decodeTriAgentVerdictPanel } from "./api-decode";
@@ -54,39 +54,66 @@ export type TriAgentVerdictState =
   | { readonly status: "ready"; readonly panel: TriAgentVerdictPanel }
   | { readonly status: "error"; readonly message: string };
 
-const MOCK_FIXTURES: Readonly<Record<"mock_flag" | "mock_reject", TriAgentVerdictPanel>> = {
-  mock_flag: MOCK_TRI_AGENT_VERDICT,
-  mock_reject: MOCK_TRI_AGENT_VERDICT_REJECT,
-};
-
 const LIVE_FETCH_TIMEOUT_MS = 10_000;
 
 /**
+ * Wave-41 cascade-#11 silent-failure-hunter BLOCKER B1 close-out:
+ * exhaustive-switch dispatch over the non-"live" mock-source subset.
+ * If TriAgentDataSource extends with a new "mock_xyz" literal, this
+ * switch fails to compile (TS exhaustiveness check on _exhaustive:
+ * never) instead of silently returning undefined from a Record lookup
+ * + rendering an empty TriAgentCriticPanel.
+ */
+function resolveMockFixture(
+  source: Exclude<TriAgentDataSource, "live">,
+): TriAgentVerdictPanel {
+  switch (source) {
+    case "mock_flag":
+      return MOCK_TRI_AGENT_VERDICT;
+    case "mock_reject":
+      return MOCK_TRI_AGENT_VERDICT_REJECT;
+    default: {
+      const _exhaustive: never = source;
+      throw new Error(
+        `apex.useTriAgentCriticVerdict.resolveMockFixture: unhandled mock source ${String(_exhaustive)}.`,
+      );
+    }
+  }
+}
+
+/**
  * Return a TriAgentVerdictState based on the data source. Mock sources
- * resolve synchronously to the canonical fixtures. The live source
- * issues a GET /api/critic + parses the JSON response with a 10s
- * AbortController timeout + decoder-validated payload.
+ * resolve synchronously to the canonical fixtures via the exhaustive-
+ * switch helper. The live source issues a GET /api/critic + parses
+ * the JSON response with a 10s AbortController timeout + decoder-
+ * validated payload.
+ *
+ * Wave-41 cascade-#11 codex BLOCKER B2 close-out: per-effect local
+ * `cancelled` closure replaces the shared `cancelledRef` pattern that
+ * could lose stale-fetch races. With shared-ref, an old fetch resolving
+ * late saw `cancelledRef.current = false` (reset at the start of the
+ * subsequent effect) and silently overwrote new-source state. Per-
+ * effect closure scopes the cancelled flag to one specific effect run
+ * so old fetches always see their effect's `true` from cleanup.
  */
 export function useTriAgentCriticVerdict(source: TriAgentDataSource): TriAgentVerdictState {
   const [state, setState] = useState<TriAgentVerdictState>(() =>
     source === "live"
       ? { status: "loading" }
-      : { status: "ready", panel: MOCK_FIXTURES[source] },
+      : { status: "ready", panel: resolveMockFixture(source) },
   );
 
-  const cancelledRef = useRef(false);
-
   useEffect(() => {
-    cancelledRef.current = false;
+    let cancelled = false;
 
     if (source !== "live") {
       const targetSource = source;
       queueMicrotask(() => {
-        if (cancelledRef.current) return;
-        setState({ status: "ready", panel: MOCK_FIXTURES[targetSource] });
+        if (cancelled) return;
+        setState({ status: "ready", panel: resolveMockFixture(targetSource) });
       });
       return () => {
-        cancelledRef.current = true;
+        cancelled = true;
       };
     }
 
@@ -97,7 +124,7 @@ export function useTriAgentCriticVerdict(source: TriAgentDataSource): TriAgentVe
     // initial mount value; the source-toggle case needs an explicit
     // reset here via queueMicrotask deferral.
     queueMicrotask(() => {
-      if (cancelledRef.current) return;
+      if (cancelled) return;
       setState({ status: "loading" });
     });
 
@@ -109,11 +136,16 @@ export function useTriAgentCriticVerdict(source: TriAgentDataSource): TriAgentVe
     void (async () => {
       try {
         const response = await fetch("/api/critic", { signal: controller.signal });
-        if (cancelledRef.current) return;
+        if (cancelled) return;
         if (!response.ok) {
           const message = `Critic backend returned ${response.status} ${response.statusText}.`;
           if (typeof console !== "undefined" && console.error) {
+            // Wave-41 cascade-#11 plan-gap-scanner BLOCKER#4: include
+            // `source` in error context so post-mortem logs can
+            // correlate the failure with the consumer's data-source
+            // toggle behavior at the time of failure.
             console.error("apex.useTriAgentCriticVerdict: response not ok", {
+              source,
               status: response.status,
               statusText: response.statusText,
               url: response.url,
@@ -123,7 +155,7 @@ export function useTriAgentCriticVerdict(source: TriAgentDataSource): TriAgentVe
           return;
         }
         const rawPayload: unknown = await response.json();
-        if (cancelledRef.current) return;
+        if (cancelled) return;
         try {
           const panel = decodeTriAgentVerdictPanel(rawPayload);
           setState({ status: "ready", panel });
@@ -132,6 +164,7 @@ export function useTriAgentCriticVerdict(source: TriAgentDataSource): TriAgentVe
             decodeErr instanceof Error ? decodeErr.message : String(decodeErr);
           if (typeof console !== "undefined" && console.error) {
             console.error("apex.useTriAgentCriticVerdict: decoder rejected payload", {
+              source,
               rawPayload,
               decodeErr,
             });
@@ -139,7 +172,7 @@ export function useTriAgentCriticVerdict(source: TriAgentDataSource): TriAgentVe
           setState({ status: "error", message: `Critic decoder rejected payload: ${message}` });
         }
       } catch (err) {
-        if (cancelledRef.current) return;
+        if (cancelled) return;
         const isAbort =
           err instanceof DOMException && err.name === "AbortError";
         if (isAbort) {
@@ -147,6 +180,7 @@ export function useTriAgentCriticVerdict(source: TriAgentDataSource): TriAgentVe
           if (isTimeout) {
             if (typeof console !== "undefined" && console.error) {
               console.error("apex.useTriAgentCriticVerdict: /api/critic timed out", {
+                source,
                 timeoutMs: LIVE_FETCH_TIMEOUT_MS,
               });
             }
@@ -160,7 +194,7 @@ export function useTriAgentCriticVerdict(source: TriAgentDataSource): TriAgentVe
         }
         const message = err instanceof Error ? err.message : String(err);
         if (typeof console !== "undefined" && console.error) {
-          console.error("apex.useTriAgentCriticVerdict: fetch threw", { err });
+          console.error("apex.useTriAgentCriticVerdict: fetch threw", { source, err });
         }
         setState({ status: "error", message: `Critic fetch failed: ${message}.` });
       } finally {
@@ -169,7 +203,7 @@ export function useTriAgentCriticVerdict(source: TriAgentDataSource): TriAgentVe
     })();
 
     return () => {
-      cancelledRef.current = true;
+      cancelled = true;
       clearTimeout(timeoutHandle);
       controller.abort("source-changed");
     };
