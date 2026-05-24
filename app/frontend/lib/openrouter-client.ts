@@ -35,12 +35,18 @@ export interface ChatMessage {
   readonly content: string;
 }
 
+// Wave-43 D2.7 close-out per cold-review-2 type-design H4 + codex HIGH:
+// dropped `stream?: boolean` from ChatCompletionRequest. Field was
+// exposed in the public type surface + serialized into fetch body but
+// the function unconditionally calls `await response.json()` which
+// breaks if OpenRouter returns SSE-shaped body for stream:true. Future
+// stream variant lives in a separate `openRouterChatCompletionStream`
+// function. Single-shot is the only contract this helper exposes.
 export interface ChatCompletionRequest {
   readonly model?: string;
   readonly messages: ReadonlyArray<ChatMessage>;
   readonly temperature?: number;
   readonly max_tokens?: number;
-  readonly stream?: boolean;
 }
 
 export interface ChatCompletionChoice {
@@ -202,7 +208,7 @@ export async function openRouterChatCompletion(
     messages: request.messages,
     temperature: request.temperature ?? DEFAULT_TEMPERATURE,
     max_tokens: request.max_tokens ?? DEFAULT_MAX_TOKENS,
-    stream: request.stream ?? false,
+    stream: false,
   });
 
   const headers: Record<string, string> = {
