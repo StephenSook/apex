@@ -42,6 +42,7 @@ import type { AuditId } from "../../shared/brands";
 type AudioPlayerState =
   | { readonly status: "idle" }
   | { readonly status: "checking" }
+  | { readonly status: "synthesizing" }
   | { readonly status: "ready_watson"; readonly url: string }
   | { readonly status: "ready_fallback" }
   | { readonly status: "error"; readonly message: string };
@@ -50,14 +51,17 @@ export interface WatsonTtsRadioProps {
   readonly auditId: AuditId;
   readonly text: string;
   readonly cachedAudioBaseUrl?: string;
+  readonly synthesizeEndpoint?: string;
 }
 
 const DEFAULT_CACHED_AUDIO_BASE_URL = "/generated-audio";
+const DEFAULT_SYNTHESIZE_ENDPOINT = "/api/watson-tts";
 
 export default function WatsonTtsRadio({
   auditId,
   text,
   cachedAudioBaseUrl = DEFAULT_CACHED_AUDIO_BASE_URL,
+  synthesizeEndpoint = DEFAULT_SYNTHESIZE_ENDPOINT,
 }: WatsonTtsRadioProps) {
   const [state, setState] = useState<AudioPlayerState>({ status: "idle" });
 
@@ -82,12 +86,43 @@ export default function WatsonTtsRadio({
           setState({ status: "ready_watson", url: audioUrl });
           return;
         }
-        // 404 OR other non-ok: fall back to Web Speech API.
-        setState({ status: "ready_fallback" });
+        // 404 OR other non-ok cache lookup: try the production
+        // synthesis path before falling back to Web Speech API. Wave-43
+        // E2.2 close-out per the Lane E2 plan: if WATSON_TTS_API_KEY is
+        // configured, the server endpoint synthesizes + caches +
+        // returns the URL; if missing env vars (400) or Watson/FFmpeg
+        // failure (502), we still fall back to the wave-42 Web Speech
+        // API path so the demo never breaks.
+        setState({ status: "synthesizing" });
+        try {
+          const synthResponse = await fetch(synthesizeEndpoint, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ audit_id: auditId, text }),
+          });
+          if (cancelled) return;
+          if (synthResponse.ok) {
+            const payload = (await synthResponse.json().catch(() => null)) as
+              | { readonly url?: unknown }
+              | null;
+            if (payload !== null && typeof payload.url === "string" && payload.url.length > 0) {
+              setState({ status: "ready_watson", url: payload.url });
+              return;
+            }
+          }
+          // 400 missing env vars OR 502 Watson failure OR malformed
+          // response: fall back to Web Speech API.
+          setState({ status: "ready_fallback" });
+        } catch {
+          if (cancelled) return;
+          setState({ status: "ready_fallback" });
+        }
       } catch {
         if (cancelled) return;
-        // Network error / SSR / fetch unsupported: fall back to Web
-        // Speech API which only requires browser-side speechSynthesis.
+        // Network error / SSR / fetch unsupported on cache HEAD: skip
+        // the synthesis POST too (same network conditions would block
+        // it) + fall back to Web Speech API which only requires
+        // browser-side speechSynthesis.
         setState({ status: "ready_fallback" });
       }
     })();
@@ -95,7 +130,7 @@ export default function WatsonTtsRadio({
     return () => {
       cancelled = true;
     };
-  }, [auditId, cachedAudioBaseUrl]);
+  }, [auditId, text, cachedAudioBaseUrl, synthesizeEndpoint]);
 
   const playFallback = useCallback(() => {
     if (typeof window === "undefined" || typeof window.speechSynthesis === "undefined") {
@@ -136,6 +171,16 @@ export default function WatsonTtsRadio({
       <div className="flex flex-col gap-2 rounded-sm border border-rule bg-paper p-4">
         <p className="font-mono text-[10px] uppercase tracking-wider text-muted">
           Walkie-talkie · checking audio cache
+        </p>
+      </div>
+    );
+  }
+
+  if (state.status === "synthesizing") {
+    return (
+      <div className="flex flex-col gap-2 rounded-sm border border-rule bg-paper p-4">
+        <p className="font-mono text-[10px] uppercase tracking-wider text-muted">
+          Walkie-talkie · synthesizing via Watson TTS + FFmpeg
         </p>
       </div>
     );
