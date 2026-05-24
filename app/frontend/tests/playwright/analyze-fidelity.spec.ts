@@ -47,8 +47,13 @@ test.describe("/analyze fidelity", () => {
     const testCsv = path.join(FIXTURE_DIR, "test-session.csv");
     const testPdf = path.join(FIXTURE_DIR, "test-coa.pdf");
     const fileInputs = page.locator('input[type="file"]');
-    await fileInputs.nth(0).setInputFiles(testCsv).catch(() => undefined);
-    await fileInputs.nth(1).setInputFiles(testPdf).catch(() => undefined);
+    // Wave-43 cascade-#15 F2-round-2 MED#6 close-out: do NOT swallow
+    // setInputFiles errors. If fixture file missing or input element
+    // absent, fail loudly so the spec doesn't silently pass.
+    await expect(fileInputs.nth(0)).toBeAttached();
+    await expect(fileInputs.nth(1)).toBeAttached();
+    await fileInputs.nth(0).setInputFiles(testCsv);
+    await fileInputs.nth(1).setInputFiles(testPdf);
     await page.getByRole("textbox", { name: /Your debrief/i }).fill("test debrief");
     await page.getByRole("textbox", { name: /Driver identifier/i }).fill("playwright-fidelity-test-driver");
     await page.getByRole("button", { name: /Generate coaching report/i }).click();
@@ -73,8 +78,13 @@ test.describe("/analyze fidelity", () => {
     const testCsv = path.join(FIXTURE_DIR, "test-session.csv");
     const testPdf = path.join(FIXTURE_DIR, "test-coa.pdf");
     const fileInputs = page.locator('input[type="file"]');
-    await fileInputs.nth(0).setInputFiles(testCsv).catch(() => undefined);
-    await fileInputs.nth(1).setInputFiles(testPdf).catch(() => undefined);
+    // Wave-43 cascade-#15 F2-round-2 MED#6 close-out: do NOT swallow
+    // setInputFiles errors. If fixture file missing or input element
+    // absent, fail loudly so the spec doesn't silently pass.
+    await expect(fileInputs.nth(0)).toBeAttached();
+    await expect(fileInputs.nth(1)).toBeAttached();
+    await fileInputs.nth(0).setInputFiles(testCsv);
+    await fileInputs.nth(1).setInputFiles(testPdf);
     await page.getByRole("textbox", { name: /Your debrief/i }).fill("test debrief");
     await page.getByRole("textbox", { name: /Driver identifier/i }).fill("tabs-test");
     await page.getByRole("button", { name: /Generate coaching report/i }).click();
