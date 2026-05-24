@@ -9,7 +9,7 @@
  * `await response.json()` are unsafe by design (TS cannot validate
  * runtime payload shape at compile time). Per wave-37 cascade-#5
  * codex H-4 + type-design M-1 + comment-analyzer M-1: parse-boundary
- * casts are the single highest-leverage silent-failure surface in
+ * casts are the single highest-impact silent-failure surface in
  * the codebase. Wave-41 Stream A replaces every `as` cast at every
  * JSON.parse boundary with a `decodeXxx()` function from this module.
  *
