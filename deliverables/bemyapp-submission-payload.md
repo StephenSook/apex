@@ -4,7 +4,7 @@
 >
 > **Owner:** Stephen Sookra. **Submission window opens:** TBD. **Hard deadline:** 2026-05-31, 11:59 PM ET.
 >
-> **Live demo URL:** https://apex-git-main-ssookra-7703s-projects.vercel.app (Vercel production deploy; cutover landed wave-38).
+> **Live demo URL:** https://apex-one-black.vercel.app (Vercel production deploy; cutover landed wave-38).
 >
 > The fields directly below mirror the live BeMyApp project page template field-for-field (reference: `~/.claude/projects/-Users-stephensookra-Desktop-IBM-May/memory/reference_bemyapp_submission_template.md`). The "Reference long-form drafts" section below the form-aligned section keeps the wider material (README-length elevator, full IBM-tools enumeration, full multi-track checklist) in case BeMyApp adds more fields or for cross-use in deck + video.
 
@@ -155,7 +155,7 @@ Public from Day 1. Apache 2.0 license. Atomic-commit discipline (220+ commits ac
 ## Live demo URL
 
 ```
-[Day 11 fill: https://apex-git-main-ssookra-7703s-projects.vercel.app or https://apex-race.vercel.app]
+[Day 11 fill: https://apex-one-black.vercel.app or https://apex-race.vercel.app]
 ```
 
 Judges' tour single page at `/judges`. Live status dashboard at `/status`. Upload-and-analyze flow at `/analyze`.

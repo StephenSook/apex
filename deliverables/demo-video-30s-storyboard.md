@@ -61,7 +61,7 @@ The visual contrast (adaptive clean + counterfactual violation) is the architect
 
 | Visual | Audio (VO) | On-screen overlay |
 |--------|------------|-------------------|
-| 12-tool IBM Granite stack mosaic. APEX wordmark resolve. apex-git-main-ssookra-7703s-projects.vercel.app URL appears. IBM SkillsBuild May Challenge submission badge fades in. | "Built on IBM Granite. For adaptive racers first." | "apex dot race - IBM SkillsBuild May Challenge 2026" |
+| 12-tool IBM Granite stack mosaic. APEX wordmark resolve. apex-one-black.vercel.app URL appears. IBM SkillsBuild May Challenge submission badge fades in. | "Built on IBM Granite. For adaptive racers first." | "apex dot race - IBM SkillsBuild May Challenge 2026" |
 
 Hold 1.2s on the closing badge before fade-to-cream.
 
