@@ -46,9 +46,9 @@ interface CitationLine {
 // handoff backend extension.
 const MOCK_CITATIONS: ReadonlyArray<CitationLine> = [
   {
-    rule_id: "fia_appendix_l_18_3_3",
+    rule_id: "fia_appendix_l_adaptive_simultaneity",
     passage_id: "granite-r2-149m-passage-04812",
-    section_anchor: "FIA Appendix L Article 18.3.3",
+    section_anchor: "FIA Appendix L (article TBD per published revision)",
     excerpt:
       "Adaptive driving equipment that permits simultaneous brake-and-throttle actuation is approved when the medical certificate documents the underlying motor-control limitation that makes the simultaneity biomechanically necessary.",
     severity: "info",

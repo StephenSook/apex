@@ -55,7 +55,7 @@ function stubResponseFor(prompt: string): string {
   // populated in the server env.
   const trimmed = prompt.trim().toLowerCase();
   if (trimmed.includes("old hairpin") || trimmed.includes("early-throttle")) {
-    return "The Old Hairpin recommendation flips your lever-input pattern from a single brake pulse into two micro-presses (4mm + 6mm) so the COA-derived c_overlap flag stays inside the projected friction ellipse at apex. Your hand-control hardware permits the simultaneity per FIA Appendix L Article 18.3.3; the gap was the lever-travel ramp, not the technique.";
+    return "The Old Hairpin recommendation flips your lever-input pattern from a single brake pulse into two micro-presses (4mm + 6mm) so the COA-derived c_overlap flag stays inside the projected friction ellipse at apex. Your hand-control hardware permits the simultaneity per the adaptive-equipment provisions of FIA Appendix L; the gap was the lever-travel ramp, not the technique.";
   }
   if (trimmed.includes("coppice") || trimmed.includes("braked 5 metres")) {
     return "Counterfactual replay at +5m braking would shift the apex 3.2m later + cost 0.18s on the corner exit per the V2 cvxpylayers projection. The trail-brake-into-corner geometry your hand controls support gives you 6m more entry runway than able-bodied baseline; reclaiming that 5m would have cost the exit speed advantage.";
@@ -64,7 +64,7 @@ function stubResponseFor(prompt: string): string {
     return "The Stage 1 differentiable QP enforces sqrt(long_g^2 + lat_g^2) <= mu_v at every forecast step. For sector 2 your inputs produced combined 1.18g vs the mu_nominal 1.20 ceiling; well inside the ellipse. The lap loss came from Stage 2 jerk-bound exceeded (steering rate 0.62 rad/s vs the 0.50 bound), not friction.";
   }
   if (trimmed.includes("coa") || trimmed.includes("simultaneity gate")) {
-    return "Your COA carries the MME Motorsport hand-control hardware spec which independently approves brake + throttle paths (Article 18.3.3). The tier-0 simultaneity gate reads your coa_overlap_flag = 1 + suppresses the standard coa_simultaneity_violation rule. The what-if-replay on /judges demonstrates the counterfactual: flipping the flag to 0 produces the violation an able-bodied driver would receive.";
+    return "Your COA carries the MME Motorsport hand-control hardware spec which independently approves brake + throttle paths per the adaptive-equipment provisions of FIA Appendix L. The tier-0 simultaneity gate reads your coa_overlap_flag = 1 + suppresses the standard coa_simultaneity_violation rule. The what-if-replay on /judges demonstrates the counterfactual: flipping the flag to 0 produces the violation an able-bodied driver would receive.";
   }
   if (trimmed.includes("sarah") || trimmed.includes("craner")) {
     return "Your delta to Sarah's reference at the Craner Curves entry is +0.21s, dropping to +0.08s by exit. The pattern matches a typical 4-lap-into-stint heat soak on the front-left tire; degradation pct 28% at this lap. Sarah's reference was set on a fresh-tire run. Adjusted for tire delta, your pace is within 0.05s of reference.";
