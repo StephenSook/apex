@@ -12,12 +12,18 @@ describe("WatsonTtsRadio", () => {
   beforeEach(() => {
     fetchMock = vi.fn();
     vi.stubGlobal("fetch", fetchMock);
-    // Stub speechSynthesis so playFallback paths don't throw.
-    (globalThis as unknown as { window: Window }).window.speechSynthesis = {
-      speak: vi.fn(),
-      cancel: vi.fn(),
-      getVoices: () => [],
-    } as unknown as SpeechSynthesis;
+    // Stub speechSynthesis via defineProperty so playFallback + cleanup
+    // paths don't throw. window.speechSynthesis is read-only on jsdom
+    // so direct assignment trips TS2540.
+    Object.defineProperty(window, "speechSynthesis", {
+      configurable: true,
+      writable: true,
+      value: {
+        speak: vi.fn(),
+        cancel: vi.fn(),
+        getVoices: () => [],
+      } as unknown as SpeechSynthesis,
+    });
     (globalThis as unknown as Record<string, unknown>).SpeechSynthesisUtterance = vi
       .fn()
       .mockImplementation(() => ({
