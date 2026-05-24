@@ -110,46 +110,42 @@ describe("AnalyzeFlow integration", () => {
       { timeout: 2000 },
     );
 
-    // Click Tuning tab; Tuning pane heading appears visible; Coaching pane
-    // heading is still in the DOM (wave-43 D2.12 CSS-hidden state
-    // preservation) but inside a `.hidden` ancestor so it is not user-
-    // visible. Assert visibility via DOM-ancestor `.hidden` class check
-    // rather than `.not.toBeInTheDocument()` since the all-tabs-render-
-    // always shape preserves per-tab state across switches.
+    // Wave-43 D2.12 CSS-hidden state preservation: all 5 tab panes
+    // render always; inactive ones toggle to `hidden` className. Heading
+    // text that appears in multiple panes (e.g. "Tuning recommendation"
+    // in both Tuning pane AND CoachingReport sub-component) is now in
+    // the DOM in BOTH the visible + the hidden subtrees. Helper finds
+    // the visible-by-ancestor instance per assertion.
+    const visibleHeading = (name: RegExp) => {
+      const matches = screen.getAllByRole("heading", { name });
+      return matches.find((h) => h.closest(".hidden") === null) ?? null;
+    };
+
+    // Click Tuning tab; Tuning pane heading appears visible.
     const tuningTab = screen.getByRole("tab", { name: /^Tuning/i });
     await user.click(tuningTab);
-    expect(
-      screen.getByRole("heading", { name: /Tuning recommendation/i }),
-    ).toBeInTheDocument();
+    expect(visibleHeading(/Tuning recommendation/i)).not.toBeNull();
     const coachingHeading = screen.getByRole("heading", { name: /Corner-by-corner coaching/i });
     expect(coachingHeading.closest(".hidden")).not.toBeNull();
 
-    // Click Forecast tab; Forecast pane heading appears.
+    // Click Forecast tab; Forecast pane heading appears visible.
     const forecastTab = screen.getByRole("tab", { name: /^Forecast/i });
     await user.click(forecastTab);
-    expect(
-      screen.getByRole("heading", { name: /Next-session forecast/i }),
-    ).toBeInTheDocument();
+    expect(visibleHeading(/Next-session forecast/i)).not.toBeNull();
 
-    // Click Audit tab; Granite Guardian pane heading appears.
+    // Click Audit tab; Granite Guardian pane heading appears visible.
     const auditTab = screen.getByRole("tab", { name: /^Audit/i });
     await user.click(auditTab);
-    expect(
-      screen.getByRole("heading", { name: /Granite Guardian verdict/i }),
-    ).toBeInTheDocument();
+    expect(visibleHeading(/Granite Guardian verdict/i)).not.toBeNull();
 
-    // Click Chat tab; AICopilotChat heading appears.
+    // Click Chat tab; AICopilotChat heading appears visible.
     const chatTab = screen.getByRole("tab", { name: /^Chat/i });
     await user.click(chatTab);
-    expect(
-      screen.getByRole("heading", { name: /Ask the race engineer/i }),
-    ).toBeInTheDocument();
+    expect(visibleHeading(/Ask the race engineer/i)).not.toBeNull();
 
-    // Click Coaching tab back; CoachingReport heading returns.
+    // Click Coaching tab back; CoachingReport heading is visible again.
     const coachingTab = screen.getByRole("tab", { name: /^Coaching/i });
     await user.click(coachingTab);
-    expect(
-      screen.getByRole("heading", { name: /Corner-by-corner coaching/i }),
-    ).toBeInTheDocument();
+    expect(visibleHeading(/Corner-by-corner coaching/i)).not.toBeNull();
   });
 });
