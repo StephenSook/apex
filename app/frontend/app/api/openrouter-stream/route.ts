@@ -146,11 +146,22 @@ export async function POST(request: Request): Promise<Response> {
     );
   }
 
+  // Wave-42 cold-review-2 codex H1 close-out: production phase requires
+  // BOTH OPENROUTER_API_KEY + OPENROUTER_MODEL non-empty. Prior shape
+  // activated production-phase on apiKey alone; if OPENROUTER_MODEL was
+  // left as the empty .env.example placeholder slot, openRouterChat
+  // Completion threw inside the route + returned 502 to the consumer.
+  // Now both env vars must be populated; otherwise fall through to the
+  // stub-phase path so the chat surface stays demo-functional.
   const apiKey = process.env.OPENROUTER_API_KEY;
-  if (apiKey === undefined || apiKey.trim() === "") {
+  const model = process.env.OPENROUTER_MODEL;
+  const productionReady =
+    apiKey !== undefined && apiKey.trim() !== "" && model !== undefined && model.trim() !== "";
+
+  if (!productionReady) {
     // Stub phase: respond with hard-coded coaching prose chunked over
     // ~1 second so the AICopilotChat hook sees realistic streaming
-    // behavior + judges see the surface working without an API key.
+    // behavior + judges see the surface working without env-var setup.
     const responseText = stubResponseFor(body.prompt);
     const stream = streamStubResponse(responseText, request.signal);
     return new Response(stream, {
