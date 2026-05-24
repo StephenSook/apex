@@ -105,6 +105,11 @@ export default function WatsonTtsRadio({
       });
       return;
     }
+    // Wave-43 D2.9 close-out per cold-review-2 silent-failure M-R2-2:
+    // cancel any in-flight utterance BEFORE speak() so rapid-click does
+    // not queue 5 utterances + interfere with one another. Single
+    // utterance plays at a time.
+    window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
     // Walkie-talkie acoustic profile approximation: lower pitch + slightly
     // faster rate. Real walkie-talkie filter chain (highpass + lowpass +
@@ -115,6 +120,16 @@ export default function WatsonTtsRadio({
     utterance.volume = 1.0;
     window.speechSynthesis.speak(utterance);
   }, [text]);
+
+  // Wave-43 D2.9 close-out: cleanup on unmount so navigation mid-speech
+  // does not let the utterance continue playing on the next page.
+  useEffect(() => {
+    return () => {
+      if (typeof window !== "undefined" && typeof window.speechSynthesis !== "undefined") {
+        window.speechSynthesis.cancel();
+      }
+    };
+  }, []);
 
   if (state.status === "idle" || state.status === "checking") {
     return (
