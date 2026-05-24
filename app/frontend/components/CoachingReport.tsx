@@ -21,6 +21,7 @@ import type {
   NextSessionForecast,
 } from "../../shared/types";
 
+import GraniteCitationFooter from "./GraniteCitationFooter";
 import GuardianAudit from "./GuardianAudit";
 import TuningCard from "./TuningCard";
 
@@ -63,6 +64,7 @@ export default function CoachingReport({ report }: CoachingReportProps) {
           </aside>
         </div>
 
+        <GraniteCitationFooter report={report} />
         <ProvenanceFooterBlock provenance={report.provenance} />
       </div>
     </section>
