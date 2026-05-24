@@ -1,6 +1,5 @@
 import { expect, test } from "@playwright/test";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
 
 /**
  * Wave-43 C2.5 /analyze 5-tab fidelity spec per the wave-43 plan.
@@ -18,7 +17,9 @@ import { fileURLToPath } from "node:url";
  * built Vercel preview URL (override via PLAYWRIGHT_BASE_URL env).
  */
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+// Resolve fixture dir relative to repo root via process.cwd() since
+// Playwright launches from the package root (app/frontend) by default.
+const FIXTURE_DIR = path.resolve(process.cwd(), "tests/playwright/fixtures");
 
 test.describe("/analyze fidelity", () => {
   test.beforeEach(async ({ page }) => {
@@ -43,8 +44,8 @@ test.describe("/analyze fidelity", () => {
 
     // Upload synthetic test files via setInputFiles to bypass the real
     // file-picker dialog (Playwright headless can't open the OS picker).
-    const testCsv = path.join(__dirname, "fixtures", "test-session.csv");
-    const testPdf = path.join(__dirname, "fixtures", "test-coa.pdf");
+    const testCsv = path.join(FIXTURE_DIR, "test-session.csv");
+    const testPdf = path.join(FIXTURE_DIR, "test-coa.pdf");
     const fileInputs = page.locator('input[type="file"]');
     await fileInputs.nth(0).setInputFiles(testCsv).catch(() => undefined);
     await fileInputs.nth(1).setInputFiles(testPdf).catch(() => undefined);
@@ -69,8 +70,8 @@ test.describe("/analyze fidelity", () => {
     await page.goto("/analyze", { waitUntil: "networkidle" });
 
     // Same submission flow.
-    const testCsv = path.join(__dirname, "fixtures", "test-session.csv");
-    const testPdf = path.join(__dirname, "fixtures", "test-coa.pdf");
+    const testCsv = path.join(FIXTURE_DIR, "test-session.csv");
+    const testPdf = path.join(FIXTURE_DIR, "test-coa.pdf");
     const fileInputs = page.locator('input[type="file"]');
     await fileInputs.nth(0).setInputFiles(testCsv).catch(() => undefined);
     await fileInputs.nth(1).setInputFiles(testPdf).catch(() => undefined);
