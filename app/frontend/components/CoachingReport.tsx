@@ -66,7 +66,7 @@ export default function CoachingReport({ report }: CoachingReportProps) {
             <TuningCard tuning={report.tuning_delta} />
             <GuardianAudit audit={report.audit} />
             <WatsonTtsRadio
-              auditId={parseAuditId(report.audit.audit_id)}
+              auditId={safeParseAuditId(report.audit.audit_id)}
               text={buildCoachingNarration(report)}
             />
           </aside>
@@ -77,6 +77,21 @@ export default function CoachingReport({ report }: CoachingReportProps) {
       </div>
     </section>
   );
+}
+
+/**
+ * Parse the audit_id from any source into a branded AuditId, falling
+ * back to the "no_audit" sentinel for non-canonical inputs (test
+ * fixtures, legacy reports). The WatsonTtsRadio still mounts + the
+ * walkie-talkie surface renders; audit_id is purely a cache-key in
+ * the wider system + the sentinel is the documented null-equivalent.
+ */
+function safeParseAuditId(raw: string): ReturnType<typeof parseAuditId> {
+  try {
+    return parseAuditId(raw);
+  } catch {
+    return parseAuditId("no_audit");
+  }
 }
 
 /**
