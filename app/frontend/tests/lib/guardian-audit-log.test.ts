@@ -8,7 +8,7 @@ import {
 } from "../../lib/guardian-audit-log";
 import type { BackendGuardianAudit } from "../../../shared/types";
 
-const AUDIT_LOG_STORAGE_KEY = "apex.guardian-audit-log.v1";
+const AUDIT_LOG_STORAGE_KEY = "apex-guardian-audit-log";
 
 const sampleVerdict: BackendGuardianAudit = {
   verdict: "SAFE",
