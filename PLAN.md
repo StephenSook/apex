@@ -9,13 +9,13 @@
 
 ---
 
-## Status snapshot (last sync 2026-05-24 Day 6 wave-43 mid-execution)
+## Status snapshot (last sync 2026-05-24 Day 6 wave-43 close-out)
 
 This snapshot is the at-a-glance reality check for anyone reading PLAN.md fresh.
 
-**Wave-43 mid-execution Day 6 EOD:** 4 commits shipped (Lane A2 quick-wins) + Lane B2 mid-flight + Lane D2 + E2 + G2.1 + C2 + F2 + G2 + H2 queued per `~/.claude/plans/all-right-i-want-rippling-moon.md`. Total wave-43 estimate 46-62 atomic commits + Obsidian discipline.
+**Wave-43 close-out Day 6 EOD:** ~45 commits shipped across Lanes A2 (5/5 done) + B2 (3/3 done) + D2 (12/12 done) + E2 (3/3 done) + G2.1 (1/1 done) + G2.2 D-041 + G2.4 AI-tone sweep + G2.5 README+paper drop HF Space refs + G2.6 D-042 BLOCKING apex.race DNS NXDOMAIN + C2 partial (5 vitest files: ALoRAStatusBadge + GEPAEvolutionPanel + EAGLE3LatencyBadge + api-decode + what-if-replay + guardian-audit-log + CoachingReportLiveCharts + script + 30s storyboard + deck-source.html) + cascade-#13 inline 2-commit close + cascade-#14 inline 1-commit close + F2 codex dispatch with 4 finding fix-wave (HIGH#4 signal pass + HIGH#2 tempfile race + MED#7 console.warn + D-043 Vercel constraint doc) + H2 Obsidian session note + APEX MOC pointer + project memory + MEMORY.md refresh + wave-30 amendment. Remaining queue: video record (operator-action) + Playwright fidelity specs (no Playwright dep) + remaining 4 C2 vitest files (medium-risk component integration).
 
-**Wave totals across the 12-day arc:** wave-22 through wave-43 inclusive. Wave-41 33 commits + wave-42 24 commits + wave-43 4 commits to date = 61 commits across the wave-41/42/43 arc alone. CI HEAD green; cascade #11 + #12 closed; cascade #13 pending Lane F2.
+**Wave totals across the 12-day arc:** wave-22 through wave-43 inclusive. Wave-41 33 commits + wave-42 24 commits + wave-43 ~45 commits = ~102 commits across the wave-41/42/43 arc alone. HEAD CI GREEN; cascade #11 + #12 + #13 + #14 all closed.
 
 **Phase 0 - Bootstrap:** ✅ DONE Day 3 per wave-40 Vinh 18-commit Phase 0 close-out (D-027 Stage C PASS at ||grad L|| = 24.12 + FCVR = 0 on RTX 3060 Ti).
 Row IDs below match the Phase 0 build table further down (rows 0.1 through 0.19); this snapshot just collapses the table to the load-bearing items. M11 wave-24 closure: D-prefix dropped so status + table share one ID scheme.
