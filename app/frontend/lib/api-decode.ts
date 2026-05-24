@@ -342,10 +342,17 @@ export function decodeBackendGuardianAudit(raw: unknown): BackendGuardianAudit {
           `apex.decode.BackendGuardianAudit: BLOCK verdict requires at least one triggered_rule; got empty array. Backend emitter contract violation.`,
         );
       }
+      // Wave-42 cold-review-2 type-design-analyzer H3 close-out:
+      // destructure-and-spread eliminates the prior `as unknown as
+      // readonly [string, ...string[]]` cast. After the empty-check at
+      // the if-guard above, triggeredRules is provably non-empty, so
+      // the destructure produces a head + rest pair that satisfies
+      // the tuple type without a cast.
+      const [headRule, ...restRules] = triggeredRules;
       return {
         ...base,
         verdict: "BLOCK",
-        triggered_rules: triggeredRules as unknown as readonly [string, ...string[]],
+        triggered_rules: [headRule, ...restRules] as const,
       };
     default: {
       const _exhaustive: never = verdictRaw;
