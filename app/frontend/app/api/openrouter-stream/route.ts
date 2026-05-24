@@ -31,6 +31,15 @@
 
 import { openRouterChatCompletion, type ChatMessage } from "../../../lib/openrouter-client";
 
+// Wave-42 cold-review #2 silent-failure-hunter B-R2-1 close-out:
+// explicit Node.js runtime declaration. Without this, Next.js 16 may
+// pick the Edge runtime for the route based on root layout config,
+// breaking setTimeout-driven stub stream semantics. Node.js runtime
+// is required for the production-phase path's openRouterChatCompletion
+// fetch wrapper since OpenRouter requires longer-than-Edge-budget
+// connection lifetimes for streaming SSE responses.
+export const runtime = "nodejs";
+
 interface OpenRouterStreamRequestBody {
   readonly prompt?: unknown;
 }
@@ -63,20 +72,58 @@ function stubResponseFor(prompt: string): string {
   return "The race-engineer copilot is in stub-response mode for the wave-42 demo. Populate OPENROUTER_API_KEY in `.env.local` per `docs/vinh-phase-1-handoff.md` Q2 + restart the server to enable live Granite 4.1 8B Instruct streaming responses for arbitrary questions.";
 }
 
-async function streamStubResponse(text: string): Promise<ReadableStream<Uint8Array>> {
+function streamStubResponse(text: string, abortSignal: AbortSignal): ReadableStream<Uint8Array> {
+  // Wave-42 cold-review #2 silent-failure-hunter B-R2-2 close-out:
+  // accept the consumer's request.signal so the stub stream halts
+  // immediately when the consumer disconnects (tab close, page nav,
+  // hook cleanup). Prior shape ran the setTimeout chain to completion
+  // against a closed controller; controller.enqueue threw silently
+  // inside the ReadableStream internals. Now the for-loop breaks on
+  // abort + the cancel() callback aborts any in-flight setTimeout.
   const encoder = new TextEncoder();
   const words = text.split(" ");
   const chunkSize = Math.max(1, Math.ceil(words.length / 8));
 
+  let timeoutHandle: ReturnType<typeof setTimeout> | null = null;
+
   return new ReadableStream<Uint8Array>({
-    async pull(controller) {
+    async start(controller) {
       for (let i = 0; i < words.length; i += chunkSize) {
+        if (abortSignal.aborted) {
+          // Consumer disconnected. Cancel + exit cleanly.
+          try {
+            controller.close();
+          } catch {
+            // Controller may already be closed by upstream cancel; swallow.
+          }
+          return;
+        }
         const slice = words.slice(i, i + chunkSize).join(" ");
         const chunk = i === 0 ? slice : ` ${slice}`;
-        controller.enqueue(encoder.encode(chunk));
-        await new Promise((resolve) => setTimeout(resolve, 120));
+        try {
+          controller.enqueue(encoder.encode(chunk));
+        } catch {
+          // Controller closed mid-write (consumer cancelled between
+          // abortSignal check + enqueue). Exit cleanly.
+          return;
+        }
+        await new Promise<void>((resolve) => {
+          timeoutHandle = setTimeout(resolve, 120);
+        });
       }
-      controller.close();
+      try {
+        controller.close();
+      } catch {
+        // Already-closed (idempotent).
+      }
+    },
+    cancel(_reason) {
+      // Consumer-initiated cancel. Stop the in-flight setTimeout so
+      // we don't keep firing 120ms ticks against a dead controller.
+      if (timeoutHandle !== null) {
+        clearTimeout(timeoutHandle);
+        timeoutHandle = null;
+      }
     },
   });
 }
@@ -105,7 +152,7 @@ export async function POST(request: Request): Promise<Response> {
     // ~1 second so the AICopilotChat hook sees realistic streaming
     // behavior + judges see the surface working without an API key.
     const responseText = stubResponseFor(body.prompt);
-    const stream = await streamStubResponse(responseText);
+    const stream = streamStubResponse(responseText, request.signal);
     return new Response(stream, {
       status: 200,
       headers: {
@@ -133,7 +180,7 @@ export async function POST(request: Request): Promise<Response> {
     ];
     const response = await openRouterChatCompletion({ messages });
     const text = response.choices[0]?.message.content ?? "";
-    const stream = await streamStubResponse(text);
+    const stream = streamStubResponse(text, request.signal);
     return new Response(stream, {
       status: 200,
       headers: {
