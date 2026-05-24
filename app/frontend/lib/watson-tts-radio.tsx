@@ -109,12 +109,36 @@ export default function WatsonTtsRadio({
               setState({ status: "ready_watson", url: payload.url });
               return;
             }
+          } else {
+            // Wave-43 cascade-#13 F2 MED#7 close-out per codex adversarial:
+            // log the actual failure shape so operators can correlate
+            // broken Watson credentials / missing FFmpeg / Vercel readonly
+            // FS errors with the silent client-side fallback. Without
+            // this log, production-path failures look identical to
+            // Web Speech API fallback in the UI; nothing in DevTools
+            // tells the operator the production path is dead.
+            const errorBody = await synthResponse.text().catch(() => "<no body>");
+            console.warn(
+              "apex.watson-tts: synthesis POST returned non-ok; falling back to Web Speech API.",
+              {
+                status: synthResponse.status,
+                statusText: synthResponse.statusText,
+                body: errorBody.slice(0, 500),
+                endpoint: synthesizeEndpoint,
+              },
+            );
           }
-          // 400 missing env vars OR 502 Watson failure OR malformed
-          // response: fall back to Web Speech API.
           setState({ status: "ready_fallback" });
-        } catch {
+        } catch (err) {
           if (cancelled) return;
+          // Wave-43 F2 MED#7: log thrown POST errors too (network,
+          // CORS, abort, malformed JSON in the request path) so the
+          // operator sees the failure mode instead of silent fallback.
+          const message = err instanceof Error ? err.message : String(err);
+          console.warn(
+            "apex.watson-tts: synthesis POST threw; falling back to Web Speech API.",
+            { message, endpoint: synthesizeEndpoint },
+          );
           setState({ status: "ready_fallback" });
         }
       } catch {
