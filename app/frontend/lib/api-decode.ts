@@ -45,11 +45,13 @@
 import {
   expectSchemaVersion as _expectSchemaVersion,
   parseAuditId,
+  parseCommitSha,
   parseHorizonStep,
   parseMahalanobisConfidence,
   parsePhysicsTier,
   parseSeverity,
   type AuditId,
+  type CommitSha,
   type HorizonStep,
   type MahalanobisConfidence,
   type PhysicsTier,
@@ -68,6 +70,7 @@ import {
   type BackendViolationType,
   type ChannelName,
   type GuardianAudit,
+  type LibraryVersion,
   type ProjectionResult,
   type StructuredLogEntry,
   type StructuredLogEntryCanonical,
@@ -148,6 +151,28 @@ function reqObject(raw: Record<string, unknown>, field: string, ctx: string): Re
   return value;
 }
 
+// Wave-41 cascade-#11 HIGH H2: LibraryVersion per-value validator
+// closes the B.7 type-tightening gap. Backend emits semver (X.Y.Z) OR
+// one of three logging.py:91-98 sentinels ("unknown", "no_version_attr",
+// "not_installed"); any other value is a backend regression worth
+// throwing on at the wire boundary instead of flowing silently through
+// downstream structured-log consumers.
+const SEMVER_RUNTIME_PATTERN = /^\d+\.\d+\.\d+$/;
+const LIBRARY_VERSION_SENTINEL_SET: ReadonlySet<string> = new Set([
+  "unknown",
+  "no_version_attr",
+  "not_installed",
+]);
+
+function validateLibraryVersionValue(value: string, key: string): LibraryVersion {
+  if (LIBRARY_VERSION_SENTINEL_SET.has(value) || SEMVER_RUNTIME_PATTERN.test(value)) {
+    return value as LibraryVersion;
+  }
+  throw new Error(
+    `apex.decode.StructuredLogEntry.models[${JSON.stringify(key)}]: expected semver (X.Y.Z) OR one of "unknown" | "no_version_attr" | "not_installed"; got ${JSON.stringify(value)}.`,
+  );
+}
+
 // ---------------------------------------------------------------------------
 // decodeBackendViolationRecord
 // ---------------------------------------------------------------------------
@@ -157,8 +182,7 @@ function decodeBackendViolationRecord(raw: unknown, idx: number): BackendViolati
     throw new Error(`apex.decode.BackendViolationRecord[${idx}]: must be object; got ${typeof raw}.`);
   }
   const stepRaw = reqNumber(raw, "step", `BackendViolationRecord[${idx}]`);
-  const _step: HorizonStep = parseHorizonStep(stepRaw);
-  void _step;
+  const step: HorizonStep = parseHorizonStep(stepRaw);
 
   const typeRaw = reqString(raw, "type", `BackendViolationRecord[${idx}]`);
   if (!VALID_BACKEND_VIOLATION_TYPES.has(typeRaw)) {
@@ -168,12 +192,10 @@ function decodeBackendViolationRecord(raw: unknown, idx: number): BackendViolati
   }
 
   const tierRaw = reqNumber(raw, "tier", `BackendViolationRecord[${idx}]`);
-  const _tier: PhysicsTier = parsePhysicsTier(tierRaw);
-  void _tier;
+  const tier: PhysicsTier = parsePhysicsTier(tierRaw);
 
   const severityRaw = reqNumber(raw, "severity", `BackendViolationRecord[${idx}]`);
-  const _severity: Severity = parseSeverity(severityRaw);
-  void _severity;
+  const severity: Severity = parseSeverity(severityRaw);
 
   const channelValuesRaw = reqObject(raw, "channel_values", `BackendViolationRecord[${idx}]`);
   const channelValues: Partial<Record<ChannelName, number>> = {};
@@ -191,11 +213,16 @@ function decodeBackendViolationRecord(raw: unknown, idx: number): BackendViolati
     channelValues[key as ChannelName] = value;
   }
 
+  // Wave-41 cascade-#11 brand-propagation: return branded step + tier +
+  // severity so consumer-site cross-brand wiring (e.g. assigning a
+  // PhysicsTier into a step slot) is a TS compile error not a runtime
+  // corruption. Field order preserves violations.py:131 to_text()
+  // emission per B.5 (load-bearing for round-trip serialization).
   return {
-    step: stepRaw,
+    step,
     type: typeRaw as BackendViolationType,
-    tier: tierRaw,
-    severity: severityRaw,
+    tier,
+    severity,
     channel_values: channelValues,
   };
 }
@@ -239,8 +266,7 @@ export function decodeBackendGuardianAudit(raw: unknown): BackendGuardianAudit {
   }
 
   const auditIdRaw = reqString(raw, "audit_id", "BackendGuardianAudit");
-  const _auditId: AuditId = parseAuditId(auditIdRaw);
-  void _auditId;
+  const auditId: AuditId = parseAuditId(auditIdRaw);
 
   const verdictRaw = reqString(raw, "verdict", "BackendGuardianAudit") as BackendGuardianVerdict;
   if (!VALID_BACKEND_GUARDIAN_VERDICTS.has(verdictRaw)) {
@@ -274,8 +300,13 @@ export function decodeBackendGuardianAudit(raw: unknown): BackendGuardianAudit {
 
   const auditedAtIso = reqString(raw, "audited_at_iso", "BackendGuardianAudit");
 
+  // Wave-41 cascade-#11 brand-propagation: return branded audit_id +
+  // physics_confidence so consumer sites get compile-time wiring
+  // protection. physics_confidence stays nullable per violations.py:176
+  // `float | None` for cases where the D-024 Mahalanobis detector was
+  // skipped (low-data session, dev-mode bypass).
   return {
-    audit_id: auditIdRaw,
+    audit_id: auditId,
     verdict: verdictRaw,
     reasoning,
     triggered_rules: triggeredRules,
@@ -372,21 +403,32 @@ export function decodeStructuredLogEntry(raw: unknown): StructuredLogEntry {
 
   const logger = reqString(raw, "logger", "StructuredLogEntry");
   const event = reqString(raw, "event", "StructuredLogEntry");
-  const auditIdRaw = reqString(raw, "audit_id", "StructuredLogEntry");
-  parseAuditId(auditIdRaw);
-  const commitShaRaw = reqString(raw, "commit_sha", "StructuredLogEntry");
-  // CommitSha brand consumed by caller if needed; not stored here.
-  void commitShaRaw;
 
+  const auditIdRaw = reqString(raw, "audit_id", "StructuredLogEntry");
+  const auditId: AuditId = parseAuditId(auditIdRaw);
+
+  // Wave-41 cascade-#11 HIGH H1: parseCommitSha at the wire boundary so
+  // a backend bug emitting `commit_sha: "GIT_FAILED"` or empty string
+  // throws here instead of flowing silently through downstream
+  // structured-log consumers. Per logging.py:74 commit_sha() resolver:
+  // 7-40 char lowercase hex OR "unknown" sentinel.
+  const commitShaRaw = reqString(raw, "commit_sha", "StructuredLogEntry");
+  const commitSha: CommitSha = parseCommitSha(commitShaRaw);
+
+  // Wave-41 cascade-#11 HIGH H2: per-value LibraryVersion validation via
+  // validateLibraryVersionValue helper above. The B.7 type-tightening
+  // (LibraryVersion = semver | 3 sentinels) was previously bypassed by a
+  // single `as Readonly<Record<string, LibVer>>` cast; per-value
+  // validation closes that gap.
   const modelsRaw = reqObject(raw, "models", "StructuredLogEntry");
-  const models: Record<string, string> = {};
+  const models: Record<string, LibraryVersion> = {};
   for (const [key, value] of Object.entries(modelsRaw)) {
     if (typeof value !== "string") {
       throw new Error(
         `apex.decode.StructuredLogEntry.models[${key}]: must be string; got ${typeof value}.`,
       );
     }
-    models[key] = value;
+    models[key] = validateLibraryVersionValue(value, key);
   }
 
   // Collect any extras: keys not in the canonical schema spread under the
@@ -399,19 +441,19 @@ export function decodeStructuredLogEntry(raw: unknown): StructuredLogEntry {
     }
   }
 
-  // LibraryVersion brand-cast at the boundary. JSON has no semver
-  // template-literal validation, so we trust the string values here +
-  // defer literal-narrowing to consumer-site `as` if needed.
-  type LibVer = StructuredLogEntryCanonical["models"][string];
-
+  // Wave-41 cascade-#11 brand-propagation: branded audit_id + commit_sha
+  // flow through so consumer-site cross-brand wiring (e.g. assigning a
+  // CommitSha into an audit_id slot) is a TS compile error not a runtime
+  // corruption. Per-value LibraryVersion validation above closes the
+  // prior cast-bypass gap on the models field.
   return {
     ts,
     level: levelRaw,
     logger,
     event,
-    audit_id: auditIdRaw,
-    commit_sha: commitShaRaw,
-    models: models as Readonly<Record<string, LibVer>>,
+    audit_id: auditId,
+    commit_sha: commitSha,
+    models,
     ...extras,
   };
 }

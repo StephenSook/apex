@@ -3,9 +3,20 @@
 // app/shared/brands.ts (kept separate to prevent types.ts bloat past
 // 1256-line soft-cap). Decoder boundary (app/frontend/lib/api-decode.ts
 // per wave-41 Stream A) imports parseXxx() validators from brands.ts;
-// types.ts only consumes the branded types + the PhysicsTierValue
-// literal-union.
-import type { PhysicsTierValue } from "./brands";
+// types.ts consumes the branded types + the PhysicsTierValue literal-
+// union. Wave-41 cascade-#11 brand-propagation widens the Backend*
+// canonical schemas so brand types flow end-to-end (decoder validates
+// at the wire boundary + downstream consumers receive branded values
+// + cross-brand wiring is a TS compile error not a runtime corruption).
+import type {
+  AuditId,
+  CommitSha,
+  HorizonStep,
+  MahalanobisConfidence,
+  PhysicsTier,
+  PhysicsTierValue,
+  Severity,
+} from "./brands";
 
 /**
  * APEX shared API contracts.
@@ -1028,8 +1039,13 @@ export type ViolationEngine = "v1_numpy" | "v2_cvxpylayers" | "v2_scp_unrolled";
  * declaration order when serializing back for golden-fixture tests.
  */
 export interface BackendViolationRecord {
-  /** Forecast horizon step index, 0..29 per HORIZON. */
-  readonly step: number;
+  /**
+   * Forecast horizon step index, 0..29 per HORIZON. Wave-41 cascade-#11
+   * brand-propagation: branded HorizonStep flows from the decoder so
+   * cross-brand wiring (e.g. passing a PhysicsTier into a step slot) is
+   * a TS compile error not a runtime corruption.
+   */
+  readonly step: HorizonStep;
   /** One of 14 BACKEND_VIOLATION_TYPES. */
   readonly type: BackendViolationType;
   /**
@@ -1037,12 +1053,17 @@ export interface BackendViolationRecord {
    * Wave-41 B.5: field order rotated to align with `violations.py:131`
    * to_text() serializer emission order (`step type tier severity ch=`)
    * so any TS-side Object.keys()-based round-trip serializer produces
-   * byte-identical output. Prior order (severity before tier) was a
-   * cold-review type-design-analyzer M.6 finding.
+   * byte-identical output. Wave-41 cascade-#11 brand-propagation:
+   * branded PhysicsTier flows from the decoder per the brand-types
+   * compile-time wiring contract.
    */
-  readonly tier: number;
-  /** Distance past the constraint boundary; non-negative. */
-  readonly severity: number;
+  readonly tier: PhysicsTier;
+  /**
+   * Distance past the constraint boundary; non-negative. Wave-41
+   * cascade-#11 brand-propagation: branded Severity flows from the
+   * decoder.
+   */
+  readonly severity: Severity;
   /** Subset of CHANNELS at this step; keys are ChannelName instances. */
   readonly channel_values: Readonly<Partial<Record<ChannelName, number>>>;
 }
@@ -1140,15 +1161,25 @@ export type BackendGuardianVerdict = "SAFE" | "REVIEW" | "BLOCK";
  * even if the violation log is empty.
  */
 export interface BackendGuardianAudit {
-  /** uuid4 hex string from Vinh's new_audit_id() helper; never empty. */
-  readonly audit_id: string;
+  /**
+   * uuid4 hex string from Vinh's new_audit_id() helper; never empty.
+   * Wave-41 cascade-#11 brand-propagation: branded AuditId flows from
+   * the decoder so cross-brand wiring (e.g. CommitSha into an audit-id
+   * slot) is a TS compile error.
+   */
+  readonly audit_id: AuditId;
   readonly verdict: BackendGuardianVerdict;
   /** Think-mode trace for UI surface. */
   readonly reasoning: string;
   /** Subset of BYOC rule IDs that fired. */
   readonly triggered_rules: ReadonlyArray<string>;
-  /** D-024 Mahalanobis detector output; null when detector skipped. */
-  readonly physics_confidence: number | null;
+  /**
+   * D-024 Mahalanobis detector output; null when detector skipped.
+   * Wave-41 cascade-#11 brand-propagation: branded MahalanobisConfidence
+   * flows from the decoder; nullable preserves violations.py:176
+   * `float | None` for skipped-detector cases.
+   */
+  readonly physics_confidence: MahalanobisConfidence | null;
   /** ISO 8601 UTC timestamp with seconds precision. */
   readonly audited_at_iso: string;
 }
@@ -1297,10 +1328,20 @@ export interface StructuredLogEntryCanonical {
   readonly logger: string;
   /** Short snake_case event name passed as the log message. */
   readonly event: string;
-  /** Audit-id correlation per council v2 SRE peer fix; "no_audit" when outside an audit_context() block. */
-  readonly audit_id: string;
-  /** Git rev-parse --short HEAD; "unknown" when git unavailable. */
-  readonly commit_sha: string;
+  /**
+   * Audit-id correlation per council v2 SRE peer fix; "no_audit" when
+   * outside an audit_context() block. Wave-41 cascade-#11 brand-
+   * propagation: branded AuditId flows from the decoder.
+   */
+  readonly audit_id: AuditId;
+  /**
+   * Git rev-parse --short HEAD; "unknown" when git unavailable.
+   * Wave-41 cascade-#11 brand-propagation + HIGH H1: branded CommitSha
+   * flows from the decoder; per-value validation closes the prior
+   * silent-discard gap (decodeStructuredLogEntry was `void
+   * commitShaRaw`-ing the parser result).
+   */
+  readonly commit_sha: CommitSha;
   /**
    * Library version snapshot (cached per process). Wave-41 B.7:
    * value type tightened from `string` to `LibraryVersion`

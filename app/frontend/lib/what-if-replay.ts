@@ -41,6 +41,11 @@
 
 "use client";
 
+import {
+  parseHorizonStep,
+  parsePhysicsTier,
+  parseSeverity,
+} from "../../shared/brands";
 import type {
   BackendPhysicsViolationLog,
   ConvergenceFixture,
@@ -111,13 +116,16 @@ export function runWhatIfReplay(
   // synthetic record matching the mutation's intended outcome so the
   // /judges grid can demonstrate the replay UI surface before the
   // backend lands.
+  // Wave-41 cascade-#11 brand-propagation: step + tier + severity now
+  // branded; construct via parsers so the stub mirrors the wave-boundary
+  // pattern the real backend uses.
   const replayedViolationLog: BackendPhysicsViolationLog = {
     records: [
       {
-        step: 3,
+        step: parseHorizonStep(3),
         type: "coa_simultaneity_violation",
-        tier: 0,
-        severity: 0.42,
+        tier: parsePhysicsTier(0),
+        severity: parseSeverity(0.42),
         channel_values: {
           throttle_pct: 12.0,
           brake_pa: 8200.0,

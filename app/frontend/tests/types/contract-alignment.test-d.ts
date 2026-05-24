@@ -36,6 +36,14 @@ import type {
   ToleranceBands,
 } from "../../../shared/types";
 import { CHANNEL_TIER_BINDING, channel_index } from "../../../shared/types";
+import {
+  parseAuditId,
+  parseCommitSha,
+  parseHorizonStep,
+  parseMahalanobisConfidence,
+  parsePhysicsTier,
+  parseSeverity,
+} from "../../../shared/brands";
 
 function assertRecord(_: BackendViolationRecord): void {}
 function assertLog(_: BackendPhysicsViolationLog): void {}
@@ -66,12 +74,14 @@ void _tierForLongG;
 // BackendViolationRecord
 // ---------------------------------------------------------------------------
 
+// Wave-41 cascade-#11 brand-propagation: step + tier + severity now
+// branded; construction sites parse-or-throw at the wire boundary.
 assertRecord({
-  step: 3,
+  step: parseHorizonStep(3),
   type: "friction_ellipse_exceeded",
-  severity: 0.124,
+  severity: parseSeverity(0.124),
   channel_values: { long_g: 1.31, lat_g: 0.42 },
-  tier: 7,
+  tier: parsePhysicsTier(7),
 });
 
 // @ts-expect-error wave-40 type-design HIGH: "made_up_violation" is not in BACKEND_VIOLATION_TYPES.
@@ -106,21 +116,24 @@ assertLog({ records: [], forecast_step_count: "30", engine: "v1_numpy" });
 // BackendGuardianAudit
 // ---------------------------------------------------------------------------
 
+// Wave-41 cascade-#11 brand-propagation: audit_id + physics_confidence
+// now branded. parseAuditId requires uuid4().hex OR "no_audit" sentinel;
+// the test fixture uses a 32-char hex placeholder.
 assertAudit({
-  audit_id: "abc123def456",
+  audit_id: parseAuditId("abc123def456abc123def456abc123de"),
   verdict: "SAFE",
   reasoning: "test",
   triggered_rules: ["rule_one"],
-  physics_confidence: 0.95,
+  physics_confidence: parseMahalanobisConfidence(0.95),
   audited_at_iso: "2026-05-23T05:00:00+00:00",
 });
 
 assertAudit({
-  audit_id: "xyz789",
+  audit_id: parseAuditId("no_audit"),
   verdict: "BLOCK",
   reasoning: "test",
   triggered_rules: [],
-  physics_confidence: null,
+  physics_confidence: parseMahalanobisConfidence(null),
   audited_at_iso: "2026-05-23T05:00:00+00:00",
 });
 
@@ -180,13 +193,15 @@ assertProjector({ is_differentiable: true, project: () => ({ corrected_forecast:
 // StructuredLogEntry
 // ---------------------------------------------------------------------------
 
+// Wave-41 cascade-#11 brand-propagation: audit_id + commit_sha now
+// branded; parseAuditId + parseCommitSha enforce wire-boundary shape.
 assertLogEntry({
   ts: "2026-05-23T05:00:00+00:00",
   level: "INFO",
   logger: "apex.physics.scp_spike",
   event: "forecast.completed",
-  audit_id: "no_audit",
-  commit_sha: "c97caaa",
+  audit_id: parseAuditId("no_audit"),
+  commit_sha: parseCommitSha("c97caaa"),
   models: { torch: "2.5.1" },
 });
 
