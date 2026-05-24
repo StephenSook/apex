@@ -228,7 +228,7 @@ AICopilotChat surface for single-turn QA against Granite 4.1 8B
 Instruct narrator.
 
 Wave-42 Lane F.D shipped the route stub + hook + chat surface; wave-43
-cascade-#12 BLOCKER #1 close-out (commit `40e3e22`) added the production
+cascade-#12 BLOCKER #1 close-out (commit `89da297`) added the production
 proxy path. Stream M.3 spec extension formalizes the contract.
 
 ### Request shape
@@ -306,14 +306,23 @@ interface RequestBody {
 }
 ```
 
-### Response shape
+### Response shape (cascade-#15 rework per D-046)
+
+```
+HTTP/1.1 200 OK
+Content-Type: audio/mpeg
+Content-Length: <N>
+Cache-Control: no-store
+
+<binary MP3 bytes>
+```
+
+Server streams inline `audio/mpeg` MP3 bytes; client creates
+`URL.createObjectURL(blob)` + plays via `<audio src={blobUrl}>`. No
+cache; per-request synthesis ~1-3s on Vercel iad1 with warm Fluid
+Compute instance.
 
 ```typescript
-interface SuccessResponse {
-  readonly url: string;         // /generated-audio/{audit_id}.mp3
-  readonly cached: boolean;     // true if existing file; false if just-synthesized
-}
-
 interface ErrorResponse {
   readonly error: string;       // apex.watson-tts: ... prefix
 }
@@ -321,37 +330,35 @@ interface ErrorResponse {
 
 ### Status codes
 
-- `200 OK`: synthesis or cache hit; client renders `<audio src={url}>`
+- `200 OK`: synthesis success; response body is binary MP3
 - `400 Bad Request`: missing env vars (WATSON_TTS_API_KEY +
   WATSON_TTS_URL) OR malformed body OR validation failure
 - `502 Bad Gateway`: Watson REST failure (non-2xx, unexpected
-  Content-Type, empty body) OR FFmpeg pipeline failure OR cache-write
-  failure
+  Content-Type, empty body) OR FFmpeg pipeline failure
 
 ### Runtime
 
-`export const runtime = "nodejs"` (NOT Edge). Required for
-`child_process.spawn` (FFmpeg) + `node:fs/promises` (cache I/O).
+`export const runtime = "nodejs"` + `export const maxDuration = 60`
+(NOT Edge). Required for `child_process.spawn` (FFmpeg) + binary
+streaming response.
 
 ### Cache contract
 
-Cache key = `audit_id` (1-64 chars matching `[a-zA-Z0-9_-]`). Cache
-hit is detected via `existsSync({audit_id}.mp3)` BEFORE the Watson
-REST call. Atomic write via tempfile rename pattern: write to
-`{audit_id}.mp3.tmp` first, rename to `{audit_id}.mp3` after FFmpeg
-completes, so HEAD probes from the client never see a half-written
-file. `public/generated-audio/` directory is gitignored; the cache is
-regenerated on demand (Vercel deployments start with empty cache).
+Cacheless. Each POST synthesizes fresh. Wave-43 cascade-#15 dropped
+the `public/generated-audio/` HEAD-probe cache pattern (Vercel readonly
+FS made it inoperable). Inline-blob streaming is simpler + lower-
+latency + ~1-3s Watson + FFmpeg roundtrip on Vercel iad1 region with
+warm function instance per Fluid Compute. If cross-request caching
+becomes a perception-budget concern post-submission, add a /tmp cache
+layer with audit_id as the cache-key + serve via the blob path.
 
 ### Atomicity contract
 
-Concurrent requests for the same `audit_id` race-write to distinct
-tempfiles (each tempfile is unique by process / request identity in
-practice since Node's spawn allocates fresh fds), then both rename
-to the same final path. POSIX rename is atomic; whichever request
-completes second overwrites the first's result with identical
-content (same input text + same FFmpeg pipeline = same output bytes).
-No partial-file exposure.
+Per-request synthesis means no shared mutable cache state across
+concurrent requests for the same audit_id. Both requests independently
+synthesize against Watson + FFmpeg + stream their own blob. Watson
+REST + FFmpeg are deterministic for identical input text + voice, so
+output bytes match across requests.
 
 ### Environment variables (required)
 
@@ -366,22 +373,25 @@ the client falls back to the Web Speech API path automatically.
 
 ### FFmpeg dependency
 
-The Vercel build environment provides FFmpeg via the build image; for
-local development install via `brew install ffmpeg` (macOS) or
-`apt-get install ffmpeg` (Linux). The endpoint uses
-`child_process.spawn("ffmpeg", ...)` directly (no fluent-ffmpeg or
-similar SDK) to avoid the Node-22 simdjson dyld bug documented in the
-global three-brain stack memory.
+FFmpeg binary resolved via bundled `ffmpeg-static` 5.3.0 npm package
+(devDep + runtime; works identically on Vercel + self-hosted +
+Stephen's Mac). Wave-43 cascade-#15 added the dep + uses
+`createRequire(import.meta.url)("ffmpeg-static")` to resolve the
+binary path. No system FFmpeg in PATH required. The endpoint uses
+`child_process.spawn(FFMPEG_BIN_PATH, ...)` (no fluent-ffmpeg SDK to
+avoid the Node-22 simdjson dyld bug documented in the global three-
+brain stack memory). FFmpeg child receives consumer `req.signal`
+abort propagation via SIGTERM kill on consumer disconnect.
 
 ### Verification
 
-- POST `{audit_id: "test-001", text: "test phrase"}` returns 200 +
-  `{"url": "/generated-audio/test-001.mp3", "cached": false}` on
-  first call.
-- Repeat returns 200 + `{"cached": true}`.
-- HEAD on the returned URL returns 200 + `Content-Type: audio/mpeg`.
-- Browser `<audio src>` element plays the filtered narration with the
-  walkie-talkie acoustic profile.
+- POST `{audit_id: "test001", text: "test phrase"}` returns 200 +
+  binary MP3 body with `Content-Type: audio/mpeg`.
+- Browser fetches blob, creates `URL.createObjectURL`, plays via
+  `<audio src={blobUrl}>` element with the filtered narration carrying
+  the walkie-talkie acoustic profile.
+- Consumer disconnect mid-synthesis aborts the Watson REST + kills
+  the FFmpeg child (SIGTERM) via `req.signal` threading.
 
 ---
 

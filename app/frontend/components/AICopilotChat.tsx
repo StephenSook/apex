@@ -53,7 +53,7 @@ const SUGGESTED_QUESTIONS: ReadonlyArray<string> = [
   "What if I had braked 5 metres later into Coppice?",
   "Show me the friction-ellipse projection for sector 2.",
   "Walk me through the COA simultaneity gate for my hand controls.",
-  "Compare my lap delta to Sarah's reference at the Craner Curves.",
+  "Compare my lap delta to the reference line at the trickiest sector.",
 ];
 
 export interface AICopilotChatProps {

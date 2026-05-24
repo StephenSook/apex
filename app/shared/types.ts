@@ -172,10 +172,12 @@ export interface FIACoa {
  * `coa_parser.py` extraction targets.
  *
  * Backend Pydantic mirror obligation: Vinh's parser MUST emit JSON
- * validating against this TypeScript shape. The decoder
- * `decodeFIACoaCanonical` below provides the wire-boundary validation
- * for frontend consumers of /api/analyze responses that include the
- * parsed COA document for provenance rendering.
+ * validating against this TypeScript shape. A runtime
+ * `decodeFIACoaCanonical` wire-boundary decoder is queued for the
+ * `/api/analyze` consumer site when Vinh's COA-parsing endpoint
+ * ships data we can validate against (per type-design-analyzer H2
+ * 2026-05-24: type-shape live; runtime decoder pending consumer-site
+ * integration).
  *
  * Per the no-invented-FIA-articles project compliance rule, every
  * `fia_appendix_l_reference` uses the "Article TBD per published
