@@ -70,6 +70,13 @@ export default function WatsonTtsRadio({
   // state-in-effect ESLint rule + cascade-#11 hook-hardening pattern.
   useEffect(() => {
     let cancelled = false;
+    // Wave-43 cascade-#15 F2-round-2 MED#4 close-out per codex
+    // adversarial: AbortController wires HEAD + synthesis POST fetches
+    // to the effect cleanup so a navigation-mid-flight aborts the
+    // in-flight network requests instead of leaving them dangling.
+    // Prior cleanup only flipped a closure flag; the actual fetches
+    // continued + counted against the consumer's network budget.
+    const controller = new AbortController();
 
     queueMicrotask(() => {
       if (cancelled) return;
@@ -80,7 +87,7 @@ export default function WatsonTtsRadio({
 
     void (async () => {
       try {
-        const response = await fetch(audioUrl, { method: "HEAD" });
+        const response = await fetch(audioUrl, { method: "HEAD", signal: controller.signal });
         if (cancelled) return;
         if (response.ok) {
           setState({ status: "ready_watson", url: audioUrl });
@@ -99,6 +106,7 @@ export default function WatsonTtsRadio({
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ audit_id: auditId, text }),
+            signal: controller.signal,
           });
           if (cancelled) return;
           if (synthResponse.ok) {
@@ -153,6 +161,7 @@ export default function WatsonTtsRadio({
 
     return () => {
       cancelled = true;
+      controller.abort("watson-tts-radio-cleanup");
     };
   }, [auditId, text, cachedAudioBaseUrl, synthesizeEndpoint]);
 
