@@ -106,6 +106,77 @@ export interface OpenRouterClientOptions {
   readonly maxRetries5xx?: number;
 }
 
+// Wave-42 cascade-#12 BLOCKER close-out (silent-failure-hunter B3 +
+// type-design-analyzer H3 + codex HIGH cross-corroboration). The
+// prior shape used `(await response.json()) as ChatCompletionResponse`
+// which is the unsafe-cast-at-JSON.parse-boundary anti-pattern that
+// `app/frontend/lib/api-decode.ts` exists to prevent (file header
+// explicitly calls out this pattern as "the single highest-impact
+// silent-failure surface in the codebase"). Wire-side validator
+// added here scoped to the openrouter-client module since this is
+// the only consumer of the ChatCompletionResponse shape.
+function isRecord(raw: unknown): raw is Record<string, unknown> {
+  return typeof raw === "object" && raw !== null && !Array.isArray(raw);
+}
+
+function decodeChatCompletionResponse(raw: unknown): ChatCompletionResponse {
+  if (!isRecord(raw)) {
+    throw new Error(
+      `apex.openrouter-client: response body must be object; got ${typeof raw}.`,
+    );
+  }
+  // Some OpenAI-compatible providers (Anthropic via OpenRouter, etc) emit
+  // HTTP 200 with `{ error: { message: "..." } }` for content_filter
+  // rejections. Surface as structured error rather than letting the
+  // missing `choices` array crash downstream consumers.
+  if (raw.error !== undefined) {
+    const errorObj = raw.error as { message?: unknown };
+    const message =
+      typeof errorObj.message === "string"
+        ? errorObj.message
+        : JSON.stringify(raw.error);
+    throw new Error(`apex.openrouter-client: provider returned error: ${message}`);
+  }
+  if (typeof raw.id !== "string") {
+    throw new Error(
+      `apex.openrouter-client: response missing id string; got ${typeof raw.id}.`,
+    );
+  }
+  if (typeof raw.model !== "string") {
+    throw new Error(
+      `apex.openrouter-client: response missing model string; got ${typeof raw.model}.`,
+    );
+  }
+  if (!Array.isArray(raw.choices)) {
+    throw new Error(
+      `apex.openrouter-client: response missing choices array; got ${typeof raw.choices}.`,
+    );
+  }
+  if (raw.choices.length === 0) {
+    throw new Error(`apex.openrouter-client: response choices array empty.`);
+  }
+  for (const [idx, choice] of raw.choices.entries()) {
+    if (!isRecord(choice)) {
+      throw new Error(
+        `apex.openrouter-client: response.choices[${idx}] must be object; got ${typeof choice}.`,
+      );
+    }
+    const choiceRec = choice as Record<string, unknown>;
+    if (!isRecord(choiceRec.message)) {
+      throw new Error(
+        `apex.openrouter-client: response.choices[${idx}].message must be object.`,
+      );
+    }
+    const messageRec = choiceRec.message as Record<string, unknown>;
+    if (typeof messageRec.content !== "string") {
+      throw new Error(
+        `apex.openrouter-client: response.choices[${idx}].message.content must be string.`,
+      );
+    }
+  }
+  return raw as unknown as ChatCompletionResponse;
+}
+
 /**
  * POST /chat/completions to OpenRouter. Retries on 5xx + 429 per the
  * policy documented at the file header. Aborts after the timeout.
@@ -182,8 +253,8 @@ export async function openRouterChatCompletion(
         );
       }
 
-      const payload = (await response.json()) as ChatCompletionResponse;
-      return payload;
+      const rawPayload: unknown = await response.json();
+      return decodeChatCompletionResponse(rawPayload);
     } catch (err) {
       if (err instanceof DOMException && err.name === "AbortError") {
         const isTimeout = controller.signal.reason === TIMEOUT_REASON;
