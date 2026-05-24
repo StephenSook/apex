@@ -33,7 +33,7 @@
  */
 
 // ---------------------------------------------------------------------------
-// AuditId — uuid4().hex OR "no_audit" sentinel
+// AuditId: uuid4().hex OR "no_audit" sentinel
 // ---------------------------------------------------------------------------
 
 declare const __auditIdBrand: unique symbol;
@@ -72,7 +72,7 @@ export function parseAuditId(raw: string): AuditId {
 }
 
 // ---------------------------------------------------------------------------
-// CommitSha — 7-40 char lowercase hex
+// CommitSha: 7-40 char lowercase hex
 // ---------------------------------------------------------------------------
 
 declare const __commitShaBrand: unique symbol;
@@ -107,7 +107,7 @@ export function parseCommitSha(raw: string): CommitSha {
 }
 
 // ---------------------------------------------------------------------------
-// MahalanobisConfidence — non-negative finite distance
+// MahalanobisConfidence: non-negative finite distance
 // ---------------------------------------------------------------------------
 
 declare const __mahalanobisBrand: unique symbol;
@@ -140,7 +140,7 @@ export function parseMahalanobisConfidence(raw: number | null): MahalanobisConfi
 }
 
 // ---------------------------------------------------------------------------
-// HorizonStep — integer 0..29 (HORIZON-1)
+// HorizonStep: integer 0..29 (HORIZON-1)
 // ---------------------------------------------------------------------------
 
 declare const __horizonStepBrand: unique symbol;
@@ -169,7 +169,7 @@ export function parseHorizonStep(raw: number): HorizonStep {
 }
 
 // ---------------------------------------------------------------------------
-// PhysicsTier — integer 0..8 per D-015 tier-binding
+// PhysicsTier: integer 0..8 per D-015 tier-binding
 // ---------------------------------------------------------------------------
 
 declare const __physicsTierBrand: unique symbol;
@@ -211,7 +211,7 @@ export function parsePhysicsTier(raw: number): PhysicsTier {
 }
 
 // ---------------------------------------------------------------------------
-// Severity — non-negative finite distance past constraint boundary
+// Severity: non-negative finite distance past constraint boundary
 // ---------------------------------------------------------------------------
 
 declare const __severityBrand: unique symbol;
@@ -238,7 +238,7 @@ export function parseSeverity(raw: number): Severity {
 }
 
 // ---------------------------------------------------------------------------
-// SemVer — semantic-version comparator helpers (Stream A decoder uses this)
+// SemVer: semantic-version comparator helpers (Stream A decoder uses this)
 // ---------------------------------------------------------------------------
 
 /**
