@@ -37,10 +37,16 @@ import { useState } from "react";
 
 import { useOpenRouterStream } from "../lib/openrouter-stream";
 
+// Wave-43 D2.5 close-out per cold-review-2 silent-failure H-R2-5 +
+// type-design H2 + code-reviewer H-3 cross-corroboration. Collapsed
+// to 2-variant union (idle | asking); "answered" is derived from the
+// useOpenRouterStream hook state (streamState.status === "ready" |
+// "error") at render time. Prior 3-variant shape declared "answered"
+// but never constructed via setLocalState; renderedLocalStatus drift
+// pattern was a latent bug.
 type ChatLocalState =
   | { readonly status: "idle" }
-  | { readonly status: "asking"; readonly question: string }
-  | { readonly status: "answered"; readonly question: string };
+  | { readonly status: "asking"; readonly question: string };
 
 const SUGGESTED_QUESTIONS: ReadonlyArray<string> = [
   "Why did you recommend the early-throttle line at Old Hairpin?",
@@ -85,17 +91,10 @@ export default function AICopilotChat({ panelId = "ai-copilot-chat" }: AICopilot
 
   const isAsking = localState.status === "asking";
   const isStreaming = isAsking && streamState.status === "streaming";
-
-  // Promote local state to "answered" when the hook reaches ready
-  // OR error. The promotion happens via render-time read of the
-  // streamState; localState.status transition is handled inline by
-  // computing the rendered shape rather than triggering setState in
-  // the render path (which would fail React rules + the cascade-#8
-  // setState-in-effect ESLint rule).
-  const renderedLocalStatus: ChatLocalState["status"] =
-    isAsking && (streamState.status === "ready" || streamState.status === "error")
-      ? "answered"
-      : localState.status;
+  // Wave-43 D2.5: "answered" UI state derived directly from streamState
+  // (no shadow local-state variant required). isAsking + streamState
+  // ready/error narrows the QA-pair render branch below.
+  const isAnswered = isAsking && (streamState.status === "ready" || streamState.status === "error");
 
   return (
     <section
@@ -123,7 +122,7 @@ export default function AICopilotChat({ panelId = "ai-copilot-chat" }: AICopilot
         )}
       </header>
 
-      {renderedLocalStatus === "idle" && (
+      {localState.status === "idle" && (
         <div className="flex flex-col gap-3 rounded-sm border border-rule bg-paper-warm p-4">
           <p className="font-mono text-[11px] uppercase tracking-wider text-muted">
             Suggested questions
@@ -144,8 +143,7 @@ export default function AICopilotChat({ panelId = "ai-copilot-chat" }: AICopilot
         </div>
       )}
 
-      {(renderedLocalStatus === "asking" || renderedLocalStatus === "answered") &&
-        localState.status !== "idle" && (
+      {(isAsking || isAnswered) && localState.status === "asking" && (
           <article className="flex flex-col gap-3 rounded-sm border border-rule bg-paper-warm p-4">
             <div>
               <p className="font-mono text-[10px] uppercase tracking-wider text-muted">
