@@ -32,7 +32,7 @@ Reasons:
   in a Phase 4 / Phase 5 pre-submission session. The Marko Mlakar
   consent grant (per `feedback_anonymization_pre_consent.md` +
   `project_apex_consent_mme_motorsport.md`) covers MME naming in
-  apex.race + README + BeMyApp Story + 3-min video. Anonymized
+  apex-one-black.vercel.app + README + BeMyApp Story + 3-min video. Anonymized
   per-driver hand-control specs from MME are out of scope for Phase
   1 + would require a second consent surface scope.
 
@@ -55,7 +55,7 @@ Reasons:
 - watsonx.ai requires IBM Cloud account standup + IAM token plumbing
   that costs ~3h of Day 4 + Day 5 time. OpenRouter is one `.env`
   entry + standard OpenAI-compatible HTTP client.
-- watsonx.ai bonus path: if Stephen finishes apex.race deploy +
+- watsonx.ai bonus path: if Stephen finishes apex-one-black.vercel.app deploy +
   judges-tour + pre-submission infrastructure with ≥ 4h runway, add
   watsonx.ai as a secondary code path so the submission can claim
   "runs on watsonx.ai AND OpenRouter" for the Best Use of IBM Tech
@@ -99,7 +99,7 @@ Split rationale:
   + FIA Article 18.3 validation are backend-domain heavy + map to
   his Day-2 Phase 0 lane.
 - Stephen owns the API plumbing (1.7 + 1.8) because OpenRouter
-  standup + SSE streaming wrap into the apex.race frontend hook
+  standup + SSE streaming wrap into the apex-one-black.vercel.app frontend hook
   which Stephen already owns end-to-end.
 - The 1.6 fixture-to-payload converter stays with Vinh because the
   synthetic Sarah COA fixture (Stephen authors per Q1) ships as raw

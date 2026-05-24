@@ -54,14 +54,19 @@ describe("WatsonTtsRadio (inline-blob streaming shape, cascade-#15 rework)", () 
     expect(screen.getByText(/preparing audio/i)).toBeInTheDocument();
   });
 
-  it("synth POST 200 with audio/mpeg blob transitions to ready_watson + creates blob URL", async () => {
-    const mockBlob = new Blob([new Uint8Array([0xff, 0xfb, 0x90, 0x00])], { type: "audio/mpeg" });
-    fetchMock.mockResolvedValueOnce(
-      new Response(mockBlob, {
-        status: 200,
-        headers: { "Content-Type": "audio/mpeg" },
-      }),
-    );
+  it("synth POST 200 with audio/mpeg body transitions to ready_watson + creates blob URL", async () => {
+    // jsdom Response.blob() routes through the body's underlying
+    // ReadableStream; pass Uint8Array directly so the polyfill handles
+    // it without invoking Blob.prototype.stream (missing in jsdom).
+    const audioBytes = new Uint8Array([0xff, 0xfb, 0x90, 0x00]);
+    const mockResponse = {
+      ok: true,
+      status: 200,
+      headers: new Headers({ "Content-Type": "audio/mpeg" }),
+      blob: async () => new Blob([audioBytes], { type: "audio/mpeg" }),
+      text: async () => "",
+    } as unknown as Response;
+    fetchMock.mockResolvedValueOnce(mockResponse);
     render(<WatsonTtsRadio auditId={TEST_AUDIT_ID} text="ready test" />);
     await waitFor(() =>
       expect(screen.getByLabelText(/walkie-talkie audio playback/i)).toBeInTheDocument(),

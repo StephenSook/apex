@@ -1,6 +1,6 @@
 # Adaptive Hand-Control Supplier - Per-Surface Consent Email Draft (Q-006) - ✅ CONSENT RECEIVED 2026-05-22
 
-> **Status (updated 2026-05-22):** ✅ **MME Motorsport d.o.o. granted per-surface attribution permission on 2026-05-22.** Consent receipt + sender + CC + verbatim quote logged at `docs/consent-log.md` §1 (the audit-trail file is the only public-repo surface that carries the personal sender + CC names; this public-facing draft keeps corporate-only attribution per the approved citation form). Verbatim grant: "Feel free to use the MME Motorsport Hand Controls in your projects." Approved scope covers all 4 surfaces requested (apex.race + README + BeMyApp Story + 3-min video). Sarah Reynolds persona materials now name MME directly; anonymized fallback no longer needed. Q-006 closed.
+> **Status (updated 2026-05-22):** ✅ **MME Motorsport d.o.o. granted per-surface attribution permission on 2026-05-22.** Consent receipt + sender + CC + verbatim quote logged at `docs/consent-log.md` §1 (the audit-trail file is the only public-repo surface that carries the personal sender + CC names; this public-facing draft keeps corporate-only attribution per the approved citation form). Verbatim grant: "Feel free to use the MME Motorsport Hand Controls in your projects." Approved scope covers all 4 surfaces requested (apex-one-black.vercel.app + README + BeMyApp Story + 3-min video). Sarah Reynolds persona materials now name MME directly; anonymized fallback no longer needed. Q-006 closed.
 >
 > Per global CLAUDE.md operator-unassociation principle: any supplier or operator named in marketing copy without explicit per-surface consent is a risk. The email below is the draft Stephen sent on 2026-05-20 that received the MME consent reply.
 >
@@ -31,7 +31,7 @@ Our hero persona is a fictional driver named Sarah Reynolds (RAF veteran, left-l
 
 I would like to ask for explicit per-surface attribution permission before any of these materials are published or submitted:
 
-1. The public landing page at `apex.race` (or fallback `apex.vercel.app`) - one Sarah-persona block citing your hand-control system by supplier name
+1. The public landing page at `apex-one-black.vercel.app` (or fallback `apex.vercel.app`) - one Sarah-persona block citing your hand-control system by supplier name
 2. The repo README at `https://github.com/StephenSook/apex` - one identical citation
 3. The IBM SkillsBuild BeMyApp submission Story block - one identical citation
 4. The 3-minute submission demo video - voice-over reference and visual on-screen text

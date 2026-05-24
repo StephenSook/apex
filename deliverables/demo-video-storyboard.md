@@ -89,7 +89,7 @@
 | Time | Visual | Audio (VO) | On-screen overlay | Cut |
 |------|--------|-----------|-------------------|-----|
 | 2:50 - 2:54 | Hero title returns. Stephen back on camera, paddock-direct. | "APEX is the IBM Consulting reference architecture for governed foundation-model deployment on safety-critical sensor data." | Lower-third (Fraunces italic): `IBM Consulting reference architecture` | 400 ms cross-fade from Beat 7 |
-| 2:54 - 2:58 | Wide shot of Stephen + tagline overlay. URLs slide in at the bottom. Apache 2.0 badge sits next to the GitHub URL. | "The race engineer for the drivers who do not have one." | Final overlay: `apex.race - github.com/StephenSook/apex - Apache 2.0` | Hold 1.5 s on final frame, then fade to black |
+| 2:54 - 2:58 | Wide shot of Stephen + tagline overlay. URLs slide in at the bottom. Apache 2.0 badge sits next to the GitHub URL. | "The race engineer for the drivers who do not have one." | Final overlay: `apex-one-black.vercel.app - github.com/StephenSook/apex - Apache 2.0` | Hold 1.5 s on final frame, then fade to black |
 
 ---
 
@@ -118,7 +118,7 @@ For judges who watch only the first 30 s of a submission, the highlight cut comp
 | 0:00 - 0:05 | Beat 1 | Cream + tagline reveal | "The race engineer for the drivers who don't have one." |
 | 0:05 - 0:13 | Beat 3 (compressed) | Sarah debrief block | "Sarah Reynolds. Lap 17 at Donington Park. Two tenths off her PB. Hand-controls in a BMW M240i." |
 | 0:13 - 0:25 | Beat 5 (compressed) | Split COA + telemetry view | "Three firsts. Pretrained time-series foundation model on motorsport telemetry. Integrated adaptive-controls workflow. COA-parameterized brake-throttle simultaneity gate. APEX reads the Certificate of Adaptations at the tensor level." |
-| 0:25 - 0:30 | Beat 8 | Hero title + URL | "Built on IBM Granite. apex.race." |
+| 0:25 - 0:30 | Beat 8 | Hero title + URL | "Built on IBM Granite. apex-one-black.vercel.app." |
 
 Saved as `deliverables/demo-video-30s.mp4`.
 

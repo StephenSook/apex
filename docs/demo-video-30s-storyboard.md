@@ -57,7 +57,7 @@ Pull-forward Day 2 night-late draft of the Stretch S7 30-second clip. Per PLAN Â
 
 ## Distribution
 
-- Embed at the top of `apex.race/judges` (PLAN row 5.5; live).
+- Embed at the top of `apex-one-black.vercel.app/judges` (PLAN row 5.5; live).
 - Link from BeMyApp submission form (PLAN row 7.1).
 - Twitter / LinkedIn share-ready (PLAN row 16.4).
 - Backup copy on a non-YouTube CDN in case YouTube goes down during the eval window (per pre-mortem.md row 7).

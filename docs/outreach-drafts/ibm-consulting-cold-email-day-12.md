@@ -24,7 +24,7 @@ APEX (IBM SkillsBuild May 2026): governed Granite-stack reference architecture, 
 
 Hi [Name],
 
-I'm a sophomore CS student at Kennesaw State University. My teammate Vinh Le and I just submitted APEX to the IBM SkillsBuild AI Builders Challenge May 2026 ("AI Beyond the Finish Line"). The repo is public at https://github.com/StephenSook/apex and the demo is live at [Day-12-fill: apex.race or apex-race.vercel.app].
+I'm a sophomore CS student at Kennesaw State University. My teammate Vinh Le and I just submitted APEX to the IBM SkillsBuild AI Builders Challenge May 2026 ("AI Beyond the Finish Line"). The repo is public at https://github.com/StephenSook/apex and the demo is live at [Day-12-fill: apex-one-black.vercel.app or apex-race.vercel.app].
 
 I'm writing because the architecture we built has direct extension paths into IBM Consulting's safety-critical sensor-data vertical, and I wanted to share the pattern in case it's useful.
 

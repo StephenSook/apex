@@ -32,7 +32,7 @@ X days to go.
 - Avoid competitor-comparison framing (Track Titan + Trophi.ai not named in Discord; that framing lives in the LinkedIn DMs + paper Related Work section).
 - "Open to architecture feedback" = invitation-not-pitch. Lowers any "you're recruiting endorsement" pushback.
 - Replace "X days to go" with current days-remaining number at send time.
-- Replace `paper/apex-neurips-workshop-2026.md` reference with a deep-link if Vercel apex.race/paper is live by send time.
+- Replace `paper/apex-neurips-workshop-2026.md` reference with a deep-link if Vercel apex-one-black.vercel.app/paper is live by send time.
 
 ## After-send checklist
 

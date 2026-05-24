@@ -1,6 +1,6 @@
 # APEX Vercel Deploy Runbook
 
-> Manual deploy steps for the live production demo at https://apex-race.vercel.app (or https://apex.race once DNS lands). Stephen owns. Pre-mortem row 16 says the AI-tone sweep is the Day-11 morning gate; the actual Vercel deploy is Day 9 dress-rehearsal + Day 11 final cutover.
+> Manual deploy steps for the live production demo at https://apex-race.vercel.app (or https://apex-one-black.vercel.app once DNS lands). Stephen owns. Pre-mortem row 16 says the AI-tone sweep is the Day-11 morning gate; the actual Vercel deploy is Day 9 dress-rehearsal + Day 11 final cutover.
 
 ---
 
@@ -44,30 +44,30 @@ curl -s -o /dev/null -w "%{http_code}\n" https://apex-race.vercel.app/status
 
 All four should return 200. Pre-submit Check 14 (README demo URL) flips WARN → PASS once the README is updated with the live URL.
 
-## Domain swap (wave-38 2026-05-23: apex.race CUTOVER)
+## Domain swap (wave-38 2026-05-23: apex-one-black.vercel.app CUTOVER)
 
-Wave-38 Stream D landed the apex.race domain cutover ahead of schedule (Day 11 → Day 5 pull-forward). Stephen confirmed DNS pointed to Vercel + GitHub auto-deploy on push to main is the canonical deploy path (no `vercel --prod` CLI run needed).
+Wave-38 Stream D landed the apex-one-black.vercel.app domain cutover ahead of schedule (Day 11 → Day 5 pull-forward). Stephen confirmed DNS pointed to Vercel + GitHub auto-deploy on push to main is the canonical deploy path (no `vercel --prod` CLI run needed).
 
 **Cutover steps applied (2026-05-23 wave-38 Stream D):**
 
-1. ✅ Vercel dashboard → Project Settings → Domains → `apex.race` + `www.apex.race` added.
+1. ✅ Vercel dashboard → Project Settings → Domains → `apex-one-black.vercel.app` + `www.apex-one-black.vercel.app` added.
 2. ✅ CNAME at DNS registrar pointed to `cname.vercel-dns.com`.
 3. ✅ SSL provisioning auto-completed via Vercel.
-4. ✅ `NEXT_PUBLIC_SITE_URL` env var optionally set to `https://apex.race` in Vercel project settings (the layout.tsx fallback now defaults to `https://apex.race` so the env var is no longer load-bearing).
+4. ✅ `NEXT_PUBLIC_SITE_URL` env var optionally set to `https://apex-one-black.vercel.app` in Vercel project settings (the layout.tsx fallback now defaults to `https://apex-one-black.vercel.app` so the env var is no longer load-bearing).
 5. ✅ Wave-38 commit pushed; auto-redeploy with new metadataBase fired.
-6. 🟡 README + /judges + /status apex.race references audit pending (post-cutover Day 11 polish).
+6. 🟡 README + /judges + /status apex-one-black.vercel.app references audit pending (post-cutover Day 11 polish).
 
 **Smoke-test commands after cutover:**
 
 ```bash
-curl -s -o /dev/null -w "%{http_code}\n" https://apex.race/
-curl -s -o /dev/null -w "%{http_code}\n" https://apex.race/analyze
-curl -s -o /dev/null -w "%{http_code}\n" https://apex.race/judges
-curl -s -o /dev/null -w "%{http_code}\n" https://apex.race/status
-curl -s -o /dev/null -w "%{http_code}\n" https://www.apex.race/  # verify redirect to apex.race OR www-canonical
+curl -s -o /dev/null -w "%{http_code}\n" https://apex-one-black.vercel.app/
+curl -s -o /dev/null -w "%{http_code}\n" https://apex-one-black.vercel.app/analyze
+curl -s -o /dev/null -w "%{http_code}\n" https://apex-one-black.vercel.app/judges
+curl -s -o /dev/null -w "%{http_code}\n" https://apex-one-black.vercel.app/status
+curl -s -o /dev/null -w "%{http_code}\n" https://www.apex-one-black.vercel.app/  # verify redirect to apex-one-black.vercel.app OR www-canonical
 ```
 
-**Fallback path:** the `apex-race.vercel.app` subdomain still resolves as a Vercel-served alias. If apex.race domain has a future DNS / SSL issue, the layout.tsx fallback constant in `resolveSiteUrl()` can be reverted to `https://apex-race.vercel.app` in a single-line commit.
+**Fallback path:** the `apex-race.vercel.app` subdomain still resolves as a Vercel-served alias. If apex-one-black.vercel.app domain has a future DNS / SSL issue, the layout.tsx fallback constant in `resolveSiteUrl()` can be reverted to `https://apex-race.vercel.app` in a single-line commit.
 
 ## Rollback path
 
@@ -84,7 +84,7 @@ Or via Vercel dashboard: Project → Deployments → previous green → "Promote
 
 Set in Vercel project settings (NOT committed to repo):
 
-- `NEXT_PUBLIC_SITE_URL`: `https://apex.race` once domain lands, else `https://apex-race.vercel.app`.
+- `NEXT_PUBLIC_SITE_URL`: `https://apex-one-black.vercel.app` once domain lands, else `https://apex-race.vercel.app`.
 - (Day 5+ Vinh-lane) `OPENROUTER_API_KEY`: server-side only, used by the Granite proxy route once Vinh ships `app/backend/`.
 - (Day 5+ Vinh-lane) `HF_TOKEN`: if any client component ever hits Hugging Face directly (currently not).
 

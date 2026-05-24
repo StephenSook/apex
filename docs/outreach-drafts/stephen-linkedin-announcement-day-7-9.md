@@ -45,7 +45,7 @@ Open to technical feedback from anyone in the adaptive-racing community, IBM Gra
 
 - [ ] Confirm D-027 SCP gate result is landed (green or with fallback documented) before posting. Do NOT post during in-flight uncertainty.
 - [ ] Update "X days to go" + "Y+ atomic commits" to current counts at send time.
-- [ ] Consider adding a single screenshot (one of: /judges Convergence-14 grid, paper Figure 1 architecture diagram, or apex.race landing-page hero) for LinkedIn-feed visual stop power.
+- [ ] Consider adding a single screenshot (one of: /judges Convergence-14 grid, paper Figure 1 architecture diagram, or apex-one-black.vercel.app landing-page hero) for LinkedIn-feed visual stop power.
 - [ ] If 30-second highlight clip is live by Day 9, embed via LinkedIn native video upload (NOT YouTube embed, which throttles reach).
 - [ ] Post to Stephen's personal LinkedIn timeline (NOT a Company Page).
 - [ ] Log post URL + timestamp in `docs/stakeholder-outreach-log.md` (new Phase 7 row).

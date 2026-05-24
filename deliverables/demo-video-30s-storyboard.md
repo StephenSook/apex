@@ -21,7 +21,7 @@ Same as the 3-min master (resolution + audio + color + typography). Diff: subtit
 
 | Visual | Audio (VO) | On-screen overlay |
 |--------|------------|-------------------|
-| APEX wordmark in Fraunces italic over warm cream paper. Sarah Reynolds composite portrait fades in lower-right. | "A race engineer for the drivers who do not have one." | APEX dot race - editorial paddock palette |
+| APEX wordmark in Fraunces italic over warm cream paper. Sarah Reynolds composite portrait fades in lower-right. | "A race engineer for the drivers who do not have one." | github dot com slash StephenSook slash apex - editorial paddock palette |
 
 Hold 600ms on the wordmark resolve before cutting to Beat 2.
 
@@ -61,7 +61,7 @@ The visual contrast (adaptive clean + counterfactual violation) is the architect
 
 | Visual | Audio (VO) | On-screen overlay |
 |--------|------------|-------------------|
-| 12-tool IBM Granite stack mosaic. APEX wordmark resolve. apex-one-black.vercel.app URL appears. IBM SkillsBuild May Challenge submission badge fades in. | "Built on IBM Granite. For adaptive racers first." | "apex dot race - IBM SkillsBuild May Challenge 2026" |
+| 12-tool IBM Granite stack mosaic. APEX wordmark resolve. apex-one-black.vercel.app URL appears. IBM SkillsBuild May Challenge submission badge fades in. | "Built on IBM Granite. For adaptive racers first." | "github dot com slash StephenSook slash apex - IBM SkillsBuild May Challenge 2026" |
 
 Hold 1.2s on the closing badge before fade-to-cream.
 

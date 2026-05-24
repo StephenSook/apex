@@ -59,7 +59,7 @@ Re-email all Phase 1 + Phase 2 non-responders with progress update + concrete re
 
 | Target archetype | Method | Asked for | Status | Attribution surface |
 |------------------|--------|-----------|--------|---------------------|
-| Mission Motorsport (UK Armed Forces' motorsport charity, England & Wales No. 1166953) | Email from school address per draft `docs/outreach-drafts/mission-motorsport-intro-day-6.md` | (a) engineering-team architecture read, (b) driver-utility reaction, (c) acknowledgement consent on apex.race + README + BeMyApp Story + 3-min video, each surface separately | DRAFTED, SEND 2026-05-25 | All 4 surfaces requested with corporate-only attribution default |
+| Mission Motorsport (UK Armed Forces' motorsport charity, England & Wales No. 1166953) | Email from school address per draft `docs/outreach-drafts/mission-motorsport-intro-day-6.md` | (a) engineering-team architecture read, (b) driver-utility reaction, (c) acknowledgement consent on apex-one-black.vercel.app + README + BeMyApp Story + 3-min video, each surface separately | DRAFTED, SEND 2026-05-25 | All 4 surfaces requested with corporate-only attribution default |
 
 ## Phase 6 - Day 12 IBM Consulting cold outreach (scheduled 2026-05-31 afternoon)
 

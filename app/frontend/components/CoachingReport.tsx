@@ -25,6 +25,8 @@ import CoachingReportLiveCharts from "./CoachingReportLiveCharts";
 import GraniteCitationFooter from "./GraniteCitationFooter";
 import GuardianAudit from "./GuardianAudit";
 import TuningCard from "./TuningCard";
+import WatsonTtsRadio from "../lib/watson-tts-radio";
+import { parseAuditId } from "../../shared/brands";
 
 export interface CoachingReportProps {
   readonly report: CoachingReportType;
@@ -63,6 +65,10 @@ export default function CoachingReport({ report }: CoachingReportProps) {
           <aside className="flex flex-col gap-6">
             <TuningCard tuning={report.tuning_delta} />
             <GuardianAudit audit={report.audit} />
+            <WatsonTtsRadio
+              auditId={parseAuditId(report.audit.audit_id)}
+              text={buildCoachingNarration(report)}
+            />
           </aside>
         </div>
 
@@ -71,6 +77,22 @@ export default function CoachingReport({ report }: CoachingReportProps) {
       </div>
     </section>
   );
+}
+
+/**
+ * Build a concise spoken narration from the coaching report for the
+ * WatsonTtsRadio walkie-talkie surface. Pulls top-3 corner deltas +
+ * tuning recommendation + guardian verdict. ~250 words; Watson TTS
+ * renders in ~1-3s on Vercel.
+ */
+function buildCoachingNarration(report: CoachingReportType): string {
+  const topCorners = [...report.corners]
+    .slice(0, 3)
+    .map((c) => `Sector ${c.sector} ${c.name}, delta ${c.current_delta_s.toFixed(2)} seconds: ${c.recommendation}`)
+    .join(" ");
+  const tuning = `Tuning recommendation: ${report.tuning_delta.parameter} from ${report.tuning_delta.current} to ${report.tuning_delta.recommended} ${report.tuning_delta.unit}.`;
+  const verdict = `Guardian verdict: ${report.audit.verdict}.`;
+  return `${topCorners} ${tuning} ${verdict}`;
 }
 
 function CornerList({ corners }: { corners: ReadonlyArray<CornerInsight> }) {

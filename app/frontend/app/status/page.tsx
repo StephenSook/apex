@@ -140,7 +140,7 @@ export default function StatusPage() {
                 Day 5 · Vercel deploy URL
               </p>
               <p className="mt-1 text-sm text-ink-soft">
-                apex.race (canonical; cutover landed wave-38 2026-05-23);
+                apex-one-black.vercel.app (canonical; cutover landed wave-38 2026-05-23);
                 apex-race.vercel.app remains as a Vercel-served alias for the
                 pre-cutover preview history. curl -sI uptime probe.
               </p>

@@ -118,7 +118,7 @@ A NeurIPS Workshop paper draft is in `paper/apex-neurips-workshop-2026.md` (draf
 - **Demo URL:** {{vercel-url}} (Day 11 fill)
 - **Demo video:** {{youtube-unlisted-url}} (Day 10 fill)
 - **Colab notebook:** {{colab-url}} (Day 9 fill)
-- **Judges' tour page:** {{apex.race/judges}} (Day 11 fill)
+- **Judges' tour page:** {{apex-one-black.vercel.app/judges}} (Day 11 fill)
 - **Reproducible testing:** Yes. Clone the repo, follow `README.md` §Run locally. Sarah Reynolds fixture in `fixtures/personas/sarah-reynolds.md` reproduces the canned end-to-end demo.
 - **No login required.**
 - **License:** Apache 2.0 (in `LICENSE`).

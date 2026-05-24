@@ -66,7 +66,7 @@
 
 ## Beat 8: IBM Granite stack + adaptive-racer mission + close (2:45 - 3:00; ~38 words)
 
-> Twelve IBM Granite tools. Every slot load-bearing. Built for adaptive racers first, every grassroots competitor second. APEX dot race. Built on IBM Granite for the drivers who do not have a race engineer.
+> Twelve IBM Granite tools. Every slot load-bearing. Built for adaptive racers first, every grassroots competitor second. github dot com slash StephenSook slash apex. Built on IBM Granite for the drivers who do not have a race engineer.
 
 **On-screen:** 12-tool IBM Granite stack mosaic. APEX wordmark resolve. apex-one-black.vercel.app URL. IBM SkillsBuild May Challenge submission badge.
 

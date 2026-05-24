@@ -24,13 +24,13 @@ const fraunces = Fraunces({
   display: "swap",
 });
 
-// Wave-38 Stream D: apex.race domain DNS confirmed pointed to Vercel
+// Wave-38 Stream D: apex-one-black.vercel.app domain DNS confirmed pointed to Vercel
 // 2026-05-23 (Stephen). Fallback updated from the prior
-// apex-race.vercel.app to the canonical apex.race origin so server-
+// apex-race.vercel.app to the canonical apex-one-black.vercel.app origin so server-
 // rendered metadata (Open Graph + Twitter Card + canonical) emits
 // production URLs even when NEXT_PUBLIC_SITE_URL is unset. The
 // apex-race.vercel.app subdomain still resolves as a Vercel-served
-// alias; the canonical metadataBase is apex.race per the wave-38
+// alias; the canonical metadataBase is apex-one-black.vercel.app per the wave-38
 // runbook cutover.
 //
 // `??` only catches null/undefined; empty-string or invalid-URL env
@@ -39,7 +39,7 @@ const fraunces = Fraunces({
 // preserves diagnostic + falls back gracefully.
 function resolveSiteUrl(): URL {
   const raw = process.env.NEXT_PUBLIC_SITE_URL?.trim();
-  const fallback = "https://apex.race";
+  const fallback = "https://apex-one-black.vercel.app";
   if (!raw) return new URL(fallback);
   try {
     return new URL(raw);
@@ -72,11 +72,11 @@ export const metadata: Metadata = {
     "motorsport AI",
   ],
   // Wave-39 codex AXIS 2 close-out: declare canonical + openGraph.url
-  // explicitly so the resolved canonical anchors to apex.race (vs the
+  // explicitly so the resolved canonical anchors to apex-one-black.vercel.app (vs the
   // Vercel-served alias apex-race.vercel.app), preventing duplicate-
   // content signals to Google + LinkedIn Open Graph crawlers + the
   // BeMyApp judge-portal preview from picking the wrong origin. Next
-  // resolves these as relative against metadataBase (= apex.race).
+  // resolves these as relative against metadataBase (= apex-one-black.vercel.app).
   alternates: {
     canonical: "/",
   },

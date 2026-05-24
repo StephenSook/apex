@@ -2,7 +2,7 @@
 
 > Phase 6 unconditional outreach to Mission Motorsport, the UK Armed Forces' motorsport charity. Send 2026-05-25 (Day 6) for chance at Day 11 reply within 7-14d charity response window. Distinct from Phase 1 (which targeted Mission 44, a different organisation despite the name similarity).
 >
-> **Owner:** Stephen Sookra. **Send method:** Email from school address `ssookra@students.kennesaw.edu`. **Reply window:** through Day 11 EOD (2026-05-30); anonymisation locks Day 12 morning if no reply. **Per-surface consent ask:** acknowledgement on apex.race + README + BeMyApp Story + 3-min video, each separately.
+> **Owner:** Stephen Sookra. **Send method:** Email from school address `ssookra@students.kennesaw.edu`. **Reply window:** through Day 11 EOD (2026-05-30); anonymisation locks Day 12 morning if no reply. **Per-surface consent ask:** acknowledgement on apex-one-black.vercel.app + README + BeMyApp Story + 3-min video, each separately.
 >
 > **Recipient (verify before send):** Public contact channel at `missionmotorsport.org` (organisation contact form OR `info@missionmotorsport.org` standard charity address). Confirm via the Contact Us page at https://www.missionmotorsport.org/ before send. Phone backup: 03339 993 899 per Veterans' Foundation listing.
 >
@@ -29,7 +29,7 @@ I'm reaching out because Mission Motorsport's recovery-and-rehabilitation work w
 
 1. Would the engineering team be willing to read the technical brief and tell us where the architecture misses adaptive-racing reality?
 2. Would the drivers find a corner-by-corner coaching report with COA-aware audit useful in practice, or is it solving a problem that does not exist for them?
-3. Would an acknowledgement on the project's public surfaces (the apex.race landing page, the GitHub README, the BeMyApp submission page, or the 3-minute demo video) be appropriate, and on which surfaces specifically?
+3. Would an acknowledgement on the project's public surfaces (the apex-one-black.vercel.app landing page, the GitHub README, the BeMyApp submission page, or the 3-minute demo video) be appropriate, and on which surfaces specifically?
 
 Per-surface consent. We default to anonymous + aggregate descriptions until each surface is separately approved. We recently received corporate-only attribution consent from one of the adaptive-equipment suppliers in the space (covering four public surfaces with corporate-only naming); we would treat Mission Motorsport the same way unless directed otherwise.
 

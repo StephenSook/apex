@@ -245,7 +245,7 @@ See `app/frontend/` for the live code.
 
 ## Deployment
 
-- **Frontend:** Vercel (free tier) at `https://apex.race` (domain pending). Build via `pnpm build`. Turbopack production builds.
+- **Frontend:** Vercel (free tier) at `https://apex-one-black.vercel.app` (domain pending). Build via `pnpm build`. Turbopack production builds.
 - **Backend:** Hugging Face Space (free tier). Dockerfile in `app/backend/Dockerfile` (Day 5). Keep-alive cron during the judging window (May 28-31).
 - **Colab notebook:** `deliverables/apex-demo.ipynb` published Day 9.
 

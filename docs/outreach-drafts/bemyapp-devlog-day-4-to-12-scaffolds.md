@@ -127,7 +127,7 @@ Repo: https://github.com/StephenSook/apex
 ```
 Day 9 done on APEX.
 
-Deployment landed. Backend on Hugging Face Space (free tier, cold-start fallback verified to OpenRouter Granite endpoint + watsonx.ai backup). Frontend deployed to Vercel at apex.race. Colab notebook deliverables/apex-demo.ipynb executes end-to-end in browser. Sim-rig WebSocket bridge connects iRacing + Assetto Corsa Competizione live telemetry to the /sim-rig route.
+Deployment landed. Backend on Hugging Face Space (free tier, cold-start fallback verified to OpenRouter Granite endpoint + watsonx.ai backup). Frontend deployed to Vercel at apex-one-black.vercel.app. Colab notebook deliverables/apex-demo.ipynb executes end-to-end in browser. Sim-rig WebSocket bridge connects iRacing + Assetto Corsa Competizione live telemetry to the /sim-rig route.
 
 Gate G9 [GREEN/AMBER]. Three-track forecasting fusion (TTM r2.1 channel-mix + FlowState + Chronos-2) flows through 8-tier unrolled SCP physics-projection layer without crashing or vanishing gradients on Sarah Reynolds fixture. Sync Point 3 cleared.
 
@@ -177,7 +177,7 @@ Repo: https://github.com/StephenSook/apex
 ```
 Day 11 done on APEX.
 
-Submission package locked. Deck PDF rendered via Playwright HTML to PDF. apex.race/judges single-page judges tour ready (canned Sarah Reynolds telemetry + COA + debrief loads + pipeline executes live in under 60 seconds without judges touching a file picker). apex.race/status live demo health dashboard. Methodology trace at docs/methodology.md final pass (7 phases, dated artefacts, gate trace, Claude Memory cross-references). Pre-mortem journal final polish.
+Submission package locked. Deck PDF rendered via Playwright HTML to PDF. apex-one-black.vercel.app/judges single-page judges tour ready (canned Sarah Reynolds telemetry + COA + debrief loads + pipeline executes live in under 60 seconds without judges touching a file picker). apex-one-black.vercel.app/status live demo health dashboard. Methodology trace at docs/methodology.md final pass (7 phases, dated artefacts, gate trace, Claude Memory cross-references). Pre-mortem journal final polish.
 
 NeurIPS Workshop paper draft at paper/apex-neurips-workshop-2026.md publication-readable. §4 Experiments table 1 + 2 + 3 cell values populated from Day 9 LIPS evaluation. §13 References has 12+ citations (cvxpylayers Agrawal et al. 2019 + OptNet Amos Kolter 2017 + Tiny Time Mixers Ekambaram et al. 2024 + Bommasani et al. 2021 Foundation Models report + EAGLE-3 + aLoRA + GEPA + Mellea + Agent-as-Judge + relevant Granite stack papers).
 
@@ -205,7 +205,7 @@ APEX submitted to the IBM SkillsBuild AI Builders Challenge May 2026 at [SUBMIT 
 
 IBM Consulting cold email sent citing the Scuderia Ferrari case-study precedent + offering APEX as the reference architecture for governed foundation-model deployment on safety-critical sensor data.
 
-What we built in 12 days: AI race engineer for adaptive racing drivers on the IBM Granite stack, 12 Granite tools earning their slot in a five-layer architecture, NeurIPS Workshop paper draft + APEX-Bench public benchmark released alongside. Live at apex.race. Repo at github.com/StephenSook/apex (Apache 2.0).
+What we built in 12 days: AI race engineer for adaptive racing drivers on the IBM Granite stack, 12 Granite tools earning their slot in a five-layer architecture, NeurIPS Workshop paper draft + APEX-Bench public benchmark released alongside. Live at apex-one-black.vercel.app. Repo at github.com/StephenSook/apex (Apache 2.0).
 
 Thank you to the May Challenge community for the build-in-public conversations + technical feedback throughout. Engineering retrospective + post-mortem land tomorrow.
 

@@ -152,6 +152,8 @@ export async function POST(req: Request): Promise<Response> {
   const voice = process.env.WATSON_TTS_VOICE ?? DEFAULT_VOICE;
 
   if (apiKey === undefined || watsonUrl === undefined) {
+    // Wave-43 cascade-#16 code-reviewer NIT: do not leak D-### codes in
+    // client-facing error message. Generic operator-actionable text.
     console.warn("apex.watson-tts: WATSON_TTS_API_KEY or WATSON_TTS_URL missing; client falls back to Web Speech API.");
     return NextResponse.json(
       {

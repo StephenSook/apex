@@ -39,7 +39,7 @@ This file is the source of truth for "may we name X on surface Y?" questions dur
 
 **Approved surfaces (per Stephen's outreach enumeration):**
 
-1. The public landing page at `apex.race` (or fallback `apex.vercel.app`) - one Sarah-persona block citing "MME Motorsport electronic hand-controls"
+1. The public landing page at `apex-one-black.vercel.app` (or fallback `apex.vercel.app`) - one Sarah-persona block citing "MME Motorsport electronic hand-controls"
 2. The repo README at `https://github.com/StephenSook/apex` - one identical citation
 3. The IBM SkillsBuild BeMyApp submission Story block - one identical citation
 4. The 3-minute submission demo video - voice-over reference and visual on-screen text

@@ -24,7 +24,7 @@ Per wave-38 plan Stream C.5 + Stream C.3 cross-link verification. Closes Stream 
 - React 19 + Next.js 16 hydration clean
 - HMR Fast Refresh rebuild < 500ms
 
-**Apex.race production cutover:** the wave-38 Stream D commit b82e6e5 swapped the metadataBase fallback from apex-race.vercel.app to apex.race. The /analyze route is now reachable at both:
+**Apex.race production cutover:** the wave-38 Stream D commit b82e6e5 swapped the metadataBase fallback from apex-race.vercel.app to apex-one-black.vercel.app. The /analyze route is now reachable at both:
 
-- https://apex.race/analyze (canonical)
+- https://apex-one-black.vercel.app/analyze (canonical)
 - https://apex-race.vercel.app/analyze (Vercel alias; still resolves)

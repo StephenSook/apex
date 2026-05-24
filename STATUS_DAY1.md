@@ -178,7 +178,7 @@ python -m apex.cli analyze \
 - D-007: Quality over speed + tool-inventory audit BLOCKING
 - D-B (refined): Dual-layer pitch headline
 - Q-006: adaptive-supplier + adaptive-racing-programme per-surface consent (anonymized pending consent reply)
-- Q-007 (implicit): apex.race domain registration deferred; metadataBase fallback to apex-race.vercel.app
+- Q-007 (implicit): apex-one-black.vercel.app domain registration deferred; metadataBase fallback to apex-race.vercel.app
 - Scope re-tiering: Core 6 + Stretch 10 (replaces strict "everything ships" reading of D-003)
 
 Full rationale: `docs/decision-log.md`.
