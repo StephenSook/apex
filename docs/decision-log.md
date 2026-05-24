@@ -510,3 +510,17 @@ Cascade #12 dispatch + Lane C tests/decision-log/video + remaining Lane B items 
 **Affected.** Wave-42 commits shipped 2026-05-24 day 6: 82d1f85 (F.A Sarah COA) + f1cd1d1 (F.B .env.example) + 7179dc1 (F.C OpenRouter client) + dc5bd7e (F.D streaming hook) + 61ba4e8 (M.1 discriminated union) + 1fb8f75 (M.2 path tag) + 86f66fb (paper §3 expansion) + b8ea888 (BeMyApp refresh + multi-track checklist) + f663eeb (G.3 GraniteCitationFooter) + 0fe075f (F.4 AICopilotChat) + 1c95ab5 (G.4 5-tab) + c3de91f (G.3 fix-forward) + 84e001e (F.3 Recharts) + 7b010a9 (F.3 fix-forward ResizeObserver polyfill). 14 substantive commits + 2 cascade-fix-forwards = 16 commits total.
 
 ---
+
+## 2026-05-24 D-039: Wave-42 cascade #12 fix wave + cold-review-2 close-out (post-D-038 extension)
+
+**Decision.** Cascade #12 6-agent cold review (dispatched twice; round 1 mid-execution + round 2 post-checkpoint) surfaced 4 cross-corroborated BLOCKERs + 12-15 HIGH + 18-20 MED + 8-10 NIT findings. Round 1 closed 2 BLOCKERs inline (chat /api/openrouter-stream route missing + openrouter-client decoder cast). Round 2 closed 2 NEW BLOCKERs inline (route runtime declaration + consumer cancel respect) + 2 HIGH (BLOCK variant destructure + chat-model placeholder check).
+
+Cascade #12 fix-wave commits since D-038: 89da297 (chat route NEW) + efd8f94 (decoder NEW) + 8f5cdd4 (decoder test-fixture fix-forward) + 84e20b1 (F.1 WatsonTtsRadio walkie-talkie) + df3109d (route runtime + cancel) + 01855a3 (BLOCK destructure) + b87f618 (chat-model placeholder check). Plus cold-review-2 docs accuracy this commit: BeMyApp 8 -> 12 tools long-form alignment + multi-track-checklist prize amounts deferred to Day 11 verification + this D-039 entry.
+
+Cascade #12 fix-wave residual queued for next session: openrouter-client 5xx/429 retry leaks response body + openrouter-stream TextDecoder fatal flag + AICopilotChat stuck-question footgun + AICopilotChat answered-state unreachable + memo dead-code removal + AnalyzeFlow tab exhaustive-switch default + WatsonTtsRadio exhaustive-switch + 5-10 NITs.
+
+**Rationale.** Per cascade #11 11-cascade meta-rule + cascade #12 round-2 confirmation: every cascade follows the same shape (a tooling layer catches what the prior layer missed). Round 2 added the cold-review-after-checkpoint discipline so post-batch quality bar verifies before the next batch begins. Atomic-commit + pre-push triplet preserved throughout; CI green at HEAD after each fix-forward.
+
+**Affected.** All wave-42 commit SHAs cited above + the cascade-#12 fix-wave commits + this entry. Memory rule `feedback_ci_green_per_push_verify_or_cascade.md` cascade #12 section to land Day 7 morning per the next-session entry order.
+
+---

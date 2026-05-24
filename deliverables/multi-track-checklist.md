@@ -5,11 +5,12 @@
 ## Hackathon mechanics
 
 - Single submission per team via BeMyApp project page
-- Judges award:
-  - **1st Place** ($5K cash)
-  - **Runner-up** ($2K cash)
-  - **Best Use of Technology** ($2K cash; weighted toward IBM Granite stack depth)
-  - **Most Innovative** ($2K cash; weighted toward novel architecture)
+- Judges award (cash amounts per the live BeMyApp project page; Day 11 morning verification per the pre-submit checklist below):
+  - **1st Place**
+  - **Runner-up**
+  - **Best Use of Technology** (weighted toward IBM Granite stack depth)
+  - **Most Innovative** (weighted toward novel architecture)
+- Additional **Grand Prize** awarded across the May + June challenges to one standout submission.
 - 4 evaluation criteria per the rules PDF:
   - Technical Execution
   - Innovation
