@@ -4,6 +4,28 @@ Every locked decision with rationale + date + scope. Newest first.
 
 ---
 
+## 2026-05-24 D-041: Wave-43 mega-wave close-out (Lane D2 + E2 + G2.1 + C2 partials + cascade #13)
+
+**Decision.** Wave-43 mega-wave 18-commit close-out lands the following lanes:
+
+- **Lane A2** (5 commits, cascade-#11 cold-review-2 close-outs): D-040 entry + paper §3 doc accuracy + README apex.race URLs + EdgeModeCallout copy + SHA-cite correction.
+- **Lane B2** (3 commits): Colab notebook walkthrough + AI-tone full-repo sweep + PLAN.md Day-6 refresh.
+- **Lane D2** (10 commits, cascade-#12 HIGH+MED fix-wave): D2.1 openrouter-stream monotonic generation counter (`e0fda59`) + D2.2 decoder error-shape array+null (`bb74314`) + D2.3 retry body-cancel + warn-logging (`4622843`) + D2.4 usage optional (`21c7d20`) + D2.5 AICopilotChat 2-variant collapse (`f84bdb9`) + D2.6 React.memo drop (`1aac2a6`) + D2.7 stream:boolean drop (`83b759a`) + D2.8 AbortSignal threading (`ef82363`) + D2.9 speechSynthesis lifecycle (`3814c61`) + D2.10a Watson exhaustive `never` (`e4cb558`) + D2.10b+D2.12 AnalyzeFlow tab CSS-hidden state preservation (`c373901`) + D2.11 ToleranceBands JSDoc (`acc8b95`).
+- **Lane E2** (3 commits): `/api/watson-tts` production Watson TTS + paddock-radio FFmpeg filter chain (`3cce2ae`) + WatsonTtsRadio synthesis-path activation (`6f8ec6e`) + Stream M.3 spec extension docs (`eda7905`).
+- **Lane G2.1** (1 commit): canonical FIACoaCanonical TypeScript interface mirroring the Sarah Reynolds COA fixture one-to-one (`6a23512`).
+- **Lane C2 partial** (2 commits shipped of 13 planned): 3-min 8-beat demo video script (`ef82363` bundle) + 30-second highlight storyboard (`264af82`).
+- **Cascade #13** (2 fix-forwards): AnalyzeFlow.test.tsx broke when D2.12 CSS-hidden refactor preserved all panes in DOM; `.not.toBeInTheDocument()` assertion structurally invalid post-refactor + `getByRole` regex matched headings inside hidden CoachingReport sub-tree. Closed via `be8478d` (single `closest('.hidden')` check) + `9fcd376` (`visibleHeading()` helper across all 5 multi-match queries).
+
+**Rationale.** Galaxy-ambition mandate + no-time-pressure rule + Vinh Phase 1 backend contracts all converge on the wave-43 close-out shape. Lane D2 closes the cascade-#12 6-agent dispatch HIGH+MED cluster (cold-review-2 + silent-failure-hunter + type-design-analyzer + code-reviewer + comment-analyzer findings). Lane E2 activates the production Watson TTS path that has been waiting on the demo to bring sound to the coaching report. Lane G2.1 canonicalizes the FIACoa shape for Vinh's task 1.3 coa_parser.py extraction targets.
+
+**Cascade #13 lesson.** Same-commit test fixup rule (cascade #2 family) still gets violated when refactors are structural enough to invalidate test ASSERTIONS without renaming any symbol the consumer-test grep would find. D2.12 changed render strategy (unmount → display:none) without touching any heading text, so the consumer-test grep returned empty, but the assertion shape (`.not.toBeInTheDocument`) was load-bearing on the render strategy. Mitigation lands in `feedback_ci_green_per_push_verify_or_cascade.md` cascade #3 section: when refactoring conditional-render to CSS-toggle, ALWAYS update consumer tests in the same commit even when no symbol renaming triggered the grep.
+
+**Wave-43 totals.** 38 commits in wave-43 cumulative across 8 lanes. Remaining queue: Lane C2 (11 of 13 tests + video record + deck PDF), Lane F2 (cascade-#13 6-agent dispatch + fix-wave; this entry pre-empts the dispatch with cascade #13 already closed), Lane G2 close-out (D-042 + final em-dash/AI-tone sweep + README/BeMyApp/paper final pass + Vercel apex.race verify), Lane H2 (Obsidian session memory + APEX MOC + wave-30 amendment + cascade #13 codification + MEMORY.md refresh).
+
+**Affected.** Frontend cascade-#12 HIGH+MED cluster (8 commits); production Watson TTS path + Stream M.3 spec contract (3 commits); FIACoa canonical shape consumed by Vinh's parser (1 commit); demo video script + 30s storyboard (2 deliverables); D-040 + D-041 decision-log entries (2 docs).
+
+---
+
 ## 2026-05-20 D-001: Project renamed PIT WALL → APEX
 
 **Decision.** Project name is APEX.
