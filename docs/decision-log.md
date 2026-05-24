@@ -4,6 +4,41 @@ Every locked decision with rationale + date + scope. Newest first.
 
 ---
 
+## 2026-05-24 D-043: Wave-43 cascade-#13 F2 codex-finding, Watson production-path Vercel architectural constraint
+
+**Decision.** The wave-43 E2.1 `/api/watson-tts` production endpoint has TWO Vercel-runtime architectural constraints that codex adversarial review surfaced (F2 HIGH#1 + HIGH#3) which mean the route only fully functions in self-hosted environments + the Web Speech API fallback (wave-42 baseline) is the AUTHORITATIVE PRODUCTION PATH on Vercel.
+
+**Architectural reality (codex findings).**
+
+1. **HIGH#1 Vercel filesystem read-only except `/tmp`.** The route writes generated MP3s under `process.cwd()/public/generated-audio` per the wave-43 E2.1 design. Vercel Node.js functions document a read-only filesystem with only `/tmp` writable + only persistent within a single function instance (Fluid Compute reuses instances but `/tmp` is not shared across instances). In Vercel production, every Watson + FFmpeg POST returns `cache write failed` after the synthesis work completes, so the client falls back silently to Web Speech API.
+
+2. **HIGH#3 FFmpeg binary not declared.** `child_process.spawn("ffmpeg", ...)` assumes system FFmpeg in PATH. `app/frontend/package.json` does NOT declare `ffmpeg-static` or any bundled binary. Vercel Node runtime does NOT have FFmpeg in PATH by default. So even if the filesystem were writable, every Watson synthesis would fail at `ffmpeg spawn failed` with 502.
+
+**Mitigation shipped wave-43 F2 cascade-#13 fix-wave.**
+
+- Commit `7b6f3a8` (F2 MED#7): `WatsonTtsRadio.tsx` now `console.warn`s on every non-ok synth POST + thrown error so operators see failure shape in DevTools instead of silent fallback to Web Speech API.
+- Commit `8ae21cd` (F2 HIGH#2): per-request unique tempfile suffix closes the concurrent-request race condition that existed in any environment (not just Vercel).
+- Commit `203b1dd` (F2 HIGH#4): `/api/openrouter-stream` route now passes `request.signal` to `openRouterChatCompletion`; consumer disconnects mid-flight cancel OpenRouter billing.
+
+**Production-path authority on Vercel apex.race deploy.**
+
+- Web Speech API (wave-42 baseline `playFallback` in `app/frontend/lib/watson-tts-radio.tsx`) is the AUTHORITATIVE production path. `playFallback` uses browser-native `window.speechSynthesis.speak()` with pitch 0.85 + rate 1.05 approximating the walkie-talkie acoustic profile.
+- `/api/watson-tts` route is a CONDITIONAL production path that activates only in self-hosted environments meeting BOTH: (a) writable filesystem at `public/generated-audio/` (b) FFmpeg in PATH or bundled. On Vercel, the route returns 502 + the client falls back gracefully + operators see the failure shape in DevTools via the F2 MED#7 console.warn instrumentation.
+- The paddock-radio walkie-talkie filter chain (highpass=350 + lowpass=3000 + compand + volume=1.8) ships on self-hosted environments. On Vercel, the browser approximation (pitch 0.85 + rate 1.05) is the acoustic profile.
+
+**Path forward for full Watson production on Vercel** (NOT in scope for May 31 submission per no-time-pressure rule explicitly applied to architectural rework that risks new regressions):
+
+1. Add `ffmpeg-static` dependency to `app/frontend/package.json`; resolve binary via `require('ffmpeg-static')` not plain string `"ffmpeg"`.
+2. Switch `CACHE_DIR` to `/tmp` so Vercel readonly FS is respected; lose cross-invocation cache (each request synthesizes fresh).
+3. Stream Watson + FFmpeg response inline as MP3 bytes; client creates `URL.createObjectURL()` blob URL + plays. Drop the `public/generated-audio/` HEAD-probe pattern entirely.
+4. WatsonTtsRadio: drop HEAD-probe path; POST every time + cache resulting blob URL in component state for the lifetime of the report view.
+
+This is a follow-on Vercel-architectural correction queued for post-submission iteration. The wave-43 F2 cascade-#13 fix-wave (D-043 + 4 commits 203b1dd + 8ae21cd + 7b6f3a8 + this entry) is the SUBMISSION-WEEK posture: document the constraint honestly + ensure the fallback is bulletproof + surface failures to operators.
+
+**Affected.** WatsonTtsRadio production-path activation behavior on Vercel (silent fallback to Web Speech API + console.warn surfaces failure shape). `docs/wave-41-backend-spec-handoff.md` Endpoint 5 spec contract documents the constraint via this D-043 cross-reference. Submission-week acceptable behavior. Post-submission iteration queued.
+
+---
+
 ## 2026-05-24 D-042: Wave-43 G2.6 BLOCKING operator-action item, apex.race DNS NXDOMAIN
 
 **Decision.** Wave-43 G2.6 Vercel apex.race smoke test surfaced a SUBMISSION-CRITICAL blocker: `dig apex.race +short` returns empty + `nslookup apex.race` returns NXDOMAIN. The domain is either unregistered OR registered without DNS pointing at the Vercel deployment. README + paper + 3-min script + 30s storyboard + deck + BeMyApp payload all reference `https://apex.race` as the live demo URL.
