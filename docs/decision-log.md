@@ -4,11 +4,11 @@ Every locked decision with rationale + date + scope. Newest first.
 
 ---
 
-## 2026-05-24 D-044: Wave-43 Lane K + final close-out — persona-decoupling + C2 vitest completion
+## 2026-05-24 D-044: Wave-43 Lane K + final close-out - persona-decoupling + C2 vitest completion
 
 **Decision.** Wave-43 mega-wave final close-out lands two significant additions beyond the original 8-lane plan:
 
-**Lane K (persona-decoupling per Sookra Methodology amendment) — 1 commit:**
+**Lane K (persona-decoupling per Sookra Methodology amendment) - 1 commit:**
 
 - `235c59c` refactor(frontend): Sarah Reynolds removed from AnalyzeFlow.buildMockReport default state. Generic "Sector 1/2/3 corner" + "primary_actuation_modulation_pct" + "your uploaded COA" replace persona-specific Donington Park track corners + hand-lever-brake-travel + Section 3(c) COA citations. User-typed driver_id flows through unchanged. Sarah Reynolds remains in storytelling layer (3-min video + 30s storyboard + deck + persona doc + test fixtures + Vinh's parser target).
 
@@ -16,7 +16,7 @@ Rationale per external validation: 2026 hackathon judge sentiment shifted. April
 
 Implication for Vinh's Phase 1 task 1.3 + 1.4 (`/api/analyze` shipping Day 4-5): default backend response = function of user input. Default = generic template parameterized from POSTed FormData. Sarah fixture is for dev test fixtures + optional `/api/analyze?fixture=sarah-reynolds` opt-in endpoint, NOT default response shape.
 
-**Lane C2 vitest completion (9 of 13 specs shipped) — 6 additional commits this wave-43 close-out window:**
+**Lane C2 vitest completion (9 of 13 specs shipped) - 6 additional commits this wave-43 close-out window:**
 
 - `9ecf8db` + `531dd68` C2.1 ALoRAStatusBadge 5-state coverage (2 commits with cascade-fix-forward for Hot-swap multi-match)
 - `ed4245a` C2.2 GEPAEvolutionPanel default+custom+lift coverage
@@ -31,7 +31,7 @@ Implication for Vinh's Phase 1 task 1.3 + 1.4 (`/api/analyze` shipping Day 4-5):
 
 NOT shipped: C2.4 Playwright /judges fidelity + C2.5 Playwright /analyze fidelity (Playwright dependency not installed; spec files would be dead code until install). Queued post-submission OR for the Day 10-11 dress rehearsal if Playwright install is approved.
 
-**F2 codex adversarial cold-review fix-wave (4 commits + cascade-#14 + D-043) — landed earlier this close-out window:**
+**F2 codex adversarial cold-review fix-wave (4 commits + cascade-#14 + D-043) - landed earlier this close-out window:**
 
 - `203b1dd` F2 HIGH#4 openrouter-stream route passes request.signal to openRouterChatCompletion
 - `8ae21cd` F2 HIGH#2 Watson per-request unique tempfile suffix (race fix)
@@ -94,14 +94,14 @@ This is a follow-on Vercel-architectural correction queued for post-submission i
 
 **Updated operator-action precision (replaces D-042 + D-045 prose):**
 
-OPTION A — Vercel dashboard (3-5 min, recommended):
+OPTION A - Vercel dashboard (3-5 min, recommended):
 1. https://vercel.com/new → Import Git Repository → `StephenSook/apex`
 2. Framework Preset: Next.js auto-detected per `vercel.json`
 3. Root Directory: leave at repo root (vercel.json `buildCommand` already does `cd app/frontend`)
 4. Click Deploy
 5. Assigned URL pattern: `apex-ssookra-7703s-projects.vercel.app` per Stephen's existing project-naming convention
 
-OPTION B — Vercel CLI:
+OPTION B - Vercel CLI:
 ```
 npm i -g vercel@latest
 cd "/Users/stephensookra/Desktop/IBM May"
@@ -126,7 +126,7 @@ Both yield a `*.vercel.app` URL at $0 cost.
 
 ---
 
-## 2026-05-24 D-045: Wave-43 D-042 reframing — apex.race is OPTIONAL brand polish, NOT submission-blocking
+## 2026-05-24 D-045: Wave-43 D-042 reframing - apex.race is OPTIONAL brand polish, NOT submission-blocking
 
 **Decision.** Re-read of D-042 surfaced a framing error. apex.race custom domain is NOT a submission-blocker because Vercel provides a free auto-assigned `*.vercel.app` URL for every deployment. apex.race is OPTIONAL BRAND POLISH (we already own brand wordmark + editorial-paddock identity; the custom .race TLD is a finishing touch, not a requirement). Per Stephen explicit framing 2026-05-24: "Can't we just run a random Vercel URL that we don't even have to pay for for number 1?"
 
@@ -146,7 +146,7 @@ Both yield a `*.vercel.app` URL at $0 cost.
 
 - Vercel free tier provides production hosting with the `*.vercel.app` URL at $0
 - Judges accessing `*.vercel.app` URL see identical project with identical functionality
-- 2026 judge sentiment (April Guo Anthropic + semgrep 2026 hackathon-effect) shifted toward "feels like a product" — a stable `*.vercel.app` URL pointing at a working build IS product-grade
+- 2026 judge sentiment (April Guo Anthropic + semgrep 2026 hackathon-effect) shifted toward "feels like a product" - a stable `*.vercel.app` URL pointing at a working build IS product-grade
 - Vercel default URL pattern is well-recognized by 2026 hackathon judges who deploy similar projects themselves
 
 **D-042 reframing:** the BLOCKING flag in D-042 misframed the constraint. apex.race custom domain registration is not required for submission. ONLY the Vercel deployment itself is. Per no-time-pressure rule + galaxy ambition: deploy to Vercel now via free tier; brand polish via apex.race registration is post-submission iteration.
