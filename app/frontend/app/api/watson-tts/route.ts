@@ -156,6 +156,25 @@ async function applyPaddockRadioFilter(input: Buffer): Promise<FFmpegFilterResul
 }
 
 export async function POST(req: Request): Promise<Response> {
+  // Wave-43 cascade-#15 F2-round-2 HIGH#1+HIGH#3 close-out per codex
+  // adversarial + vercel:deployment-expert sub-agent guidance: Vercel
+  // Node runtime has read-only filesystem outside /tmp + does NOT ship
+  // FFmpeg in PATH by default. The full Watson + FFmpeg paddock-radio
+  // pipeline cannot execute on Vercel without ffmpeg-static dep + /tmp
+  // cache rewrite. Per D-043 this is post-submission iteration. Early-
+  // return with explicit 400 on Vercel so the client falls back to
+  // Web Speech API cleanly + no half-executed Watson REST call wastes
+  // the API budget. Self-hosted environments (Stephen's Mac, Vinh's
+  // backend container) still hit the full path.
+  if (process.env.VERCEL !== undefined) {
+    return NextResponse.json(
+      {
+        error: "apex.watson-tts: Vercel runtime detected; falling back to Web Speech API per D-043 Vercel architectural constraint. Self-hosted FFmpeg-bundled environments support the full Watson + paddock-radio pipeline.",
+      },
+      { status: 400 },
+    );
+  }
+
   const apiKey = process.env.WATSON_TTS_API_KEY;
   const watsonUrl = process.env.WATSON_TTS_URL;
   const voice = process.env.WATSON_TTS_VOICE ?? DEFAULT_VOICE;
