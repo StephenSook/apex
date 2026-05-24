@@ -241,6 +241,16 @@ export async function openRouterChatCompletion(
           : 1000;
         attempt429 += 1;
         clearTimeout(timeoutHandle);
+        // Wave-43 D2.3 close-out per cold-review-2 silent-failure
+        // H-R2-3 + B1: cancel response.body BEFORE retry so Node
+        // undici releases the socket immediately (otherwise GC delay
+        // can exhaust the connection pool under load). console.warn
+        // logs the retry attempt so operators have a cost signal
+        // during the demo window.
+        await response.body?.cancel().catch(() => undefined);
+        if (typeof console !== "undefined" && console.warn) {
+          console.warn(`apex.openrouter-client: 429 rate-limited; retrying after ${waitMs}ms (attempt ${attempt429}).`);
+        }
         await delay(waitMs);
         continue;
       }
@@ -248,6 +258,12 @@ export async function openRouterChatCompletion(
       if (response.status >= 500 && response.status < 600 && attempt5xx < maxRetries5xx) {
         attempt5xx += 1;
         clearTimeout(timeoutHandle);
+        // Wave-43 D2.3 close-out: same response.body cancel + warn pattern
+        // applied to 5xx retry path.
+        await response.body?.cancel().catch(() => undefined);
+        if (typeof console !== "undefined" && console.warn) {
+          console.warn(`apex.openrouter-client: ${response.status} server error; retrying with exponential backoff (attempt ${attempt5xx}/${maxRetries5xx}).`);
+        }
         await delay(backoffMs(attempt5xx - 1));
         continue;
       }
