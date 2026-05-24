@@ -102,7 +102,7 @@ function severityLabel(severity: CitationLine["severity"]): string {
 }
 
 export default function GraniteCitationFooter(_props: GraniteCitationFooterProps) {
-  // Wave-42 cascade-fix-forward 1c95ab5: dropped the driverId reference
+  // Wave-42 cascade-fix-forward c3de91f (revealed by 1c95ab5 5-tab restructure): dropped the driverId reference
   // from the section subhead. Prior render duplicated the report.driver_id
   // span already shown in the CoachingReport header which caused
   // `getByText("sarah-reynolds-britcar-2026")` assertions in 3 test files

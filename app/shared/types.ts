@@ -1210,7 +1210,8 @@ export type BackendGuardianAudit =
 
 /**
  * Channel-specific tolerance bands for the forward-Euler consistency
- * check per council v2 Software Lead fix #7. Defaults below derived
+ * check per the council v2 Software Lead recommendation on per-channel
+ * forward-Euler tolerance. Defaults below derived
  * for the 1 Hz aggregation rate (D-011 path A); the polyphase 50 Hz
  * path (D-011 path B) reduces these bounds ~50x per
  * `ToleranceBands.for_polyphase_50hz()`. Mirrors `validator.py`
@@ -1225,7 +1226,7 @@ export type BackendGuardianAudit =
  *   - "polyphase_50hz": polyphase 50 Hz path (D-011 path B); bands
  *     scaled down ~50x from the 1 Hz baseline.
  *   - "flowstate_rate_invariant": rate-invariant bands per the
- *     FlowState 3-track ensemble (D-018 ensemble member 2).
+ *     FlowState 3-track ensemble (D-010 ensemble member 2).
  * Frontend ships the tagged type today; Vinh adds the `path` field
  * to Python @classmethod factories in his next sync window.
  */

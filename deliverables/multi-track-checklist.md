@@ -38,7 +38,7 @@
 **APEX argument.** APEX uses 12 IBM Granite tools per the wave-30 D-016 stack expansion. Every tool is load-bearing (no "logo on slide" tools). The integration depth includes:
 
 - Granite TimeSeries TTM r2.1 as the frozen TSFM forecaster (NeurIPS 2024)
-- Granite FlowState 9.1M as Track 2 of the 3-track forecasting ensemble per D-018
+- Granite FlowState 9.1M as Track 2 of the 3-track forecasting ensemble per D-010
 - IBM TSPulse 1M for polyphase anomaly detection on 50 Hz phase streams per D-016
 - Granite Guardian 4.1 as the BYOC custom-rules audit gate + D-024 physics-confidence detector verdict downgrade
 - Granite Embedding R2 149M + 47M as the RAG retrieval layer for FIA Appendix L citations per D-016

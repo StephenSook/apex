@@ -110,24 +110,32 @@ APEX is a three-layer PhysicsTTM architecture with a two-stage projection-and-au
 Three constituencies share one product gap. Adaptive racers running hand-control rigs in Britcar Trophy, the adaptive-driver UK championships, and FFSA Handikart. Veteran-team drivers competing through veteran motorsport rehabilitation programmes with combat-injury-driven adaptations. Grassroots clubman and amateur racers in SRO regional series and Britcar endurance. Their FIA Certificate of Adaptations (governed by Appendix L of the International Sporting Code) is a binding document. APEX reads it at the tensor level. When the COA permits simultaneous brake-throttle inputs, the physics layer permits them. When the COA does not, the constraint enforces. Same coaching pipeline, different output, depending on what the driver's COA actually says they are allowed to do. The Scuderia Ferrari precedent matters because IBM already shipped this stack to a Formula One team; APEX takes the same architecture and points it at the drivers who need it most.
 ```
 
-## IBM tools used (every load-bearing slot)
+## IBM tools used (every load-bearing slot; 12 tools per wave-30 D-016 stack expansion)
 
 ```
-1. Granite-Docling 258M model. Parses the driver's FIA Certificate of Adaptations PDF into structured JSON. Preserves Appendix L section IDs and the nine adaptation domain headings.
+1. Granite-Docling 258M model. Parses the driver's FIA Certificate of Adaptations PDF into structured JSON. Preserves Appendix L section IDs and the adaptation domain headings.
 
 2. Docling library. Open-source IBM Docling conversion plus table-extraction Python library, the conversion layer behind Granite-Docling's vision pass.
 
 3. Granite Vision 4.1 4B. Parses official SRO and Britcar timing-sheet PDFs into CSV. Charts and tables only.
 
-4. Granite TimeSeries TTM r2.1. Frozen pretrained Tiny Time Mixer (NeurIPS 2024). Aggregated 1-Hz mini-sector tensor input. We do not retrain.
+4. Granite TimeSeries TTM r2.1. Frozen pretrained Tiny Time Mixer (NeurIPS 2024) as Track 1 of the 3-track forecasting ensemble per D-010. Aggregated 1-Hz mini-sector tensor input. We do not retrain.
 
-5. Granite 4.1 8B Instruct. Race-engineer narrator. Reads forecast envelope, COA, and debrief, emits the coaching report in a paddock voice.
+5. Granite FlowState 9.1M. Track 2 of the 3-track forecasting ensemble per D-010. Sampling-rate-invariant continuous-time SSM.
 
-6. Granite Guardian 4.1 8B. Bring-Your-Own-Classifier custom rules. Audits the combined Stage 1 + Stage 2 serialized text log; verdict (approve / flag / reject) backed by the 14-fixture Convergence 14 unit-test catalogue. Reasoning trace surfaces in the UI.
+6. IBM TSPulse 1M. Time-frequency anomaly detector on polyphase phase streams per D-016.
 
-7. Langflow. Visible orchestration graph export. Day 7 screenshot lands in the deck.
+7. Granite Embedding R2 (149M + 47M). RAG retrieval layer per D-016. Hybrid dense + sparse over vehicle setup guides + racing-theory + adaptive-equipment specs + COA-parsed fixtures.
 
-8. IBM Bob. Build accelerator. We adopt Bob as our codegen-assistance loop in keeping with IBM's publicly-documented watsonx + Granite Ferrari case-study posture toward governed-AI development. Session logs committed to `bob-sessions/` in the repo.
+8. Granite 4.1 8B Instruct. Race-engineer narrator. Reads forecast envelope, COA, and debrief; emits the coaching report in a paddock voice.
+
+9. Granite Guardian 4.1 8B. Bring-Your-Own-Classifier custom rules. Audits the combined Stage 1 + Stage 2 serialized text log; verdict (approve / flag / reject) backed by the 14-fixture Convergence 14 unit-test catalogue. Reasoning trace surfaces in the UI.
+
+10. Granite 4.0 Nano 350M. In-browser WebGPU edge model via Transformers.js per D-019 item 1 + D-021. Parity surface to the server-side narrator for offline coaching path.
+
+11. Langflow. Visible orchestration graph export per D-017 (demoted from runtime to demo facade in favour of LangGraph + MCP + ContextForge).
+
+12. IBM Bob. Build accelerator. We adopt Bob as our codegen-assistance loop in keeping with IBM's publicly-documented watsonx + Granite Ferrari case-study posture toward governed-AI development. Session logs committed to `bob-sessions/` in the repo.
 ```
 
 ## Demo video link
