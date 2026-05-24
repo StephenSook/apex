@@ -17,7 +17,7 @@ describe("ALoRAStatusBadge", () => {
     render(<ALoRAStatusBadge status={status} />);
     expect(screen.getByText(/137 ms elapsed/i)).toBeInTheDocument();
     expect(screen.getByText(/sub-200 ms/i)).toBeInTheDocument();
-    expect(screen.getByText(/Hot-swap/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/Hot-swap/i).length).toBeGreaterThan(0);
   });
 
   it("renders active state with adapter name + rank + alpha + lambda numerics", () => {
