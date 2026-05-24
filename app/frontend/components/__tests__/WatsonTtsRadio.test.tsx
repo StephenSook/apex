@@ -6,15 +6,26 @@ import type { AuditId } from "../../../shared/brands";
 
 const TEST_AUDIT_ID = "abcdef01234567890123456789abcdef" as unknown as AuditId;
 
-describe("WatsonTtsRadio", () => {
+describe("WatsonTtsRadio (inline-blob streaming shape, cascade-#15 rework)", () => {
   let fetchMock: ReturnType<typeof vi.fn>;
+  let createObjectURLMock: ReturnType<typeof vi.fn>;
+  let revokeObjectURLMock: ReturnType<typeof vi.fn>;
 
   beforeEach(() => {
     fetchMock = vi.fn();
     vi.stubGlobal("fetch", fetchMock);
-    // Stub speechSynthesis via defineProperty so playFallback + cleanup
-    // paths don't throw. window.speechSynthesis is read-only on jsdom
-    // so direct assignment trips TS2540.
+    createObjectURLMock = vi.fn(() => "blob:apex-mock-url");
+    revokeObjectURLMock = vi.fn();
+    Object.defineProperty(URL, "createObjectURL", {
+      configurable: true,
+      writable: true,
+      value: createObjectURLMock,
+    });
+    Object.defineProperty(URL, "revokeObjectURL", {
+      configurable: true,
+      writable: true,
+      value: revokeObjectURLMock,
+    });
     Object.defineProperty(window, "speechSynthesis", {
       configurable: true,
       writable: true,
@@ -37,52 +48,62 @@ describe("WatsonTtsRadio", () => {
     vi.unstubAllGlobals();
   });
 
-  it("renders 'checking' state on first mount before HEAD-probe resolves", () => {
+  it("renders 'preparing audio' on mount before synth POST resolves", () => {
     fetchMock.mockImplementation(() => new Promise(() => undefined));
     render(<WatsonTtsRadio auditId={TEST_AUDIT_ID} text="test coaching report" />);
-    expect(screen.getByText(/checking audio cache/i)).toBeInTheDocument();
+    expect(screen.getByText(/preparing audio/i)).toBeInTheDocument();
   });
 
-  it("renders ready_watson + <audio> with the cache URL on HEAD 200", async () => {
-    fetchMock.mockResolvedValueOnce(new Response(null, { status: 200 }));
-    render(<WatsonTtsRadio auditId={TEST_AUDIT_ID} text="cached coaching report" />);
+  it("synth POST 200 with audio/mpeg blob transitions to ready_watson + creates blob URL", async () => {
+    const mockBlob = new Blob([new Uint8Array([0xff, 0xfb, 0x90, 0x00])], { type: "audio/mpeg" });
+    fetchMock.mockResolvedValueOnce(
+      new Response(mockBlob, {
+        status: 200,
+        headers: { "Content-Type": "audio/mpeg" },
+      }),
+    );
+    render(<WatsonTtsRadio auditId={TEST_AUDIT_ID} text="ready test" />);
     await waitFor(() =>
       expect(screen.getByLabelText(/walkie-talkie audio playback/i)).toBeInTheDocument(),
     );
+    expect(createObjectURLMock).toHaveBeenCalledTimes(1);
     const audio = screen.getByLabelText(/walkie-talkie audio playback/i) as HTMLAudioElement;
-    expect(audio.src).toContain(TEST_AUDIT_ID);
+    expect(audio.src).toContain("blob:");
   });
 
-  it("attempts synthesis POST on HEAD 404 then falls back to Web Speech on 502", async () => {
-    fetchMock
-      .mockResolvedValueOnce(new Response(null, { status: 404 })) // HEAD probe miss
-      .mockResolvedValueOnce(new Response("ffmpeg failed", { status: 502 })); // synth POST fails
+  it("synth POST 502 falls back to Web Speech API + logs warn", async () => {
+    fetchMock.mockResolvedValueOnce(new Response("ffmpeg failed", { status: 502 }));
     const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => undefined);
-    render(<WatsonTtsRadio auditId={TEST_AUDIT_ID} text="cache-miss test" />);
+    render(<WatsonTtsRadio auditId={TEST_AUDIT_ID} text="502 test" />);
     await waitFor(() => expect(screen.getByText(/Web Speech API fallback/i)).toBeInTheDocument());
-    // F2 MED#7: console.warn surfaces failure shape for operator debugging.
     expect(warnSpy).toHaveBeenCalled();
     warnSpy.mockRestore();
   });
 
-  it("transitions HEAD-miss + synth 200 to ready_watson with the returned URL", async () => {
-    fetchMock
-      .mockResolvedValueOnce(new Response(null, { status: 404 }))
-      .mockResolvedValueOnce(
-        new Response(JSON.stringify({ url: "/generated-audio/test.mp3", cached: false }), {
-          status: 200,
-          headers: { "Content-Type": "application/json" },
-        }),
-      );
-    render(<WatsonTtsRadio auditId={TEST_AUDIT_ID} text="synthesis-success test" />);
-    await waitFor(() =>
-      expect(screen.getByLabelText(/walkie-talkie audio playback/i)).toBeInTheDocument(),
-    );
+  it("synth POST network throw falls back to Web Speech API + logs warn", async () => {
+    fetchMock.mockRejectedValueOnce(new TypeError("Network failure"));
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    render(<WatsonTtsRadio auditId={TEST_AUDIT_ID} text="throw test" />);
+    await waitFor(() => expect(screen.getByText(/Web Speech API fallback/i)).toBeInTheDocument());
+    expect(warnSpy).toHaveBeenCalled();
+    warnSpy.mockRestore();
   });
 
-  it("falls back to Web Speech API on HEAD network error (no synthesis attempt)", async () => {
-    fetchMock.mockRejectedValueOnce(new TypeError("Network failure"));
-    render(<WatsonTtsRadio auditId={TEST_AUDIT_ID} text="network-fail test" />);
-    await waitFor(() => expect(screen.getByText(/Web Speech API fallback/i)).toBeInTheDocument());
+  it("unmount mid-flight aborts the synth POST + revokes blob URL", async () => {
+    let abortReceived = false;
+    fetchMock.mockImplementation((_url, init) => {
+      const signal = (init as RequestInit | undefined)?.signal;
+      return new Promise<Response>((_resolve, reject) => {
+        if (signal !== undefined && signal !== null) {
+          signal.addEventListener("abort", () => {
+            abortReceived = true;
+            reject(new DOMException("aborted", "AbortError"));
+          });
+        }
+      });
+    });
+    const { unmount } = render(<WatsonTtsRadio auditId={TEST_AUDIT_ID} text="abort test" />);
+    unmount();
+    await waitFor(() => expect(abortReceived).toBe(true));
   });
 });

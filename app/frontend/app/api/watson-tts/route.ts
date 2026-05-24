@@ -1,56 +1,61 @@
 /**
  * POST /api/watson-tts
  *
- * Server-side Next.js API route consumed by the wave-42 WatsonTtsRadio
- * client surface. Synthesizes coaching-report narration via Watson Text
- * to Speech REST + applies the FFmpeg paddock-radio filter chain
- * (highpass=350 + lowpass=3000 + compand + volume=1.8) for the
- * "race engineer over walkie-talkie" acoustic profile.
+ * Server-side synthesis of coaching-report narration via IBM Watson Text
+ * to Speech REST + paddock-radio FFmpeg filter chain (highpass=350 +
+ * lowpass=3000 + compand + volume=1.8) for the walkie-talkie acoustic
+ * profile.
  *
- * Wave-43 Lane E2.1 close-out per the wave-43 plan: backend production
- * path replacing the Web Speech API browser-fallback that wave-42
- * already shipped. Client-side WatsonTtsRadio.tsx HEAD-probes the
- * cache URL first + invokes this POST when no cached file exists for
- * the audit_id.
+ * Wave-43 cascade-#15 F2-round-2 + galaxy-ambition rework (Stephen
+ * explicit mandate 2026-05-24): full Vercel-compatible streaming
+ * response. Drops the prior public/generated-audio cache approach
+ * (Vercel readonly FS) + uses ffmpeg-static bundled binary path so the
+ * production path runs identically on Vercel + self-hosted environments.
+ * Client receives MP3 bytes inline as audio/mpeg body; creates blob
+ * URL + plays. No filesystem cache; each request synthesizes fresh
+ * (Watson + FFmpeg roundtrip ~1-3s on Vercel iad1 region with warm
+ * function instance per Fluid Compute).
  *
- * Hook contract (wave-43 Lane E2.2 WatsonTtsRadio production-path
- * activation):
+ * Hook contract (wave-43 Lane E2.2 WatsonTtsRadio production-path):
  *   - Request body: `{ "audit_id": string, "text": string }`
- *   - Response 200: `{ "url": string, "cached": boolean }` with the
- *     public /generated-audio/{audit_id}.mp3 URL
- *   - Response 400: missing env vars; client falls back to Web Speech
- *     API per the wave-42 WatsonTtsRadio fallback path
- *   - Response 502: Watson REST or FFmpeg pipeline failure; client
- *     falls back to Web Speech API
+ *   - Response 200: `audio/mpeg` MP3 bytes
+ *   - Response 400: missing env vars OR malformed body OR validation
+ *   - Response 502: Watson REST or FFmpeg pipeline failure
  *
  * Implementation notes:
- *   - child_process.spawn for FFmpeg (NO fluent-ffmpeg SDK to avoid
- *     Node-22 simdjson dyld bug per project memory + per the global
- *     three-brain stack runtime hygiene rule)
- *   - Watson REST via plain fetch (NO @ibm-cloud/watson-developer-cloud
- *     SDK for the same reason)
- *   - Cache key = audit_id; filesystem-write atomicity via rename-after
- *     -tempfile pattern so concurrent requests for the same audit_id
- *     do not race-write a partial MP3
- *   - Content-Type validation on Watson response (must be audio/mp3)
- *     + non-empty body length check before FFmpeg invoke
+ *   - ffmpeg-static @5.3.0 provides bundled binary at `require('ffmpeg-static')`
+ *   - child_process.spawn pipes Watson MP3 in -> FFmpeg filter -> MP3 out
+ *   - Per-request unique Watson signal threading: req.signal abort kills
+ *     both Watson fetch + FFmpeg child process so consumer disconnect
+ *     does not leak quota / processes
+ *   - No filesystem writes (Vercel /tmp would work but blob streaming
+ *     is simpler + lower-latency + cache-less)
  *
  * Required environment variables:
  *   - WATSON_TTS_API_KEY: IBM Cloud Watson Text to Speech API key
- *   - WATSON_TTS_URL: regional service URL
- *     (e.g. https://api.us-south.text-to-speech.watson.cloud.ibm.com)
+ *   - WATSON_TTS_URL: regional service URL (e.g.
+ *     https://api.us-south.text-to-speech.watson.cloud.ibm.com)
  *   - WATSON_TTS_VOICE: optional voice ID (defaults to en-US_HenryV3Voice)
+ *
+ * When env vars are missing OR Watson/FFmpeg fails, client falls back
+ * to Web Speech API per wave-42 WatsonTtsRadio fallback path.
  */
 
 import { spawn } from "node:child_process";
-import { existsSync } from "node:fs";
-import { mkdir, rename, writeFile } from "node:fs/promises";
-import { join } from "node:path";
+import { createRequire } from "node:module";
 
 import { NextResponse } from "next/server";
 
-// Node.js runtime required for child_process.spawn + fs/promises.
+// Node.js runtime required for child_process.spawn + ffmpeg-static binary.
 export const runtime = "nodejs";
+// 60s budget covers Watson REST (~1-2s) + FFmpeg (~1s) + buffer for cold start.
+export const maxDuration = 60;
+
+// Wave-43 cascade-#15 F2-round-2: ffmpeg-static binary path resolved at
+// module-load via createRequire so the bundled binary is available
+// across Vercel + self-hosted environments without PATH dependency.
+const require = createRequire(import.meta.url);
+const FFMPEG_BIN_PATH: string = require("ffmpeg-static");
 
 interface WatsonTtsRequestBody {
   readonly audit_id?: unknown;
@@ -70,34 +75,7 @@ function isValidRequest(
   );
 }
 
-const CACHE_DIR = join(process.cwd(), "public", "generated-audio");
 const DEFAULT_VOICE = "en-US_HenryV3Voice";
-
-/**
- * Resolve cache path for a given audit_id. Atomic-write contract:
- * write to a per-request unique tempfile then rename to
- * {audit_id}.mp3 so HEAD probes never see a half-written file.
- *
- * Wave-43 cascade-#13 F2 HIGH#2 close-out per codex adversarial:
- * the prior shape used `{audit_id}.mp3.tmp` shared across concurrent
- * requests for the same audit_id, so two POSTs interleaving
- * writeFile + rename could ENOENT the loser OR cross-corrupt the
- * final MP3. Per-request unique suffix (PID + timestamp + random)
- * makes each tempfile distinct; both renames target the same final
- * path (POSIX-atomic; identical input + identical FFmpeg pipeline =
- * identical output bytes; overwrite is a no-op semantically).
- */
-function cachePaths(auditId: string): { final: string; temp: string } {
-  const uniqueSuffix = `${process.pid}.${Date.now()}.${Math.random().toString(36).slice(2, 10)}`;
-  return {
-    final: join(CACHE_DIR, `${auditId}.mp3`),
-    temp: join(CACHE_DIR, `${auditId}.${uniqueSuffix}.mp3.tmp`),
-  };
-}
-
-function publicUrl(auditId: string): string {
-  return `/generated-audio/${auditId}.mp3`;
-}
 
 interface FFmpegFilterResult {
   readonly bytes: Buffer;
@@ -105,14 +83,18 @@ interface FFmpegFilterResult {
 }
 
 /**
- * Run FFmpeg with the paddock-radio filter chain on the input MP3
- * buffer + return the filtered MP3 buffer. -i pipe:0 reads stdin;
- * pipe:1 writes stdout. Stderr captured for error reporting on
- * non-zero exit.
+ * Pipe input MP3 buffer through ffmpeg-static binary with paddock-radio
+ * filter chain. Returns filtered MP3 buffer OR error message.
+ *
+ * Wire consumer signal so abort kills the FFmpeg child + frees Vercel
+ * function CPU instead of running to completion against a dead client.
  */
-async function applyPaddockRadioFilter(input: Buffer): Promise<FFmpegFilterResult> {
+async function applyPaddockRadioFilter(
+  input: Buffer,
+  signal?: AbortSignal,
+): Promise<FFmpegFilterResult> {
   return new Promise((resolve) => {
-    const proc = spawn("ffmpeg", [
+    const proc = spawn(FFMPEG_BIN_PATH, [
       "-hide_banner",
       "-loglevel",
       "error",
@@ -134,11 +116,19 @@ async function applyPaddockRadioFilter(input: Buffer): Promise<FFmpegFilterResul
     proc.stdout.on("data", (chunk: Buffer) => chunks.push(chunk));
     proc.stderr.on("data", (chunk: Buffer) => stderrChunks.push(chunk));
 
+    const onAbort = () => proc.kill("SIGTERM");
+    if (signal !== undefined) {
+      if (signal.aborted) onAbort();
+      else signal.addEventListener("abort", onAbort, { once: true });
+    }
+
     proc.on("error", (err) => {
+      if (signal !== undefined) signal.removeEventListener("abort", onAbort);
       resolve({ bytes: Buffer.alloc(0), error: `ffmpeg spawn failed: ${err.message}` });
     });
 
     proc.on("close", (code) => {
+      if (signal !== undefined) signal.removeEventListener("abort", onAbort);
       if (code !== 0) {
         const stderr = Buffer.concat(stderrChunks).toString("utf-8").slice(0, 500);
         resolve({ bytes: Buffer.alloc(0), error: `ffmpeg exit ${code}: ${stderr}` });
@@ -148,6 +138,7 @@ async function applyPaddockRadioFilter(input: Buffer): Promise<FFmpegFilterResul
     });
 
     proc.stdin.on("error", (err) => {
+      if (signal !== undefined) signal.removeEventListener("abort", onAbort);
       resolve({ bytes: Buffer.alloc(0), error: `ffmpeg stdin failed: ${err.message}` });
     });
     proc.stdin.write(input);
@@ -156,30 +147,12 @@ async function applyPaddockRadioFilter(input: Buffer): Promise<FFmpegFilterResul
 }
 
 export async function POST(req: Request): Promise<Response> {
-  // Wave-43 cascade-#15 F2-round-2 HIGH#1+HIGH#3 close-out per codex
-  // adversarial + vercel:deployment-expert sub-agent guidance: Vercel
-  // Node runtime has read-only filesystem outside /tmp + does NOT ship
-  // FFmpeg in PATH by default. The full Watson + FFmpeg paddock-radio
-  // pipeline cannot execute on Vercel without ffmpeg-static dep + /tmp
-  // cache rewrite. Per D-043 this is post-submission iteration. Early-
-  // return with explicit 400 on Vercel so the client falls back to
-  // Web Speech API cleanly + no half-executed Watson REST call wastes
-  // the API budget. Self-hosted environments (Stephen's Mac, Vinh's
-  // backend container) still hit the full path.
-  if (process.env.VERCEL !== undefined) {
-    return NextResponse.json(
-      {
-        error: "apex.watson-tts: Vercel runtime detected; falling back to Web Speech API per D-043 Vercel architectural constraint. Self-hosted FFmpeg-bundled environments support the full Watson + paddock-radio pipeline.",
-      },
-      { status: 400 },
-    );
-  }
-
   const apiKey = process.env.WATSON_TTS_API_KEY;
   const watsonUrl = process.env.WATSON_TTS_URL;
   const voice = process.env.WATSON_TTS_VOICE ?? DEFAULT_VOICE;
 
   if (apiKey === undefined || watsonUrl === undefined) {
+    console.warn("apex.watson-tts: WATSON_TTS_API_KEY or WATSON_TTS_URL missing; client falls back to Web Speech API.");
     return NextResponse.json(
       {
         error: "apex.watson-tts: WATSON_TTS_API_KEY + WATSON_TTS_URL missing; client falls back to Web Speech API.",
@@ -205,14 +178,7 @@ export async function POST(req: Request): Promise<Response> {
     );
   }
 
-  const { audit_id: auditId, text } = body;
-  const { final: finalPath, temp: tempPath } = cachePaths(auditId);
-
-  if (existsSync(finalPath)) {
-    return NextResponse.json({ url: publicUrl(auditId), cached: true }, { status: 200 });
-  }
-
-  await mkdir(CACHE_DIR, { recursive: true });
+  const { text } = body;
 
   const watsonAuth = `Basic ${Buffer.from(`apikey:${apiKey}`).toString("base64")}`;
   const watsonEndpoint = `${watsonUrl.replace(/\/$/, "")}/v1/synthesize?voice=${encodeURIComponent(voice)}`;
@@ -227,9 +193,11 @@ export async function POST(req: Request): Promise<Response> {
         Accept: "audio/mp3",
       },
       body: JSON.stringify({ text }),
+      signal: req.signal,
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
+    console.error("apex.watson-tts: Watson REST fetch failed.", { message });
     return NextResponse.json(
       { error: `apex.watson-tts: fetch failed: ${message}` },
       { status: 502 },
@@ -238,6 +206,10 @@ export async function POST(req: Request): Promise<Response> {
 
   if (!watsonResponse.ok) {
     const errorBody = await watsonResponse.text().catch(() => "<no body>");
+    console.error("apex.watson-tts: Watson upstream non-ok.", {
+      status: watsonResponse.status,
+      body: errorBody.slice(0, 500),
+    });
     return NextResponse.json(
       {
         error: `apex.watson-tts: Watson ${watsonResponse.status} ${watsonResponse.statusText}; body=${errorBody.slice(0, 500)}`,
@@ -248,6 +220,7 @@ export async function POST(req: Request): Promise<Response> {
 
   const contentType = watsonResponse.headers.get("Content-Type") ?? "";
   if (!contentType.includes("audio/mp3") && !contentType.includes("audio/mpeg")) {
+    console.error("apex.watson-tts: unexpected Watson Content-Type.", { contentType });
     return NextResponse.json(
       { error: `apex.watson-tts: unexpected Content-Type from Watson: ${contentType}` },
       { status: 502 },
@@ -257,30 +230,28 @@ export async function POST(req: Request): Promise<Response> {
   const arrayBuffer = await watsonResponse.arrayBuffer();
   const rawAudio = Buffer.from(arrayBuffer);
   if (rawAudio.length === 0) {
+    console.error("apex.watson-tts: Watson returned empty body.");
     return NextResponse.json(
       { error: "apex.watson-tts: Watson returned empty body." },
       { status: 502 },
     );
   }
 
-  const filtered = await applyPaddockRadioFilter(rawAudio);
+  const filtered = await applyPaddockRadioFilter(rawAudio, req.signal);
   if (filtered.error !== null) {
+    console.error("apex.watson-tts: FFmpeg pipeline failed.", { error: filtered.error });
     return NextResponse.json(
       { error: `apex.watson-tts: ${filtered.error}` },
       { status: 502 },
     );
   }
 
-  try {
-    await writeFile(tempPath, filtered.bytes);
-    await rename(tempPath, finalPath);
-  } catch (err) {
-    const message = err instanceof Error ? err.message : String(err);
-    return NextResponse.json(
-      { error: `apex.watson-tts: cache write failed: ${message}` },
-      { status: 502 },
-    );
-  }
-
-  return NextResponse.json({ url: publicUrl(auditId), cached: false }, { status: 200 });
+  return new Response(filtered.bytes, {
+    status: 200,
+    headers: {
+      "Content-Type": "audio/mpeg",
+      "Content-Length": String(filtered.bytes.length),
+      "Cache-Control": "no-store",
+    },
+  });
 }

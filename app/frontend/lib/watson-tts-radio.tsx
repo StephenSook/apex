@@ -50,111 +50,84 @@ type AudioPlayerState =
 export interface WatsonTtsRadioProps {
   readonly auditId: AuditId;
   readonly text: string;
-  readonly cachedAudioBaseUrl?: string;
   readonly synthesizeEndpoint?: string;
 }
 
-const DEFAULT_CACHED_AUDIO_BASE_URL = "/generated-audio";
 const DEFAULT_SYNTHESIZE_ENDPOINT = "/api/watson-tts";
 
 export default function WatsonTtsRadio({
   auditId,
   text,
-  cachedAudioBaseUrl = DEFAULT_CACHED_AUDIO_BASE_URL,
   synthesizeEndpoint = DEFAULT_SYNTHESIZE_ENDPOINT,
 }: WatsonTtsRadioProps) {
   const [state, setState] = useState<AudioPlayerState>({ status: "idle" });
 
-  // Detect availability of the cached Watson TTS audio file at mount.
-  // queueMicrotask defers the setState per cascade-#8 react-hooks/set-
-  // state-in-effect ESLint rule + cascade-#11 hook-hardening pattern.
+  // Wave-43 cascade-#15 F2-round-2 + galaxy-ambition rework: drop
+  // HEAD-probe cache lookup pattern (Vercel readonly FS made the cache
+  // path inoperable; per D-043 path-forward shipped). New shape:
+  // single POST to /api/watson-tts on mount; server returns inline
+  // audio/mpeg blob; client creates URL.createObjectURL + plays.
+  // Per-request synthesis (no cross-request cache) but the Watson +
+  // FFmpeg pipeline runs ~1-3s on Vercel iad1 with warm function
+  // instance, well within the perception budget for a cool-down lap
+  // walkie-talkie. AbortController wired to fetch so unmount-mid-
+  // synthesis aborts the server work.
   useEffect(() => {
     let cancelled = false;
-    // Wave-43 cascade-#15 F2-round-2 MED#4 close-out per codex
-    // adversarial: AbortController wires HEAD + synthesis POST fetches
-    // to the effect cleanup so a navigation-mid-flight aborts the
-    // in-flight network requests instead of leaving them dangling.
-    // Prior cleanup only flipped a closure flag; the actual fetches
-    // continued + counted against the consumer's network budget.
     const controller = new AbortController();
+    let blobUrlToRevoke: string | null = null;
 
     queueMicrotask(() => {
       if (cancelled) return;
-      setState({ status: "checking" });
+      setState({ status: "synthesizing" });
     });
-
-    const audioUrl = `${cachedAudioBaseUrl}/${auditId}.mp3`;
 
     void (async () => {
       try {
-        const response = await fetch(audioUrl, { method: "HEAD", signal: controller.signal });
+        const synthResponse = await fetch(synthesizeEndpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ audit_id: auditId, text }),
+          signal: controller.signal,
+        });
         if (cancelled) return;
-        if (response.ok) {
-          setState({ status: "ready_watson", url: audioUrl });
-          return;
-        }
-        // 404 OR other non-ok cache lookup: try the production
-        // synthesis path before falling back to Web Speech API. Wave-43
-        // E2.2 close-out per the Lane E2 plan: if WATSON_TTS_API_KEY is
-        // configured, the server endpoint synthesizes + caches +
-        // returns the URL; if missing env vars (400) or Watson/FFmpeg
-        // failure (502), we still fall back to the wave-42 Web Speech
-        // API path so the demo never breaks.
-        setState({ status: "synthesizing" });
-        try {
-          const synthResponse = await fetch(synthesizeEndpoint, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ audit_id: auditId, text }),
-            signal: controller.signal,
-          });
-          if (cancelled) return;
-          if (synthResponse.ok) {
-            const payload = (await synthResponse.json().catch(() => null)) as
-              | { readonly url?: unknown }
-              | null;
-            if (payload !== null && typeof payload.url === "string" && payload.url.length > 0) {
-              setState({ status: "ready_watson", url: payload.url });
-              return;
-            }
-          } else {
-            // Wave-43 cascade-#13 F2 MED#7 close-out per codex adversarial:
-            // log the actual failure shape so operators can correlate
-            // broken Watson credentials / missing FFmpeg / Vercel readonly
-            // FS errors with the silent client-side fallback. Without
-            // this log, production-path failures look identical to
-            // Web Speech API fallback in the UI; nothing in DevTools
-            // tells the operator the production path is dead.
-            const errorBody = await synthResponse.text().catch(() => "<no body>");
-            console.warn(
-              "apex.watson-tts: synthesis POST returned non-ok; falling back to Web Speech API.",
-              {
-                status: synthResponse.status,
-                statusText: synthResponse.statusText,
-                body: errorBody.slice(0, 500),
-                endpoint: synthesizeEndpoint,
-              },
-            );
-          }
-          setState({ status: "ready_fallback" });
-        } catch (err) {
-          if (cancelled) return;
-          // Wave-43 F2 MED#7: log thrown POST errors too (network,
-          // CORS, abort, malformed JSON in the request path) so the
-          // operator sees the failure mode instead of silent fallback.
-          const message = err instanceof Error ? err.message : String(err);
+        if (!synthResponse.ok) {
+          const errorBody = await synthResponse.text().catch(() => "<no body>");
           console.warn(
-            "apex.watson-tts: synthesis POST threw; falling back to Web Speech API.",
-            { message, endpoint: synthesizeEndpoint },
+            "apex.watson-tts: synthesis POST returned non-ok; falling back to Web Speech API.",
+            {
+              status: synthResponse.status,
+              statusText: synthResponse.statusText,
+              body: errorBody.slice(0, 500),
+              endpoint: synthesizeEndpoint,
+            },
           );
           setState({ status: "ready_fallback" });
+          return;
         }
-      } catch {
+        const contentType = synthResponse.headers.get("Content-Type") ?? "";
+        if (!contentType.includes("audio/")) {
+          console.warn(
+            "apex.watson-tts: synthesis POST returned non-audio Content-Type; falling back to Web Speech API.",
+            { contentType, endpoint: synthesizeEndpoint },
+          );
+          setState({ status: "ready_fallback" });
+          return;
+        }
+        const blob = await synthResponse.blob();
         if (cancelled) return;
-        // Network error / SSR / fetch unsupported on cache HEAD: skip
-        // the synthesis POST too (same network conditions would block
-        // it) + fall back to Web Speech API which only requires
-        // browser-side speechSynthesis.
+        blobUrlToRevoke = URL.createObjectURL(blob);
+        setState({ status: "ready_watson", url: blobUrlToRevoke });
+      } catch (err) {
+        if (cancelled) return;
+        if (err instanceof DOMException && err.name === "AbortError") {
+          return;
+        }
+        const message = err instanceof Error ? err.message : String(err);
+        console.warn(
+          "apex.watson-tts: synthesis POST threw; falling back to Web Speech API.",
+          { message, endpoint: synthesizeEndpoint },
+        );
         setState({ status: "ready_fallback" });
       }
     })();
@@ -162,8 +135,11 @@ export default function WatsonTtsRadio({
     return () => {
       cancelled = true;
       controller.abort("watson-tts-radio-cleanup");
+      if (blobUrlToRevoke !== null) {
+        URL.revokeObjectURL(blobUrlToRevoke);
+      }
     };
-  }, [auditId, text, cachedAudioBaseUrl, synthesizeEndpoint]);
+  }, [auditId, text, synthesizeEndpoint]);
 
   const playFallback = useCallback(() => {
     if (typeof window === "undefined" || typeof window.speechSynthesis === "undefined") {
@@ -203,7 +179,7 @@ export default function WatsonTtsRadio({
     return (
       <div className="flex flex-col gap-2 rounded-sm border border-rule bg-paper p-4">
         <p className="font-mono text-[10px] uppercase tracking-wider text-muted">
-          Walkie-talkie · checking audio cache
+          Walkie-talkie · preparing audio
         </p>
       </div>
     );
