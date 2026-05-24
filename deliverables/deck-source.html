@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>APEX deck wave-43 close-out</title>
+<style>
+  @import url("https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,400..700,0..100,0..1;1,9..144,400..700,0..100,0..1&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600;700&display=swap");
+  :root {
+    --paper: #F4EBD8;
+    --paper-warm: #EFE2C7;
+    --racing-green: #0A2818;
+    --accent: #C1492C;
+    --amber: #D9A441;
+    --ink: #0F1410;
+    --ink-soft: #2A2F2A;
+    --muted: #6B6F6A;
+    --rule: #B8AC93;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--paper); color: var(--ink); font-family: "IBM Plex Sans", sans-serif; font-weight: 400; line-height: 1.55; }
+  .slide {
+    width: 1920px;
+    height: 1080px;
+    padding: 80px 100px;
+    background: var(--paper);
+    page-break-after: always;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+  }
+  .slide:last-child { page-break-after: avoid; }
+  .eyebrow {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 14px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 24px;
+  }
+  h1.headline {
+    font-family: "Fraunces", serif;
+    font-style: italic;
+    font-weight: 600;
+    font-size: 96px;
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    color: var(--racing-green);
+    margin-bottom: 32px;
+  }
+  h2.subhead {
+    font-family: "Fraunces", serif;
+    font-weight: 500;
+    font-size: 56px;
+    line-height: 1.12;
+    color: var(--racing-green);
+    margin-bottom: 28px;
+  }
+  h3.section {
+    font-family: "Fraunces", serif;
+    font-weight: 500;
+    font-size: 40px;
+    line-height: 1.2;
+    color: var(--ink);
+    margin-bottom: 20px;
+  }
+  p.lead { font-size: 28px; line-height: 1.45; color: var(--ink-soft); max-width: 1400px; }
+  p.body { font-size: 22px; line-height: 1.6; color: var(--ink-soft); max-width: 1300px; margin-bottom: 16px; }
+  .mono { font-family: "IBM Plex Mono", monospace; font-size: 18px; letter-spacing: 0.02em; color: var(--ink); }
+  .footer {
+    position: absolute;
+    bottom: 60px;
+    left: 100px;
+    right: 100px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 14px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-top: 1px solid var(--rule);
+    padding-top: 16px;
+  }
+  .accent { color: var(--accent); }
+  .green { color: var(--racing-green); }
+  .amber { color: var(--amber); }
+  .pill {
+    display: inline-block;
+    padding: 8px 18px;
+    border: 1px solid var(--racing-green);
+    background: var(--paper-warm);
+    color: var(--racing-green);
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 14px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    border-radius: 2px;
+    margin-right: 12px;
+  }
+  .grid-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 28px;
+    margin-top: 40px;
+  }
+  .card {
+    border: 2px solid var(--racing-green);
+    background: var(--paper-warm);
+    padding: 28px 24px;
+  }
+  .card h4 {
+    font-family: "Fraunces", serif;
+    font-weight: 600;
+    font-size: 26px;
+    color: var(--racing-green);
+    margin-bottom: 12px;
+  }
+  .card p { font-size: 18px; line-height: 1.5; color: var(--ink-soft); }
+  .big-num {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 88px;
+    font-weight: 600;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .wordmark {
+    font-family: "Fraunces", serif;
+    font-style: italic;
+    font-weight: 600;
+    font-size: 240px;
+    color: var(--racing-green);
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+  }
+  ul.bullets { list-style: none; margin-top: 24px; }
+  ul.bullets li {
+    padding: 14px 0 14px 32px;
+    position: relative;
+    font-size: 22px;
+    color: var(--ink-soft);
+    border-bottom: 1px solid var(--rule);
+  }
+  ul.bullets li:before {
+    content: "→";
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; margin-top: 32px; }
+</style>
+</head>
+<body>
+
+<!-- ============================================================== -->
+<!-- Frame 1: Title hook -->
+<!-- ============================================================== -->
+<section class="slide">
+  <p class="eyebrow">APEX · IBM SkillsBuild May 2026 Challenge</p>
+  <h1 class="headline">The race engineer for the<br>drivers who don't have one.</h1>
+  <p class="lead">A professional race engineer costs hundreds of pounds per day. Every Formula 1 driver has one. Most adaptive racers, veteran-team drivers, and grassroots competitors do not. APEX changes that.</p>
+  <div style="margin-top: 60px;">
+    <span class="pill">Built on IBM Granite</span>
+    <span class="pill">Adaptive racers first</span>
+    <span class="pill">apex dot race</span>
+  </div>
+  <div class="footer">
+    <span>APEX 01 / 11</span>
+    <span>Stephen Sookra + Vinh Le · 2026-05</span>
+  </div>
+</section>
+
+<!-- ============================================================== -->
+<!-- Frame 2: Problem statement -->
+<!-- ============================================================== -->
+<section class="slide">
+  <p class="eyebrow">The problem</p>
+  <h2 class="subhead">Regulatory barrier dropped in 2017.<br>Economic barrier stayed.</h2>
+  <p class="body">The FIA lifted its single-seater ban on disabled drivers in December 2017. The barrier stopped being regulatory. It became economic. A paid race engineer is a luxury good for amateur + clubman series.</p>
+  <p class="body">Three constituencies, one shared product gap: adaptive racers, veteran-team drivers, and grassroots clubman racers. Current AI race-engineer tools (Track Titan, Trophi.ai, Deep Dynamics) assume able-bodied physics. APEX is the first integrated workflow for adaptive hand-controls.</p>
+  <div class="footer">
+    <span>APEX 02 / 11</span>
+    <span>Differentiator #1 · adaptive-first</span>
+  </div>
+</section>
+
+<!-- ============================================================== -->
+<!-- Frame 3: Telemetry upload + COA parse -->
+<!-- ============================================================== -->
+<section class="slide">
+  <p class="eyebrow">Beat 2 · /analyze surface</p>
+  <h2 class="subhead">Three files in.<br>Coaching report out.</h2>
+  <p class="body">Sarah uploads her telemetry CSV, her FIA Certificate of Adaptations PDF, and a 30-second written debrief. Granite-Docling parses the COA at the tensor level. It extracts the hand-control hardware specification + produces the COA-overlap flag that routes through every layer downstream.</p>
+  <div class="grid-4">
+    <div class="card">
+      <h4>Telemetry</h4>
+      <p>1-Hz mini-sector tensors. Speed + acceleration + lateral G + RPM.</p>
+    </div>
+    <div class="card">
+      <h4>COA PDF</h4>
+      <p>FIA Appendix L Certificate of Adaptations. Granite-Docling parse.</p>
+    </div>
+    <div class="card">
+      <h4>Debrief</h4>
+      <p>Driver's 30-second qualitative summary. Granite Instruct context.</p>
+    </div>
+    <div class="card">
+      <h4>Output</h4>
+      <p>Corner-by-corner insights + tuning delta + forecast envelope + Guardian audit.</p>
+    </div>
+  </div>
+  <div class="footer">
+    <span>APEX 03 / 11</span>
+    <span>Granite-Docling 258M</span>
+  </div>
+</section>
+
+<!-- ============================================================== -->
+<!-- Frame 4: PhysicsTTM 3-layer architecture -->
+<!-- ============================================================== -->
+<section class="slide">
+  <p class="eyebrow">Beat 3 · PhysicsTTM</p>
+  <h2 class="subhead">Three layers between<br>tensor and recommendation.</h2>
+  <div class="grid-4" style="grid-template-columns: repeat(3, 1fr);">
+    <div class="card">
+      <h4>Layer 1: Forecast</h4>
+      <p>Frozen Granite TimeSeries TTM r2.1 (NeurIPS 2024). Zero-shot multivariate. 1-Hz mini-sector telemetry to next-session pace envelope.</p>
+    </div>
+    <div class="card">
+      <h4>Layer 2: Project</h4>
+      <p>Differentiable CvxpyLayer QP. Friction ellipse + forward-Euler kinematic + jerk bound. SCP outer loop 3 iterations.</p>
+    </div>
+    <div class="card">
+      <h4>Layer 3: Audit</h4>
+      <p>Bicycle-model coupling + COA-parameterized brake-throttle simultaneity gate. Granite Guardian BYOC custom rules.</p>
+    </div>
+  </div>
+  <div style="margin-top: 60px;">
+    <span class="pill">8-tier physics</span>
+    <span class="pill">SCP unrolled 3 iters</span>
+    <span class="pill">D-012 + D-013 + D-015</span>
+  </div>
+  <div class="footer">
+    <span>APEX 04 / 11</span>
+    <span>D-A frozen-contract</span>
+  </div>
+</section>
+
+<!-- ============================================================== -->
+<!-- Frame 5: Tri-agent critic loop -->
+<!-- ============================================================== -->
+<section class="slide">
+  <p class="eyebrow">Beat 4 · Tri-agent critic</p>
+  <h2 class="subhead">Three agents read every<br>recommendation before the driver does.</h2>
+  <div class="grid-4" style="grid-template-columns: repeat(3, 1fr);">
+    <div class="card">
+      <h4>Physics-Critic</h4>
+      <p>Validates physics-projection feasibility per the Stage 1 + Stage 2 violation log.</p>
+    </div>
+    <div class="card">
+      <h4>Pedagogy-Critic</h4>
+      <p>Validates coaching-report claims map back to the COA + telemetry evidence.</p>
+    </div>
+    <div class="card">
+      <h4>Guardian-Safety</h4>
+      <p>Granite Guardian 4.1 BYOC. Audit chain + reasoning trace + verdict-specific concern list.</p>
+    </div>
+  </div>
+  <p class="body" style="margin-top: 40px;">If any critic flags, IBM Mellea Instruct-Validate-Repair fires with loop budget three until the panel approves. Then the final Guardian audit. Three independent agents plus the safety gate.</p>
+  <div class="footer">
+    <span>APEX 05 / 11</span>
+    <span>D-018 ensemble member 2</span>
+  </div>
+</section>
+
+<!-- ============================================================== -->
+<!-- Frame 6: Coaching + tuning + walkie-talkie -->
+<!-- ============================================================== -->
+<section class="slide">
+  <p class="eyebrow">Beat 5 · Coaching report</p>
+  <h2 class="subhead">Provenance on every line.</h2>
+  <p class="body">Corner-by-corner insights. Tuning recommendations. Forecast envelope. Every claim cites a specific FIA Appendix L provision + a specific COA section via the provenance footer.</p>
+  <p class="body">The Watson TTS walkie-talkie reads the report in race-engineer voice with the paddock-radio filter chain (highpass=350 + lowpass=3000 + compand + volume=1.8). Sarah hears it on her cool-down lap. Web Speech API fallback on environments without FFmpeg (per D-043 Vercel architectural constraint).</p>
+  <div style="margin-top: 40px;">
+    <span class="pill">FIA Appendix L</span>
+    <span class="pill">COA section cite</span>
+    <span class="pill">Watson TTS</span>
+    <span class="pill">Walkie-talkie filter</span>
+  </div>
+  <div class="footer">
+    <span>APEX 06 / 11</span>
+    <span>Wave-43 E2.1 + E2.2 production path</span>
+  </div>
+</section>
+
+<!-- ============================================================== -->
+<!-- Frame 7: WebGPU Granite Nano edge demo -->
+<!-- ============================================================== -->
+<section class="slide">
+  <p class="eyebrow">Beat 6 · WebGPU edge</p>
+  <h2 class="subhead">Sub-15-second coaching<br>without a connection.</h2>
+  <p class="body">If Sarah loses connection in the paddock, the Granite 4.0 Nano 350M model runs in her browser via WebGPU. Same coaching prompt. Same output shape. No round-trip.</p>
+  <div class="two-col">
+    <div>
+      <span class="big-num">350M</span>
+      <p class="mono" style="margin-top: 16px;">Granite 4.0 Nano parameters</p>
+    </div>
+    <div>
+      <span class="big-num">&lt; 15s</span>
+      <p class="mono" style="margin-top: 16px;">Coaching-report latency budget G8</p>
+    </div>
+  </div>
+  <div style="margin-top: 40px;">
+    <span class="pill">D-019 item 1</span>
+    <span class="pill">D-021 in-browser inference</span>
+    <span class="pill">Transformers.js</span>
+  </div>
+  <div class="footer">
+    <span>APEX 07 / 11</span>
+    <span>Galaxy-tier move #1</span>
+  </div>
+</section>
+
+<!-- ============================================================== -->
+<!-- Frame 8: Five shouldn't-be-possible moves -->
+<!-- ============================================================== -->
+<section class="slide">
+  <p class="eyebrow">Beat 7 · Five composition moves</p>
+  <h2 class="subhead">Stacked on top of the<br>physics + critic + audit chain.</h2>
+  <ul class="bullets">
+    <li><strong>WebGPU Granite Nano 350M</strong> — in-browser edge inference, no round-trip</li>
+    <li><strong>Activated LoRA Layer 6</strong> — vLLM hot-swap, KV-cache preserved, &lt; 200 ms swap budget</li>
+    <li><strong>GEPA reflective prompt optimization</strong> — offline DSPy genetic-style faithfulness lift</li>
+    <li><strong>EAGLE-3 speculative decoding</strong> — draft + accept, 2.5-3.7x typical band per arXiv:2503.01840</li>
+    <li><strong>Tri-agent Agent-as-Judge critic loop</strong> — Physics + Pedagogy + Guardian-Safety</li>
+  </ul>
+  <div class="footer">
+    <span>APEX 08 / 11</span>
+    <span>D-019 items 1 through 5</span>
+  </div>
+</section>
+
+<!-- ============================================================== -->
+<!-- Frame 9: COA killshot -->
+<!-- ============================================================== -->
+<section class="slide">
+  <p class="eyebrow">Beat 7 · Architectural killshot</p>
+  <h1 class="headline" style="font-size: 80px;">COA-parameterized<br>brake-throttle<br>simultaneity gate.</h1>
+  <p class="body">The same coaching pipeline produces different physics corrections for adaptive versus able-bodied drivers, governed by the driver's FIA Certificate of Adaptations.</p>
+  <p class="body">When the COA permits simultaneous brake + throttle (as adaptive racing programmes + adapted-hand-control systems commonly do), Stage 2's feasibility filter recognises it. When the COA does not permit it, the gate flags the input. To our literature review through 2026-Q2, the first public AI race-engineer workflow we found that reads the COA at the tensor level.</p>
+  <div class="footer">
+    <span>APEX 09 / 11</span>
+    <span>Differentiator #1 · D-022</span>
+  </div>
+</section>
+
+<!-- ============================================================== -->
+<!-- Frame 10: 12 IBM Granite tools -->
+<!-- ============================================================== -->
+<section class="slide">
+  <p class="eyebrow">Beat 8 · IBM Granite stack</p>
+  <h2 class="subhead">Twelve IBM tools.<br>Every slot load-bearing.</h2>
+  <div class="grid-4">
+    <div class="card"><h4>Granite-Docling 258M</h4><p>FIA COA PDF parser</p></div>
+    <div class="card"><h4>Granite Vision 4.1 4B</h4><p>Timing-sheet parser</p></div>
+    <div class="card"><h4>Granite TimeSeries TTM r2.1</h4><p>NeurIPS 2024 forecaster</p></div>
+    <div class="card"><h4>Granite FlowState 9.1M</h4><p>Sampling-rate-invariant SSM</p></div>
+    <div class="card"><h4>Granite Embedding R2</h4><p>Hybrid dense + sparse RAG</p></div>
+    <div class="card"><h4>IBM TSPulse 1M</h4><p>Time-frequency anomaly</p></div>
+    <div class="card"><h4>Granite 4.1 8B Instruct</h4><p>Race-engineer narrator</p></div>
+    <div class="card"><h4>Granite Guardian 4.1 8B</h4><p>BYOC safety audit</p></div>
+    <div class="card"><h4>Granite 4.0 Nano 350M</h4><p>WebGPU edge</p></div>
+    <div class="card"><h4>Langflow</h4><p>Visible orchestration demo</p></div>
+    <div class="card"><h4>Docling library</h4><p>Conversion + tables</p></div>
+    <div class="card"><h4>IBM Bob</h4><p>Build accelerator</p></div>
+  </div>
+  <div class="footer">
+    <span>APEX 10 / 11</span>
+    <span>D-016 wave-30 stack expansion</span>
+  </div>
+</section>
+
+<!-- ============================================================== -->
+<!-- Frame 11: Close + call to action -->
+<!-- ============================================================== -->
+<section class="slide" style="justify-content: center; align-items: flex-start;">
+  <p class="eyebrow">Beat 8 · Close</p>
+  <div class="wordmark">APEX</div>
+  <p class="lead" style="margin-top: 48px; font-size: 36px; line-height: 1.3;">Built on IBM Granite.<br>For adaptive racers first,<br>every grassroots competitor second.</p>
+  <div style="margin-top: 60px;">
+    <span class="pill">apex dot race</span>
+    <span class="pill">github.com/StephenSook/apex</span>
+    <span class="pill">Apache 2.0</span>
+  </div>
+  <div class="footer">
+    <span>APEX 11 / 11</span>
+    <span>IBM SkillsBuild May 2026 Challenge · 2026-05-31 23:59 ET</span>
+  </div>
+</section>
+
+</body>
+</html>
