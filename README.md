@@ -7,7 +7,7 @@
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![Built on IBM Granite](https://img.shields.io/badge/Built%20on-IBM%20Granite-052FAD.svg)](https://www.ibm.com/granite)
-[![Vercel](https://img.shields.io/badge/Live-apex.race-0A2818.svg)](https://apex.race)
+[![Vercel](https://img.shields.io/badge/Live-Vercel%20Production-0A2818.svg)](https://apex-git-main-ssookra-7703s-projects.vercel.app)
 [![IBM SkillsBuild](https://img.shields.io/badge/IBM%20SkillsBuild-May%202026%20Challenge-052FAD.svg)](https://ibmskillsbuildchallenge-hub.bemyapp.com/)
 
 Built for the **IBM SkillsBuild AI Builders Challenge, May 2026** (theme: "AI Beyond the Finish Line"). Submission deadline 2026-05-31, 11:59 PM ET.
@@ -36,11 +36,11 @@ APEX changes that.
 
 ## Live demo
 
-- **App:** [https://apex.race](https://apex.race) (Vercel production deploy)
+- **App:** [https://apex-git-main-ssookra-7703s-projects.vercel.app](https://apex-git-main-ssookra-7703s-projects.vercel.app) (Vercel production deploy)
 - **Video:** *(YouTube unlisted URL pending Day 10 record per `deliverables/demo-video-script-3min.md`)*
 - **Colab (zero install, browser-side):** `deliverables/apex-demo.ipynb`
-- **Judges' tour:** [https://apex.race/judges](https://apex.race/judges)
-- **Status dashboard:** [https://apex.race/status](https://apex.race/status)
+- **Judges' tour:** [https://apex-git-main-ssookra-7703s-projects.vercel.app/judges](https://apex-git-main-ssookra-7703s-projects.vercel.app/judges)
+- **Status dashboard:** [https://apex-git-main-ssookra-7703s-projects.vercel.app/status](https://apex-git-main-ssookra-7703s-projects.vercel.app/status)
 - **Try fixture:** Sarah Reynolds (fictional persona), RAF veteran, left-leg amputee, Britcar Trophy 2026, #34 BMW M240i with MME Motorsport electronic hand-controls (per consent receipt 2026-05-22 from MME Motorsport d.o.o. logged in `docs/consent-log.md`), Donington Park GP, Lap 17
 
 ---
@@ -81,7 +81,7 @@ Three constituencies, one shared product gap.
 
 - **Adaptive racers.** Drivers running hand-control rigs, prosthetic-leg-on-pedal setups, or other adapted controls compete in series like Britcar Trophy, the Adaptive Driver Championship, and FFSA Handikart. Their FIA Certificate of Adaptations (governed by Appendix L of the International Sporting Code) is a binding document that says, for example, that simultaneous brake-throttle inputs are permitted because the hand-control system supports them. Existing AI race-engineer tools assume an able-bodied physics model where `throttle * brake = 0`, so they read adaptive technique as driver error. APEX reads the COA at the tensor level. The same coaching pipeline says "lift earlier into Old Hairpin" for an able-bodied driver and "your COA permits the simultaneity you are running, the issue is brake-lever travel" for an adaptive driver in the same corner.
 - **Veteran motorsport rehabilitation programmes.** Veteran-team drivers competing through veteran motorsport rehabilitation programmes often run with combat-injury-driven adaptations under the same COA framework. The economic barrier is identical. Specific operator programmes anonymized in this public file pending per-surface consent per the project's operator-attribution rule.
-- **Grassroots clubman and amateur racers.** Britcar Trophy, SRO regional series, Britcar 12 Hour, club-level endurance racing. Post-race coaching is currently optional because it's a luxury good. APEX is free at the point of use for these audiences (Apache 2.0; Vercel apex.race deploy hosted at submission), open-source for any other developer to extend.
+- **Grassroots clubman and amateur racers.** Britcar Trophy, SRO regional series, Britcar 12 Hour, club-level endurance racing. Post-race coaching is currently optional because it's a luxury good. APEX is free at the point of use for these audiences (Apache 2.0; Vercel apex-git-main-ssookra-7703s-projects.vercel.app deploy hosted at submission), open-source for any other developer to extend.
 
 The Scuderia Ferrari precedent matters because IBM already shipped the same Granite stack to a Formula One team. APEX takes the same architecture and points it at the drivers who need it most, not the drivers who can already afford a paid race engineer.
 
@@ -253,7 +253,7 @@ npm run dev   # http://localhost:3000
 | 2 - Physics layer (NumPy V1 → CvxpyLayer V2 + Guardian) | Days 3-5 | 🟡 Vinh-side pending. Stephen-side: CoachingReport + TuningCard + GuardianAudit frontend components ✅. Gate G4 spike bumped to Day-2 parallel. |
 | 3 - Narrator (Granite 4.1 8B Instruct + COA flag) | Day 6 | 🟡 Sarah Reynolds persona narrative ✅ Day 1 EOD. Backend integration Vinh-side. |
 | 4 - Orchestration + polish (Langflow + caching) | Days 7-8 | 🟡 3-min pitch script ✅, Langflow + caching Vinh-side. |
-| 5 - Demo + deploy (Vercel apex.race + Colab + sim-rig + video) | Days 9-10 | 🟡 Sim-rig frontend scaffold ✅, Colab notebook skeleton ✅, demo-video storyboard ✅, 30s highlight storyboard ✅, 3-min script ✅, Vercel config + runbook ✅. Sim-rig WebSocket backend + production video take Day 10-11. |
+| 5 - Demo + deploy (Vercel apex-git-main-ssookra-7703s-projects.vercel.app + Colab + sim-rig + video) | Days 9-10 | 🟡 Sim-rig frontend scaffold ✅, Colab notebook skeleton ✅, demo-video storyboard ✅, 30s highlight storyboard ✅, 3-min script ✅, Vercel config + runbook ✅. Sim-rig WebSocket backend + production video take Day 10-11. |
 | 6 - Submission package (judges page + methodology + NeurIPS draft) | Day 11 | 🟡 /judges + /status routes ✅ Day 1 EOD pull-forward. Methodology trace + architecture-spec + pre-mortem ✅; NeurIPS Workshop paper publication-readable draft 🟡 (§4 Experiments tables Day 9-10; Day-11 polish remains for final polish). BeMyApp 1920x600 banner ✅. |
 | 7 - Submit | Day 12 (2026-05-31) | ⬜ pending. BeMyApp form payload draft ready at NeuroPit-depth. |
 

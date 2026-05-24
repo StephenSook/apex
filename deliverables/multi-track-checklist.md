@@ -23,10 +23,10 @@
 
 ### 1st Place ($5K)
 
-**APEX argument.** Adaptive racers + veterans + grassroots competitors are an underserved audience the May Challenge brief explicitly names. APEX is the first IBM-Granite-stack AI race engineer that reads the FIA Certificate of Adaptations at the tensor level. The Convergence-14 fixture suite (visible at /judges) is the unit-tested safety contract that prevents the "adaptive driving misdiagnosed as driver error" failure mode. apex.race ships live in production.
+**APEX argument.** Adaptive racers + veterans + grassroots competitors are an underserved audience the May Challenge brief explicitly names. APEX is the first IBM-Granite-stack AI race engineer that reads the FIA Certificate of Adaptations at the tensor level. The Convergence-14 fixture suite (visible at /judges) is the unit-tested safety contract that prevents the "adaptive driving misdiagnosed as driver error" failure mode. apex-git-main-ssookra-7703s-projects.vercel.app ships live in production.
 
 **Evidence surfaces:**
-- apex.race live frontend with /judges + /analyze + /status + /sim-rig
+- apex-git-main-ssookra-7703s-projects.vercel.app live frontend with /judges + /analyze + /status + /sim-rig
 - 14-fixture Convergence catalogue with serializer round-trip tests
 - 5 shouldn't-be-possible moves stacked on the 3-layer pipeline
 - COA-parameterized simultaneity gate (D-022) demonstrated via what-if-replay on /judges
@@ -86,7 +86,7 @@ Per the wave-41 day 5 consolidated competitor deep-dive at `~/.claude/projects/-
 
 Per `feedback_ci_green_per_push_verify_or_cascade.md` 11-cascade behavioral checklist + Day 11 morning verification:
 
-- [ ] apex.race live + Vercel production deploy green
+- [ ] apex-git-main-ssookra-7703s-projects.vercel.app live + Vercel production deploy green
 - [ ] /judges all sections render without console errors (Playwright fidelity wave-42 Lane C.H.2)
 - [ ] /analyze 5-tab structure renders with chat + Live Charts + confidence ring + walkie-talkie audio (Playwright fidelity wave-42 Lane C.H.3)
 - [ ] BeMyApp form payload pasted into live form (this doc)

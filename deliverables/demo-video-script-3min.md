@@ -68,7 +68,7 @@
 
 > Twelve IBM Granite tools. Every slot load-bearing. Built for adaptive racers first, every grassroots competitor second. APEX dot race. Built on IBM Granite for the drivers who do not have a race engineer.
 
-**On-screen:** 12-tool IBM Granite stack mosaic. APEX wordmark resolve. apex.race URL. IBM SkillsBuild May Challenge submission badge.
+**On-screen:** 12-tool IBM Granite stack mosaic. APEX wordmark resolve. apex-git-main-ssookra-7703s-projects.vercel.app URL. IBM SkillsBuild May Challenge submission badge.
 
 ---
 
