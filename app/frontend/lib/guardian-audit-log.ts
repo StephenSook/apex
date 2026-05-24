@@ -19,9 +19,32 @@
  * write-before-emit contract.
  *
  * Read path: getRecentVerdicts(limit) returns the most-recent N
- * verdicts for a /status-page display. Cross-tab consumers receive
- * the same data via the `storage` event since localStorage is shared
- * across same-origin tabs.
+ * verdicts for a /status-page display. Asymmetric error policy:
+ * write throws on quota / SSR / disabled-storage; read SKIPS corrupt
+ * lines (so one bad row does not block /status rendering) + logs
+ * `console.warn` with the corrupt-line count so operators can drill
+ * via DevTools when warranted.
+ *
+ * Cross-tab caveat (wave-41 cascade-#11 silent-failure-hunter H-3):
+ * localStorage read-modify-write is NOT atomic across same-origin
+ * tabs. Two tabs concurrently calling appendVerdict() can race-lose
+ * one verdict (both read prior state; both write append; second
+ * write clobbers first). Mitigations:
+ *
+ *   - The console.info JSONL mirror per appendVerdict() captures
+ *     EVERY line independently of localStorage, so operators with
+ *     DevTools open see the lost verdict even when the read path
+ *     misses it.
+ *   - The Stream M.3 backend-persistent JSONL endpoint at
+ *     `docs/wave-41-backend-spec-handoff.md` is filesystem-append-
+ *     atomic (POSIX guarantees ≤PIPE_BUF byte atomicity); operators
+ *     deploying the backend swap path get the atomicity guarantee
+ *     for free.
+ *   - For local-only deployments needing cross-tab atomicity, the
+ *     swap target is IndexedDB transactions OR a BroadcastChannel-
+ *     coordinated leader-tab pattern; both adopt the same
+ *     GuardianAuditLogLine wire format so the consumer surface
+ *     stays identical.
  *
  * Backend wire-up: per the Stream M.3 spec at
  * `docs/wave-41-backend-spec-handoff.md`, the disk-persistent JSONL
@@ -101,6 +124,13 @@ export function appendVerdict(
  * OR cross-tab consumption via the `storage` event. Returns the
  * parsed lines newest-first; returns empty array if storage is
  * unavailable or empty.
+ *
+ * Wave-41 cascade-#11 MED M1 (silent-failure-hunter): emits
+ * `console.warn` once per call when corrupt rows are skipped on the
+ * read path. The prior silent skip was unobservable: operator looked
+ * at /status, saw 49 verdicts, had no idea a 50th was corrupt.
+ * Surfacing the count without throwing preserves the
+ * /status-page-doesn't-crash-on-one-bad-row invariant.
  */
 export function getRecentVerdicts(limit = 50): ReadonlyArray<GuardianAuditLogLine> {
   if (typeof window === "undefined" || typeof window.localStorage === "undefined") {
@@ -113,13 +143,23 @@ export function getRecentVerdicts(limit = 50): ReadonlyArray<GuardianAuditLogLin
   const lines = raw.split("\n").filter((row) => row.length > 0);
   const recent = lines.slice(-limit).reverse();
   const parsed: GuardianAuditLogLine[] = [];
+  let skipped = 0;
+  let sampleCorrupt: string | undefined;
   for (const line of recent) {
     try {
       parsed.push(JSON.parse(line) as GuardianAuditLogLine);
     } catch {
-      // Skip corrupt lines; do not throw on read path (would block
-      // /status-page rendering for a single bad row).
+      skipped += 1;
+      if (sampleCorrupt === undefined) {
+        sampleCorrupt = line.length > 120 ? `${line.slice(0, 120)}...` : line;
+      }
     }
+  }
+  if (skipped > 0 && typeof console !== "undefined" && console.warn) {
+    console.warn(
+      `apex.guardian-audit-log.getRecentVerdicts: skipped ${skipped} corrupt line(s) of ${recent.length} read.`,
+      { skipped, sampleCorrupt },
+    );
   }
   return parsed;
 }
