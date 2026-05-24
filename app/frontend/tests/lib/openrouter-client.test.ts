@@ -155,4 +155,89 @@ describe("openRouterChatCompletion", () => {
     ).rejects.toThrow(/400/);
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
+
+  // Wave-43 C2.10 expansion per D-041 close-out: decoder + retry-cancel
+  // surface area not covered by the wave-42 baseline.
+
+  it("D2.2 array-error-shape: 200 with raw.error as array surfaces first item.message", async () => {
+    const errorResponse = {
+      error: [{ message: "rate-limit downstream from provider" }],
+    };
+    fetchMock.mockResolvedValueOnce(
+      new Response(JSON.stringify(errorResponse), { status: 200 }),
+    );
+    await expect(
+      openRouterChatCompletion({ messages: [{ role: "user", content: "test" }] }),
+    ).rejects.toThrow(/rate-limit downstream from provider/i);
+  });
+
+  it("D2.2 null-error-shape: 200 with raw.error === null passes through to id/choices validation", async () => {
+    const responseWithNullError = {
+      error: null,
+      id: "test-id",
+      model: "test-model",
+      created: 1234567890,
+      choices: [
+        {
+          index: 0,
+          message: { role: "assistant" as const, content: "ok" },
+          finish_reason: "stop" as const,
+        },
+      ],
+      usage: { prompt_tokens: 1, completion_tokens: 1, total_tokens: 2 },
+    };
+    fetchMock.mockResolvedValueOnce(
+      new Response(JSON.stringify(responseWithNullError), { status: 200 }),
+    );
+    const result = await openRouterChatCompletion({
+      messages: [{ role: "user", content: "test" }],
+    });
+    expect(result.id).toBe("test-id");
+    expect(result.choices[0].message.content).toBe("ok");
+  });
+
+  it("D2.4 missing usage field is accepted (usage marked optional)", async () => {
+    const responseWithoutUsage = {
+      id: "no-usage-id",
+      model: "test-model",
+      created: 1234567890,
+      choices: [
+        {
+          index: 0,
+          message: { role: "assistant" as const, content: "still works" },
+          finish_reason: "stop" as const,
+        },
+      ],
+    };
+    fetchMock.mockResolvedValueOnce(
+      new Response(JSON.stringify(responseWithoutUsage), { status: 200 }),
+    );
+    const result = await openRouterChatCompletion({
+      messages: [{ role: "user", content: "test" }],
+    });
+    expect(result.id).toBe("no-usage-id");
+    expect(result.usage).toBeUndefined();
+  });
+
+  it("D2.8 consumer-signal abort propagates to fetch abort + throws", async () => {
+    const controller = new AbortController();
+    fetchMock.mockImplementationOnce(async (_url, init) => {
+      // Simulate fetch hanging until signal aborts.
+      return await new Promise<Response>((_resolve, reject) => {
+        const signal = (init as RequestInit | undefined)?.signal;
+        if (signal !== undefined && signal !== null) {
+          signal.addEventListener("abort", () => {
+            const reason = (signal as AbortSignal & { reason?: unknown }).reason;
+            reject(new DOMException(String(reason ?? "aborted"), "AbortError"));
+          });
+        }
+      });
+    });
+    const promise = openRouterChatCompletion(
+      { messages: [{ role: "user", content: "test" }] },
+      { signal: controller.signal },
+    );
+    setTimeout(() => controller.abort("consumer-cancel"), 10);
+    await expect(promise).rejects.toThrow();
+  });
 });
