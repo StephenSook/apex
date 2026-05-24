@@ -19,10 +19,18 @@
  * because Coaching is the default activeTab after submit.
  *
  * Day 2 ships against canned mock data because Vinh's backend lands Day 5-6.
- * The mock is a Sarah Reynolds (fictional persona) Donington Park Lap 17
- * report consistent with `docs/sarah-reynolds-persona.md` + the 3-min pitch
- * voiceover. When the backend ships, swap the `mockReport` for a real
- * `fetch("/api/analyze", { body: formData })` call returning `AnalyzeResponse`.
+ * Wave-43 Lane K (Sookra Methodology rule lock 2026-05-24): the mock is
+ * a GENERIC illustrative report parameterized from the user-typed
+ * driver_id + uploaded file metadata, NOT a Sarah Reynolds persona
+ * overlay. Personas live in the storytelling layer (3-min video script
+ * + 30s storyboard + deck + persona doc) only; product UI renders
+ * reports shaped by user input so judges testing with their own
+ * telemetry see their own driver_id + generic corner template (not a
+ * pre-baked fictional-persona scenario). Sarah Reynolds canonical
+ * positive-case fixture is reachable via an explicit opt-in CTA, not
+ * the default state. When the backend ships, swap the `mockReport`
+ * for a real `fetch("/api/analyze", { body: formData })` call
+ * returning `AnalyzeResponse`.
  */
 
 import Link from "next/link";
@@ -371,42 +379,60 @@ function generateAuditId(): string {
 }
 
 function buildMockReport(submission: DropzoneSubmission): CoachingReportType {
+  // Wave-43 Lane K persona-decoupling per Stephen Sookra Methodology
+  // rule lock 2026-05-24: personas (Sarah Reynolds) live in the
+  // storytelling layer (3-min video script + 30s storyboard + deck +
+  // persona doc), NOT hard-coded in the product UI. Default mock uses
+  // user-typed driver_id + GENERIC corner names + GENERIC tuning
+  // surface so any uploaded telemetry + COA renders a report shaped
+  // by the user's input, not a fictional-persona overlay. Real
+  // backend parsing lands Day 5-6 per Vinh Phase 1 task 1.1-1.6 + 1.9
+  // ownership; pre-backend the report is illustrative against the
+  // user's driver_id. The Sarah Reynolds canonical positive-case
+  // demonstration loads via the explicit "Try the canonical demo
+  // fixture" button (Stretch S2 wave-43 Lane K addition) so judges
+  // who want the COA killshot fixture see it on opt-in, not as the
+  // default state.
   return {
     driver_id: submission.driver_id,
     corners: [
       {
-        name: "Old Hairpin",
-        sector: 2,
+        name: "Sector 1 corner",
+        sector: 1,
         current_delta_s: 0.34,
         recommendation:
-          "Trail-brake the lever in two micro-presses rather than one. Your COA-derived c_overlap flag is set (from the approved hand-control hardware spec in your COA) so the brake-throttle simultaneity you are running through entry clears Stage 2; the lap loss is the lever-travel ramp at apex release. Reduce hand-lever brake travel by four millimetres at the secondary actuation point.",
+          "Trail-brake the entry phase across two micro-presses rather than one continuous ramp. If your uploaded COA permits brake-throttle simultaneity (Stage 2 of the physics-projection layer reads the parsed flag), the entry-phase overlap will clear feasibility; otherwise the projector flags it. Reduce the secondary-actuation modulation depth by roughly ten percent against the lap shape recorded in your telemetry.",
         citations: [
-          { fia_article: "Appendix L", coa_section: "Section 3(c) hardware spec" },
+          { fia_article: "Appendix L", coa_section: "Adaptive-equipment provisions" },
         ],
       },
       {
-        name: "McLeans",
-        sector: 1,
+        name: "Sector 2 corner",
+        sector: 2,
         current_delta_s: 0.08,
         recommendation:
-          "Throttle pickup is two car-lengths late on entry. Steering angle peaks before throttle re-application; tighten the gap to recover most of the eighty-millisecond delta.",
-        citations: [{ fia_article: "Appendix L", coa_section: "Section 1(a) hardware spec" }],
+          "Throttle pickup is conservative against your lap-shape PB by roughly eighty milliseconds. Steering angle peaks before throttle re-application across the sector; tighten the gap to recover most of the delta.",
+        citations: [
+          { fia_article: "Appendix L", coa_section: "Adaptive-equipment provisions" },
+        ],
       },
       {
-        name: "Coppice",
+        name: "Sector 3 corner",
         sector: 3,
         current_delta_s: -0.05,
         recommendation:
-          "Strong exit. Mid-corner throttle pickup is conservative by roughly five percent against your PB; you have margin to push without breaching the friction envelope.",
-        citations: [{ fia_article: "Appendix L", coa_section: "Section 1(a) hardware spec" }],
+          "Strong exit. Mid-corner throttle pickup is conservative by roughly five percent against the projected friction envelope; you have margin to push without a Stage 2 feasibility violation.",
+        citations: [
+          { fia_article: "Appendix L", coa_section: "Adaptive-equipment provisions" },
+        ],
       },
     ],
     tuning_delta: {
-      parameter: "hand_lever_brake_travel",
-      current: 38.0,
-      recommended: 34.0,
-      unit: "mm",
-      citation: { fia_article: "Appendix L", coa_section: "Section 3(c) hardware spec" },
+      parameter: "primary_actuation_modulation_pct",
+      current: 100.0,
+      recommended: 90.0,
+      unit: "pct",
+      citation: { fia_article: "Appendix L", coa_section: "Adaptive-equipment provisions" },
     },
     forecast: [
       { sector_idx: 0, mean: 47.42, low: 47.21, high: 47.66 },
@@ -425,8 +451,8 @@ function buildMockReport(submission: DropzoneSubmission): CoachingReportType {
       reasoning_trace: [
         "Friction-ellipse check passed across all 10 mini-sectors; max load 0.92 mu * g.",
         "Bicycle-model tie between lateral G and steering angle within bounds across the lap.",
-        "COA-derived c_overlap flag (from the approved hand-control hardware spec in Section 3(c) of the driver's COA) was set across the lap; Stage 2 feasibility filter cleared the brake-throttle simultaneity accordingly.",
-        "Tuning delta of -4.0 mm hand-lever brake travel is within recommended manufacturer envelope and does not introduce a forward-Euler kinematic violation in the projected next session.",
+        "COA-derived c_overlap flag (from your uploaded COA) routed through Stage 2; brake-throttle simultaneity cleared per parsed permission window.",
+        "Tuning delta of -10 pct primary-actuation modulation is within manufacturer envelope and does not introduce a forward-Euler kinematic violation in the projected next session.",
       ],
       // Wave-40 cascade #10 close-out + silent-failure-hunter H-1:
       // audit_id uses Web Crypto with explicit insecure-context +
