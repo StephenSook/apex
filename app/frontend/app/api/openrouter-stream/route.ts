@@ -196,7 +196,8 @@ export async function POST(request: Request): Promise<Response> {
     // the loop. Without this pass, server-side OpenRouter invocations
     // continue billing the API budget after the consumer hangs up.
     const response = await openRouterChatCompletion({ messages }, { signal: request.signal });
-    const text = response.choices[0]?.message.content ?? "";
+    const rawText = response.choices[0]?.message.content ?? "";
+    const text = scrubInventedRegulatoryAnchors(rawText);
     const stream = streamStubResponse(text, request.signal);
     return new Response(stream, {
       status: 200,
@@ -207,9 +208,36 @@ export async function POST(request: Request): Promise<Response> {
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
+    console.error("apex.openrouter-stream: production-phase backend failure", { message });
     return new Response(
       `apex.openrouter-stream: backend failure: ${message}`,
       { status: 502 },
     );
   }
+}
+
+/**
+ * Wave-43 cascade-#20 HARD-COMPLIANCE post-processor: strip invented
+ * FIA Article + COA Section numeric identifiers from LLM output. The
+ * Granite 4.1 8B model (and most LLMs) hallucinate plausible-looking
+ * regulatory anchors despite the system-prompt forbidding them. This
+ * server-side scrubber enforces the project HARD-COMPLIANCE rule + the
+ * no-invented-FIA-articles compliance posture regardless of model
+ * behavior. Patterns matched:
+ *
+ *   - "FIA Article N.N" / "FIA Article N.N.N" / "Article N.N" -> "FIA Appendix L per the published revision"
+ *   - "COA Section N.N" / "COA Section N.N.N" / "Section N.N(letter)" -> "the COA simultaneity gate"
+ *   - "Article N(letter)" -> "Appendix L per the published revision"
+ *   - "FIA Appendix L Article N" -> "FIA Appendix L per the published revision"
+ *
+ * Verification fixture in tests/lib/openrouter-stream-scrub.test.ts
+ * (post-cascade-#20).
+ */
+function scrubInventedRegulatoryAnchors(text: string): string {
+  return text
+    .replace(/FIA Appendix L Article \d+(\.\d+)*/gi, "FIA Appendix L per the published revision")
+    .replace(/FIA Article \d+(\.\d+)*/gi, "FIA Appendix L per the published revision")
+    .replace(/Article \d+(\.\d+)*[a-z]?/gi, "Appendix L per the published revision")
+    .replace(/COA Section \d+(\.\d+)*[a-z]?/gi, "the COA simultaneity gate")
+    .replace(/Section \d+(\.\d+)*\([a-z]\)/gi, "the COA simultaneity gate");
 }
