@@ -160,24 +160,34 @@ export default function WatsonTtsRadio({
     );
   }
 
-  // state.status === "ready_fallback"
-  return (
-    <div className="flex flex-col gap-2 rounded-sm border border-rule bg-paper p-4">
-      <p className="font-mono text-[10px] uppercase tracking-wider text-muted">
-        Walkie-talkie · Web Speech API fallback · wave-42 Lane A.F.1
-      </p>
-      <button
-        type="button"
-        onClick={playFallback}
-        className="self-start rounded-sm border border-racing-green bg-paper px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-racing-green transition-colors hover:bg-racing-green hover:text-paper"
-      >
-        Play coaching report
-      </button>
-      <p className="font-mono text-[10px] text-muted">
-        Browser-native speechSynthesis with pitch 0.85 + rate 1.05 approximates
-        the walkie-talkie profile. Server-side Watson TTS path activates when
-        the cached audio file is available at the per-audit-id endpoint.
-      </p>
-    </div>
-  );
+  if (state.status === "ready_fallback") {
+    return (
+      <div className="flex flex-col gap-2 rounded-sm border border-rule bg-paper p-4">
+        <p className="font-mono text-[10px] uppercase tracking-wider text-muted">
+          Walkie-talkie · Web Speech API fallback · wave-42 Lane A.F.1
+        </p>
+        <button
+          type="button"
+          onClick={playFallback}
+          className="self-start rounded-sm border border-racing-green bg-paper px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-racing-green transition-colors hover:bg-racing-green hover:text-paper"
+        >
+          Play coaching report
+        </button>
+        <p className="font-mono text-[10px] text-muted">
+          Browser-native speechSynthesis with pitch 0.85 + rate 1.05 approximates
+          the walkie-talkie profile. Server-side Watson TTS path activates when
+          the cached audio file is available at the per-audit-id endpoint.
+        </p>
+      </div>
+    );
+  }
+
+  // Wave-43 D2.10 close-out per cold-review-2 type-design M1 +
+  // silent-failure: exhaustive `_exhaustive: never` default. Adding a
+  // 6th variant to AudioPlayerState (e.g. "playing", "paused") now
+  // forces a TS compile error here instead of silently falling through
+  // to whichever was the last `if` block. Mirrors GraniteCitationFooter
+  // + RaceEventsTilesRow exhaustive-switch helper pattern.
+  const _exhaustive: never = state;
+  throw new Error(`apex.watson-tts-radio: unknown AudioPlayerState ${String(_exhaustive)}.`);
 }
