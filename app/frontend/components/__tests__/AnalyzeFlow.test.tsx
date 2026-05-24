@@ -81,4 +81,71 @@ describe("AnalyzeFlow integration", () => {
     expect(screen.getByText("sarah-reynolds-britcar-2026")).toBeInTheDocument();
     expect(screen.getByText(/Corners \(3\)/)).toBeInTheDocument();
   });
+
+  // Wave-42 Lane A.G.4 5-tab restructure: tab-switch interaction
+  // surfaces alternate analysis panes per the cascade #2 family rule
+  // (SAME-commit test fixup with the component refactor).
+  it("switches between analysis tabs (Coaching default, Tuning, Forecast, Audit, Chat)", async () => {
+    const user = userEvent.setup();
+    const { container } = render(<AnalyzeFlow />);
+
+    const fileInputs = container.querySelectorAll<HTMLInputElement>('input[type="file"]');
+    await user.upload(fileInputs[0], makeFile("session.csv", 4096, "text/csv"));
+    await user.upload(fileInputs[1], makeFile("sarah-coa.pdf", 8192, "application/pdf"));
+    await user.type(
+      screen.getByRole("textbox", { name: /Your debrief/i }),
+      "Lost the rears mid Old Hairpin.",
+    );
+    await user.type(
+      screen.getByRole("textbox", { name: /Driver identifier/i }),
+      "sarah-reynolds-britcar-2026",
+    );
+    await user.click(screen.getByRole("button", { name: /Generate coaching report/i }));
+
+    // Coaching tab is the default activeTab after submit; CoachingReport
+    // heading renders inside the Coaching tabpanel.
+    await screen.findByRole(
+      "heading",
+      { name: /Corner-by-corner coaching/i },
+      { timeout: 2000 },
+    );
+
+    // Click Tuning tab; CoachingReport heading unmounts; Tuning pane heading appears.
+    const tuningTab = screen.getByRole("tab", { name: /^Tuning/i });
+    await user.click(tuningTab);
+    expect(
+      screen.getByRole("heading", { name: /Tuning recommendation/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("heading", { name: /Corner-by-corner coaching/i }),
+    ).not.toBeInTheDocument();
+
+    // Click Forecast tab; Forecast pane heading appears.
+    const forecastTab = screen.getByRole("tab", { name: /^Forecast/i });
+    await user.click(forecastTab);
+    expect(
+      screen.getByRole("heading", { name: /Next-session forecast/i }),
+    ).toBeInTheDocument();
+
+    // Click Audit tab; Granite Guardian pane heading appears.
+    const auditTab = screen.getByRole("tab", { name: /^Audit/i });
+    await user.click(auditTab);
+    expect(
+      screen.getByRole("heading", { name: /Granite Guardian verdict/i }),
+    ).toBeInTheDocument();
+
+    // Click Chat tab; AICopilotChat heading appears.
+    const chatTab = screen.getByRole("tab", { name: /^Chat/i });
+    await user.click(chatTab);
+    expect(
+      screen.getByRole("heading", { name: /Ask the race engineer/i }),
+    ).toBeInTheDocument();
+
+    // Click Coaching tab back; CoachingReport heading returns.
+    const coachingTab = screen.getByRole("tab", { name: /^Coaching/i });
+    await user.click(coachingTab);
+    expect(
+      screen.getByRole("heading", { name: /Corner-by-corner coaching/i }),
+    ).toBeInTheDocument();
+  });
 });

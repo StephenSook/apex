@@ -1,7 +1,22 @@
 "use client";
 
 /**
- * AnalyzeFlow: client-side composition of Dropzone + CoachingReport.
+ * AnalyzeFlow: client-side composition of Dropzone + 5-tab analysis
+ * surface (Coaching + Tuning + Forecast + Audit + Chat).
+ *
+ * Wave-42 Lane A.G.4 restructure: prior shape rendered CoachingReport
+ * directly after Dropzone in a monolithic flow. The 5-tab sidebar
+ * exposes the same report data through 5 navigable focus areas + a
+ * Chat tab housing the wave-42 Lane A.F.4 AICopilotChat surface for
+ * single-turn QA against the Granite 4.1 8B Instruct narrator. Per
+ * the competitor field deep-dive memory steal-list HIGH-value item #4
+ * (AI Race Strategist sidebar-tab pattern).
+ *
+ * Per cascade #2 family rule: SAME-commit test fixup. The
+ * AnalyzeFlow.test.tsx + AnalyzeFlow.error.test.tsx assertions
+ * referencing the CoachingReport heading + sarah-reynolds-britcar-
+ * 2026 driver_id text + "Corners (3)" rendering continue to work
+ * because Coaching is the default activeTab after submit.
  *
  * Day 2 ships against canned mock data because Vinh's backend lands Day 5-6.
  * The mock is a Sarah Reynolds (fictional persona) Donington Park Lap 17
@@ -15,12 +30,57 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import type { CoachingReport as CoachingReportType } from "../../shared/types";
 
+import AICopilotChat from "./AICopilotChat";
 import CoachingReport from "./CoachingReport";
 import Dropzone, { type DropzoneSubmission } from "./Dropzone";
+import GraniteCitationFooter from "./GraniteCitationFooter";
+import GuardianAudit from "./GuardianAudit";
+import TuningCard from "./TuningCard";
+
+type AnalyzeTab = "coaching" | "tuning" | "forecast" | "audit" | "chat";
+
+interface TabDescriptor {
+  readonly key: AnalyzeTab;
+  readonly label: string;
+  readonly description: string;
+}
+
+const TABS: ReadonlyArray<TabDescriptor> = [
+  {
+    key: "coaching",
+    label: "Coaching",
+    description: "Corner-by-corner insights + tuning delta + forecast envelope",
+  },
+  {
+    key: "tuning",
+    label: "Tuning",
+    description: "Hyperparameter tuning recommendation + COA-cited rationale",
+  },
+  {
+    key: "forecast",
+    label: "Forecast",
+    description: "Next-session pace envelope across mini-sectors",
+  },
+  {
+    key: "audit",
+    label: "Audit",
+    description: "Granite Guardian verdict + citation chain + provenance footer",
+  },
+  {
+    key: "chat",
+    label: "Chat",
+    description: "Ask the AI race engineer follow-up questions",
+  },
+];
+
+function tabPaneClass(): string {
+  return "rounded-sm border border-rule bg-paper p-5";
+}
 
 export default function AnalyzeFlow() {
   const [report, setReport] = useState<CoachingReportType | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [activeTab, setActiveTab] = useState<AnalyzeTab>("coaching");
   const reportRef = useRef<HTMLDivElement | null>(null);
   const prevReportRef = useRef<CoachingReportType | null>(null);
 
@@ -29,6 +89,7 @@ export default function AnalyzeFlow() {
     try {
       await delay(900);
       setReport(buildMockReport(submission));
+      setActiveTab("coaching");
     } catch (err) {
       // Day 5-6 swap: real fetch errors land here. Dropzone's onSubmit catch
       // is a secondary sink, but this primary catch surfaces a user-friendly
@@ -59,19 +120,156 @@ export default function AnalyzeFlow() {
         <>
           {/*
             Wave-39 silent-failure-hunter M-2 close-out: EdgeModeCallout
-            previously sat INSIDE this focus-steal div, so when
-            handleAnalyze fired its first-render focus(),
-            scrollIntoView() pair, screen readers announced the entire
-            subtree starting from CoachingReport AND the trailing
-            "Try the in-browser edge mode" callout, burying the actual
-            coaching content under a marketing aside. The callout now
-            sits as a sibling outside the focus-target div, so focus
-            announces only the CoachingReport heading + body; the
-            callout remains keyboard-reachable via the natural document
-            tab order after the report's last interactive element.
+            sits as sibling outside the focus-target div so focus
+            announces only the CoachingReport heading + body; callout
+            remains keyboard-reachable via natural document tab order
+            after the report's last interactive element.
+
+            Wave-42 Lane A.G.4: 5-tab sidebar layout. mx-auto max-w-6xl
+            mirrors the inner-content boundary CoachingReport already
+            applies so the tab structure visually anchors to the same
+            grid as the existing report.
           */}
           <div ref={reportRef} tabIndex={-1} className="outline-none">
-            <CoachingReport report={report} />
+            <section
+              aria-labelledby="analyze-tabs-title"
+              className="mx-auto max-w-6xl px-6 py-12 lg:px-10 lg:py-16"
+            >
+              <header className="pb-6">
+                <p className="apex-eyebrow">Step 2 of 2 · APEX analysis surface</p>
+                <h2
+                  id="analyze-tabs-title"
+                  className="font-display text-3xl tracking-tight text-ink sm:text-4xl"
+                >
+                  Explore the coaching report.
+                </h2>
+                <p className="pt-2 max-w-2xl text-sm leading-relaxed text-ink-soft">
+                  Five focus areas; one report. Coaching is the default view;
+                  Tuning + Forecast + Audit zoom into specific facets; Chat
+                  opens a single-turn QA against the Granite 4.1 8B Instruct
+                  narrator.
+                </p>
+              </header>
+              <div className="flex flex-col gap-6 lg:flex-row">
+                <nav
+                  aria-label="Analysis tabs"
+                  className="flex shrink-0 flex-row flex-wrap gap-2 lg:w-56 lg:flex-col"
+                >
+                  {TABS.map((tab) => {
+                    const isActive = tab.key === activeTab;
+                    return (
+                      <button
+                        key={tab.key}
+                        type="button"
+                        role="tab"
+                        aria-selected={isActive}
+                        onClick={() => setActiveTab(tab.key)}
+                        className={`rounded-sm border px-4 py-2 text-left transition-colors ${
+                          isActive
+                            ? "border-racing-green bg-racing-green text-paper"
+                            : "border-rule bg-paper text-ink hover:border-racing-green hover:text-racing-green"
+                        }`}
+                      >
+                        <span className="font-display text-base">{tab.label}</span>
+                        <span className="block font-mono text-[10px] uppercase tracking-wider opacity-80">
+                          {tab.description}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </nav>
+                <div role="tabpanel" aria-labelledby="analyze-tabs-title" className="flex-1">
+                  {activeTab === "coaching" && (
+                    <CoachingReport report={report} />
+                  )}
+                  {activeTab === "tuning" && (
+                    <div className={tabPaneClass()}>
+                      <h3 className="font-display text-2xl tracking-tight text-ink">
+                        Tuning recommendation
+                      </h3>
+                      <p className="mt-2 mb-6 text-sm leading-relaxed text-ink-soft">
+                        Hyperparameter delta from the friction-ellipse Stage 1
+                        QP projection. Every recommendation cites a COA section
+                        and an FIA Article via the provenance footer below.
+                      </p>
+                      <TuningCard tuning={report.tuning_delta} />
+                    </div>
+                  )}
+                  {activeTab === "forecast" && (
+                    <div className={tabPaneClass()}>
+                      <h3 className="font-display text-2xl tracking-tight text-ink">
+                        Next-session forecast
+                      </h3>
+                      <p className="mt-2 mb-6 text-sm leading-relaxed text-ink-soft">
+                        Pace envelope across {report.forecast.length} mini-sector
+                        {report.forecast.length === 1 ? "" : "s"}. Mean
+                        projection through the centre; 90 percent confidence
+                        band on either side. Physics-projection feasibility
+                        check enforced at every step.
+                      </p>
+                      <dl className="grid grid-cols-2 gap-x-6 gap-y-3 font-mono text-xs">
+                        <div>
+                          <dt className="text-[10px] uppercase tracking-wider text-muted">
+                            Mini-sectors
+                          </dt>
+                          <dd className="text-base text-ink">
+                            {report.forecast.length}
+                          </dd>
+                        </div>
+                        <div>
+                          <dt className="text-[10px] uppercase tracking-wider text-muted">
+                            Mean min
+                          </dt>
+                          <dd className="text-base text-ink">
+                            {Math.min(...report.forecast.map((p) => p.mean)).toFixed(2)} s
+                          </dd>
+                        </div>
+                        <div>
+                          <dt className="text-[10px] uppercase tracking-wider text-muted">
+                            Mean max
+                          </dt>
+                          <dd className="text-base text-ink">
+                            {Math.max(...report.forecast.map((p) => p.mean)).toFixed(2)} s
+                          </dd>
+                        </div>
+                        <div>
+                          <dt className="text-[10px] uppercase tracking-wider text-muted">
+                            Coverage
+                          </dt>
+                          <dd className="text-base text-ink">90 percent envelope</dd>
+                        </div>
+                      </dl>
+                      <p className="mt-6 text-xs leading-relaxed text-ink-soft">
+                        Full chart rendering lives in the Coaching tab via the
+                        existing ForecastChart SVG; the Forecast tab summarises
+                        the envelope at a glance.
+                      </p>
+                    </div>
+                  )}
+                  {activeTab === "audit" && (
+                    <div className="flex flex-col gap-6">
+                      <div className={tabPaneClass()}>
+                        <h3 className="font-display text-2xl tracking-tight text-ink">
+                          Granite Guardian verdict
+                        </h3>
+                        <p className="mt-2 mb-6 text-sm leading-relaxed text-ink-soft">
+                          Granite Guardian 4.1 BYOC custom-rules audit on the
+                          combined Stage 1 + Stage 2 violation log. Verdict +
+                          reasoning trace + verdict-specific concern list.
+                        </p>
+                        <GuardianAudit audit={report.audit} />
+                      </div>
+                      <GraniteCitationFooter report={report} />
+                    </div>
+                  )}
+                  {activeTab === "chat" && (
+                    <div className={tabPaneClass()}>
+                      <AICopilotChat panelId="analyze-chat" />
+                    </div>
+                  )}
+                </div>
+              </div>
+            </section>
           </div>
           <EdgeModeCallout />
         </>
