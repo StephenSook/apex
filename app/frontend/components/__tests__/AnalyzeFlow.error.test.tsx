@@ -60,7 +60,10 @@ describe("AnalyzeFlow error path (Codex wave-15 MED backfill)", () => {
       { name: /Corner-by-corner coaching/i },
       { timeout: 2000 },
     );
-    expect(scrollSpy).toHaveBeenCalledTimes(1);
+    // Wave-43 C2.11a fixup: scrollSpy was racy with first-render
+    // commit; useEffect runs AFTER commit + DOM-paint. Use waitFor
+    // to allow the post-commit microtask to fire before asserting.
+    await waitFor(() => expect(scrollSpy).toHaveBeenCalledTimes(1), { timeout: 1000 });
 
     const driverInput = screen.getByRole("textbox", { name: /Driver identifier/i });
     await user.clear(driverInput);
