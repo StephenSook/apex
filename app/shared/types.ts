@@ -1248,6 +1248,22 @@ type ToleranceBandsCore = {
   readonly delta_yaw_rate_rad_s_band: number;
 };
 
+/**
+ * Wave-43 D2.11 caveat per cold-review-2 type-design-analyzer M-2:
+ * `ToleranceBands = ToleranceBandsCore & { readonly path: ... }` is a
+ * tagged-intersection (NOT a true discriminated union) because the
+ * numeric fields are structurally identical across paths. The type
+ * does NOT prevent constructing `{ path: "polyphase_50hz",
+ * delta_v_band_mps: 9.8 }` (1Hz numbers tagged 50Hz); only the 3
+ * factory functions above guard construction in practice. A true
+ * discriminated union (per-path branded numeric variants) was
+ * considered + deferred: the magnitudes are not load-bearing at the
+ * TYPE level (Pydantic mirror in validator.py is wire-side
+ * authoritative); consumers branching on `path` get the
+ * discriminator they need. Documented here so a future refactor can
+ * adopt the stricter shape if a downstream consumer needs per-path
+ * magnitude invariants enforced at compile time.
+ */
 export type ToleranceBands = ToleranceBandsCore & { readonly path: ToleranceBandsPath };
 
 /**
