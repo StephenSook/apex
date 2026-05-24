@@ -65,6 +65,28 @@ function severityLabel(severity: TileSeverity): string {
   }
 }
 
+// Wave-41 cascade-#11 MED M3 close-out per silent-failure-hunter N3:
+// extract severityTextColor as exhaustive switch helper so a future
+// 4th TileSeverity literal becomes a TS compile error on ALL THREE
+// dispatch sites (border + label + text-color) instead of only the
+// two helpers that previously used the switch pattern. The prior
+// JSX rendered the text color via a ternary chain which would have
+// silently fallen through to text-accent on an unhandled severity.
+function severityTextColor(severity: TileSeverity): string {
+  switch (severity) {
+    case "ok":
+      return "text-racing-green";
+    case "monitor":
+      return "text-amber";
+    case "critical":
+      return "text-accent";
+    default: {
+      const _exhaustive: never = severity;
+      throw new Error(`unknown RaceEventsTile severity: ${String(_exhaustive)}`);
+    }
+  }
+}
+
 interface RaceEventsTile {
   readonly key: string;
   readonly label: string;
@@ -135,13 +157,7 @@ export default function RaceEventsTilesRow() {
                 {tile.label}
               </p>
               <span
-                className={`rounded-sm border border-rule bg-paper px-2 py-0.5 font-mono text-[9px] uppercase tracking-wider ${
-                  tile.severity === "ok"
-                    ? "text-racing-green"
-                    : tile.severity === "monitor"
-                      ? "text-amber"
-                      : "text-accent"
-                }`}
+                className={`rounded-sm border border-rule bg-paper px-2 py-0.5 font-mono text-[9px] uppercase tracking-wider ${severityTextColor(tile.severity)}`}
               >
                 {severityLabel(tile.severity)}
               </span>
