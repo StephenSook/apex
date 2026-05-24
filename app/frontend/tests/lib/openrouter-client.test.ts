@@ -55,7 +55,13 @@ describe("openRouterChatCompletion", () => {
           id: "x",
           model: "test-model",
           created: 0,
-          choices: [],
+          choices: [
+            {
+              index: 0,
+              message: { role: "assistant", content: "stub" },
+              finish_reason: "stop",
+            },
+          ],
           usage: { prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 },
         }),
         { status: 200 },
@@ -95,7 +101,13 @@ describe("openRouterChatCompletion", () => {
             id: "ok",
             model: "test-model",
             created: 0,
-            choices: [],
+            choices: [
+              {
+                index: 0,
+                message: { role: "assistant", content: "ok" },
+                finish_reason: "stop",
+              },
+            ],
             usage: { prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 },
           }),
           { status: 200 },
