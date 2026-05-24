@@ -56,6 +56,16 @@ export type TriAgentVerdictState =
 
 const LIVE_FETCH_TIMEOUT_MS = 10_000;
 
+// Wave-41 cascade-#11 NIT N1 close-out (silent-failure-hunter): Symbol
+// sentinel for timeout-abort identity instead of string compare on
+// `signal.reason`. AbortSignal.reason is unknown-typed; if anything
+// else aborts with a non-string value (DOMException, Error instance,
+// undefined), `=== "timeout"` is false + the abort falls into the
+// silent cleanup branch even if it was a genuine timeout. Symbol.for
+// guarantees the abort site + the check site share the same singleton
+// regardless of module-reload semantics.
+const TIMEOUT_ABORT_REASON: symbol = Symbol.for("apex.tri-agent-critic.timeout");
+
 /**
  * Wave-41 cascade-#11 silent-failure-hunter BLOCKER B1 close-out:
  * exhaustive-switch dispatch over the non-"live" mock-source subset.
@@ -130,7 +140,7 @@ export function useTriAgentCriticVerdict(source: TriAgentDataSource): TriAgentVe
 
     const controller = new AbortController();
     const timeoutHandle = setTimeout(() => {
-      controller.abort("timeout");
+      controller.abort(TIMEOUT_ABORT_REASON);
     }, LIVE_FETCH_TIMEOUT_MS);
 
     void (async () => {
@@ -176,7 +186,7 @@ export function useTriAgentCriticVerdict(source: TriAgentDataSource): TriAgentVe
         const isAbort =
           err instanceof DOMException && err.name === "AbortError";
         if (isAbort) {
-          const isTimeout = controller.signal.reason === "timeout";
+          const isTimeout = controller.signal.reason === TIMEOUT_ABORT_REASON;
           if (isTimeout) {
             if (typeof console !== "undefined" && console.error) {
               console.error("apex.useTriAgentCriticVerdict: /api/critic timed out", {
