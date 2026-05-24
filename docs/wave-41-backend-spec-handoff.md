@@ -349,7 +349,7 @@ Concurrent requests for the same `audit_id` race-write to distinct
 tempfiles (each tempfile is unique by process / request identity in
 practice since Node's spawn allocates fresh fds), then both rename
 to the same final path. POSIX rename is atomic; whichever request
-completes second simply overwrites the first's result with identical
+completes second overwrites the first's result with identical
 content (same input text + same FFmpeg pipeline = same output bytes).
 No partial-file exposure.
 
