@@ -36,11 +36,11 @@ APEX changes that.
 
 ## Live demo
 
-- **App:** *(Vercel URL lands Day 11)*
-- **Video:** *(YouTube unlisted URL lands Day 10)*
-- **Colab (zero install, browser-side):** *(notebook URL lands Day 9)*
-- **Judges' tour:** *(apex.race/judges Day 11)*
-- **Status dashboard:** *(apex.race/status Day 11)*
+- **App:** [https://apex.race](https://apex.race) (Vercel production deploy)
+- **Video:** *(YouTube unlisted URL pending Day 10 record per `deliverables/demo-video-script-3min.md`)*
+- **Colab (zero install, browser-side):** `deliverables/apex-demo.ipynb`
+- **Judges' tour:** [https://apex.race/judges](https://apex.race/judges)
+- **Status dashboard:** [https://apex.race/status](https://apex.race/status)
 - **Try fixture:** Sarah Reynolds (fictional persona), RAF veteran, left-leg amputee, Britcar Trophy 2026, #34 BMW M240i with MME Motorsport electronic hand-controls (per consent receipt 2026-05-22 from MME Motorsport d.o.o. logged in `docs/consent-log.md`), Donington Park GP, Lap 17
 
 ---
