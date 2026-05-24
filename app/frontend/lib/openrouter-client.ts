@@ -135,12 +135,39 @@ function decodeChatCompletionResponse(raw: unknown): ChatCompletionResponse {
   // HTTP 200 with `{ error: { message: "..." } }` for content_filter
   // rejections. Surface as structured error rather than letting the
   // missing `choices` array crash downstream consumers.
-  if (raw.error !== undefined) {
-    const errorObj = raw.error as { message?: unknown };
-    const message =
-      typeof errorObj.message === "string"
-        ? errorObj.message
-        : JSON.stringify(raw.error);
+  //
+  // Wave-43 D2.2 close-out per cold-review-2 silent-failure H-R2-2:
+  // guard `raw.error !== null` explicitly (treating null as not-an-error
+  // because some providers serialize `{error: null}` on success) +
+  // handle array-form `{error: [{message: "..."}]}` (TogetherAI variant).
+  // JSON.stringify wrapped in try/catch since circular refs can throw.
+  if (raw.error !== undefined && raw.error !== null) {
+    let message: string;
+    if (Array.isArray(raw.error)) {
+      const first = raw.error[0];
+      if (typeof first === "object" && first !== null && "message" in first && typeof (first as Record<string, unknown>).message === "string") {
+        message = (first as Record<string, unknown>).message as string;
+      } else {
+        try {
+          message = JSON.stringify(raw.error);
+        } catch {
+          message = "<unserializable error array>";
+        }
+      }
+    } else if (typeof raw.error === "object") {
+      const errorObj = raw.error as { message?: unknown };
+      if (typeof errorObj.message === "string") {
+        message = errorObj.message;
+      } else {
+        try {
+          message = JSON.stringify(raw.error);
+        } catch {
+          message = "<unserializable error object>";
+        }
+      }
+    } else {
+      message = String(raw.error);
+    }
     throw new Error(`apex.openrouter-client: provider returned error: ${message}`);
   }
   if (typeof raw.id !== "string") {
