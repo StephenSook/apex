@@ -9,7 +9,7 @@ import EdgeSummary from "../../components/EdgeSummary";
 import { ExtendedPhysicsFixtureGrid } from "../../components/ExtendedPhysicsFixtureGrid";
 import RaceEventsTilesRow from "../../components/RaceEventsTilesRow";
 import GEPAEvolutionPanel from "../../components/GEPAEvolutionPanel";
-import PhysicsConfidenceBadge from "../../components/PhysicsConfidenceBadge";
+import PhysicsConfidenceRing from "../../components/PhysicsConfidenceRing";
 import TriAgentCriticPanel from "../../components/TriAgentCriticPanel";
 import { CONVERGENCE_FIXTURES } from "../../lib/convergence-fixtures";
 import { EXTENDED_PHYSICS_FIXTURES } from "../../lib/extended-physics-fixtures";
@@ -373,18 +373,18 @@ export default function JudgesPage() {
             (TriAgentVerdictPanel = three TriAgentVerdict instances; verdict-tag narrowing + empty-
             reasoning-trace fallback per GuardianAudit one level up).
           </p>
-          <div className="mt-6 flex flex-col gap-3">
-            <div className="flex flex-wrap items-center gap-3">
-              <PhysicsConfidenceBadge confidence={MOCK_PHYSICS_CONFIDENCE} />
-              <span className="font-mono text-xs text-muted">
+          <div className="mt-6 grid gap-6 md:grid-cols-2">
+            <div className="flex flex-col items-center gap-3">
+              <PhysicsConfidenceRing confidence={MOCK_PHYSICS_CONFIDENCE} />
+              <p className="text-center font-mono text-xs text-muted">
                 D-024 in-distribution mock: Guardian verdict preserved.
-              </span>
+              </p>
             </div>
-            <div className="flex flex-wrap items-center gap-3">
-              <PhysicsConfidenceBadge confidence={MOCK_PHYSICS_CONFIDENCE_OOD} />
-              <span className="font-mono text-xs text-muted">
+            <div className="flex flex-col items-center gap-3">
+              <PhysicsConfidenceRing confidence={MOCK_PHYSICS_CONFIDENCE_OOD} />
+              <p className="text-center font-mono text-xs text-muted">
                 D-024 out-of-distribution mock: Guardian verdict downgraded from approve to review.
-              </span>
+              </p>
             </div>
           </div>
           <div className="mt-6 flex flex-col gap-6">
