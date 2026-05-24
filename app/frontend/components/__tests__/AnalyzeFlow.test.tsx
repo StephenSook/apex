@@ -110,15 +110,19 @@ describe("AnalyzeFlow integration", () => {
       { timeout: 2000 },
     );
 
-    // Click Tuning tab; CoachingReport heading unmounts; Tuning pane heading appears.
+    // Click Tuning tab; Tuning pane heading appears visible; Coaching pane
+    // heading is still in the DOM (wave-43 D2.12 CSS-hidden state
+    // preservation) but inside a `.hidden` ancestor so it is not user-
+    // visible. Assert visibility via DOM-ancestor `.hidden` class check
+    // rather than `.not.toBeInTheDocument()` since the all-tabs-render-
+    // always shape preserves per-tab state across switches.
     const tuningTab = screen.getByRole("tab", { name: /^Tuning/i });
     await user.click(tuningTab);
     expect(
       screen.getByRole("heading", { name: /Tuning recommendation/i }),
     ).toBeInTheDocument();
-    expect(
-      screen.queryByRole("heading", { name: /Corner-by-corner coaching/i }),
-    ).not.toBeInTheDocument();
+    const coachingHeading = screen.getByRole("heading", { name: /Corner-by-corner coaching/i });
+    expect(coachingHeading.closest(".hidden")).not.toBeNull();
 
     // Click Forecast tab; Forecast pane heading appears.
     const forecastTab = screen.getByRole("tab", { name: /^Forecast/i });
