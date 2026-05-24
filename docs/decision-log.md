@@ -4,6 +4,49 @@ Every locked decision with rationale + date + scope. Newest first.
 
 ---
 
+## 2026-05-24 D-044: Wave-43 Lane K + final close-out — persona-decoupling + C2 vitest completion
+
+**Decision.** Wave-43 mega-wave final close-out lands two significant additions beyond the original 8-lane plan:
+
+**Lane K (persona-decoupling per Sookra Methodology amendment) — 1 commit:**
+
+- `235c59c` refactor(frontend): Sarah Reynolds removed from AnalyzeFlow.buildMockReport default state. Generic "Sector 1/2/3 corner" + "primary_actuation_modulation_pct" + "your uploaded COA" replace persona-specific Donington Park track corners + hand-lever-brake-travel + Section 3(c) COA citations. User-typed driver_id flows through unchanged. Sarah Reynolds remains in storytelling layer (3-min video + 30s storyboard + deck + persona doc + test fixtures + Vinh's parser target).
+
+Rationale per external validation: 2026 hackathon judge sentiment shifted. April Guo (Anthropic, 2026 GitLab AI Hackathon judge) verbatim: "This feels like a product, not a hackathon project." The semgrep 2026 hackathon-effect analysis (https://semgrep.dev/blog/2026/the-ai-hackathon-effect/) corroborates the shift from "convincing demo" to "actually viable product." Hardcoded-persona-as-default reads as the OLD 2023-2024 hackathon pattern; 2026 judges interpret it as "MVP probably doesn't actually work." Memory rule locked at `~/.claude/projects/-Users-stephensookra-Desktop-IBM-May/memory/feedback_persona_not_hardcoded_in_ui.md`.
+
+Implication for Vinh's Phase 1 task 1.3 + 1.4 (`/api/analyze` shipping Day 4-5): default backend response = function of user input. Default = generic template parameterized from POSTed FormData. Sarah fixture is for dev test fixtures + optional `/api/analyze?fixture=sarah-reynolds` opt-in endpoint, NOT default response shape.
+
+**Lane C2 vitest completion (9 of 13 specs shipped) — 6 additional commits this wave-43 close-out window:**
+
+- `9ecf8db` + `531dd68` C2.1 ALoRAStatusBadge 5-state coverage (2 commits with cascade-fix-forward for Hot-swap multi-match)
+- `ed4245a` C2.2 GEPAEvolutionPanel default+custom+lift coverage
+- `1758a22` + `62dfcaf` C2.3 EAGLE3LatencyBadge 3-state coverage (2 commits with cascade-fix-forward for D-019 item 4 multi-match)
+- `1df90e8` + `ab10bcc` C2.6 api-decode decoder-seam coverage (2 commits with cascade-fix-forward for audit_id format)
+- `535bb43` + `a75c39e` C2.11a what-if-replay + AnalyzeFlow.error scrollSpy flaky-race waitFor fix (2 commits)
+- `3dff0ca` + `9b5506c` + `ce7640a` C2.11b guardian-audit-log persistence + corrupt-skip + storage-quota spy (3 commits with cascade-fix-forward for storage key + jsdom Storage.prototype spy)
+- `54f2690` C2.12a CoachingReportLiveCharts header + panel-label coverage
+- `6bc169e` + `b17ae0c` C2.12b WatsonTtsRadio HEAD-probe + synthesis + fallback paths (2 commits with cascade-fix-forward for TS2540 speechSynthesis read-only)
+- `104ebdb` C2.10 openrouter-client expansion (D2.2 array+null error + D2.4 usage opt + D2.8 abort)
+- `921e8ef` C2.13 AICopilotChat idle+input+submit+streaming+panelId coverage
+
+NOT shipped: C2.4 Playwright /judges fidelity + C2.5 Playwright /analyze fidelity (Playwright dependency not installed; spec files would be dead code until install). Queued post-submission OR for the Day 10-11 dress rehearsal if Playwright install is approved.
+
+**F2 codex adversarial cold-review fix-wave (4 commits + cascade-#14 + D-043) — landed earlier this close-out window:**
+
+- `203b1dd` F2 HIGH#4 openrouter-stream route passes request.signal to openRouterChatCompletion
+- `8ae21cd` F2 HIGH#2 Watson per-request unique tempfile suffix (race fix)
+- `7b6f3a8` F2 MED#7 WatsonTtsRadio surface synthesis-failure shape in console.warn
+- `d939e35` cascade-#14 BLOCKER#1 openRouterChatCompletion 2-arg signature TS2353 fix
+- `da4b573` D-043 Watson production-path Vercel architectural constraint doc
+
+5 other planned F2 agent dispatches deferred per token-budget pragmatism (silent-failure-hunter + type-design-analyzer + code-reviewer + comment-analyzer + plan-gap-scanner). Codex coverage caught the load-bearing issues; remaining 5 would surface polish-tier findings post-submission.
+
+**Wave-43 session arc total commit count: ~55 atomic commits.** HEAD CI green at every push per cascade-#13 + cascade-#14 verify-or-cascade discipline. Operator-action queue remaining: apex.race DNS registration (D-042 BLOCKING) + video record (Day 10-11) + Playwright install decision + Vinh Phase 1 backend wire-up.
+
+**Affected.** Default AnalyzeFlow.buildMockReport behavior (no persona overlay; user input shapes report). Lane C2 vitest coverage (9 new test files; ~73 cases total covering badges + decoder + what-if-replay + audit-log + live-charts + Watson + chat). Cascade-#13 + cascade-#14 lessons codified in `feedback_ci_green_per_push_verify_or_cascade.md`. Sookra Methodology Pillar 4 (Product credibility) extended with persona-not-hardcoded rule. D-041 + D-042 + D-043 + D-044 close-out the wave-43 mega-wave decision-log surface.
+
+---
+
 ## 2026-05-24 D-043: Wave-43 cascade-#13 F2 codex-finding, Watson production-path Vercel architectural constraint
 
 **Decision.** The wave-43 E2.1 `/api/watson-tts` production endpoint has TWO Vercel-runtime architectural constraints that codex adversarial review surfaced (F2 HIGH#1 + HIGH#3) which mean the route only fully functions in self-hosted environments + the Web Speech API fallback (wave-42 baseline) is the AUTHORITATIVE PRODUCTION PATH on Vercel.
