@@ -17,6 +17,10 @@
 /.next/
 /out/
 
+# wave-43 E2.1 Watson TTS cache: server-generated MP3s per audit_id
+# (paddock-radio filter chain output); regenerated on demand
+/public/generated-audio/
+
 # production
 /build
 
