@@ -217,6 +217,174 @@ endpoint /api/{name} ships."
   per the same `(baseline_fixture_id, mutation_key)` tuple.
 - Session-context tile data updates per lap-completion event.
 
+## Endpoint 4: POST /api/openrouter-stream
+
+### Purpose
+
+Server-side proxy to the OpenRouter `/chat/completions` endpoint with
+`stream: true`, parsing SSE frames + emitting plain-text chunks to the
+client `useOpenRouterStream` hook. The hook is consumed by the
+AICopilotChat surface for single-turn QA against Granite 4.1 8B
+Instruct narrator.
+
+Wave-42 Lane F.D shipped the route stub + hook + chat surface; wave-43
+cascade-#12 BLOCKER #1 close-out (commit `40e3e22`) added the production
+proxy path. Stream M.3 spec extension formalizes the contract.
+
+### Request shape
+
+```typescript
+// app/frontend/lib/openrouter-stream.ts hook contract
+interface RequestBody {
+  readonly prompt: string;
+}
+```
+
+### Response shape
+
+```
+HTTP/1.1 200 OK
+Content-Type: text/plain; charset=utf-8
+Transfer-Encoding: chunked
+
+<chunk 1>
+<chunk 2>
+...
+```
+
+Plain-text ReadableStream with chunked content. The hook accumulates
+chunks into `state.partial` while `status === "streaming"` and into
+`state.full` once `status === "ready"`.
+
+### Status codes
+
+- `200 OK`: streaming response (chunks flow as Granite produces tokens)
+- `400 Bad Request`: missing or empty prompt field
+- `502 Bad Gateway`: OpenRouter upstream failure (5xx after retry budget)
+- `504 Gateway Timeout`: 60s end-to-end stream wall-clock exceeded
+
+### Runtime
+
+`export const runtime = "nodejs"` (NOT Edge). OpenRouter streaming
+requires longer-than-Edge-budget connection lifetimes.
+
+### Cache contract
+
+Streaming responses are NOT cached server-side. The chat surface stores
+QA pairs in localStorage via AICopilotChat's per-panel history.
+
+### Atomicity contract
+
+Each `POST /api/openrouter-stream` is one independent request; no
+shared state. Concurrent requests fan out to independent OpenRouter
+connections (rate-limited by OpenRouter's `account-id` budget).
+
 ---
 
-Wave-41 cascade-#11 plan-gap-scanner BLOCKER#2 close-out.
+## Endpoint 5: POST /api/watson-tts
+
+### Purpose
+
+Server-side synthesis of coaching-report narration via IBM Watson Text
+to Speech REST + paddock-radio FFmpeg filter chain (highpass=350 +
+lowpass=3000 + compand + volume=1.8) for the walkie-talkie acoustic
+profile. Cached MP3 per audit_id under
+`public/generated-audio/{audit_id}.mp3`.
+
+Wave-43 Lane E2.1 close-out (commit `3cce2ae`) ships the production
+endpoint; Lane E2.2 (commit `6f8ec6e`) activates the production path
+in the client WatsonTtsRadio surface (HEAD-probe cache first; POST
+to synthesize on cache miss; Web Speech API fallback on any failure).
+
+### Request shape
+
+```typescript
+// app/frontend/lib/watson-tts-radio.tsx WatsonTtsRadioProps + Lane E2.2
+interface RequestBody {
+  readonly audit_id: string;    // [a-zA-Z0-9_-]{1,64}
+  readonly text: string;        // < 8000 chars
+}
+```
+
+### Response shape
+
+```typescript
+interface SuccessResponse {
+  readonly url: string;         // /generated-audio/{audit_id}.mp3
+  readonly cached: boolean;     // true if existing file; false if just-synthesized
+}
+
+interface ErrorResponse {
+  readonly error: string;       // apex.watson-tts: ... prefix
+}
+```
+
+### Status codes
+
+- `200 OK`: synthesis or cache hit; client renders `<audio src={url}>`
+- `400 Bad Request`: missing env vars (WATSON_TTS_API_KEY +
+  WATSON_TTS_URL) OR malformed body OR validation failure
+- `502 Bad Gateway`: Watson REST failure (non-2xx, unexpected
+  Content-Type, empty body) OR FFmpeg pipeline failure OR cache-write
+  failure
+
+### Runtime
+
+`export const runtime = "nodejs"` (NOT Edge). Required for
+`child_process.spawn` (FFmpeg) + `node:fs/promises` (cache I/O).
+
+### Cache contract
+
+Cache key = `audit_id` (1-64 chars matching `[a-zA-Z0-9_-]`). Cache
+hit is detected via `existsSync({audit_id}.mp3)` BEFORE the Watson
+REST call. Atomic write via tempfile rename pattern: write to
+`{audit_id}.mp3.tmp` first, rename to `{audit_id}.mp3` after FFmpeg
+completes, so HEAD probes from the client never see a half-written
+file. `public/generated-audio/` directory is gitignored; the cache is
+regenerated on demand (Vercel deployments start with empty cache).
+
+### Atomicity contract
+
+Concurrent requests for the same `audit_id` race-write to distinct
+tempfiles (each tempfile is unique by process / request identity in
+practice since Node's spawn allocates fresh fds), then both rename
+to the same final path. POSIX rename is atomic; whichever request
+completes second simply overwrites the first's result with identical
+content (same input text + same FFmpeg pipeline = same output bytes).
+No partial-file exposure.
+
+### Environment variables (required)
+
+- `WATSON_TTS_API_KEY`: IBM Cloud Watson TTS API key
+- `WATSON_TTS_URL`: regional service URL (e.g.
+  `https://api.us-south.text-to-speech.watson.cloud.ibm.com`)
+- `WATSON_TTS_VOICE`: optional voice ID (defaults to
+  `en-US_HenryV3Voice`)
+
+When any of the required vars are missing, the endpoint returns 400 +
+the client falls back to the Web Speech API path automatically.
+
+### FFmpeg dependency
+
+The Vercel build environment provides FFmpeg via the build image; for
+local development install via `brew install ffmpeg` (macOS) or
+`apt-get install ffmpeg` (Linux). The endpoint uses
+`child_process.spawn("ffmpeg", ...)` directly (no fluent-ffmpeg or
+similar SDK) to avoid the Node-22 simdjson dyld bug documented in the
+global three-brain stack memory.
+
+### Verification
+
+- POST `{audit_id: "test-001", text: "test phrase"}` returns 200 +
+  `{"url": "/generated-audio/test-001.mp3", "cached": false}` on
+  first call.
+- Repeat returns 200 + `{"cached": true}`.
+- HEAD on the returned URL returns 200 + `Content-Type: audio/mpeg`.
+- Browser `<audio src>` element plays the filtered narration with the
+  walkie-talkie acoustic profile.
+
+---
+
+Wave-41 cascade-#11 plan-gap-scanner BLOCKER#2 close-out. Wave-43
+Lane E2.3 extends with Endpoints 4 + 5 (production path for the
+streaming chat + Watson TTS surfaces).
