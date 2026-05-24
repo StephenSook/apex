@@ -66,7 +66,13 @@ export interface ChatCompletionResponse {
   readonly model: string;
   readonly created: number;
   readonly choices: ReadonlyArray<ChatCompletionChoice>;
-  readonly usage: ChatCompletionUsage;
+  /**
+   * Wave-43 D2.4 close-out per cold-review-2 silent-failure H-R2-4:
+   * usage is OPTIONAL because some OpenRouter-proxied providers omit
+   * the usage breakdown on streaming-disabled single-shot responses.
+   * Consumers must guard with `response.usage?.total_tokens ?? 0`.
+   */
+  readonly usage?: ChatCompletionUsage;
 }
 
 const DEFAULT_TIMEOUT_MS = 30_000;
