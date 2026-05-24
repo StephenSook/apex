@@ -104,8 +104,31 @@ function loadEnv(name: string, fallback?: string): string | undefined {
   return value;
 }
 
-function delay(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+/**
+ * Wave-43 cascade-#15 F2 round-2 HIGH#3 close-out per codex
+ * adversarial: abortable delay that honors the consumer signal during
+ * retry backoff windows. Prior delay() ran setTimeout uninterruptibly
+ * for up to BACKOFF_CAP_MS (60s) regardless of signal.aborted state,
+ * so a consumer that disconnected mid-flight kept the server request
+ * pinned until the full backoff ladder ran out. The new shape rejects
+ * the delay promise immediately on signal abort so the surrounding
+ * retry loop unwinds + the OpenRouter fetch budget is freed.
+ */
+function delay(ms: number, signal?: AbortSignal): Promise<void> {
+  return new Promise((resolve, reject) => {
+    if (signal !== undefined && signal.aborted) {
+      reject(new DOMException(String(signal.reason ?? "aborted"), "AbortError"));
+      return;
+    }
+    const handle = setTimeout(resolve, ms);
+    const onAbort = () => {
+      clearTimeout(handle);
+      reject(new DOMException(String(signal?.reason ?? "aborted"), "AbortError"));
+    };
+    if (signal !== undefined) {
+      signal.addEventListener("abort", onAbort, { once: true });
+    }
+  });
 }
 
 function backoffMs(attemptZeroIndexed: number): number {
@@ -306,7 +329,7 @@ export async function openRouterChatCompletion(
         if (typeof console !== "undefined" && console.warn) {
           console.warn(`apex.openrouter-client: 429 rate-limited; retrying after ${waitMs}ms (attempt ${attempt429}).`);
         }
-        await delay(waitMs);
+        await delay(waitMs, options.signal);
         continue;
       }
 
@@ -319,7 +342,7 @@ export async function openRouterChatCompletion(
         if (typeof console !== "undefined" && console.warn) {
           console.warn(`apex.openrouter-client: ${response.status} server error; retrying with exponential backoff (attempt ${attempt5xx}/${maxRetries5xx}).`);
         }
-        await delay(backoffMs(attempt5xx - 1));
+        await delay(backoffMs(attempt5xx - 1), options.signal);
         continue;
       }
 
