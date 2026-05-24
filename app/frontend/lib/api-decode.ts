@@ -69,11 +69,13 @@ import {
   type BackendViolationRecord,
   type BackendViolationType,
   type ChannelName,
+  type CriticName,
   type GuardianAudit,
   type LibraryVersion,
   type ProjectionResult,
   type StructuredLogEntry,
   type StructuredLogEntryCanonical,
+  type TriAgentVerdict,
   type TriAgentVerdictPanel,
   type ViolationEngine,
 } from "../../shared/types";
@@ -97,12 +99,6 @@ const VALID_LOG_LEVELS: ReadonlySet<StructuredLogEntryCanonical["level"]> = new 
   StructuredLogEntryCanonical["level"]
 >(["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]);
 const VALID_CHANNEL_NAMES: ReadonlySet<string> = new Set(CHANNELS);
-const VALID_CRITICS: ReadonlyArray<"physics" | "pedagogy" | "guardian_safety"> = [
-  "physics",
-  "pedagogy",
-  "guardian_safety",
-];
-
 // ---------------------------------------------------------------------------
 // Internal helpers
 // ---------------------------------------------------------------------------
@@ -462,6 +458,89 @@ export function decodeStructuredLogEntry(raw: unknown): StructuredLogEntry {
 // decodeTriAgentVerdictPanel
 // ---------------------------------------------------------------------------
 
+// Wave-41 cascade-#11 BLOCKER B2: decodeTriAgentVerdict validates one
+// critic slot fully (critic name match + verdict literal + reasoning_trace
+// array of strings + critic_run_id + conditional flagged_concerns /
+// blocked_recommendations payload). Prior decoder shape validated only
+// critic name + cast the whole tuple unsafely; that let a backend bug
+// emitting `verdict: undefined` or non-array reasoning_trace flow into
+// TriAgentCriticPanel.tsx and crash the UI.
+function decodeTriAgentVerdict<TCritic extends CriticName>(
+  raw: unknown,
+  expectedCritic: TCritic,
+  ctx: string,
+): TriAgentVerdict & { readonly critic: TCritic } {
+  if (!isRecord(raw)) {
+    throw new Error(`apex.decode.${ctx}: must be object; got ${typeof raw}.`);
+  }
+  const critic = reqString(raw, "critic", ctx);
+  if (critic !== expectedCritic) {
+    throw new Error(
+      `apex.decode.${ctx}: critic must be ${JSON.stringify(expectedCritic)}; got ${JSON.stringify(critic)}.`,
+    );
+  }
+  const verdictRaw = reqString(raw, "verdict", ctx);
+  if (verdictRaw !== "approve" && verdictRaw !== "flag" && verdictRaw !== "reject") {
+    throw new Error(
+      `apex.decode.${ctx}: verdict must be "approve" | "flag" | "reject"; got ${JSON.stringify(verdictRaw)}.`,
+    );
+  }
+  const reasoningTraceRaw = reqArray(raw, "reasoning_trace", ctx);
+  const reasoningTrace: string[] = reasoningTraceRaw.map((step, idx) => {
+    if (typeof step !== "string") {
+      throw new Error(
+        `apex.decode.${ctx}.reasoning_trace[${idx}]: must be string; got ${typeof step}.`,
+      );
+    }
+    return step;
+  });
+  const criticRunId = reqString(raw, "critic_run_id", ctx);
+
+  if (verdictRaw === "approve") {
+    return {
+      critic: expectedCritic,
+      verdict: "approve",
+      reasoning_trace: reasoningTrace,
+      critic_run_id: criticRunId,
+    } as TriAgentVerdict & { readonly critic: TCritic };
+  }
+  if (verdictRaw === "flag") {
+    const flaggedRaw = reqArray(raw, "flagged_concerns", ctx);
+    const flagged = flaggedRaw.map((concern, idx) => {
+      if (typeof concern !== "string") {
+        throw new Error(
+          `apex.decode.${ctx}.flagged_concerns[${idx}]: must be string; got ${typeof concern}.`,
+        );
+      }
+      return concern;
+    });
+    return {
+      critic: expectedCritic,
+      verdict: "flag",
+      reasoning_trace: reasoningTrace,
+      flagged_concerns: flagged,
+      critic_run_id: criticRunId,
+    } as TriAgentVerdict & { readonly critic: TCritic };
+  }
+  // verdictRaw === "reject" (narrowed by the exhaustive check above)
+  const blockedRaw = reqArray(raw, "blocked_recommendations", ctx);
+  const blocked = blockedRaw.map((rec, idx) => {
+    if (typeof rec !== "string") {
+      throw new Error(
+        `apex.decode.${ctx}.blocked_recommendations[${idx}]: must be string; got ${typeof rec}.`,
+      );
+    }
+    return rec;
+  });
+  return {
+    critic: expectedCritic,
+    verdict: "reject",
+    reasoning_trace: reasoningTrace,
+    blocked_recommendations: blocked,
+    critic_run_id: criticRunId,
+  } as TriAgentVerdict & { readonly critic: TCritic };
+}
+
 export function decodeTriAgentVerdictPanel(raw: unknown): TriAgentVerdictPanel {
   if (!Array.isArray(raw)) {
     throw new Error(`apex.decode.TriAgentVerdictPanel: expected 3-tuple array; got ${typeof raw}.`);
@@ -470,31 +549,20 @@ export function decodeTriAgentVerdictPanel(raw: unknown): TriAgentVerdictPanel {
     throw new Error(`apex.decode.TriAgentVerdictPanel: expected length 3; got ${raw.length}.`);
   }
 
-  const physics = raw[0] as unknown;
-  const pedagogy = raw[1] as unknown;
-  const guardianSafety = raw[2] as unknown;
+  // Wave-41 cascade-#11 BLOCKER B2: every tuple slot fully structurally
+  // validated via decodeTriAgentVerdict; positional binding (Physics ->
+  // Pedagogy -> Guardian-Safety) enforced via the expected-critic param.
+  // Replaces the prior `return raw as unknown as TriAgentVerdictPanel`
+  // unsafe cast.
+  const physics = decodeTriAgentVerdict(raw[0], "physics", "TriAgentVerdictPanel[0]");
+  const pedagogy = decodeTriAgentVerdict(raw[1], "pedagogy", "TriAgentVerdictPanel[1]");
+  const guardianSafety = decodeTriAgentVerdict(
+    raw[2],
+    "guardian_safety",
+    "TriAgentVerdictPanel[2]",
+  );
 
-  if (!isRecord(physics) || physics["critic"] !== VALID_CRITICS[0]) {
-    throw new Error(
-      `apex.decode.TriAgentVerdictPanel[0]: expected critic ${JSON.stringify(VALID_CRITICS[0])}; got ${JSON.stringify((physics as { critic?: unknown })?.critic)}.`,
-    );
-  }
-  if (!isRecord(pedagogy) || pedagogy["critic"] !== VALID_CRITICS[1]) {
-    throw new Error(
-      `apex.decode.TriAgentVerdictPanel[1]: expected critic ${JSON.stringify(VALID_CRITICS[1])}; got ${JSON.stringify((pedagogy as { critic?: unknown })?.critic)}.`,
-    );
-  }
-  if (!isRecord(guardianSafety) || guardianSafety["critic"] !== VALID_CRITICS[2]) {
-    throw new Error(
-      `apex.decode.TriAgentVerdictPanel[2]: expected critic ${JSON.stringify(VALID_CRITICS[2])}; got ${JSON.stringify((guardianSafety as { critic?: unknown })?.critic)}.`,
-    );
-  }
-
-  // Per wave-37 cascade-#5 qualification: positional binding is enforced
-  // at frontend construction sites only; this runtime check guards against
-  // backend regressions emitting misordered tuples. Verdict + reasoning_trace
-  // structural validation lands in the cascade-#11 fix wave below.
-  return raw as unknown as TriAgentVerdictPanel;
+  return [physics, pedagogy, guardianSafety] as const;
 }
 
 // ---------------------------------------------------------------------------
