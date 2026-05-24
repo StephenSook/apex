@@ -163,6 +163,95 @@ export interface FIACoa {
   readonly fia_section_refs: ReadonlyArray<string>;
 }
 
+/**
+ * Wave-43 Lane G2.1 canonical FIACoa shape per codex cold-review-2 H3:
+ * the simplified `FIACoa` above is the projector-facing shape consumed
+ * by the physics pipeline; this canonical shape mirrors the actual
+ * Sarah Reynolds COA fixture JSON one-to-one
+ * (`fixtures/personas/sarah-reynolds-coa-stub.json`) + Vinh's task 1.3
+ * `coa_parser.py` extraction targets.
+ *
+ * Backend Pydantic mirror obligation: Vinh's parser MUST emit JSON
+ * validating against this TypeScript shape. The decoder
+ * `decodeFIACoaCanonical` below provides the wire-boundary validation
+ * for frontend consumers of /api/analyze responses that include the
+ * parsed COA document for provenance rendering.
+ *
+ * Per the no-invented-FIA-articles project compliance rule, every
+ * `fia_appendix_l_reference` uses the "Article TBD per published
+ * revision" pattern; APEX does NOT assert specific Article numbers.
+ */
+export interface FIACoaCanonical {
+  readonly _meta?: {
+    readonly fictional_persona?: boolean;
+    readonly watermark?: string;
+    readonly schema_version?: string;
+    readonly fixture_purpose?: string;
+    readonly fixture_author?: string;
+    readonly fixture_authored_iso?: string;
+    readonly wave?: string;
+    readonly cross_references?: ReadonlyArray<string>;
+  };
+  readonly driver_id: string;
+  readonly issuing_authority: {
+    readonly name: string;
+    readonly country_code: string;
+    readonly issuing_office: string;
+  };
+  readonly certificate_metadata: {
+    readonly certificate_number: string;
+    readonly issued_iso: string;
+    readonly expires_iso: string;
+    readonly renewal_window_days: number;
+    readonly fia_appendix_l_revision: string;
+  };
+  readonly driver_metadata: {
+    readonly full_name: string;
+    readonly date_of_birth_iso: string;
+    readonly racing_license_number: string;
+    readonly license_grade: string;
+    readonly competition_class: string;
+    readonly preferred_team: string;
+  };
+  readonly medical_findings: {
+    readonly primary_condition: string;
+    readonly asia_impairment_scale: string;
+    readonly neurological_level: string;
+    readonly cognitive_status: string;
+    readonly vision_assessment: Readonly<Record<string, string | number | boolean>>;
+    readonly cardiovascular_assessment: Readonly<Record<string, string | number | boolean>>;
+    readonly musculoskeletal_assessment: Readonly<Record<string, string | number | boolean>>;
+  };
+  readonly fia_appendix_l_conditional_approvals: ReadonlyArray<{
+    readonly article_section: string;
+    readonly fia_appendix_l_reference: string;
+    readonly condition: string;
+    readonly approval_status: "approved" | "denied" | "conditional";
+    readonly rationale: string;
+    readonly evidence_log_id?: string;
+  }>;
+  readonly adaptive_equipment_specifications: {
+    readonly supplier: string;
+    readonly supplier_consent_per_surface?: string;
+    readonly hand_control_configuration: Readonly<Record<string, string | number>>;
+    readonly steering_wheel_modifications: Readonly<Record<string, string | number | ReadonlyArray<string>>>;
+    readonly seat_configuration: Readonly<Record<string, string | number | boolean>>;
+  };
+  /**
+   * Load-bearing flag for the entire physics-projection pipeline. True
+   * = adaptive simultaneity permitted; false = able-bodied baseline.
+   * The MUTATION_COA_OVERLAP_INVERT what-if-replay flips this single
+   * boolean to demonstrate the counterfactual.
+   */
+  readonly simultaneity_permission_flag: boolean;
+  readonly annotations_for_extraction_pipeline?: {
+    readonly primary_flag_extraction_target: string;
+    readonly tier_0_constraint_synthesis: string;
+    readonly extraction_text_anchors: ReadonlyArray<string>;
+    readonly negative_test_mutation: string;
+  };
+}
+
 // ---------------------------------------------------------------------------
 // Timing-sheet input (parsed from PDF by Granite Vision)
 // ---------------------------------------------------------------------------
