@@ -247,6 +247,20 @@ export function parseSeverity(raw: number): Severity {
  * checks at the wave-41 decoder boundary. The strict-equality compare
  * is the D-A frozen-contract policy; range-based compare is overkill
  * for this project.
+ *
+ * **Foot-gun caveat (wave-41 cascade-#11 MED M2 per type-design-
+ * analyzer H3):** TypeScript template-literal type
+ * `${number}.${number}.${number}` is PERMISSIVE: it greedy-matches
+ * the inner `${number}` against floats so `"0.1.0.0"` actually
+ * compiles as a valid SemVer (TS infers the second `${number}` as
+ * `1.0` which is a valid number literal). The runtime semver
+ * validation via the `SEMVER_RUNTIME_PATTERN` regex at
+ * `app/frontend/lib/api-decode.ts` is stricter than this type alias
+ * + IS the actual wire-boundary safety check. The type alias catches
+ * the obvious "not a dotted-triple" cases (e.g. `"0.1"`) + the rest
+ * gets caught at runtime. If a future TypeScript bumps include
+ * `${bigint}.${bigint}.${bigint}` support (rejects floats + multi-
+ * dot), tighten the alias accordingly.
  */
 export type SemVer = `${number}.${number}.${number}`;
 
