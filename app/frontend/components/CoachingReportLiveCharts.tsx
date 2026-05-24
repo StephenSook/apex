@@ -31,7 +31,6 @@
  * sync window).
  */
 
-import { memo } from "react";
 import {
   Area,
   AreaChart,
@@ -285,9 +284,14 @@ function CoachingReportLiveChartsBase(_props: CoachingReportLiveChartsProps) {
   );
 }
 
-const CoachingReportLiveCharts = memo(
-  CoachingReportLiveChartsBase,
-  (prev, next) => prev.report.audit?.audit_id === next.report.audit?.audit_id,
-);
+// Wave-43 D2.6 close-out: dropped React.memo wrapper per cold-review-2
+// type-design-analyzer H1 + silent-failure-hunter M-R2-4 cross-
+// corroboration. The component is pure-mock-fixture today (MOCK_LAP_
+// TIMES + MOCK_TIRE_WEAR + MOCK_SPEED_BRAKE are module-scope
+// constants); memo was dead code AND a drift hazard for when Stream
+// M.3 backend wire-up replaces MOCK_* with report-derived telemetry.
+// React.memo default shallow-equality on the typed prop is the
+// correct memoization choice IF memoization is needed; for now no
+// memoization is needed.
 
-export default CoachingReportLiveCharts;
+export default CoachingReportLiveChartsBase;
