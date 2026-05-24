@@ -150,3 +150,4 @@ scripts/private-denylist.txt
 # FastF1 cache (Phase 0 task 0.6). Pre-fetched telemetry, regeneratable;
 # do not commit (~50 MiB per session).
 app/backend/.fastf1_cache/
+.vercel
