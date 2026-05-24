@@ -432,3 +432,81 @@ Layering is intentional: backend contracts are the source of truth for physics-p
 - `lib/api-decode.ts` (wave-41 landing; runtime translation layer).
 
 ---
+
+## 2026-05-23 D-033: Wave-40 cascade #10 cold-review closure (7-commit fix wave + react/no-unescaped-entities pattern lock)
+
+**Decision.** Wave-40 cascade #10 surfaced React/no-unescaped-entities as a project-blocking ESLint hard error after commit `796c9ad` shipped 3 new visualization components (ALoRAStatusBadge + GEPAEvolutionPanel + EAGLE3LatencyBadge) carrying possessive apostrophes in JSX prose. The wave-40 cold-review fix wave (7 commits: `7205db9` + `79d871c` + `30f80d7` + `49e568f` + `3d29996` + `b4eaffe` + `2474fc0`) closed cascade #10 + locked the pattern at memory `feedback_ci_green_per_push_verify_or_cascade.md` Cascade #10 section.
+
+**Rationale.** The React ESLint plugin `react/no-unescaped-entities` is a HARD ERROR (not warning) in eslint-config-next. Possessive apostrophes ("vLLM's", "model's", "driver's") + contractions ("shouldn't", "it's") all trip the rule. Pre-flight `npx eslint <new-file>` mandatory before push for any new component with JSX prose. Default to phrase-rewrite ("the vLLM" instead of "vLLM's") over `&apos;` escape.
+
+**Affected.** 11-cascade behavioral checklist at `feedback_ci_green_per_push_verify_or_cascade.md` Cascade #10 section. Pattern lock applies to all future component shipping.
+
+---
+
+## 2026-05-23 D-034: Competitor field deep-dive integration policy
+
+**Decision.** Every BeMyApp competitor Stephen sends gets a full 8-step deep-dive workflow: (1) verbatim save of competitor URL/screenshots; (2) parallel sub-agent dispatch on GitHub source code; (3) demo video transcript ingest; (4) 7-axis comparison vs APEX; (5) steal-list with effort tags (HIGH/MEDIUM/LOW); (6) skip-list with rationale; (7) brutal letter-grade verdict; (8) APEX-positioning impact assessment. Memory write per-competitor. Locked at `feedback_competitor_deep_dive_protocol.md`.
+
+Steal-list integration rubric: HIGH = leaf component + no structural change + LOW effort + IBM-compatible. MEDIUM = architectural surface + Vinh-coord possible + new persistence layer OK. OUT-OF-SCOPE = requires Vinh-side backend not in Phase 0/1 + mainstream-F1-framing that dilutes adaptive-racer pillar + mock-fallback LLM in production deploy + 60fps replay without code + GoPro-mass-market overlap.
+
+**Rationale.** Prior competitor reviews were shallow (IBM-tool-count only); Stephen flagged that depth-aware integration is the real value. RaceLens XAI was the first-proper-deep-dive 2026-05-23 day 5. Past competitors (NeuroPit / PitWall / AI Race Strategist / AI Race Engineer Copilot / RaceMind AI) re-run with the deep-dive protocol after the lock. Consolidated 6-competitor deep-dive lands at `project_apex_competitor_field_may_challenge.md` with 14 steal-list items (5 HIGH + 5 MEDIUM + 4 LOW); 9 shipped wave-41; 5 closed wave-42 Lane A.
+
+**Affected.** Memory rule `feedback_competitor_deep_dive_protocol.md` + project memory `project_apex_competitor_field_may_challenge.md`. Future BeMyApp competitor send triggers the 8-step workflow.
+
+---
+
+## 2026-05-24 D-035: Wave-41 decoder + brand-type uplift architecture
+
+**Decision.** `app/frontend/lib/api-decode.ts` ships as the load-bearing wire-boundary decoder seam between Vinh's Phase 0 Backend* schemas + the frontend UI projections. Wraps `fetch()` JSON.parse with runtime validation; replaces every unsafe `as` cast at JSON.parse boundary; translates BackendGuardianVerdict (SAFE/REVIEW/BLOCK) into UI GuardianAudit verdict (approve/flag/reject); asserts SHAPES_SCHEMA_VERSION + DIFFERENTIABLE_PROJECTOR_VERSION strict equality.
+
+Brand-type uplift in `app/shared/brands.ts`: 6 branded primitives (AuditId + CommitSha + MahalanobisConfidence + HorizonStep + PhysicsTier + Severity) with parser-function constructors. SemVer template-literal alias + `expectSchemaVersion`/`expectProtocolVersion` strict-equality compare helpers. SENTINELS frozen const exposes the literal sentinels for consumer pattern-matching.
+
+Brand propagation (wave-41 cascade-#11 BLOCKER B1 close-out) widens BackendViolationRecord + BackendGuardianAudit + StructuredLogEntryCanonical canonical schemas to consume the branded types so cross-brand wiring is a TS compile error at consumer sites, not a runtime corruption.
+
+**Rationale.** Wave-40 ID-typed strings + range-constrained numbers were `string`/`number` at the wire boundary; accidental wiring bugs (passing a commit_sha into an audit_id slot) compiled silently + surfaced as runtime corruption. The brand-type discipline catches these at compile time. Decoder validates + propagates branded values end-to-end.
+
+**Affected.** `app/shared/brands.ts` (NEW; 6 brand types + parser-function constructors). `app/shared/types.ts` (1385 lines; Backend* canonical schemas widened to brand types). `app/frontend/lib/api-decode.ts` (NEW; 7 decoder functions + 2 version-check helpers + SAFE/REVIEW/BLOCK translator + validateLibraryVersionValue). Wave-41 commits 42a6b1b + 0f83285 + 0e21d72 + 7874d6a + e21e8dd + fe62b05 + 0592d6f + c107cb2 + 10b30c5 + b17ca11 (Lane 1 close-out + brand-propagation BLOCKER fix).
+
+---
+
+## 2026-05-24 D-036: 5-tab AnalyzeFlow restructure + multi-stakeholder landing hero
+
+**Decision.** Wave-42 Lane A.G.4 restructures `app/frontend/components/AnalyzeFlow.tsx` from monolithic Dropzone-then-CoachingReport flow to 5-tab sidebar (Coaching default + Tuning + Forecast + Audit + Chat). Tabs use the editorial-paddock palette + Fraunces display labels + IBM Plex Mono indicators. Dropzone stays ABOVE the tabs; handleAnalyze() resets activeTab to "coaching" on submit.
+
+Wave-41 Lane F.5 landed multi-stakeholder framing on the landing hero subhead (`app/frontend/app/page.tsx`): "The race engineer for the drivers who don't have one" headline preserved (D-B Hero positioning); subhead expanded to include race engineers + drivers + adaptive-racing coaches + grassroots programs (RaceLens XAI steal-list HIGH-value item #5).
+
+Tab state machine: `useState<"coaching" | "tuning" | "forecast" | "audit" | "chat">("coaching")` with `_exhaustive: never` throw in consumers. Per cascade #2 family rule: SAME-commit test-fixup with the component refactor (wave-42 commit `1c95ab5` ships AnalyzeFlow.tsx + AnalyzeFlow.test.tsx in ONE atomic commit + new tab-switch test case + cascade-fix-forward `c3de91f` removes duplicate driver_id render from GraniteCitationFooter).
+
+**Rationale.** Monolithic flow buried Tuning + Audit + Chat surfaces in a single long scroll. 5-tab structure surfaces the 5 focus areas in parallel navigation. Coaching tab default preserves existing user flow; alternate tabs add zoom-in capability without disturbing the canonical report. Chat tab provides the AICopilotChat surface for single-turn QA against Granite 4.1 8B Instruct (wave-42 Lane A.F.4 + Lane F.D streaming hook).
+
+Multi-stakeholder subhead expansion addresses the wave-41 RaceLens XAI deep-dive finding that the prior hero language under-served the adaptive-racing-coach + grassroots-program audiences who are equally underserved by able-bodied-baseline tooling.
+
+**Affected.** `app/frontend/components/AnalyzeFlow.tsx` (5-tab restructure). `app/frontend/components/__tests__/AnalyzeFlow.test.tsx` (same-commit test fixup + new tab-switch test case). `app/frontend/app/page.tsx` (Lane F.5 hero subhead). `app/frontend/components/GraniteCitationFooter.tsx` (G.3 cascade-fix-forward; driver_id render removed to avoid getByText duplicate-element failure). Wave-42 commits 1c95ab5 + c3de91f + 1f12e08 (Lane F.5 wave-41).
+
+---
+
+## 2026-05-24 D-037: Wave-41 cascade #11 fix-wave summary + pre-push triplet lock
+
+**Decision.** Wave-41 cascade #11 (Turbopack 16 client-bundle cross-tree resolution failure) locked at memory `feedback_ci_green_per_push_verify_or_cascade.md` Cascade #11 section. Pre-push triplet now `tsc --noEmit` + `eslint` + `pnpm build` (not just tsc + eslint). Turbopack production build catches client-bundle resolution failures that tsc + eslint miss.
+
+Cascade #11 root cause: Turbopack 16 client-bundle resolution rejects parent-relative value imports from `app/frontend/lib/` to `app/shared/` when transitively pulled in via a `"use client"` boundary. api-decode.ts dodged the failure because useTriAgentCriticVerdict hook is orphan in the React tree; what-if-replay.ts triggered it because WhatIfReplayPanel actually consumed it. Fix pattern: type-only imports (`import type`) for cross-tree brand types in client-bundled modules + `as unknown as Brand` casts at construction sites for in-memory mock fixtures.
+
+Wave-41 cascade #11 fix wave shipped 19 commits: prose hygiene (c032e6b + aea08c0) + forward-wave deferral sweep (db5b148) + brand-type propagation (b17ca11) + decoder structural validation (931fc4b) + hook hardening (fe16004) + ring threshold guard (f153aa4) + ring wire-in (0c7f279) + replay derivation (34cdfb8) + replay wire-in (a22737f) + guardian-audit-log hardening (f04abba) + api-decode version-check hardening (c34df06) + Turbopack fix-forward (0052d09) + Stream M.3 backend-spec doc (23d6518) + SemVer foot-gun doc (04ae446) + Symbol.for timeout sentinel (d2b55bc) + RaceEventsTilesRow severityTextColor exhaustive (5636872) + NIT batch (9c5dcdf) + Vinh Phase 1 handoff doc (c4ae1f8).
+
+**Rationale.** 11 cascades across the session, each adding a layer to the pre-push discipline. The 11-cascade meta-rule per `feedback_ci_green_per_push_verify_or_cascade.md`: every cascade follows the SAME SHAPE; a tooling layer catches something the prior layer did not. The fix is always: add the missing layer to pre-push discipline. Wave-41 added Turbopack production build as the 4th step (after tsc + eslint + vitest). Future cascades will add subsequent layers.
+
+**Affected.** Memory rule `feedback_ci_green_per_push_verify_or_cascade.md` Cascade #11 section. Project CLAUDE.md should mirror the pre-push triplet next refresh. All future commits gate on the 4-step pre-flight.
+
+---
+
+## 2026-05-24 D-038: Wave-42 Lane A close-out + Phase 1 backend wire-up (Sarah COA + OpenRouter + 5-tab AnalyzeFlow + AICopilotChat + Recharts)
+
+**Decision.** Wave-42 ships 6 lanes per the galaxy-ambition + no-time-pressure mandate. Lane A 4 of 5 closed (G.3 GraniteCitationFooter + F.4 AICopilotChat + G.4 5-tab AnalyzeFlow restructure + F.3 Recharts triple-panel; F.1 Watson TTS deferred per external API-key dependency). Lane B 3 of 9 closed (paper §3.5 5-moves + §3.6 council v2 + §3.7 telemetry; BeMyApp payload refresh + multi-track checklist). Lane E 2 of 2 closed (BackendGuardianAudit discriminated-union by verdict + ToleranceBands path tag). Lane F 4 of 4 closed (Sarah COA fixture + .env.example + openrouter-client.ts + openrouter-stream.ts).
+
+Cascade #12 dispatch + Lane C tests/decision-log/video + remaining Lane B items + Lane F.1 Watson TTS to ship in next session per the wave-42 plan at `~/.claude/plans/all-right-i-want-rippling-moon.md`.
+
+**Rationale.** Wave-42 mega-wave bundle adopted to consolidate Lane 2 close-out from wave-41 + Stream M backend-coord follow-ups + paper §3 substantive expansion + Phase 1 backend wire-up unblocking Vinh per the wave-41 c4ae1f8 handoff agreement. Stephen explicit galaxy mandate + Step-by-step "best ability you can" execution.
+
+**Affected.** Wave-42 commits shipped 2026-05-24 day 6: 82d1f85 (F.A Sarah COA) + f1cd1d1 (F.B .env.example) + 7179dc1 (F.C OpenRouter client) + dc5bd7e (F.D streaming hook) + 61ba4e8 (M.1 discriminated union) + 1fb8f75 (M.2 path tag) + 86f66fb (paper §3 expansion) + b8ea888 (BeMyApp refresh + multi-track checklist) + f663eeb (G.3 GraniteCitationFooter) + 0fe075f (F.4 AICopilotChat) + 1c95ab5 (G.4 5-tab) + c3de91f (G.3 fix-forward) + 84e001e (F.3 Recharts) + 7b010a9 (F.3 fix-forward ResizeObserver polyfill). 14 substantive commits + 2 cascade-fix-forwards = 16 commits total.
+
+---
