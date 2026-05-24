@@ -116,6 +116,15 @@ function backoffMs(attemptZeroIndexed: number): number {
 export interface OpenRouterClientOptions {
   readonly timeoutMs?: number;
   readonly maxRetries5xx?: number;
+  /**
+   * Wave-43 D2.8 close-out per cold-review-2 codex M1: consumer signal
+   * threaded into the fetch so server-side route handlers can pass
+   * request.signal + the OpenRouter call aborts when the client
+   * disconnects mid-flight (prevents server-side work continuing
+   * against a dead consumer). Symbol.for timeout-abort path remains
+   * separate from this consumer-signal path.
+   */
+  readonly signal?: AbortSignal;
 }
 
 // Wave-42 cascade-#12 BLOCKER close-out (silent-failure-hunter B3 +
@@ -257,6 +266,19 @@ export async function openRouterChatCompletion(
   while (true) {
     const controller = new AbortController();
     const timeoutHandle = setTimeout(() => controller.abort(TIMEOUT_REASON), timeoutMs);
+    // Wave-43 D2.8: chain consumer-signal abort into internal controller
+    // so timeout + consumer cancel both flow through one signal.
+    const consumerSignal = options.signal;
+    const consumerAbortHandler = consumerSignal !== undefined
+      ? () => controller.abort(consumerSignal.reason)
+      : undefined;
+    if (consumerSignal !== undefined && consumerAbortHandler !== undefined) {
+      if (consumerSignal.aborted) {
+        controller.abort(consumerSignal.reason);
+      } else {
+        consumerSignal.addEventListener("abort", consumerAbortHandler, { once: true });
+      }
+    }
 
     try {
       const response = await fetch(url, {
@@ -323,6 +345,9 @@ export async function openRouterChatCompletion(
       throw err;
     } finally {
       clearTimeout(timeoutHandle);
+      if (consumerSignal !== undefined && consumerAbortHandler !== undefined) {
+        consumerSignal.removeEventListener("abort", consumerAbortHandler);
+      }
     }
   }
 }
