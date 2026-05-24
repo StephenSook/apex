@@ -8,7 +8,7 @@ import { DIFFERENTIABLE_PROJECTOR_VERSION, SHAPES_SCHEMA_VERSION } from "../../.
 
 describe("decodeBackendGuardianAudit", () => {
   const baseValidSafe = {
-    audit_id: "550e8400-e29b-41d4-a716-446655440000",
+    audit_id: "550e8400e29b41d4a716446655440000",
     verdict: "SAFE" as const,
     reasoning: "all forecast steps within friction-ellipse + jerk bounds",
     triggered_rules: [] as ReadonlyArray<string>,
