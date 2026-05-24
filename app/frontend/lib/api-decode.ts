@@ -313,19 +313,47 @@ export function decodeBackendGuardianAudit(raw: unknown): BackendGuardianAudit {
 
   const auditedAtIso = reqString(raw, "audited_at_iso", "BackendGuardianAudit");
 
-  // Wave-41 cascade-#11 brand-propagation: return branded audit_id +
-  // physics_confidence so consumer sites get compile-time wiring
-  // protection. physics_confidence stays nullable per violations.py:176
-  // `float | None` for cases where the D-024 Mahalanobis detector was
-  // skipped (low-data session, dev-mode bypass).
-  return {
+  // Wave-41 cascade-#11 brand-propagation: branded audit_id +
+  // physics_confidence flow through. Wave-42 Lane E.M.1: BackendGuardian
+  // Audit is now a discriminated union by verdict; per-variant
+  // triggered_rules invariants must hold at construction. Decoder
+  // throws on backend regression that breaks the new contract so the
+  // contract-drift signal surfaces at the wire boundary.
+  const base = {
     audit_id: auditId,
-    verdict: verdictRaw,
     reasoning,
-    triggered_rules: triggeredRules,
     physics_confidence: physicsConfidence,
     audited_at_iso: auditedAtIso,
   };
+
+  switch (verdictRaw) {
+    case "SAFE":
+      if (triggeredRules.length > 0) {
+        throw new Error(
+          `apex.decode.BackendGuardianAudit: SAFE verdict cannot carry triggered_rules; got ${triggeredRules.length} rules. Backend emitter contract violation.`,
+        );
+      }
+      return { ...base, verdict: "SAFE", triggered_rules: [] as const };
+    case "REVIEW":
+      return { ...base, verdict: "REVIEW", triggered_rules: triggeredRules };
+    case "BLOCK":
+      if (triggeredRules.length === 0) {
+        throw new Error(
+          `apex.decode.BackendGuardianAudit: BLOCK verdict requires at least one triggered_rule; got empty array. Backend emitter contract violation.`,
+        );
+      }
+      return {
+        ...base,
+        verdict: "BLOCK",
+        triggered_rules: triggeredRules as unknown as readonly [string, ...string[]],
+      };
+    default: {
+      const _exhaustive: never = verdictRaw;
+      throw new Error(
+        `apex.decode.BackendGuardianAudit: unknown verdict ${String(_exhaustive)}.`,
+      );
+    }
+  }
 }
 
 // ---------------------------------------------------------------------------

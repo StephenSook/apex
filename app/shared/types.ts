@@ -1159,8 +1159,19 @@ export type BackendGuardianVerdict = "SAFE" | "REVIEW" | "BLOCK";
  * `physics_confidence` is the Mahalanobis-distance detector output
  * from D-024: low confidence -> Guardian downgrades SAFE to REVIEW
  * even if the violation log is empty.
+ *
+ * Wave-42 Lane E.M.1 discriminated-union by verdict (Stream M2 backend-
+ * coord follow-up; Vinh-coord status pending). Per-variant
+ * triggered_rules invariants:
+ *   - SAFE: no rule fired -> triggered_rules MUST be empty tuple.
+ *   - REVIEW: rules may or may not have fired -> any ReadonlyArray.
+ *   - BLOCK: at least one rule fired -> non-empty tuple.
+ * Frontend ships the stricter type today; Vinh wires Python emitter
+ * validation in his next sync window. Decoder runtime-validates the
+ * tuple shape per the new contract + throws on backend regression so
+ * the contract-drift signal surfaces at the wire boundary.
  */
-export interface BackendGuardianAudit {
+type BackendGuardianAuditBase = {
   /**
    * uuid4 hex string from Vinh's new_audit_id() helper; never empty.
    * Wave-41 cascade-#11 brand-propagation: branded AuditId flows from
@@ -1168,11 +1179,8 @@ export interface BackendGuardianAudit {
    * slot) is a TS compile error.
    */
   readonly audit_id: AuditId;
-  readonly verdict: BackendGuardianVerdict;
   /** Think-mode trace for UI surface. */
   readonly reasoning: string;
-  /** Subset of BYOC rule IDs that fired. */
-  readonly triggered_rules: ReadonlyArray<string>;
   /**
    * D-024 Mahalanobis detector output; null when detector skipped.
    * Wave-41 cascade-#11 brand-propagation: branded MahalanobisConfidence
@@ -1182,7 +1190,21 @@ export interface BackendGuardianAudit {
   readonly physics_confidence: MahalanobisConfidence | null;
   /** ISO 8601 UTC timestamp with seconds precision. */
   readonly audited_at_iso: string;
-}
+};
+
+export type BackendGuardianAudit =
+  | (BackendGuardianAuditBase & {
+      readonly verdict: "SAFE";
+      readonly triggered_rules: readonly [];
+    })
+  | (BackendGuardianAuditBase & {
+      readonly verdict: "REVIEW";
+      readonly triggered_rules: ReadonlyArray<string>;
+    })
+  | (BackendGuardianAuditBase & {
+      readonly verdict: "BLOCK";
+      readonly triggered_rules: readonly [string, ...string[]];
+    });
 
 // ---- Wave-40 ToleranceBands (mirror validator.py) ----------------------
 

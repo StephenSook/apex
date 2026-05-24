@@ -117,14 +117,24 @@ assertLog({ records: [], forecast_step_count: "30", engine: "v1_numpy" });
 // ---------------------------------------------------------------------------
 
 // Wave-41 cascade-#11 brand-propagation: audit_id + physics_confidence
-// now branded. parseAuditId requires uuid4().hex OR "no_audit" sentinel;
-// the test fixture uses a 32-char hex placeholder.
+// now branded. Wave-42 Lane E.M.1 discriminated-union by verdict:
+// SAFE -> triggered_rules MUST be empty tuple. REVIEW -> any
+// ReadonlyArray. BLOCK -> non-empty tuple at the type level.
 assertAudit({
   audit_id: parseAuditId("abc123def456abc123def456abc123de"),
   verdict: "SAFE",
   reasoning: "test",
-  triggered_rules: ["rule_one"],
+  triggered_rules: [],
   physics_confidence: parseMahalanobisConfidence(0.95),
+  audited_at_iso: "2026-05-23T05:00:00+00:00",
+});
+
+assertAudit({
+  audit_id: parseAuditId("abc123def456abc123def456abc123de"),
+  verdict: "REVIEW",
+  reasoning: "test",
+  triggered_rules: ["rule_one", "rule_two"],
+  physics_confidence: parseMahalanobisConfidence(0.42),
   audited_at_iso: "2026-05-23T05:00:00+00:00",
 });
 
@@ -132,10 +142,19 @@ assertAudit({
   audit_id: parseAuditId("no_audit"),
   verdict: "BLOCK",
   reasoning: "test",
-  triggered_rules: [],
+  triggered_rules: ["fia_18_3_breach"],
   physics_confidence: parseMahalanobisConfidence(null),
   audited_at_iso: "2026-05-23T05:00:00+00:00",
 });
+
+// Wave-42 Lane E.M.1 close-out negative tests: discriminated-union
+// per-variant invariants enforced at the type level.
+
+// @ts-expect-error cascade-#12 M.1: SAFE verdict cannot carry triggered_rules.
+assertAudit({ audit_id: parseAuditId("no_audit"), verdict: "SAFE", reasoning: "", triggered_rules: ["x"], physics_confidence: null, audited_at_iso: "" });
+
+// @ts-expect-error cascade-#12 M.1: BLOCK verdict cannot carry empty triggered_rules.
+assertAudit({ audit_id: parseAuditId("no_audit"), verdict: "BLOCK", reasoning: "", triggered_rules: [], physics_confidence: null, audited_at_iso: "" });
 
 // @ts-expect-error wave-40 type-design HIGH: "DOWNGRADE" is not a BackendGuardianVerdict literal.
 assertAudit({ audit_id: "x", verdict: "DOWNGRADE", reasoning: "", triggered_rules: [], physics_confidence: null, audited_at_iso: "" });
