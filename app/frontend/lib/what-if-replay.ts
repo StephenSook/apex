@@ -1,10 +1,10 @@
 /**
- * Frontend-side stub for the wave-42 Vinh-side full what-if replay
- * engine. Mocks the deterministic-replay pattern NeuroPit ships at
+ * Frontend-side stub for the full what-if replay engine. Mocks the
+ * deterministic-replay pattern NeuroPit ships at
  * `whatif/replay.py:221-266` so the /judges Convergence-14 fixture
- * grid can demonstrate the counterfactual-mutation idea today + the
- * full backend implementation lands when Vinh wires the
- * `/api/what-if-replay` endpoint.
+ * grid demonstrates the counterfactual-mutation idea; the backend
+ * `/api/what-if-replay` endpoint ships per the Stream M.3 spec
+ * handoff at `docs/wave-41-backend-spec-handoff.md`.
  *
  * Wave-41 Stream G.1 close-out per the competitor field deep-dive
  * memory `project_apex_competitor_field_may_challenge.md` steal-list
@@ -14,8 +14,9 @@
  * produces a structurally-equivalent output that the cvxpylayers
  * projector would have produced + the V1 NumPy validator would have
  * approved. The frontend stub mirrors this by re-running a pure
- * function over the mutated fixture; backend wave-42 wire-up swaps
- * to a fetch to the real cvxpylayers re-projection endpoint.
+ * function over the mutated fixture; backend wire-up swaps to a
+ * fetch to the real cvxpylayers re-projection endpoint per the
+ * Stream M.3 spec.
  *
  * Sample mutation: Sarah Reynolds COA overlap flag inversion. The
  * baseline fixture has `coa_overlap_flag = 1` (her MME Motorsport
@@ -29,7 +30,7 @@
  *
  * Cross-references:
  *  - `app/backend/apex/physics/scp_spike.py` (V2 cvxpylayers projector;
- *    wave-42 swap target)
+ *    swap target per Stream M.3 spec handoff)
  *  - `app/backend/apex/physics/validator.py` (V1 NumPy validator;
  *    determinism reference)
  *  - `docs/decision-log.md` D-022 (COA-parameterized constraint
@@ -62,8 +63,8 @@ export interface WhatIfMutation {
 /**
  * Replay result. Carries the mutated fixture + the re-projected
  * violation log a real V2 cvxpylayers backend would have produced.
- * Wave-41 stub emits a hand-rolled mock log; wave-42 backend wire-up
- * swaps to fetch from `/api/what-if-replay`.
+ * Stub emits a hand-rolled mock log; backend wire-up per Stream M.3
+ * spec swaps to fetch from `/api/what-if-replay`.
  */
 export interface WhatIfReplayResult {
   readonly mutation: WhatIfMutation;
@@ -92,12 +93,12 @@ export const MUTATION_COA_OVERLAP_INVERT: WhatIfMutation = {
 };
 
 /**
- * Deterministic-replay stub. Wave-41 frontend mocks the V2 cvxpylayers
+ * Deterministic-replay stub. Frontend mocks the V2 cvxpylayers
  * re-projection by emitting a hand-rolled BackendPhysicsViolationLog
- * with a synthetic record. Wave-42 backend wire-up swaps this for a
- * fetch to `/api/what-if-replay` posting the mutated fixture; the
- * frontend type contract stays identical so the swap is a single-line
- * change in consumers.
+ * with a synthetic record. Backend wire-up per Stream M.3 spec swaps
+ * this for a fetch to `/api/what-if-replay` posting the mutated
+ * fixture; the frontend type contract stays identical so the swap is
+ * a single-line change in consumers.
  */
 export function runWhatIfReplay(
   baseline: ConvergenceFixture,

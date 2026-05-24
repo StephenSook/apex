@@ -450,9 +450,8 @@ export function decodeTriAgentVerdictPanel(raw: unknown): TriAgentVerdictPanel {
 
   // Per wave-37 cascade-#5 qualification: positional binding is enforced
   // at frontend construction sites only; this runtime check guards against
-  // backend regressions emitting misordered tuples. We trust the verdict +
-  // reasoning_trace + conditional-field shapes below per the type contract;
-  // a future wave-42 decoder hardening will validate those structurally.
+  // backend regressions emitting misordered tuples. Verdict + reasoning_trace
+  // structural validation lands in the cascade-#11 fix wave below.
   return raw as unknown as TriAgentVerdictPanel;
 }
 

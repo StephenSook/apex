@@ -8,8 +8,8 @@
  * memory `project_apex_competitor_field_may_challenge.md` steal-list
  * MEDIUM-value item #2. APEX adapts the pattern to a browser-native
  * persistence surface (localStorage append + console.info JSONL
- * stream) because the backend disk-persistent JSONL chain lands
- * Vinh-side in a future wave (Stream M.3 spec handoff).
+ * stream); the backend disk-persistent JSONL chain ships per the
+ * Stream M.3 spec handoff at `docs/wave-41-backend-spec-handoff.md`.
  *
  * Append-only contract: every appendVerdict() call serializes the
  * GuardianAudit (UI-facing or backend variant) plus a wall-clock
@@ -23,10 +23,10 @@
  * the same data via the `storage` event since localStorage is shared
  * across same-origin tabs.
  *
- * Backend wire-up: when Vinh ships the disk-persistent JSONL
- * endpoint (Stream M.3 spec at `docs/wave-41-backend-spec-handoff.md`
- * landing later), this module's storage path gets swapped to a
- * `fetch('/api/audit-log', { method: 'POST', body: line })` call.
+ * Backend wire-up: per the Stream M.3 spec at
+ * `docs/wave-41-backend-spec-handoff.md`, the disk-persistent JSONL
+ * endpoint receives the storage path via
+ * `fetch('/api/audit-log', { method: 'POST', body: line })` calls.
  * The localStorage path stays as fallback for offline operation.
  */
 

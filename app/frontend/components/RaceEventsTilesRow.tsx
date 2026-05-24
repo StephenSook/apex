@@ -3,8 +3,9 @@
 /**
  * RaceEventsTilesRow: 4-tile session-context row that lives above the
  * eight-tier physics grid on /judges. Mock for wave-41 visualization;
- * wires to real telemetry feed in a future wave when Vinh ships the
- * /api/session-context endpoint.
+ * wires to real telemetry feed per the `/api/session-context`
+ * endpoint spec in the Stream M.3 spec handoff at
+ * `docs/wave-41-backend-spec-handoff.md`.
  *
  * Wave-41 Stream G.5 close-out per the competitor field deep-dive
  * memory `project_apex_competitor_field_may_challenge.md` steal-list
@@ -120,7 +121,7 @@ export default function RaceEventsTilesRow() {
           </h3>
         </div>
         <span className="rounded-sm border border-rule bg-paper px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-muted">
-          Mock fixture · backend wires later
+          Mock fixture · /api/session-context spec
         </span>
       </header>
       <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
