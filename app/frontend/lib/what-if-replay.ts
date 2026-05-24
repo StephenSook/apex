@@ -87,8 +87,16 @@ export const MUTATION_COA_OVERLAP_INVERT: WhatIfMutation = {
   description:
     "Invert the driver's COA overlap permission so the V1 NumPy validator + V2 cvxpylayers projector treat simultaneous brake-and-throttle as a tier-0 violation instead of an approved adaptive-equipment pattern.",
   apply: (baseline) => {
+    // Wave-41 cascade-#11 silent-failure-hunter M-2: throw on
+    // non-applicable fixture instead of silently returning baseline.
+    // A silent no-op + then synthesizing a coa_simultaneity record at
+    // the replay layer (the prior shape) showed a replay diff that
+    // had nothing to do with the mutation. Defensive throw surfaces
+    // the misconfiguration at the call site.
     if (baseline.violation_class !== "coa_simultaneity") {
-      return baseline;
+      throw new Error(
+        `apex.what-if-replay.MUTATION_COA_OVERLAP_INVERT: mutation requires fixture.violation_class === "coa_simultaneity"; got ${JSON.stringify(baseline.violation_class)}. Pick a different mutation for this fixture.`,
+      );
     }
     return {
       ...baseline,
@@ -110,33 +118,49 @@ export function runWhatIfReplay(
   mutation: WhatIfMutation,
 ): WhatIfReplayResult {
   const mutatedFixture = mutation.apply(baseline);
-  // Mock V2 cvxpylayers projector output. The real backend would
-  // re-run the differentiable projection over the mutated tensor +
-  // emit the actual violation records. The stub emits a single
-  // synthetic record matching the mutation's intended outcome so the
-  // /judges grid can demonstrate the replay UI surface before the
-  // backend lands.
-  // Wave-41 cascade-#11 brand-propagation: step + tier + severity now
-  // branded; construct via parsers so the stub mirrors the wave-boundary
-  // pattern the real backend uses.
+
+  // Mock V2 cvxpylayers projector output. The real backend re-runs the
+  // differentiable projection over the mutated tensor + emits the
+  // actual violation records; the stub matches the production engine's
+  // output structure so consumers can swap backends without code
+  // changes.
+  //
+  // Wave-41 cascade-#11 HIGH H4 (codex HIGH#5 + silent-failure-hunter
+  // M-2): derive the replayed violation log from the mutated fixture
+  // state instead of unconditionally synthesizing a coa_simultaneity
+  // record. The prior stub emitted the same synthetic record regardless
+  // of mutation outcome which made the /judges replay diff visually
+  // meaningful only by coincidence.
+  //
+  // For MUTATION_COA_OVERLAP_INVERT specifically:
+  //   - mutated.coa_simul_permitted === true  -> overlap now permitted
+  //     by adaptive equipment -> empty record list (no violation).
+  //   - mutated.coa_simul_permitted === false -> overlap now disallowed
+  //     (able-bodied baseline) -> single coa_simultaneity_violation
+  //     record at tier 0.
+  //
+  // Brand-propagation: step + tier + severity construction via parsers
+  // mirrors the wire-boundary pattern the real backend produces.
+  const records: BackendPhysicsViolationLog["records"] =
+    mutatedFixture.violation_class === "coa_simultaneity" &&
+    !mutatedFixture.coa_simul_permitted
+      ? [
+          {
+            step: parseHorizonStep(3),
+            type: "coa_simultaneity_violation",
+            tier: parsePhysicsTier(0),
+            severity: parseSeverity(0.42),
+            channel_values: {
+              throttle_pct: 12.0,
+              brake_pa: 8200.0,
+              coa_overlap_flag: 0,
+            },
+          },
+        ]
+      : [];
+
   const replayedViolationLog: BackendPhysicsViolationLog = {
-    records: [
-      {
-        step: parseHorizonStep(3),
-        type: "coa_simultaneity_violation",
-        tier: parsePhysicsTier(0),
-        severity: parseSeverity(0.42),
-        channel_values: {
-          throttle_pct: 12.0,
-          brake_pa: 8200.0,
-          coa_overlap_flag:
-            mutatedFixture.violation_class === "coa_simultaneity" &&
-            mutatedFixture.coa_simul_permitted
-              ? 1
-              : 0,
-        },
-      },
-    ],
+    records,
     forecast_step_count: 30,
     engine: "v2_cvxpylayers",
   };
