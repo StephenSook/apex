@@ -195,7 +195,7 @@ export async function POST(request: Request): Promise<Response> {
     // client lib; this is the route-level consumer site that closes
     // the loop. Without this pass, server-side OpenRouter invocations
     // continue billing the API budget after the consumer hangs up.
-    const response = await openRouterChatCompletion({ messages, signal: request.signal });
+    const response = await openRouterChatCompletion({ messages }, { signal: request.signal });
     const text = response.choices[0]?.message.content ?? "";
     const stream = streamStubResponse(text, request.signal);
     return new Response(stream, {
