@@ -1,0 +1,129 @@
+{
+  "_meta": {
+    "fictional_persona": true,
+    "watermark": "Sarah Reynolds is a fictional persona created by Stephen Sookra for the IBM SkillsBuild AI Builders Challenge May 2026 APEX submission. Any resemblance to real adaptive racers is coincidental. See docs/sarah-reynolds-persona.md for the full persona brief.",
+    "schema_version": "0.1.0",
+    "fixture_purpose": "Synthetic COA (Certificate of Approval) document consumed by Vinh's task 1.3 COA simultaneity-flag extraction pipeline (`app/backend/apex/instruct/coa_parser.py`). Mirrors the FIA Appendix L Article 18.3 medical certificate format with adaptive-equipment fields per the MME Motorsport hand-control hardware specification.",
+    "fixture_author": "Stephen Sookra",
+    "fixture_authored_iso": "2026-05-24",
+    "wave": "wave-42 Lane F.A close-out per docs/vinh-phase-1-handoff.md Q1 decision",
+    "cross_references": [
+      "docs/sarah-reynolds-persona.md",
+      "docs/vinh-phase-1-handoff.md",
+      "fixtures/personas/sarah-reynolds-telemetry-stub.csv",
+      "docs/decision-log.md D-022 (COA-parameterized brake-throttle simultaneity gate)",
+      "research/fia-appendix-l-2024.pdf Article 18.3 (cited only; the actual FIA template is not reproduced verbatim per IP licensing caution)"
+    ]
+  },
+  "driver_id": "sarah-reynolds-britcar-2026",
+  "issuing_authority": {
+    "name": "Motorsport UK Medical Commission",
+    "country_code": "GBR",
+    "issuing_office": "London"
+  },
+  "certificate_metadata": {
+    "certificate_number": "MSUK-MED-COA-2026-0184",
+    "issued_iso": "2026-02-12",
+    "expires_iso": "2027-02-11",
+    "renewal_window_days": 60,
+    "fia_appendix_l_revision": "2024.1"
+  },
+  "driver_metadata": {
+    "full_name": "Sarah Reynolds",
+    "date_of_birth_iso": "1992-04-18",
+    "racing_license_number": "MSUK-RACE-2024-7821",
+    "license_grade": "National A",
+    "competition_class": "BritCar Endurance Championship, Class 4 (Production Touring)",
+    "preferred_team": "Limitless Racing"
+  },
+  "medical_findings": {
+    "primary_condition": "T6 complete spinal cord injury (2018 motorcycle collision)",
+    "asia_impairment_scale": "A",
+    "neurological_level": "T6",
+    "cognitive_status": "intact",
+    "vision_assessment": {
+      "left_eye_corrected": "6/6",
+      "right_eye_corrected": "6/6",
+      "binocular_field_degrees": 180,
+      "color_vision_normal": true
+    },
+    "cardiovascular_assessment": {
+      "resting_heart_rate_bpm": 62,
+      "vo2_max_l_per_min": 3.1,
+      "ecg_normal": true,
+      "stress_echo_normal": true
+    },
+    "musculoskeletal_assessment": {
+      "upper_limb_function_normal": true,
+      "grip_strength_left_kg": 38,
+      "grip_strength_right_kg": 41,
+      "trunk_stability_score": 4
+    }
+  },
+  "fia_article_18_3_conditional_approvals": [
+    {
+      "article_section": "18.3.2",
+      "condition": "hand_controls_required",
+      "approval_status": "approved",
+      "rationale": "Driver has no functional motor control below the T6 dermatome; hand-mounted brake and throttle controls are the sole means of pedal-input substitution."
+    },
+    {
+      "article_section": "18.3.3",
+      "condition": "simultaneity_permitted",
+      "approval_status": "approved",
+      "rationale": "MME Motorsport hand-control hardware permits simultaneous brake-and-throttle actuation via independent lever paths (brake lever + throttle ring on the steering wheel). Driver demonstrated controlled trail-brake-into-corner-apex technique during the Motorsport UK medical recertification track day at Donington Park on 2026-02-10. Simultaneity is biomechanically required for adaptive trail-braking and is medically approved.",
+      "evidence_log_id": "MSUK-MED-EVID-2026-0184-track-day"
+    },
+    {
+      "article_section": "18.3.5",
+      "condition": "emergency_egress_demonstrated",
+      "approval_status": "approved",
+      "rationale": "Driver demonstrated 7.2-second egress from a stationary touring-car cockpit with full HANS device + adaptive-equipment quick-release. Time meets the 9.0-second FIA threshold for Class 4 competition.",
+      "evidence_log_id": "MSUK-MED-EVID-2026-0184-egress"
+    },
+    {
+      "article_section": "18.3.7",
+      "condition": "thermal_load_tolerance",
+      "approval_status": "approved",
+      "rationale": "Sweat-mediated thermoregulation is impaired below T6. Driver runs a Cool-Suit liquid-cooled garment during all sessions exceeding 30 minutes. Approved with mandatory cool-suit equipment.",
+      "evidence_log_id": "MSUK-MED-EVID-2026-0184-thermal"
+    }
+  ],
+  "adaptive_equipment_specifications": {
+    "supplier": "MME Motorsport (Marko Mlakar, Slovenia)",
+    "supplier_consent_per_surface": "named in this fixture per Stephen Sookra + Marko Mlakar consent grant 2026-05-22; cross-referenced in project memory project_apex_consent_mme_motorsport.md",
+    "hand_control_configuration": {
+      "brake_lever_position": "left of steering column",
+      "brake_lever_throw_mm": 110,
+      "brake_lever_force_n_max": 280,
+      "throttle_ring_position": "steering wheel right-side outer ring",
+      "throttle_ring_throw_degrees": 35,
+      "throttle_ring_force_n_max": 22,
+      "simultaneity_geometry": "independent lever paths permit any combination of brake-throttle actuation including full overlap"
+    },
+    "steering_wheel_modifications": {
+      "diameter_mm": 320,
+      "grip_type": "quick-release suede with thumb-rest contour",
+      "paddle_shift_left": "downshift",
+      "paddle_shift_right": "upshift",
+      "additional_buttons": ["pit_limiter", "drs_request", "radio_ptt", "thermal_safe_mode"]
+    },
+    "seat_configuration": {
+      "model": "MME-RecaroPole-Adaptive-2025",
+      "harness_points": 6,
+      "lateral_support_cm": 22,
+      "thoracic_support_cm": 18,
+      "cool_suit_compatible": true
+    }
+  },
+  "simultaneity_permission_flag": true,
+  "annotations_for_extraction_pipeline": {
+    "primary_flag_extraction_target": "simultaneity_permission_flag (boolean true) at the document root",
+    "tier_0_constraint_synthesis": "When simultaneity_permission_flag is true, the V1 NumPy validator + V2 cvxpylayers projector MUST suppress the standard coa_simultaneity_violation rule at the tier-0 layer per D-022. The Sarah Reynolds adaptive-equipment configuration is the canonical positive case for this gate.",
+    "extraction_text_anchors": [
+      "Article 18.3.3 ... simultaneity_permitted ... approved",
+      "hand_control_configuration.simultaneity_geometry ... independent lever paths permit any combination of brake-throttle actuation including full overlap"
+    ],
+    "negative_test_mutation": "Flipping simultaneity_permission_flag to false produces the able-bodied baseline case where the projector emits the standard violation; this is the MUTATION_COA_OVERLAP_INVERT what-if replay path per `app/frontend/lib/what-if-replay.ts`."
+  }
+}
