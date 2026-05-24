@@ -246,7 +246,10 @@ export async function POST(req: Request): Promise<Response> {
     );
   }
 
-  return new Response(filtered.bytes, {
+  // Cast Buffer to Uint8Array for Response BodyInit compatibility (TS
+  // narrows Buffer to ArrayBufferLike but Response.BodyInit accepts
+  // ArrayBuffer-backed views; Uint8Array view wraps the same memory).
+  return new Response(new Uint8Array(filtered.bytes), {
     status: 200,
     headers: {
       "Content-Type": "audio/mpeg",
