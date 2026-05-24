@@ -60,17 +60,17 @@ jobs:
   # ruff + pytest --cov=apex --cov-fail-under=70.
 
   # Wave-43 C2.4 + C2.5 Playwright fidelity job. Separate from the frontend
-  # vitest job so a Playwright timeout / browser-install failure does not red
-  # the (much faster) vitest pipeline. continue-on-error keeps the project
-  # CI badge green if Playwright cannot install browsers in the runner;
-  # treat Playwright failures as nice-to-know-not-blocking per the wave-43
-  # F2 codex pragmatic posture. Set continue-on-error to false once
-  # Playwright is stable in CI for 5+ runs.
+  # vitest job so a Playwright failure surfaces independently from vitest
+  # failure. Wave-43 cascade-#15 F2-round-2 close-out per Stephen explicit
+  # galaxy-ambition mandate: Playwright is BLOCKING (continue-on-error
+  # removed). Submission-week quality: a Playwright failure means a
+  # production-fidelity regression on /judges OR /analyze; that must red
+  # the deploy. If Playwright install in CI flakes intermittently, fix
+  # the install path; do not mask the signal.
   playwright:
     name: Frontend Playwright fidelity (chromium)
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    continue-on-error: true
     defaults:
       run:
         working-directory: app/frontend
