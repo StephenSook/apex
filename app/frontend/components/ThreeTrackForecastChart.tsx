@@ -50,7 +50,7 @@ const TRACK_STROKES: Record<ForecastTrackName, string> = {
 // wire-up tier surfacing. TTM r2.1 wires via OpenRouter (Vinh M3-V3
 // backend swap-point already documented per Phase 1 task 1.3);
 // FlowState + Chronos-2 are mock at HEAD pending Vinh M3-V10 + V11
-// post-submission. Render-path-identical per Stream M.3 spec
+// queued for next wave. Render-path-identical per Stream M.3 spec
 // extension; status badge is a visual honesty marker for judges.
 type TrackTier = "INTEGRATION" | "MOCK";
 
@@ -62,8 +62,8 @@ const TRACK_TIERS: Record<ForecastTrackName, TrackTier> = {
 
 const TRACK_SWAP_POINTS: Record<ForecastTrackName, string> = {
   ttm_channel_mix: "Vinh M3-V3 backend (Phase 1 task 1.3 + 1.4 forecast)",
-  flowstate: "Vinh M3-V10 backend (post-submission)",
-  chronos2: "Vinh M3-V11 backend (post-submission)",
+  flowstate: "Vinh M3-V10 backend (queued for next wave)",
+  chronos2: "Vinh M3-V11 backend (queued for next wave)",
 };
 
 export default function ThreeTrackForecastChart({ forecast }: ThreeTrackForecastChartProps) {

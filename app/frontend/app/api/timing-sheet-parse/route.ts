@@ -6,8 +6,9 @@
  * TimingSheetParsedLaps shape. Today's HEAD implementation routes the
  * uploaded PDF through a canned-fixture parse path so the demo on
  * /judges is exercise-able end-to-end without the Vinh M3-V1 Granite
- * Vision 4.1 4B backend wire-up. The fixture corresponds to the
- * public/fixtures/timing-sheets/example.pdf checked-in stub.
+ * Vision 4.1 4B backend wire-up. The CANNED_LAPS array below mirrors
+ * `fixtures/timing-sheets/sarah-reynolds-donington-2026-stub.json`
+ * byte-for-byte (5 laps with sector splits + lap times).
  *
  * Backend swap-point: Vinh M3-V1 endpoint at
  * `app/backend/apex/instruct/timing_sheet_parser.py` will invoke
@@ -19,7 +20,7 @@
  * OpenRouter Granite Vision swap-path: when `OPENROUTER_API_KEY +
  * OPENROUTER_VISION_MODEL` env vars are present, the route can also
  * proxy the upload to OpenRouter's Granite Vision endpoint instead of
- * Vinh's local inference. Documented for the post-submission iter.
+ * Vinh's local inference. Queued for next wave.
  */
 
 import type { NextRequest } from "next/server";

@@ -5,13 +5,13 @@
  * /analyze form. Wave-44 Phase 6i galaxy-stretch close-out per the
  * plan-file Phase 6i rollback path: HEAD ships Web Speech Recognition
  * API (no IBM Cloud account required); Watson STT swap-point
- * documented as Vinh M3-V9 backend wire-up post-submission.
+ * documented as Vinh M3-V9 backend wire-up queued for next wave.
  *
  * Per BLOCKER 4 honesty audit + Phase 6i rollback path: the IBM
  * Watson STT wire is INTENT not REAL at HEAD. The affordance is real
  * + the transcription works via browser-native SpeechRecognition;
  * Watson STT swap-point + paddock-grade noise-cancel filter chain
- * documented for the post-submission iteration.
+ * documented for the subsequent iteration.
  *
  * Discriminated-union state:
  *   - unsupported: browser does not expose SpeechRecognition

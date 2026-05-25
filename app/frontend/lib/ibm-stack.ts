@@ -29,7 +29,7 @@
  *
  * - WIRED: real production routing live at HEAD (verified live-smoke)
  * - INTEGRATION: frontend surface + canonical type contract shipped;
- *   backend swap-point documented (Vinh-scope V1-V7); render path
+ *   backend swap-point documented (Vinh-scope V1-V11); render path
  *   stays identical between mock + real per Stream M.3 spec extension
  * - FACADE: demoted to demo-facade per a project decision (e.g. D-017
  *   Langflow facade per wave-30); does not represent runtime wiring
@@ -118,7 +118,7 @@ export const IBM_GRANITE_STACK: ReadonlyArray<GraniteStackTool> = [
     status: "INTEGRATION",
     // Wave-44 Phase 6d: ThreeTrackForecastChart per-track tier badge
     // surfaces FlowState as MOCK at HEAD. Backend swap-point Vinh M3-V10
-    // (post-submission). Status stays INTEGRATION on the inventory
+    // (subsequent iteration). Status stays INTEGRATION on the inventory
     // (frontend contract live; backend route documented).
   },
   {
@@ -129,7 +129,8 @@ export const IBM_GRANITE_STACK: ReadonlyArray<GraniteStackTool> = [
     // Wave-44 Phase 6a: frontend TSPulseAnomalyPanel 5-state discriminated
     // union mounted on /judges (mock data via MOCK_TSPULSE_ACTIVE);
     // backend swap-point Vinh M3-V7 endpoint POST /api/tspulse/anomaly per
-    // wave-44 plan addition. Status flips to "WIRED" once Vinh M3-V7 lands.
+    // wave-44 plan (Vinh-scope V1-V11). Status flips to "WIRED" once
+    // Vinh M3-V7 lands.
   },
   {
     name: "Granite Embedding R2",

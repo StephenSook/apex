@@ -14,7 +14,7 @@ Every locked decision with rationale + date + scope. Newest first.
 - Phase 6c Granite Vision timing-sheet parser (POST /api/timing-sheet-parse + GraniteVisionParser 4-state DU + 3-case vitest + /judges mount + Vinh M3-V1 swap-point)
 - Phase 6d Three-track ensemble per-track honesty badge (INTEGRATION + MOCK tier pills per track + swap-point identifiers per track; ibm-stack.ts TTM + FlowState annotated)
 - Phase 6e PWA manifest + install-as-app affordance (app/manifest.ts + 3 icon generators + PWAInstallPrompt 6-state DU + /judges mount; shouldn't-be-possible move #6)
-- Phase 6h sim-rig HTTP-stream backend (/api/sim-rig/stream NDJSON 20Hz Edge ReadableStream + SimRigStream httpStream mode + persona-decoupling within-file sweep; Stretch S1 activated)
+- Phase 6h sim-rig HTTP-stream backend (/api/sim-rig/stream NDJSON 20Hz Node.js runtime ReadableStream + SimRigStream httpStream mode + persona-decoupling within-file sweep; Stretch S1 activated)
 - Phase 6i Voice debrief input (VoiceDebriefInput 5-state DU + browser Web Speech Recognition + Dropzone mount + Watson STT swap-point per Vinh M3-V9; Old Hairpin persona placeholder swept)
 
 **Phase 6g DROPPED:** vercel:ai-architect verified IBM Granite NOT available on Vercel AI Gateway model inventory at HEAD; migration would drop the load-bearing IBM Granite narrative + create DQ-grade risk against IBM SkillsBuild rules. Direct OpenRouter routing remains (Granite 4.1 8B verified live via `ibm-granite/granite-4.1-8b` slug).
@@ -62,7 +62,7 @@ Finding #3 (ffmpeg-static dead weight) REJECTED: ffmpeg-static IS load-bearing i
 **WARN reconciliations.**
 
 - **R8 PWA service-worker rollback path FIRED.** Plan Phase 6e shipped manifest + 3 icon generators (icon.tsx + icon2.tsx + apple-icon.tsx) + 6-state PWAInstallPrompt DU. Service worker NOT shipped per the rollback path in plan-file Phase 6e ("if service worker breaks /judges hard-refresh during demo, ship manifest + icons only"). Acceptance criterion "offline reload renders from service-worker cache" intentionally retired; PWA install affordance remains the load-bearing wave-44 shouldn't-be-possible move #6 per D-019 amendment.
-- **R10 Phase 6h sim-rig WebSocket rollback path FIRED.** Plan Phase 6h shipped `/api/sim-rig/stream` NDJSON 20Hz Edge ReadableStream + SimRigStream httpStream mode (Vercel-deployable; no FastAPI WebSocket dependency on Vinh-lane). Per the documented rollback path ("if Vinh M3-V2 backend blocked, ship Next.js Edge API route ReadableStream emitting canned 20Hz fixture"). Vinh M3-V2 WebSocket swap-point preserved in the SimRigStream client's discriminated-union prop.
+- **R10 Phase 6h sim-rig WebSocket rollback path FIRED.** Plan Phase 6h shipped `/api/sim-rig/stream` NDJSON 20Hz Node.js runtime ReadableStream + SimRigStream httpStream mode (Vercel-deployable; no FastAPI WebSocket dependency on Vinh-lane). Per the documented rollback path ("if Vinh M3-V2 backend blocked, ship Next.js Node.js API route ReadableStream emitting canned 20Hz fixture"). Vinh M3-V2 WebSocket swap-point preserved in the SimRigStream client's discriminated-union prop.
 - **R-Phase-6i Watson STT rollback path FIRED.** Plan Phase 6i shipped browser Web Speech Recognition via VoiceDebriefInput per the rollback path ("if Watson STT requires IBM Cloud account setup beyond scope, ship browser-native Web Speech Recognition API"). Vinh M3-V9 Watson STT swap-point documented in component header + ibm-stack.ts annotation.
 - **Session A/B/C/D sequencing collapsed into single arc.** Plan estimated 4 sessions; D-049 captures the actual single-session execution including cascades #22-#24 inserted between phases. Post-hoc reconciliation; no ship state change.
 - **Phase 6g Vercel AI Gateway DROPPED.** Consistent across plan + D-049; vercel:ai-architect verified IBM Granite not on Vercel AI Gateway inventory at HEAD; migration would drop the load-bearing IBM Granite narrative.
@@ -71,7 +71,7 @@ Finding #3 (ffmpeg-static dead weight) REJECTED: ffmpeg-static IS load-bearing i
 **NIT reconciliations.**
 
 - **NIT plan estimate "80-120 commits" vs actual 39.** Final count under envelope per the rollback-path-aware execution (R2 + R3 + Phase 6d + Phase 6i + Phase 6e service-worker rollbacks consolidated commits). Galaxy ambition preserved via 7-of-9 Phase 6 ships + per-rollback honesty annotations across the affected components. R15 ("Galaxy ambition tempting to add new ideas mid-execution") held: no scope-creep additions beyond the locked plan.
-- **Commit-range b0c6585..0056f41 explicit.** Wave-44 arc head-at-entry: `b0c6585` (D-047 cascade-#21 close-out per D-048 plan-file line 5). Wave-44 arc HEAD-at-plan-gap-scanner-retro: `5fb4650` (this D-049 addendum). Delta-commit range = b0c6585..5fb4650 = 39 commits per `git log --oneline b0c6585..5fb4650 | wc -l`.
+- **Commit-range b380710..HEAD explicit (wave-44 deep-review BLOCKER #1 correction, 2026-05-25).** Wave-44 arc plan-entry commit: `b380710` (D-047 + D-048 docs entry; the actual start of the wave-44 arc). Per gemini deep-review BLOCKER #1: the prior plan-file + decision-log cited `b0c6585` as head-at-entry, but `b0c6585` is the prior cascade-#21 CODE commit (last commit of wave-43, not start of wave-44); `b380710` is the actual wave-44 plan-entry boundary (D-048 entry committed). Delta-commit range = b380710..HEAD = 43+ commits per `git log --oneline b380710..HEAD | wc -l`.
 
 ---
 
@@ -83,7 +83,7 @@ Finding #3 (ffmpeg-static dead weight) REJECTED: ffmpeg-static IS load-bearing i
 
 **Stephen plan-review answers (locked):**
 - All 3 Phase 6 priorities in scope (IBM-tool maximizers + demo wow-factor + tighten-existing). No defer.
-- Vinh-scope items: frontend-only via Next.js API routes ship from Claude; backend real implementation queued for Vinh via Discord message. 7 explicit Vinh tasks V1-V7 documented in plan.
+- Vinh-scope items: frontend-only via Next.js API routes ship from Claude; backend real implementation queued for Vinh via Discord message. 11 explicit Vinh tasks V1-V11 documented in plan (expanded from V1-V7 baseline through wave-44 galaxy-stretch additions V8-V11).
 
 **Total estimate:** 80-120 atomic commits across 4 sessions (A through D) + 4 parallel agent dispatches + 1 Obsidian session note per session + 3 new memory rules + paper §4 fully populated + 6 new IBM-tool wire-ups.
 
@@ -93,7 +93,7 @@ Finding #3 (ffmpeg-static dead weight) REJECTED: ffmpeg-static IS load-bearing i
 
 ## 2026-05-24 D-047: Wave-43 final close-out cascade-#15 through #21 + 6-agent code review + Vercel deploy LIVE
 
-**Decision.** Wave-43 mega-wave final close-out captures the cascade-#15 through #21 fix-forward chain + 6-agent code review + production deploy LIVE at apex-one-black.vercel.app. Supersedes D-041 + D-042 + D-043 + D-044 + D-045 + D-046 with comprehensive cumulative wave-43 state.
+**Decision.** Wave-43 mega-wave final close-out captures the cascade-#15 through #21 fix-forward chain + 6-agent code review + production deploy LIVE at apex-one-black.vercel.app. Supersedes D-041 + D-042 + D-043 + D-044 + D-045 + D-046 with full cumulative wave-43 state.
 
 **Cascade chain closed (7 cascades #15-#21; 21 cumulative across session arc):**
 
@@ -117,7 +117,7 @@ Finding #3 (ffmpeg-static dead weight) REJECTED: ffmpeg-static IS load-bearing i
 
 **Per-D-entry mid-wave point-in-time counts (superseded by this entry; retained for audit-trail):** D-042 "25 commits" (Lane A2-B2-D2-E2 mid-wave) + D-044 "~55 atomic commits" (mid-Lane-K close-out window before cascade-#15-#21 + 6-agent review landed) + this D-047 "79 commits" (final wave-43 close-out through b380710). All three counts are accurate at their respective entry timestamps; D-047 is the canonical wave-43 final count.
 
-**Affected.** Production deploy verified live + Granite routing end-to-end + Watson production-path operational + HARD-COMPLIANCE preserved across LLM output + persona-decoupling preserved across product UI + 21-cascade discipline + Sookra Methodology 4 amendments. Project genuinely submission-ready as of 2026-05-24; wave-44 absorbs galaxy-stretch + multi-track-winning leverage moves.
+**Affected.** Production deploy verified live + Granite routing end-to-end + Watson production-path operational + HARD-COMPLIANCE preserved across LLM output + persona-decoupling preserved across product UI + 21-cascade discipline + Sookra Methodology 4 amendments. Project genuinely submission-ready as of 2026-05-24; wave-44 absorbs galaxy-stretch + multi-track-winning compounding moves.
 
 ---
 
