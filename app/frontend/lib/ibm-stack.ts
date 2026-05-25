@@ -121,7 +121,7 @@ export const IBM_GRANITE_STACK: ReadonlyArray<GraniteStackTool> = [
   },
   {
     name: "Granite FlowState",
-    version: "9.1M",
+    version: "r1.1 18.5M",
     role: "Track 2 of D-010 (sampling-rate-invariant continuous-time SSM at 50 Hz)",
     status: "INTEGRATION",
     // Wave-44 Phase 6d: ThreeTrackForecastChart per-track tier badge
