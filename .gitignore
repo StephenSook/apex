@@ -151,3 +151,4 @@ scripts/private-denylist.txt
 # do not commit (~50 MiB per session).
 app/backend/.fastf1_cache/
 .vercel
+.claude/
