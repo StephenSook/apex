@@ -61,7 +61,8 @@ const TRACK_TIERS: Record<ForecastTrackName, TrackTier> = {
 };
 
 const TRACK_SWAP_POINTS: Record<ForecastTrackName, string> = {
-  ttm_channel_mix: "Vinh M3-V3 backend (apex/ttm/forecast.py fine-tune-first per D-052; D-010 Track 1 channel-mix decoder)",
+  ttm_channel_mix:
+    "Vinh M3-V3 backend (apex/ttm/forecast.py fine-tune-first per D-052; D-010 Track 1 channel-mix decoder; D-031 Stage A + Stage B via Vinh M3-V12 + V13 per D-050)",
   flowstate: "Vinh M3-V10 backend",
   chronos2: "Vinh M3-V11 backend",
 };

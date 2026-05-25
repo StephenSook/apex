@@ -324,6 +324,8 @@ The single Stage-C verified row (~1030 ms) is well below its 1500 ms budget. Day
 
 A summary pointer only: the §4 evaluation protocol is reproducible from the synthetic Sarah Reynolds fixture + the FastF1 holdout list reported in §4.1 at camera-ready, run against the backend pipeline + Convergence-14 test suite that lands per the project's PLAN.md schedule. Full reproducibility-statement detail (Apache 2.0 source tree, Vercel apex-one-black.vercel.app production deploy, Colab notebook, provenance footer schema) is in §7.
 
+**LIPS 4-axis evaluation harness + APEX-Bench release.** Per D-026 + G10 the project ships a Dockerized LIPS harness covering the 4-axis ablation (Latency + Integrity + Physics + Skill) across the four canonical configurations: zero-shot Granite TTM, soft-loss-only, APEX hard projection (V2 cvxpylayers), and the full 3-track ensemble + 8-tier physics composition. The harness lands at `eval/Dockerfile` + the `apex-bench/` repo per the wave-30 maximal-architecture lock; the canned 4-row table renders today at https://apex-one-black.vercel.app/lips-harness for judge-side inspection. The seed (42) + dataset (FastF1 Hamilton 2024 Bahrain Q laps 4-5 holdout) + per-configuration MAE + violation-rate + Guardian-approve-percent + inference-latency are all surfaced; the camera-ready revision substitutes Vinh M3-V15 real-execution numbers for the canned fallback once the Docker image lands per the project schedule.
+
 ---
 
 ## 5. Limitations

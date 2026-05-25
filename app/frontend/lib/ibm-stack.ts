@@ -171,10 +171,17 @@ export const IBM_GRANITE_STACK: ReadonlyArray<GraniteStackTool> = [
     status: "WIRED",
   },
   {
-    name: "Langflow",
-    version: "demo facade",
-    role: "Orchestration graph export (D-017 demoted to facade per wave-30)",
-    status: "FACADE",
+    name: "LangGraph + MCP + ContextForge",
+    version: "runtime (Langflow export-graph)",
+    role: "Orchestration runtime per D-017 G7 + D-026 (Langflow demoted to export-graph facade per wave-30)",
+    status: "INTEGRATION",
+    // Wave-45 Phase 9 Block F V14 close-out: D-017 originally demoted
+    // Langflow to FACADE wave-30 because the actual runtime path is
+    // LangGraph + Granite MCP Gateway + ContextForge per D-026 maximal-
+    // architecture lock. Frontend stub at /api/orchestration + the
+    // LangGraphRuntimePanel surface ship the 6-node trace; Vinh M3-V14
+    // wires apex/orchestration/langgraph_runtime.py to flip status from
+    // INTEGRATION to WIRED.
   },
   {
     name: "IBM Bob",

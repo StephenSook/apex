@@ -13,9 +13,11 @@ import Link from "next/link";
 // deliver. ssr:false safely back-in (allowed in Client Components).
 import ApexCamPanel from "../../components/ApexCamPanel";
 import COAGateToggle from "../../components/COAGateToggle";
+import EngineAgnosticByteEqualityDemo from "../../components/EngineAgnosticByteEqualityDemo";
 import JudgeTrackTighteningCallout from "../../components/JudgeTrackTighteningCallout";
 import JudgesGalaxyMovesShell from "../../components/JudgesGalaxyMovesShell";
 import JudgesEdgePlaneShell from "../../components/JudgesEdgePlaneShell";
+import LangGraphRuntimePanel from "../../components/LangGraphRuntimePanel";
 import MobileInstallQR from "../../components/MobileInstallQR";
 import TTMInBrowserPanel from "../../components/TTMInBrowserPanel";
 
@@ -427,6 +429,31 @@ export default function JudgesPage() {
       </section>
 
       <section
+        id="langgraph-runtime"
+        aria-labelledby="langgraph-runtime-section-title"
+        className="border-b border-rule bg-paper-warm"
+      >
+        <div className="mx-auto max-w-6xl px-6 py-16 lg:px-10 lg:py-20">
+          <h2
+            id="langgraph-runtime-section-title"
+            className="font-display text-3xl tracking-tight text-ink"
+          >
+            The orchestration runtime. D-017 G7 + D-026.
+          </h2>
+          <p className="mt-3 max-w-3xl text-base leading-relaxed text-ink-soft">
+            Wave-45 Phase 9 Block F V14 close-out. Langflow is the export-graph artifact;
+            the actual runtime path is LangGraph + Granite MCP Gateway + ContextForge tool
+            registry per the D-026 maximal-architecture lock. Six nodes drive the pipeline
+            from ingestion through provenance. HEAD shows canned-fallback engine while
+            Vinh M3-V14 wires <span className="font-mono text-xs text-racing-green">apex/orchestration/langgraph_runtime.py</span>.
+          </p>
+          <div className="mt-8">
+            <LangGraphRuntimePanel />
+          </div>
+        </div>
+      </section>
+
+      <section
         id="ttm-in-browser"
         aria-labelledby="ttm-in-browser-section-title"
         className="border-b border-rule bg-paper"
@@ -443,6 +470,31 @@ export default function JudgesPage() {
           </p>
           <div className="mt-8">
             <TTMInBrowserPanel />
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="byte-equality-demo"
+        aria-labelledby="byte-equality-demo-section-title"
+        className="border-b border-rule bg-paper"
+      >
+        <div className="mx-auto max-w-6xl px-6 py-16 lg:px-10 lg:py-20">
+          <h2
+            id="byte-equality-demo-section-title"
+            className="font-display text-3xl tracking-tight text-ink"
+          >
+            Engine-agnostic byte-equality lock. D-050.
+          </h2>
+          <p className="mt-3 max-w-3xl text-base leading-relaxed text-ink-soft">
+            Wave-45 Phase 10 Block G close-out. The load-bearing technical-positioning headline:
+            two projector engines (V1 NumPy + V2 cvxpylayers) emit byte-identical violation strings
+            on the same physical event, modulo a single ENGINE header line. Cross-ref Q&amp;A
+            killshot #3 + paper §3.2 + the Vinh pytest assertion shipped 2026-05-25 at commit{" "}
+            <span className="font-mono text-xs text-racing-green">9048573</span>.
+          </p>
+          <div className="mt-8">
+            <EngineAgnosticByteEqualityDemo />
           </div>
         </div>
       </section>
