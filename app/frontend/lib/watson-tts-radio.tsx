@@ -62,6 +62,40 @@ export interface WatsonTtsRadioProps {
 
 const DEFAULT_SYNTHESIZE_ENDPOINT = "/api/watson-tts";
 
+/**
+ * Wave-44 Phase 4.3 close-out per type-design-analyzer M1: validate
+ * the synthesizeEndpoint prop only accepts (a) same-origin absolute
+ * URLs or (b) relative paths starting with "/". Prevents accidental
+ * exfiltration of the coaching-report text (passed via JSON body) to
+ * an attacker-controlled origin if the prop is ever sourced from
+ * URL params, user input, or a misconfigured backend response.
+ * Throws at validation time so the component renders an error state
+ * + the developer sees the violation immediately.
+ */
+function validateSameOriginEndpoint(endpoint: string): void {
+  if (endpoint.startsWith("/") && !endpoint.startsWith("//")) {
+    return;
+  }
+  if (typeof window === "undefined") {
+    throw new Error(
+      `apex.watson-tts.validateSameOriginEndpoint: cannot validate absolute URL ${JSON.stringify(endpoint)} during SSR; pass a relative path starting with "/" instead.`,
+    );
+  }
+  let parsed: URL;
+  try {
+    parsed = new URL(endpoint, window.location.href);
+  } catch (err) {
+    throw new Error(
+      `apex.watson-tts.validateSameOriginEndpoint: synthesizeEndpoint ${JSON.stringify(endpoint)} is not a valid URL: ${err instanceof Error ? err.message : String(err)}`,
+    );
+  }
+  if (parsed.origin !== window.location.origin) {
+    throw new Error(
+      `apex.watson-tts.validateSameOriginEndpoint: synthesizeEndpoint origin ${parsed.origin} does not match window.location.origin ${window.location.origin}; cross-origin synthesis POST blocked.`,
+    );
+  }
+}
+
 export default function WatsonTtsRadio({
   auditId,
   text,
@@ -86,6 +120,11 @@ export default function WatsonTtsRadio({
 
     void (async () => {
       try {
+        // Phase 4.3 same-origin allowlist: validate the endpoint shape
+        // before fetch so cross-origin endpoints throw inside the
+        // catch + surface an error state instead of leaking the
+        // coaching-report text body to an attacker-controlled origin.
+        validateSameOriginEndpoint(synthesizeEndpoint);
         const synthResponse = await fetch(synthesizeEndpoint, {
           method: "POST",
           headers: { "Content-Type": "application/json" },

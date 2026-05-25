@@ -127,6 +127,59 @@ describe("WatsonTtsRadio (inline-blob streaming shape, cascade-#15 rework)", () 
     await waitFor(() => expect(abortReceived).toBe(true));
   });
 
+  it("Phase 4.3 cross-origin synthesizeEndpoint blocked + falls back to Web Speech API", async () => {
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    // fetchMock should NEVER be called for the cross-origin path; the
+    // validateSameOriginEndpoint throw fires before fetch.
+    render(
+      <WatsonTtsRadio
+        auditId={TEST_AUDIT_ID}
+        text="cross-origin block test"
+        synthesizeEndpoint="https://attacker.example.com/exfiltrate"
+      />,
+    );
+    await waitFor(() => expect(screen.getByText(/Web Speech API fallback/i)).toBeInTheDocument());
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect(warnSpy).toHaveBeenCalled();
+    warnSpy.mockRestore();
+  });
+
+  it("Phase 4.3 protocol-relative URL (//) blocked + falls back to Web Speech API", async () => {
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    render(
+      <WatsonTtsRadio
+        auditId={TEST_AUDIT_ID}
+        text="protocol-relative block test"
+        synthesizeEndpoint="//attacker.example.com/exfiltrate"
+      />,
+    );
+    await waitFor(() => expect(screen.getByText(/Web Speech API fallback/i)).toBeInTheDocument());
+    expect(fetchMock).not.toHaveBeenCalled();
+    warnSpy.mockRestore();
+  });
+
+  it("Phase 4.3 same-origin absolute URL accepted (passes validateSameOriginEndpoint)", async () => {
+    const audioBytes = new Uint8Array([0xff, 0xfb, 0x90, 0x00]);
+    fetchMock.mockResolvedValueOnce({
+      ok: true,
+      status: 200,
+      headers: new Headers({ "Content-Type": "audio/mpeg" }),
+      blob: async () => new Blob([audioBytes], { type: "audio/mpeg" }),
+      text: async () => "",
+    } as unknown as Response);
+    render(
+      <WatsonTtsRadio
+        auditId={TEST_AUDIT_ID}
+        text="same-origin absolute test"
+        synthesizeEndpoint={`${window.location.origin}/api/watson-tts`}
+      />,
+    );
+    await waitFor(() =>
+      expect(screen.getByLabelText(/walkie-talkie audio playback/i)).toBeInTheDocument(),
+    );
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
   it("unmount captures signal.aborted=true on the AbortController per pr-test-analyzer B2", async () => {
     let capturedSignal: AbortSignal | null = null;
     fetchMock.mockImplementation((_url, init) => {
