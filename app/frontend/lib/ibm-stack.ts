@@ -97,6 +97,10 @@ export const IBM_GRANITE_STACK: ReadonlyArray<GraniteStackTool> = [
     version: "4.1 4B",
     role: "SRO + Britcar timing-sheet PDF to CSV",
     status: "INTEGRATION",
+    // Wave-44 Phase 6c: frontend GraniteVisionParser component live
+    // on /judges + POST /api/timing-sheet-parse canned-fixture path
+    // operational. Status flips to "WIRED" once Vinh V1 swaps in real
+    // Granite Vision 4.1 4B inference per Stream M.3 contract.
   },
   {
     name: "Granite TimeSeries TTM",

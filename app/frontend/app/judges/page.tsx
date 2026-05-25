@@ -11,6 +11,7 @@ import RaceEventsTilesRow from "../../components/RaceEventsTilesRow";
 import GEPAEvolutionPanel from "../../components/GEPAEvolutionPanel";
 import PhysicsConfidenceRing from "../../components/PhysicsConfidenceRing";
 import TriAgentCriticPanel from "../../components/TriAgentCriticPanel";
+import GraniteVisionParser from "../../components/GraniteVisionParser";
 import PWAInstallPrompt from "../../components/PWAInstallPrompt";
 import TSPulseAnomalyPanel from "../../components/TSPulseAnomalyPanel";
 import { CONVERGENCE_FIXTURES } from "../../lib/convergence-fixtures";
@@ -379,6 +380,7 @@ export default function JudgesPage() {
             <GEPAEvolutionPanel />
             <EAGLE3LatencyBadge />
             <TSPulseAnomalyPanel state={MOCK_TSPULSE_ACTIVE} />
+            <GraniteVisionParser />
           </div>
           <p className="mt-6 font-mono text-xs italic text-muted">
             Panels are mock for /judges visualisation. Real fetch swaps land Day 7-8 per
