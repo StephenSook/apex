@@ -4,8 +4,10 @@ Single source of truth for inter-layer types:
   shapes.py     - canonical (B, 30, 14) tensor contract
   projector.py  - DifferentiableProjector Protocol (V1/V2/qpth/Theseus swap)
   violations.py - PhysicsViolationLog + GuardianAudit + audit_id discipline
+  adapters.py   - build_ttm_input scalar-to-per-step COA flag tiler
 """
 
+from .adapters import build_ttm_input
 from .projector import DifferentiableProjector, PROTOCOL_VERSION
 from .shapes import (
     CHANNEL_COUNT,
@@ -39,6 +41,8 @@ __all__ = [
     # projector
     "DifferentiableProjector",
     "PROTOCOL_VERSION",
+    # adapters
+    "build_ttm_input",
     # violations
     "GuardianAudit",
     "GuardianVerdict",

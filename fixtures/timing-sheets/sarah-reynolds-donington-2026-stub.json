@@ -1,0 +1,27 @@
+{
+  "_meta": {
+    "fictional_persona": true,
+    "watermark": "Sarah Reynolds is a fictional persona created by Stephen Sookra for the IBM SkillsBuild AI Builders Challenge May 2026 APEX submission. Any resemblance to real adaptive racers is coincidental. See docs/sarah-reynolds-persona.md for the full persona brief.",
+    "schema_version": "0.1.0",
+    "fixture_purpose": "Canned timing-sheet stub mirroring the frontend `TimingSheetParsedLaps` contract at `app/frontend/app/api/timing-sheet-parse/route.ts` L46-51. Consumed by Vinh's task 1.2 timing-sheet parser tests (`app/backend/tests/test_instruct.py`) until the real BritCar / SRO timing-sheet PDF is supplied + Granite Vision 4.1 4B inference is wired in Phase 2. The five-lap numeric content is identical to the frontend CANNED_LAPS so contract drift between mock + real surfaces fails the diff check.",
+    "fixture_author": "Vinh Le",
+    "fixture_authored_iso": "2026-05-24",
+    "wave": "wave-44 Phase 1 task 1.3 backend lane",
+    "cross_references": [
+      "app/frontend/app/api/timing-sheet-parse/route.ts",
+      "app/backend/apex/instruct/timing_sheet_parser.py",
+      "fixtures/personas/sarah-reynolds-coa-stub.json",
+      "docs/sarah-reynolds-persona.md"
+    ]
+  },
+  "source_filename": "sarah-reynolds-donington-2026-stub.pdf",
+  "parser": "canned-fixture",
+  "parse_ms": 0,
+  "laps": [
+    { "lap": 1, "sector_1_time_s": 24.182, "sector_2_time_s": 28.945, "sector_3_time_s": 25.612, "lap_time_s": 78.739 },
+    { "lap": 2, "sector_1_time_s": 23.871, "sector_2_time_s": 28.412, "sector_3_time_s": 25.198, "lap_time_s": 77.481 },
+    { "lap": 3, "sector_1_time_s": 23.659, "sector_2_time_s": 28.103, "sector_3_time_s": 24.951, "lap_time_s": 76.713 },
+    { "lap": 4, "sector_1_time_s": 23.582, "sector_2_time_s": 27.916, "sector_3_time_s": 24.832, "lap_time_s": 76.330 },
+    { "lap": 5, "sector_1_time_s": 23.504, "sector_2_time_s": 27.847, "sector_3_time_s": 24.798, "lap_time_s": 76.149 }
+  ]
+}
