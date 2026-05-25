@@ -106,10 +106,28 @@ export async function GET(req: NextRequest): Promise<Response> {
         const line = `${JSON.stringify(frame)}\n`;
         try {
           controller.enqueue(encoder.encode(line));
-        } catch {
+        } catch (err) {
+          // Wave-44 deep-review silent-failure BLOCKER #2: explicit
+          // controller.close() + console.warn the error class.
+          // Prior bare-catch cleared the interval but left the
+          // ReadableStream in an inconsistent state; if the throw was
+          // backpressure or runtime quota (not closed-controller)
+          // the interval cleared but later abort-listener could fire
+          // controller.close() on an already-errored controller +
+          // swallow that throw too. Explicit close + log surfaces
+          // the failure shape for ops + ensures interval tear-down.
           if (intervalHandle !== null) {
             clearInterval(intervalHandle);
             intervalHandle = null;
+          }
+          console.warn(
+            "apex.sim-rig-stream: controller.enqueue threw; tearing down stream.",
+            { errorClass: err instanceof Error ? err.constructor.name : typeof err, message: err instanceof Error ? err.message : String(err) },
+          );
+          try {
+            controller.close();
+          } catch {
+            // Already closed or errored.
           }
         }
       };

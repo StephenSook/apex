@@ -149,10 +149,24 @@ export default function VoiceDebriefInput({ onTranscript }: VoiceDebriefInputPro
     };
     recognitionRef.current = recognition;
     setState({ status: "recording", partial: "" });
-    recognition.start();
+    // Wave-44 deep-review silent-failure HIGH #3: try/catch recognition.start()
+    // SpeechRecognition.start() synchronously throws InvalidStateError if a
+    // recognition session is already running (rapid double-click before onstart
+    // lands). Without the guard, the throw escapes to the React event boundary
+    // + state stuck at recording with no recording actually happening.
+    try {
+      recognition.start();
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      setState({ status: "error", message: `recognition.start threw: ${message}` });
+    }
   };
 
   const handleStop = () => {
+    // Wave-44 deep-review silent-failure HIGH #4: use stop() not abort()
+    // when user clicks Stop so onend fires + the final transcript flushes
+    // through to onTranscript. Cleanup-on-unmount (line 105) still uses
+    // abort() since unmount doesn't need to invoke onTranscript.
     recognitionRef.current?.stop();
   };
 

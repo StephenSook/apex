@@ -165,6 +165,20 @@ export default function WatsonTtsRadio({
           return;
         }
         const message = err instanceof Error ? err.message : String(err);
+        // Wave-44 deep-review silent-failure BLOCKER #1: discriminate
+        // the validateSameOriginEndpoint throw from the generic
+        // Watson-outage path. Cross-origin block must surface as
+        // error state (NOT ready_fallback) so operators see the
+        // exfiltration-attempt signal in the panel instead of an
+        // indistinguishable fallback UI.
+        if (message.startsWith("apex.watson-tts.validateSameOriginEndpoint:")) {
+          console.error(
+            "apex.watson-tts: cross-origin synthesizeEndpoint blocked; surfacing error state.",
+            { message, endpoint: synthesizeEndpoint },
+          );
+          setState({ status: "error", message });
+          return;
+        }
         console.warn(
           "apex.watson-tts: synthesis POST threw; falling back to Web Speech API.",
           { message, endpoint: synthesizeEndpoint },

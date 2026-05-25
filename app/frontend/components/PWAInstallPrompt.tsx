@@ -107,7 +107,15 @@ export default function PWAInstallPrompt() {
       await state.event.prompt();
       const choice = await state.event.userChoice;
       setState({ status: choice.outcome === "accepted" ? "installed" : "dismissed" });
-    } catch {
+    } catch (err) {
+      // Wave-44 deep-review silent-failure HIGH #8: log the error
+      // class + message so the diagnostic is preserved. "dismissed"
+      // remains the resolved UI state (user-facing copy says reload
+      // to retry) but operators have the actual cause in DevTools.
+      console.warn(
+        "apex.pwa-install: prompt() or userChoice rejected; surfacing dismissed state.",
+        { errorClass: err instanceof Error ? err.constructor.name : typeof err, message: err instanceof Error ? err.message : String(err) },
+      );
       setState({ status: "dismissed" });
     }
   };
