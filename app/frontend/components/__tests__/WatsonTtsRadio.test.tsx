@@ -4,7 +4,22 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import WatsonTtsRadio from "../../lib/watson-tts-radio";
 import type { AuditId } from "../../../shared/brands";
 
-const TEST_AUDIT_ID = "abcdef01234567890123456789abcdef" as unknown as AuditId;
+/**
+ * Inline AuditId validator per wave-44 Phase 4.4 + cascade-#18
+ * Turbopack pattern: replicates the parseAuditId brand-parse
+ * contract (32-char lowercase hex OR "no_audit" sentinel) without
+ * crossing the worker-pool boundary. Replaces the unsafe double-cast
+ * `as unknown as AuditId` per type-design-analyzer H3 closure.
+ */
+function inlineParseAuditId(raw: string): AuditId {
+  if (raw === "no_audit") return raw as AuditId;
+  if (!/^[0-9a-f]{32}$/.test(raw)) {
+    throw new TypeError(`inlineParseAuditId: invalid audit_id ${JSON.stringify(raw)}`);
+  }
+  return raw as AuditId;
+}
+
+const TEST_AUDIT_ID = inlineParseAuditId("abcdef0123456789abcdef0123456789");
 
 describe("WatsonTtsRadio (inline-blob streaming shape, cascade-#15 rework)", () => {
   let fetchMock: ReturnType<typeof vi.fn>;
@@ -110,5 +125,17 @@ describe("WatsonTtsRadio (inline-blob streaming shape, cascade-#15 rework)", () 
     const { unmount } = render(<WatsonTtsRadio auditId={TEST_AUDIT_ID} text="abort test" />);
     unmount();
     await waitFor(() => expect(abortReceived).toBe(true));
+  });
+
+  it("unmount captures signal.aborted=true on the AbortController per pr-test-analyzer B2", async () => {
+    let capturedSignal: AbortSignal | null = null;
+    fetchMock.mockImplementation((_url, init) => {
+      capturedSignal = (init as RequestInit | undefined)?.signal ?? null;
+      return new Promise<Response>(() => undefined);
+    });
+    const { unmount } = render(<WatsonTtsRadio auditId={TEST_AUDIT_ID} text="signal-aborted assert" />);
+    await waitFor(() => expect(capturedSignal).not.toBeNull());
+    unmount();
+    expect(capturedSignal!.aborted).toBe(true);
   });
 });
