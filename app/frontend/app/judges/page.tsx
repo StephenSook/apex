@@ -6,37 +6,33 @@ import Link from "next/link";
 // Wave-44 Phase 9 perf BLOCKER #2 close-out per vercel:performance-
 // optimizer: dynamic-import the 6 mock-only client islands below the
 // architecture fold (ALoRA + GEPA + EAGLE3 + TSPulse + GraniteVisionParser
-// + EdgeSummary). ssr:false skips server-render emission (these are
-// /judges-only visualisation surfaces with no SEO value; mock data).
-// Loading placeholder preserves the visual rhythm so layout-shift
-// stays bounded. Saves ~80-120KB JS off initial hydration + defers
-// the WebGPU adapter probe in EdgeSummary until the section paints.
+// + EdgeSummary). Code-splits these into separate async chunks so the
+// initial /judges JS bundle ships smaller. Loading placeholder
+// preserves the visual rhythm so layout-shift stays bounded.
+// ssr:false NOT used here (Next.js 16 Server Component restriction);
+// the imported modules are already "use client" so the SSR pass emits
+// them with the rest of the Client Component tree + hydration happens
+// per the dynamic-import boundary.
 const LazyLoadingShim = () => (
   <div className="h-40 rounded-sm border border-rule bg-paper-warm motion-safe:animate-pulse" />
 );
 
 const ALoRAStatusBadge = dynamic(() => import("../../components/ALoRAStatusBadge"), {
-  ssr: false,
   loading: LazyLoadingShim,
 });
 const EAGLE3LatencyBadge = dynamic(() => import("../../components/EAGLE3LatencyBadge"), {
-  ssr: false,
   loading: LazyLoadingShim,
 });
 const EdgeSummary = dynamic(() => import("../../components/EdgeSummary"), {
-  ssr: false,
   loading: LazyLoadingShim,
 });
 const GEPAEvolutionPanel = dynamic(() => import("../../components/GEPAEvolutionPanel"), {
-  ssr: false,
   loading: LazyLoadingShim,
 });
 const GraniteVisionParser = dynamic(() => import("../../components/GraniteVisionParser"), {
-  ssr: false,
   loading: LazyLoadingShim,
 });
 const TSPulseAnomalyPanel = dynamic(() => import("../../components/TSPulseAnomalyPanel"), {
-  ssr: false,
   loading: LazyLoadingShim,
 });
 
