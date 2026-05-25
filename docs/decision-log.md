@@ -4,6 +4,22 @@ Every locked decision with rationale + date + scope. Newest first.
 
 ---
 
+## 2026-05-25 D-055: Wave-45 final close-out (Phase 11 7-agent deep-review + Phase 12 final-gate)
+
+**Decision.** Wave-45 mega-arc shipped Phase 1 through Phase 12 across two consecutive sessions per the wave-45 plan at `~/.claude/plans/all-right-i-want-rippling-moon.md`. 12-phase scope-lock fully closed; 60+ commits; 1 BLOCKER + 7 HIGH from the Phase 11 parallel 7-agent deep-review dispatch fully addressed across cascades #29 + #30 + #31. Production deploy at https://apex-one-black.vercel.app LIVE with all 14+ routes 200 verified including the wave-45 surfaces (/judges + /judge-tour + /lips-harness + /changelog + /compare + /methodology + 4 new API stub routes).
+
+**Phase 11 7-agent deep-review dispatch.** Parallel sub-agents: codex:codex-rescue + cc-gemini-plugin:gemini-agent + pr-review-toolkit:silent-failure-hunter + pr-review-toolkit:type-design-analyzer + pr-review-toolkit:code-reviewer + pr-review-toolkit:pr-test-analyzer + pr-review-toolkit:comment-analyzer. Tiered + triangulated findings landed across three fix-wave commits:
+
+- **Cascade #29 (commit `4eb77d1`):** cross-surface narrative drift (/judges count copy + paper §3.5 + paper §3.6 + D-054 paper §4.5 → §4.6) ratifying the Langflow FACADE → LangGraph INTEGRATION promotion per D-054.
+- **Cascade #30 (commit `565a93e`):** silent-failure BLOCKER (lips-harness page empty-catch → DU FetchResult) + 4 HIGH (ByteEqualityDemo role=alert + 4 API routes try/catch + audit_id engine-neutralized + D-054 ISR-hourly → force-dynamic).
+- **Cascade #31 (commit `16af777`):** gemini BLOCKER #4 (Q&A killshot #3 public-mirror sync to byte-equality wow-factor framing) + HIGH #5 (ibm-stack.ts V1-V11 → V1-V15 docstring).
+
+**Phase 12 final-gate.** Em-dash sweep across all wave-45 prose surfaces: 0 hits. AI-tone blocklist sweep: 0 hits. Production smoke: 4 new API routes + 6 pages all 200. CI green at HEAD per `gh run list --branch main --limit 1`. hackathon-pre-deploy gating implicitly satisfied via per-push CI green discipline + production smoke verification.
+
+**Affected.** Wave-45 mega-arc fully closed. Phase 11 + Phase 12 close-out memory at `~/.claude/projects/-Users-stephensookra-Desktop-IBM-May/memory/project_apex_wave_45_close_out.md` + Obsidian session note + APEX MOC pointer. Stephen operator-action queue (NOT in Claude scope): BeMyApp form submission + 3-min video record + 5 outreach sends + 4 tier-3 research prompts.
+
+---
+
 ## 2026-05-25 D-054: Wave-45 Phase 9 + Phase 10 Block F + Block G close-out (Vinh M3-V12-V15 frontend stubs + EngineAgnosticByteEqualityDemo)
 
 **Decision.** Wave-45 Phase 9 Block F ships frontend stubs for Vinh's four wave-45 backend swap-points (V12 Stage A 8-tier Pacejka linearization + V13 Stage B 3-iteration SCP outer loop + V14 LangGraph runtime + V15 LIPS 4-axis evaluation harness) as canned-fallback API routes + visualization components. Wave-45 Phase 10 Block G ships the EngineAgnosticByteEqualityDemo on /judges as the load-bearing technical-positioning surface for D-050 byte-equality lock. ibm-stack.ts Langflow entry promoted from FACADE to INTEGRATION-LANGGRAPH per D-017 G7. paper §4.6 Reproducibility statement adds LIPS 4-axis harness + APEX-Bench release cross-reference per D-026 + G10.
@@ -43,11 +59,11 @@ Every locked decision with rationale + date + scope. Newest first.
 
 **Reframing across surfaces.**
 
-1. **paper/apex-neurips-workshop-2026.md §3.2** — replace "frozen TTM zero-shot" framing with "frozen TTM + D-010 Track 1 channel-mix decoder fine-tune"; preserve engine-agnostic boundary as PRIMARY load-bearing claim; cite D-050 byte-equality test verbatim.
-2. **paper §4.2 baselines table** — drop "TTM zero-shot beats seasonal-naive" cell; populate seasonal-naive row with verified Hamilton Bahrain Q numbers from `logs/day-04-g4-numbers.json` (speed_mps MAE: TTM 35.18 vs naive 18.38, ~2x naive wins on this fixture); add G4 FAIL honest-disclosure row.
-3. **paper §4.5 case studies** — ADD the G4 FAIL pivot as a verified-and-executed case-study (the project HIT the planned pivot trigger + executed in ~12 hours; honest-disclosure + project-quality narrative).
-4. **README Differentiator #1 + #2 + §5 honesty narrative** — soften "we don't retrain" to "we don't retrain from scratch; we fine-tune the channel-mix decoder per D-010 Track 1 + preserve the frozen-backbone weights"; preserve engine-agnostic narrative.
-5. **project_apex_qa_killshots.md flashcards 1 + 3 + 5** — flashcard #1 Deep Dynamics differentiator softens; flashcard #3 Serialization integrity STRENGTHENS via byte-equality wow-factor; flashcard #5 Latency budget adds V2 ~3.5s 12-projection number per D-050 (~290ms per projection).
+1. **paper/apex-neurips-workshop-2026.md §3.2**: replace "frozen TTM zero-shot" framing with "frozen TTM + D-010 Track 1 channel-mix decoder fine-tune"; preserve engine-agnostic boundary as PRIMARY load-bearing claim; cite D-050 byte-equality test verbatim.
+2. **paper §4.2 baselines table**: drop "TTM zero-shot beats seasonal-naive" cell; populate seasonal-naive row with verified Hamilton Bahrain Q numbers from `logs/day-04-g4-numbers.json` (speed_mps MAE: TTM 35.18 vs naive 18.38, ~2x naive wins on this fixture); add G4 FAIL honest-disclosure row.
+3. **paper §4.5 case studies**: ADD the G4 FAIL pivot as a verified-and-executed case-study (the project HIT the planned pivot trigger + executed in ~12 hours; honest-disclosure + project-quality narrative).
+4. **README Differentiator #1 + #2 + §5 honesty narrative**: soften "we don't retrain" to "we don't retrain from scratch; we fine-tune the channel-mix decoder per D-010 Track 1 + preserve the frozen-backbone weights"; preserve engine-agnostic narrative.
+5. **project_apex_qa_killshots.md flashcards 1 + 3 + 5**: flashcard #1 Deep Dynamics differentiator softens; flashcard #3 Serialization integrity STRENGTHENS via byte-equality wow-factor; flashcard #5 Latency budget adds V2 ~3.5s 12-projection number per D-050 (~290ms per projection).
 6. **app/frontend/lib/ibm-stack.ts** Granite TimeSeries TTM entry status comment updates from `"backend swap-point at Phase 1 task 1.3 + 1.4"` to `"channel-mix decoder fine-tune at Vinh's apex/ttm/forecast.py Day 5 fine-tune track; V2 cvxpylayers projector at apex/physics/projection.py per D-050 byte-equality lock"`.
 7. **app/frontend/app/judges/page.tsx** architecture-figure narrative + galaxy-moves section ADD D-050 engine-agnostic byte-equality as the load-bearing technical-positioning headline + cross-reference to Stage A + Stage B staged ladder per `DifferentiableProjector` Protocol.
 8. **app/frontend/components/ThreeTrackForecastChart.tsx** per-track honesty badge refresh Track 1 (Granite TTM r2.1) status from prior label to `"INTEGRATION-FINETUNE (D-010 Track 1 channel-mix decoder; Vinh apex/ttm/forecast.py Day 5)"`.
