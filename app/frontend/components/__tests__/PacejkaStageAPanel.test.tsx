@@ -17,7 +17,7 @@ describe("PacejkaStageAPanel (wave-45 Phase 9 V12 8-tier Pacejka swap-point)", (
   it("renders 8 tier cards + engine pill + violations count", async () => {
     const mockTiers = Array.from({ length: 8 }, (_, i) => ({
       tier: i,
-      name: `Tier ${i} synthetic`,
+      name: `Layer ${i} synthetic`,
       residual_norm: 0.001 * (i + 1),
       status: i === 5 ? "linearized" : "converged",
     }));
