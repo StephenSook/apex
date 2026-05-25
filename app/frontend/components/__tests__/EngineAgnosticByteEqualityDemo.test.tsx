@@ -37,4 +37,21 @@ describe("diffByteEquality (wave-45 Phase 10 Block G)", () => {
     const diff = diffByteEquality(V1_NUMPY_TO_TEXT, tampered);
     expect(diff.status).toBe("content-diff");
   });
+
+  it("returns content-diff when V2 has an extra line vs V1 (real-runtime swap-point regression guard)", () => {
+    const tampered = `${V2_CVXPYLAYERS_TO_TEXT}\nEXTRA_LINE debug=cvxpylayers_internal_tag`;
+    const diff = diffByteEquality(V1_NUMPY_TO_TEXT, tampered);
+    expect(diff.status).toBe("content-diff");
+  });
+
+  it("throws on empty input (fixture-integrity guard)", () => {
+    expect(() => diffByteEquality("", V2_CVXPYLAYERS_TO_TEXT)).toThrow(/empty input/);
+    expect(() => diffByteEquality(V1_NUMPY_TO_TEXT, "")).toThrow(/empty input/);
+  });
+
+  it("canonical fixture pair stays engine-line-diff-only (D-050 PASS lock against accidental V1 OR V2 drift)", () => {
+    expect(diffByteEquality(V1_NUMPY_TO_TEXT, V2_CVXPYLAYERS_TO_TEXT).status).toBe(
+      "engine-line-diff-only",
+    );
+  });
 });
