@@ -17,6 +17,7 @@ import JudgeTrackTighteningCallout from "../../components/JudgeTrackTighteningCa
 import JudgesGalaxyMovesShell from "../../components/JudgesGalaxyMovesShell";
 import JudgesEdgePlaneShell from "../../components/JudgesEdgePlaneShell";
 import MobileInstallQR from "../../components/MobileInstallQR";
+import TTMInBrowserPanel from "../../components/TTMInBrowserPanel";
 
 import { ConvergenceFixtureGrid } from "../../components/ConvergenceFixtureGrid";
 import { ExtendedPhysicsFixtureGrid } from "../../components/ExtendedPhysicsFixtureGrid";
@@ -421,6 +422,27 @@ export default function JudgesPage() {
           </p>
           <div className="mt-8">
             <ApexCamPanel />
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="ttm-in-browser"
+        aria-labelledby="ttm-in-browser-section-title"
+        className="border-b border-rule bg-paper"
+      >
+        <div className="mx-auto max-w-6xl px-6 py-16 lg:px-10 lg:py-20">
+          <h2 id="ttm-in-browser-section-title" className="font-display text-3xl tracking-tight text-ink">
+            Run Granite in your browser. The 7th shouldn&apos;t-be-possible move.
+          </h2>
+          <p className="mt-3 max-w-3xl text-base leading-relaxed text-ink-soft">
+            Wave-45 Phase 7 Block D close-out per D-053. Same Granite TimeSeries TTM r2.1 model
+            that ships server-side in Vinh&apos;s production pipeline, lazy-loaded in the driver&apos;s
+            browser via Transformers.js + WebGPU / WASM SIMD. Differentiator vs the ApexIQ
+            local-Ollama server pattern.
+          </p>
+          <div className="mt-8">
+            <TTMInBrowserPanel />
           </div>
         </div>
       </section>

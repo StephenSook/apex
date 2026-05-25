@@ -4,6 +4,18 @@ Every locked decision with rationale + date + scope. Newest first.
 
 ---
 
+## 2026-05-25 D-053: Wave-45 Block D shouldn't-be-possible move #7 (Granite TTM in-browser via Transformers.js)
+
+**Decision.** Wave-45 Phase 7 Block D ships the TTMInBrowserPanel + lib/ttm-browser.ts scaffold on /judges as the 7th shouldn't-be-possible move (D-019 amendment). The same Granite TimeSeries TTM r2.1 model that ships server-side in Vinh's production pipeline (apex/ttm/forecast.py) runs lazy-loaded in the driver's browser via Transformers.js + WebGPU / WASM SIMD. Differentiator vs ApexIQ which runs Granite via local Ollama server-side.
+
+**HEAD shape.** Component + lib scaffold + canned-fallback runtime ship; @huggingface/transformers npm dep is intentionally NOT installed this wave per bundle-size + Vercel-deploy-quota constraints. The canned-fallback path renders a 30-step deterministic forecast so the UI surface is testable end-to-end + the swap-point stays documented. Wave-46 adds the dep + service-worker cache for the ~500MB ONNX model + WebGPU adapter probe wiring.
+
+**Per Sookra Methodology Pillar 1 (Product credibility) honesty discipline:** the runtime pill on the panel renders "canned-fallback" (amber) at HEAD; flips to "transformers-js" (racing-green) once wave-46 lands the dep. No overclaim on the in-browser runtime status.
+
+**Affected.** D-019 5 shouldn't-be-possible moves -> 7 (wave-44 added TSPulse polyphase anomaly as #6; wave-45 D-053 adds in-browser TTM as #7). README §5 + paper §3 + Q&A killshots #1 Deep Dynamics differentiator add the in-browser angle as a tactile-demonstration cross-reference. app/frontend/components/TTMInBrowserPanel.tsx + app/frontend/lib/ttm-browser.ts + app/frontend/app/judges/page.tsx #ttm-in-browser section + ibm-stack.ts Granite TimeSeries TTM entry status annotated with the Transformers.js swap-point.
+
+---
+
 ## 2026-05-25 D-052: Wave-45 G4 pivot narrative reframing across paper + README + Q&A killshots + frontend ibm-stack
 
 **Decision.** Vinh shipped commit `2fddea4` (Phase 2 Day 4 Gate G4 FAIL on speed_mps) at 2026-05-25 03:47 ET + commit `9048573` (Phase 2 Day 5 D-050 V2 cut clause NOT invoked) at 2026-05-25 12:53 ET. The "zero-shot TTM beats seasonal-naive on speed_mps" pitch claim is retired across all frontend + paper + outreach surfaces. The new framing is "TTM + V2 cvxpylayers projection forecast-envelope composition" with the engine-agnostic byte-equality lock (per D-050 `test_v1_v2_to_text_byte_equal_modulo_engine_line`) as the load-bearing technical-positioning headline.
