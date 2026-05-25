@@ -10,10 +10,32 @@ import type { BackendGuardianAudit } from "../../../shared/types";
 
 const AUDIT_LOG_STORAGE_KEY = "apex-guardian-audit-log";
 
+/**
+ * Inline AuditId validator. Per wave-44 Phase 4.4 + cascade-#18 Turbopack
+ * cross-tree pattern (e63daec) + type-design-analyzer H3 closure: vitest
+ * specs run in a worker pool that cannot resolve shared/brands.ts
+ * `parseAuditId` through Turbopack's client-bundle splitter without
+ * adding a worker-pool indirection. Inline replicates the brand-parse
+ * contract (32-char lowercase hex OR "no_audit" sentinel; throws on
+ * format violation) so fixtures construct an audit_id with the same
+ * runtime invariant as the production decoder + no unsafe cast.
+ */
+function inlineParseAuditId(raw: string): BackendGuardianAudit["audit_id"] {
+  if (raw === "no_audit") {
+    return raw as BackendGuardianAudit["audit_id"];
+  }
+  if (!/^[0-9a-f]{32}$/.test(raw)) {
+    throw new TypeError(
+      `inlineParseAuditId: invalid audit_id ${JSON.stringify(raw)}; expected 32-char lowercase hex OR "no_audit" sentinel.`,
+    );
+  }
+  return raw as BackendGuardianAudit["audit_id"];
+}
+
 const sampleVerdict: BackendGuardianAudit = {
   verdict: "SAFE",
   triggered_rules: [],
-  audit_id: "abcdef01234567890123456789abcdef" as unknown as BackendGuardianAudit["audit_id"],
+  audit_id: inlineParseAuditId("abcdef0123456789abcdef0123456789"),
   reasoning: "no violations in forecast window",
   physics_confidence: null,
   audited_at_iso: "2026-05-24T20:00:00Z",
