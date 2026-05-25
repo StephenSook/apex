@@ -313,7 +313,38 @@ function decodeChatCompletionResponse(raw: unknown): ChatCompletionResponse {
       }
     }
   }
-  return raw as unknown as ChatCompletionResponse;
+  // Wave-44 deep-review type-design BLOCKER #3 close-out: construct
+  // the return object explicitly from validated fields instead of
+  // erasing the validation work with a final double-cast. Future
+  // additions to ChatCompletionResponse now trigger a TS error here
+  // (forcing the new field through the validation surface above)
+  // instead of silently shipping uncovered fields through the cast.
+  const choices: ReadonlyArray<ChatCompletionChoice> = raw.choices.map((c) => {
+    const choice = c as Record<string, unknown>;
+    const message = choice.message as Record<string, unknown>;
+    return {
+      index: choice.index as number,
+      message: {
+        role: message.role as ChatMessage["role"],
+        content: message.content as string,
+      },
+      finish_reason: choice.finish_reason as ChatCompletionChoice["finish_reason"],
+    };
+  });
+  const usage: ChatCompletionUsage | undefined = raw.usage !== undefined
+    ? {
+        prompt_tokens: (raw.usage as Record<string, unknown>).prompt_tokens as number,
+        completion_tokens: (raw.usage as Record<string, unknown>).completion_tokens as number,
+        total_tokens: (raw.usage as Record<string, unknown>).total_tokens as number,
+      }
+    : undefined;
+  return {
+    id: raw.id,
+    model: raw.model,
+    created: raw.created,
+    choices,
+    usage,
+  };
 }
 
 /**

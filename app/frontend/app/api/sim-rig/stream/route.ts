@@ -24,28 +24,19 @@
 
 import type { NextRequest } from "next/server";
 
+// Per wave-44 deep-review type-design BLOCKER #2 close-out: import
+// SimRigFrame + TelemetryChannels (via TelemetryRow which extends
+// TelemetryChannels) from app/shared/types.ts. The wave-30 contract-
+// sharing convention exists so frontend + backend + this route
+// agree at compile-time on the wire shape; the prior local re-
+// declaration risked silent drift.
+import type { SimRigFrame, TelemetryRow } from "../../../../../shared/types";
+
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const TICK_INTERVAL_MS = 50;
 const LAP_LENGTH_S = 78;
-
-interface TelemetryChannels {
-  readonly t_session_s: number;
-  readonly throttle_pct: number;
-  readonly brake_pa: number;
-  readonly steering_rad: number;
-  readonly rpm: number;
-  readonly lat_g: number;
-  readonly long_g: number;
-  readonly speed_mps: number;
-  readonly gear: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
-}
-
-interface SimRigFrame {
-  readonly t_sim: number;
-  readonly channels: TelemetryChannels;
-}
 
 function pickGear(speed: number): 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 {
   if (speed < 25) return 2;

@@ -279,6 +279,24 @@ export interface TimingSheetLap {
   readonly in_pit: boolean;
 }
 
+/**
+ * Wave-44 Phase 6c Granite Vision timing-sheet parser response wrapper.
+ * Returned by POST /api/timing-sheet-parse (frontend route + Vinh M3-V1
+ * backend swap-point per Stream M.3 spec extension). Per wave-44
+ * deep-review type-design BLOCKER #1 close-out: shared types hoisted
+ * here so frontend + backend agree at compile-time (no parallel
+ * duplicate definitions per the wave-30 contract-sharing convention).
+ */
+export type TimingSheetParser = "granite-vision-4.1-4b" | "canned-fixture" | "openrouter-granite-vision";
+
+export interface TimingSheetParsedLaps {
+  readonly source_filename: string;
+  readonly parser: TimingSheetParser;
+  /** Wall-clock parse latency in ms. */
+  readonly parse_ms: number;
+  readonly laps: ReadonlyArray<TimingSheetLap>;
+}
+
 // ---------------------------------------------------------------------------
 // Physics-projection layer output (between TTM and Guardian)
 // ---------------------------------------------------------------------------

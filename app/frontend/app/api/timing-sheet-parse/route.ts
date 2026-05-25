@@ -25,30 +25,26 @@
 
 import type { NextRequest } from "next/server";
 
+// Per wave-44 deep-review type-design BLOCKER #1 close-out: hoist
+// shared TimingSheetLap + TimingSheetParsedLaps + TimingSheetParser
+// types to app/shared/types.ts so frontend + backend agree at
+// compile-time (no parallel duplicate definitions per the wave-30
+// contract-sharing convention; mirrors the wave-39 ibm-stack.ts
+// extraction pattern).
+import type {
+  TimingSheetLap,
+  TimingSheetParsedLaps,
+} from "../../../../shared/types";
+
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-interface TimingSheetLap {
-  readonly lap: number;
-  readonly sector_1_time_s: number;
-  readonly sector_2_time_s: number;
-  readonly sector_3_time_s: number;
-  readonly lap_time_s: number;
-}
-
-interface TimingSheetParsedLaps {
-  readonly source_filename: string;
-  readonly parser: "granite-vision-4.1-4b" | "canned-fixture";
-  readonly parse_ms: number;
-  readonly laps: ReadonlyArray<TimingSheetLap>;
-}
-
 const CANNED_LAPS: ReadonlyArray<TimingSheetLap> = [
-  { lap: 1, sector_1_time_s: 24.182, sector_2_time_s: 28.945, sector_3_time_s: 25.612, lap_time_s: 78.739 },
-  { lap: 2, sector_1_time_s: 23.871, sector_2_time_s: 28.412, sector_3_time_s: 25.198, lap_time_s: 77.481 },
-  { lap: 3, sector_1_time_s: 23.659, sector_2_time_s: 28.103, sector_3_time_s: 24.951, lap_time_s: 76.713 },
-  { lap: 4, sector_1_time_s: 23.582, sector_2_time_s: 27.916, sector_3_time_s: 24.832, lap_time_s: 76.330 },
-  { lap: 5, sector_1_time_s: 23.504, sector_2_time_s: 27.847, sector_3_time_s: 24.798, lap_time_s: 76.149 },
+  { lap: 1, sector_1_time_s: 24.182, sector_2_time_s: 28.945, sector_3_time_s: 25.612, lap_time_s: 78.739, gap_s: 0.0, position: 1, tyre: "Slick", in_pit: false },
+  { lap: 2, sector_1_time_s: 23.871, sector_2_time_s: 28.412, sector_3_time_s: 25.198, lap_time_s: 77.481, gap_s: 0.0, position: 1, tyre: "Slick", in_pit: false },
+  { lap: 3, sector_1_time_s: 23.659, sector_2_time_s: 28.103, sector_3_time_s: 24.951, lap_time_s: 76.713, gap_s: 0.0, position: 1, tyre: "Slick", in_pit: false },
+  { lap: 4, sector_1_time_s: 23.582, sector_2_time_s: 27.916, sector_3_time_s: 24.832, lap_time_s: 76.330, gap_s: 0.0, position: 1, tyre: "Slick", in_pit: false },
+  { lap: 5, sector_1_time_s: 23.504, sector_2_time_s: 27.847, sector_3_time_s: 24.798, lap_time_s: 76.149, gap_s: 0.0, position: 1, tyre: "Slick", in_pit: false },
 ];
 
 const MAX_PDF_BYTES = 10 * 1024 * 1024;

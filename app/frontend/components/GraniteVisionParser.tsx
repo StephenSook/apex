@@ -24,20 +24,11 @@
 
 import { useState } from "react";
 
-interface TimingSheetLap {
-  readonly lap: number;
-  readonly sector_1_time_s: number;
-  readonly sector_2_time_s: number;
-  readonly sector_3_time_s: number;
-  readonly lap_time_s: number;
-}
-
-interface TimingSheetParsedLaps {
-  readonly source_filename: string;
-  readonly parser: "granite-vision-4.1-4b" | "canned-fixture";
-  readonly parse_ms: number;
-  readonly laps: ReadonlyArray<TimingSheetLap>;
-}
+// Per wave-44 deep-review type-design BLOCKER #1 close-out: import
+// shared types from app/shared/types.ts (single source of truth
+// vs the prior parallel duplicate declarations in this file + the
+// route handler).
+import type { TimingSheetParsedLaps } from "../../shared/types";
 
 type ParserState =
   | { readonly status: "idle" }
