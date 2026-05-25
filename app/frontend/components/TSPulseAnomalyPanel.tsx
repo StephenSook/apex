@@ -128,6 +128,7 @@ export default function TSPulseAnomalyPanel({
   return (
     <section
       aria-labelledby="tspulse-anomaly-title"
+      aria-live="polite"
       className={`flex flex-col gap-3 rounded-sm border-2 ${statusBorder(state.status)} bg-paper p-5`}
     >
       <header className="flex items-baseline justify-between gap-3">

@@ -127,7 +127,7 @@ export default function AICopilotChat({ panelId = "ai-copilot-chat" }: AICopilot
             className="flex items-center gap-2 rounded-sm border border-racing-green bg-paper px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-racing-green"
             aria-live="polite"
           >
-            <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-racing-green" />
+            <span className="inline-block h-2 w-2 motion-safe:animate-pulse rounded-full bg-racing-green" />
             Live
           </span>
         )}

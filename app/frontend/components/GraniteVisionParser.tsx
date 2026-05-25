@@ -147,7 +147,7 @@ export default function GraniteVisionParser() {
       </div>
 
       {state.status === "parsing" && (
-        <p className="font-mono text-xs text-amber">
+        <p className="font-mono text-xs text-amber" aria-live="polite">
           Parsing {state.filename}...
         </p>
       )}

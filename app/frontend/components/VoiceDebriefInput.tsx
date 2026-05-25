@@ -170,8 +170,8 @@ export default function VoiceDebriefInput({ onTranscript }: VoiceDebriefInputPro
       )}
       {state.status === "recording" && (
         <div className="flex flex-col gap-2">
-          <div className="flex items-baseline gap-2">
-            <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-accent" aria-hidden="true" />
+          <div className="flex items-baseline gap-2" aria-live="polite">
+            <span className="inline-block h-2 w-2 motion-safe:animate-pulse rounded-full bg-accent" aria-hidden="true" />
             <span className="font-mono text-[11px] uppercase tracking-wider text-accent">Recording</span>
           </div>
           {state.partial.length > 0 && (

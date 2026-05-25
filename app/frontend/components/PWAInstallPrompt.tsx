@@ -106,6 +106,8 @@ export default function PWAInstallPrompt() {
 
   if (state.status === "hidden") return null;
 
+  // a11y: reduced-motion users get static (no pulse) on the install
+  // affordance via the body className gating tailwind motion-safe variant.
   if (state.status === "ios") {
     return (
       <aside
