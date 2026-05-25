@@ -107,12 +107,19 @@ export const IBM_GRANITE_STACK: ReadonlyArray<GraniteStackTool> = [
     version: "r2.1",
     role: "Track 1 of D-010 three-track ensemble (frozen + channel-mix decoder)",
     status: "INTEGRATION",
+    // Wave-44 Phase 6d: ThreeTrackForecastChart per-track tier badge
+    // surfaces TTM as INTEGRATION (Vinh V3 backend swap-point at Phase 1
+    // task 1.3 + 1.4). Status flips to "WIRED" once V3 lands.
   },
   {
     name: "Granite FlowState",
     version: "9.1M",
     role: "Track 2 of D-010 (sampling-rate-invariant continuous-time SSM at 50 Hz)",
     status: "INTEGRATION",
+    // Wave-44 Phase 6d: ThreeTrackForecastChart per-track tier badge
+    // surfaces FlowState as MOCK at HEAD. Backend swap-point Vinh V10
+    // (post-submission). Status stays INTEGRATION on the inventory
+    // (frontend contract live; backend route documented).
   },
   {
     name: "IBM TSPulse",

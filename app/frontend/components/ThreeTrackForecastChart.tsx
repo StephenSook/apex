@@ -46,6 +46,26 @@ const TRACK_STROKES: Record<ForecastTrackName, string> = {
   chronos2: "stroke-accent",
 };
 
+// Wave-44 Phase 6d honesty audit per BLOCKER 4 framing: per-track
+// wire-up tier surfacing. TTM r2.1 wires via OpenRouter (Vinh V3
+// backend swap-point already documented per Phase 1 task 1.3);
+// FlowState + Chronos-2 are mock at HEAD pending Vinh V10 + V11
+// post-submission. Render-path-identical per Stream M.3 spec
+// extension; status badge is a visual honesty marker for judges.
+type TrackTier = "INTEGRATION" | "MOCK";
+
+const TRACK_TIERS: Record<ForecastTrackName, TrackTier> = {
+  ttm_channel_mix: "INTEGRATION",
+  flowstate: "MOCK",
+  chronos2: "MOCK",
+};
+
+const TRACK_SWAP_POINTS: Record<ForecastTrackName, string> = {
+  ttm_channel_mix: "Vinh V3 backend (Phase 1 task 1.3 + 1.4 forecast)",
+  flowstate: "Vinh V10 backend (post-submission)",
+  chronos2: "Vinh V11 backend (post-submission)",
+};
+
 export default function ThreeTrackForecastChart({ forecast }: ThreeTrackForecastChartProps) {
   // Wave-35 A.4 exhaustiveness throw on forecast.status. Top-of-function
   // switch derives the converged-flag + asserts at compile time that
@@ -336,15 +356,33 @@ export default function ThreeTrackForecastChart({ forecast }: ThreeTrackForecast
       </svg>
 
       <ol className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3 font-mono text-xs text-ink-soft">
-        {forecast.tracks.map((track) => (
-          <li key={track.track} className="flex items-center gap-2">
-            <span
-              aria-hidden="true"
-              className={`inline-block h-2 w-6 ${TRACK_STROKES[track.track].replace("stroke-", "bg-")}`}
-            />
-            <span>{TRACK_LABELS[track.track]}</span>
-          </li>
-        ))}
+        {forecast.tracks.map((track) => {
+          const tier = TRACK_TIERS[track.track];
+          return (
+            <li key={track.track} className="flex flex-col gap-1">
+              <div className="flex items-center gap-2">
+                <span
+                  aria-hidden="true"
+                  className={`inline-block h-2 w-6 ${TRACK_STROKES[track.track].replace("stroke-", "bg-")}`}
+                />
+                <span>{TRACK_LABELS[track.track]}</span>
+                <span
+                  className={`rounded-sm border px-1.5 py-0.5 text-[9px] uppercase tracking-wider ${
+                    tier === "INTEGRATION"
+                      ? "border-amber bg-paper text-amber"
+                      : "border-rule bg-paper text-muted"
+                  }`}
+                  aria-label={`Wire-up tier: ${tier}`}
+                >
+                  {tier === "INTEGRATION" ? "Integration" : "Mock"}
+                </span>
+              </div>
+              <span className="text-[10px] uppercase tracking-wider text-muted">
+                Swap: {TRACK_SWAP_POINTS[track.track]}
+              </span>
+            </li>
+          );
+        })}
         {forecast.status === "converged" && (
           <li className="flex items-center gap-2">
             <span aria-hidden="true" className="inline-block h-[3px] w-6 bg-ink" />
