@@ -99,9 +99,10 @@ export default function AnalyzeFlow() {
       setReport(buildMockReport(submission));
       setActiveTab("coaching");
     } catch (err) {
-      // Day 5-6 swap: real fetch errors land here. Dropzone's onSubmit catch
-      // is a secondary sink, but this primary catch surfaces a user-friendly
-      // message instead of leaking JS exception details upward.
+      // Real fetch errors land here once the backend swap-point per
+      // Stream M.3 spec extension wires up. Dropzone's onSubmit catch
+      // is a secondary sink, but this primary catch surfaces a user-
+      // friendly message instead of leaking JS exception details upward.
       setReport(null);
       if (err instanceof Error) throw err;
       throw new Error("APEX could not generate a coaching report. Check your network and try again.");

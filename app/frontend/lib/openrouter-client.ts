@@ -7,8 +7,14 @@
  *
  * Wave-42 Lane F.C close-out per `docs/vinh-phase-1-handoff.md` Q3
  * Phase 1 task ownership split (Stephen owns 1.7 OpenRouter API
- * plumbing). NOT a client-bundled module: invoked from Next.js API
- * routes / server actions; API key never enters the client bundle.
+ * plumbing). Wave-43 D2.x hardened via cold-review-2 closures
+ * (D2.1 monotonic-counter pattern + D2.2 array+null error shape +
+ * D2.3 retry-body cancel + warn logging + D2.7 drop stream:boolean +
+ * D2.8 abort propagation); wave-44 Phase 4.1 + 4.2 closed delay()
+ * AbortSignal listener leak + decodeChatCompletionResponse partial-
+ * validation hardening. NOT a client-bundled module: invoked from
+ * Next.js API routes / server actions; API key never enters the
+ * client bundle.
  *
  * Retry policy:
  *   - 5xx response: exponential backoff (200ms base; cap 1600ms;

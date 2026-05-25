@@ -1,33 +1,40 @@
 "use client";
 
 /**
- * Watson TTS walkie-talkie audio player. Wave-42 Lane A.F.1 close-out
- * per the competitor field deep-dive memory steal-list HIGH-value
- * item #1 (PitWall watson_tts.py:37-81 FFmpeg filter-chain
- * walkie-talkie acoustic profile pattern).
+ * Watson TTS walkie-talkie audio player. Originally wave-42 Lane A.F.1
+ * close-out per the competitor field deep-dive memory steal-list
+ * HIGH-value item #1 (PitWall watson_tts.py:37-81 FFmpeg filter-chain
+ * walkie-talkie acoustic profile pattern). Wave-43 cascade-#15
+ * F2-round-2 reworked the architecture to inline-blob streaming so
+ * the route runs on Vercel's read-only filesystem; the prior HEAD-
+ * probe cache lookup pattern (Vercel public/generated-audio cache)
+ * is retired per D-043 close-out.
  *
  * Two-path implementation:
  *
  * 1. **Watson TTS server-side path** (production): /api/watson-tts
- *    endpoint (Stream M.3 spec extension; Vinh wires in next sync
- *    window) generates the audio with Watson TTS REST API + the
- *    FFmpeg filter chain (highpass=f=350 + lowpass=f=3000 + compand
- *    + volume=1.8) for the walkie-talkie acoustic profile + caches
- *    to `public/generated-audio/{audit_id}.mp3`. The frontend reads
- *    the cached audio file via a standard <audio src> element.
+ *    endpoint synthesizes with Watson TTS REST API + the FFmpeg
+ *    filter chain (highpass=f=350 + lowpass=f=3000 + compand +
+ *    volume=1.8) for the walkie-talkie acoustic profile + streams
+ *    the audio/mpeg bytes back inline. The frontend POSTs once on
+ *    mount + URL.createObjectURL on the inline blob + plays via a
+ *    standard <audio src> element. Per-request synthesis (no cross-
+ *    request cache) but the Watson + FFmpeg pipeline runs ~1-3s on
+ *    Vercel iad1 with a warm function instance, well within the
+ *    perception budget for a cool-down lap walkie-talkie.
  *
- * 2. **Web Speech API fallback** (immediate ship): when the
- *    Watson server endpoint is unreachable OR when the
- *    /generated-audio/ cache file does not exist, fall back to
- *    `window.speechSynthesis.speak()` with pitch + rate adjustments
- *    that approximate the walkie-talkie profile (pitch 0.85 +
- *    rate 1.05). No external API key needed; works in any modern
- *    browser with Web Speech API support.
+ * 2. **Web Speech API fallback** (immediate ship): when /api/watson-
+ *    tts returns a non-2xx OR when the network throw fires, fall
+ *    back to window.speechSynthesis.speak() with pitch + rate
+ *    adjustments that approximate the walkie-talkie profile
+ *    (pitch 0.85 + rate 1.05). No external API key needed; works
+ *    in any modern browser with Web Speech API support.
  *
- * The component below renders an `<audio>` element when the Watson
- * path is available + falls through to the speechSynthesis path when
- * the audio file lookup fails. User-gesture-triggered play (NOT
- * auto-play) per browser audio API constraints.
+ * AbortController wired to fetch so unmount-mid-synthesis aborts the
+ * server work. The component below renders an <audio> element when
+ * the Watson path returns 200 audio/mpeg + falls through to the
+ * speechSynthesis path on any failure. User-gesture-triggered play
+ * (NOT auto-play) per browser audio API constraints.
  *
  * Per cascade-#11 type-only-import discipline: branded types come
  * via `import type` since this module is client-bundled + the brand
@@ -62,16 +69,11 @@ export default function WatsonTtsRadio({
 }: WatsonTtsRadioProps) {
   const [state, setState] = useState<AudioPlayerState>({ status: "idle" });
 
-  // Wave-43 cascade-#15 F2-round-2 + galaxy-ambition rework: drop
-  // HEAD-probe cache lookup pattern (Vercel readonly FS made the cache
-  // path inoperable; per D-043 path-forward shipped). New shape:
-  // single POST to /api/watson-tts on mount; server returns inline
-  // audio/mpeg blob; client creates URL.createObjectURL + plays.
-  // Per-request synthesis (no cross-request cache) but the Watson +
-  // FFmpeg pipeline runs ~1-3s on Vercel iad1 with warm function
-  // instance, well within the perception budget for a cool-down lap
-  // walkie-talkie. AbortController wired to fetch so unmount-mid-
-  // synthesis aborts the server work.
+  // Inline-blob streaming effect (architecture per the file header
+  // section "Watson TTS server-side path"). Single POST on mount +
+  // URL.createObjectURL on the inline audio/mpeg blob + plays. Watson
+  // TTS + FFmpeg pipeline runs server-side; client never sees the
+  // raw audio bytes outside the blob URL lifetime.
   useEffect(() => {
     let cancelled = false;
     const controller = new AbortController();

@@ -8,8 +8,13 @@
  *
  * Wave-42 Lane F.D close-out per docs/vinh-phase-1-handoff.md Q3
  * Phase 1 task ownership split (Stephen owns 1.7 OpenRouter API
- * plumbing + 1.8 streaming-response handler). Hook surface returns a
- * discriminated-union state per the
+ * plumbing + 1.8 streaming-response handler). Wave-43 D2.x hardened
+ * via cold-review-2 closures (silent-failure-hunter + type-design-
+ * analyzer + code-reviewer + comment-analyzer); cascade-#15 through
+ * cascade-#21 landed F2-round-2 fixes + the HARD-COMPLIANCE server-
+ * side regex scrubber (cascade-#21 in route.ts) layered on top of
+ * this hook's consumer surface. Hook surface returns a discriminated-
+ * union state per the
  * `feedback_discriminated_unions_over_contradiction.md` rule.
  *
  * State machine:
