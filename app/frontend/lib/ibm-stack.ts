@@ -21,6 +21,22 @@
  *   6. deck storyboard "IBM stack" slide.
  */
 
+/**
+ * Wave-44 honesty tier per gemini-agent BLOCKER 4 (2026-05-24): the
+ * 12-tool catalog asserts "every one load-bearing" but factual wire-up
+ * status varies. Tier per tool surfaces the actual production routing
+ * status so README + page + paper + deck copy can match reality.
+ *
+ * - WIRED: real production routing live at HEAD (verified live-smoke)
+ * - INTEGRATION: frontend surface + canonical type contract shipped;
+ *   backend swap-point documented (Vinh-scope V1-V7); render path
+ *   stays identical between mock + real per Stream M.3 spec extension
+ * - FACADE: demoted to demo-facade per a project decision (e.g. D-017
+ *   Langflow facade per wave-30); does not represent runtime wiring
+ * - ACCELERATOR: build-time / development tooling, not runtime routing
+ */
+export type GraniteStackToolStatus = "WIRED" | "INTEGRATION" | "FACADE" | "ACCELERATOR";
+
 export interface GraniteStackTool {
   /**
    * Display name (e.g. "Granite-Docling"). Excludes the version
@@ -43,6 +59,15 @@ export interface GraniteStackTool {
    * architecture-spec layer numbers (Layer 0-7).
    */
   readonly role: string;
+  /**
+   * Wave-44 honesty tier per gemini-agent BLOCKER 4 close-out: factual
+   * production-routing status at HEAD. Used by the StackBadges grid +
+   * IBM_STACK panel to render an explicit "WIRED" / "INTEGRATION"
+   * pill per tool so README + page copy + paper match runtime reality.
+   * Avoids the credibility-hit of "12 tools every one load-bearing"
+   * narrative when 7 of 12 are still backend-swap-point mocks.
+   */
+  readonly status: GraniteStackToolStatus;
 }
 
 /**
@@ -59,71 +84,87 @@ export const IBM_GRANITE_STACK: ReadonlyArray<GraniteStackTool> = [
     name: "Granite-Docling",
     version: "258M",
     role: "FIA COA PDF to structured JSON parser",
+    status: "INTEGRATION",
   },
   {
     name: "Docling library",
     version: "latest",
     role: "Open-source IBM Docling conversion + table-extraction",
+    status: "ACCELERATOR",
   },
   {
     name: "Granite Vision",
     version: "4.1 4B",
     role: "SRO + Britcar timing-sheet PDF to CSV",
+    status: "INTEGRATION",
   },
   {
     name: "Granite TimeSeries TTM",
     version: "r2.1",
     role: "Track 1 of D-010 three-track ensemble (frozen + channel-mix decoder)",
+    status: "INTEGRATION",
   },
   {
     name: "Granite FlowState",
     version: "9.1M",
     role: "Track 2 of D-010 (sampling-rate-invariant continuous-time SSM at 50 Hz)",
+    status: "INTEGRATION",
   },
   {
     name: "IBM TSPulse",
     version: "1M",
     role: "Polyphase time-frequency anomaly detector (D-016 Layer 2)",
+    status: "INTEGRATION",
   },
   {
     name: "Granite Embedding R2",
     version: "149M + 47M",
     role: "Hybrid dense + sparse RAG over setup + theory + COA (D-016)",
+    status: "INTEGRATION",
   },
   {
     name: "Granite Instruct",
     version: "4.1 8B",
     role: "Race-engineer narrator producing the coaching report",
+    status: "WIRED",
   },
   {
     name: "Granite Guardian",
     version: "4.1 8B",
     role: "BYOC custom-rule audit + D-024 physics-confidence downgrade",
+    status: "INTEGRATION",
   },
   {
     name: "Granite 4.0 Nano",
     version: "350M",
     role: "In-browser WebGPU edge model via Transformers.js (D-019 + D-021)",
+    status: "WIRED",
   },
   {
     name: "Langflow",
     version: "demo facade",
     role: "Orchestration graph export (D-017 demoted to facade per wave-30)",
+    status: "FACADE",
   },
   {
     name: "IBM Bob",
     version: "latest",
     role: "Build accelerator per IBM Granite Ferrari case-study precedent",
+    status: "ACCELERATOR",
   },
 ];
 
 /**
  * IBM_STACK tuple-form adapter for /judges-page consumption. The
- * judges panel renders `[label, role]` tuples where the label
- * combines `name + version` into a single display string. Adapter
- * derives the tuple form from the canonical catalog so the tuple-
- * form rendering stays consistent with the object-form rendering on
- * the landing page.
+ * judges panel renders `[label, role, status]` 3-tuples where the
+ * label combines `name + version` into a single display string + the
+ * status mirrors the BLOCKER 4 honesty tier so the /judges panel
+ * matches the / StackBadges per-tool pill rendering.
+ *
+ * Wave-44 Phase 4 Gemini BLOCKER 4 close-out: extended from 2-tuple
+ * to 3-tuple to surface the per-tool honesty tier on the /judges
+ * surface alongside the landing page. Render path consumes
+ * `[label, role, status]` + renders a status pill per tool.
  */
-export const IBM_STACK_TUPLES: ReadonlyArray<readonly [string, string]> =
-  IBM_GRANITE_STACK.map((tool) => [`${tool.name} ${tool.version}`, tool.role] as const);
+export const IBM_STACK_TUPLES: ReadonlyArray<readonly [string, string, GraniteStackToolStatus]> =
+  IBM_GRANITE_STACK.map((tool) => [`${tool.name} ${tool.version}`, tool.role, tool.status] as const);

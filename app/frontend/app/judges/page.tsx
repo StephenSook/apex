@@ -100,11 +100,16 @@ const RESOURCES: ReadonlyArray<ResourceLink> = [
 
 // Wave-39 codex MED close-out: the IBM_STACK panel now derives from
 // the shared `lib/ibm-stack.ts` canonical catalog. The /judges panel
-// uses the tuple-form adapter (IBM_STACK_TUPLES) because the legacy
-// JSX in this file expects `[label, role]` tuples. Future tool-
-// count + version-pin changes propagate to /, /judges, paper, deck,
-// README via a single edit to the shared catalog.
-const IBM_STACK: ReadonlyArray<readonly [string, string]> = IBM_STACK_TUPLES;
+// uses the tuple-form adapter (IBM_STACK_TUPLES). Future tool-count
+// + version-pin changes propagate to /, /judges, paper, deck, README
+// via a single edit to the shared catalog.
+//
+// Wave-44 Phase 4 Gemini BLOCKER 4 close-out: extended to 3-tuple
+// `[label, role, status]`. status drives the per-tool honesty pill
+// (WIRED / INTEGRATION / FACADE / ACCELERATOR) matching the / page
+// StackBadges pill rendering. README + page copy + paper match
+// runtime reality vs the prior "every one load-bearing" overclaim.
+const IBM_STACK: typeof IBM_STACK_TUPLES = IBM_STACK_TUPLES;
 
 const QA_CARDS: ReadonlyArray<QaCard> = [
   {
@@ -196,17 +201,36 @@ export default function JudgesPage() {
       >
         <div className="mx-auto max-w-6xl px-6 py-16 lg:px-10 lg:py-20">
           <h2 id="stack-title" className="font-display text-3xl tracking-tight text-ink">
-            The twelve IBM tools, each with a role.
+            Twelve IBM tools. Per-tool wire-up status, honest.
           </h2>
+          <p className="mt-4 max-w-3xl text-base leading-relaxed text-ink-soft">
+            Two wired at HEAD (Granite Instruct + Granite 4.0 Nano). Seven at frontend-integration with canonical type contracts and backend swap-points per Stream M.3. One demo-facade (Langflow per D-017). Two build-time accelerators (Docling library + IBM Bob). No tool listed without a runtime role.
+          </p>
           <dl className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {IBM_STACK.map(([name, role]) => (
+            {IBM_STACK.map(([name, role, status]) => (
               <div
                 key={name}
                 className="flex flex-col gap-2 rounded-sm border border-rule bg-paper-warm p-4"
               >
-                <dt className="font-mono text-xs uppercase tracking-wider text-racing-green">
-                  {name}
-                </dt>
+                <div className="flex items-baseline justify-between gap-2">
+                  <dt className="font-mono text-xs uppercase tracking-wider text-racing-green">
+                    {name}
+                  </dt>
+                  <span
+                    className={`font-mono text-[9px] uppercase tracking-wider rounded-sm border px-1.5 py-0.5 whitespace-nowrap ${
+                      status === "WIRED"
+                        ? "border-racing-green bg-paper text-racing-green"
+                        : status === "INTEGRATION"
+                        ? "border-amber bg-paper text-amber"
+                        : status === "FACADE"
+                        ? "border-rule bg-paper text-ink-soft"
+                        : "border-rule bg-paper text-muted"
+                    }`}
+                    aria-label={`Status: ${status}`}
+                  >
+                    {status === "WIRED" ? "Wired" : status === "INTEGRATION" ? "Integration" : status === "FACADE" ? "Facade" : "Accelerator"}
+                  </span>
+                </div>
                 <dd className="text-sm leading-relaxed text-ink-soft">{role}</dd>
               </div>
             ))}

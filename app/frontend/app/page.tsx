@@ -610,8 +610,11 @@ function StackBadges() {
           <p className="apex-eyebrow">IBM stack</p>
           <h2 id="stack-title" className="font-display text-4xl leading-tight text-ink sm:text-5xl">
             Twelve tools.
-            <em className="italic text-racing-green"> Every one load-bearing.</em>
+            <em className="italic text-racing-green"> Per-tool wire-up status, honest.</em>
           </h2>
+          <p className="text-base text-ink-soft leading-relaxed">
+            Two tools wired end-to-end at HEAD (Granite Instruct 4.1 8B coaching narration + Granite 4.0 Nano 350M WebGPU edge model). Seven tools at frontend-integration phase with canonical type contracts + backend swap-points documented (per Stream M.3 spec handoff in Vinh-coord backend roadmap; render path stays identical across mock and real). One demo-facade (Langflow per D-017). Two build-time accelerators (Docling library + IBM Bob). No tool listed without a runtime role in the pipeline.
+          </p>
         </div>
         <ul className="grid gap-px bg-rule sm:grid-cols-2 lg:grid-cols-4">
           {IBM_GRANITE_STACK.map((t) => (
@@ -619,7 +622,23 @@ function StackBadges() {
               key={t.name}
               className="flex flex-col gap-1 bg-paper-warm p-5"
             >
-              <span className="font-display text-lg text-ink">{t.name}</span>
+              <div className="flex items-baseline justify-between gap-2">
+                <span className="font-display text-lg text-ink">{t.name}</span>
+                <span
+                  className={`font-mono text-[10px] uppercase tracking-wider rounded-sm border px-2 py-0.5 ${
+                    t.status === "WIRED"
+                      ? "border-racing-green bg-paper text-racing-green"
+                      : t.status === "INTEGRATION"
+                      ? "border-amber bg-paper text-amber"
+                      : t.status === "FACADE"
+                      ? "border-rule bg-paper text-ink-soft"
+                      : "border-rule bg-paper text-muted"
+                  }`}
+                  aria-label={`Status: ${t.status}`}
+                >
+                  {t.status === "WIRED" ? "Wired" : t.status === "INTEGRATION" ? "Integration" : t.status === "FACADE" ? "Facade" : "Accelerator"}
+                </span>
+              </div>
               <span className="font-mono text-xs uppercase tracking-wider text-accent">
                 {t.version}
               </span>
