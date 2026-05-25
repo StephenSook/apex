@@ -4,6 +4,54 @@ Every locked decision with rationale + date + scope. Newest first.
 
 ---
 
+## 2026-05-25 D-052: Wave-45 G4 pivot narrative reframing across paper + README + Q&A killshots + frontend ibm-stack
+
+**Decision.** Vinh shipped commit `2fddea4` (Phase 2 Day 4 Gate G4 FAIL on speed_mps) at 2026-05-25 03:47 ET + commit `9048573` (Phase 2 Day 5 D-050 V2 cut clause NOT invoked) at 2026-05-25 12:53 ET. The "zero-shot TTM beats seasonal-naive on speed_mps" pitch claim is retired across all frontend + paper + outreach surfaces. The new framing is "TTM + V2 cvxpylayers projection forecast-envelope composition" with the engine-agnostic byte-equality lock (per D-050 `test_v1_v2_to_text_byte_equal_modulo_engine_line`) as the load-bearing technical-positioning headline.
+
+**Reframing across surfaces.**
+
+1. **paper/apex-neurips-workshop-2026.md §3.2** — replace "frozen TTM zero-shot" framing with "frozen TTM + D-010 Track 1 channel-mix decoder fine-tune"; preserve engine-agnostic boundary as PRIMARY load-bearing claim; cite D-050 byte-equality test verbatim.
+2. **paper §4.2 baselines table** — drop "TTM zero-shot beats seasonal-naive" cell; populate seasonal-naive row with verified Hamilton Bahrain Q numbers from `logs/day-04-g4-numbers.json` (speed_mps MAE: TTM 35.18 vs naive 18.38, ~2x naive wins on this fixture); add G4 FAIL honest-disclosure row.
+3. **paper §4.5 case studies** — ADD the G4 FAIL pivot as a verified-and-executed case-study (the project HIT the planned pivot trigger + executed in ~12 hours; honest-disclosure + project-quality narrative).
+4. **README Differentiator #1 + #2 + §5 honesty narrative** — soften "we don't retrain" to "we don't retrain from scratch; we fine-tune the channel-mix decoder per D-010 Track 1 + preserve the frozen-backbone weights"; preserve engine-agnostic narrative.
+5. **project_apex_qa_killshots.md flashcards 1 + 3 + 5** — flashcard #1 Deep Dynamics differentiator softens; flashcard #3 Serialization integrity STRENGTHENS via byte-equality wow-factor; flashcard #5 Latency budget adds V2 ~3.5s 12-projection number per D-050 (~290ms per projection).
+6. **app/frontend/lib/ibm-stack.ts** Granite TimeSeries TTM entry status comment updates from `"backend swap-point at Phase 1 task 1.3 + 1.4"` to `"channel-mix decoder fine-tune at Vinh's apex/ttm/forecast.py Day 5 fine-tune track; V2 cvxpylayers projector at apex/physics/projection.py per D-050 byte-equality lock"`.
+7. **app/frontend/app/judges/page.tsx** architecture-figure narrative + galaxy-moves section ADD D-050 engine-agnostic byte-equality as the load-bearing technical-positioning headline + cross-reference to Stage A + Stage B staged ladder per `DifferentiableProjector` Protocol.
+8. **app/frontend/components/ThreeTrackForecastChart.tsx** per-track honesty badge refresh Track 1 (Granite TTM r2.1) status from prior label to `"INTEGRATION-FINETUNE (D-010 Track 1 channel-mix decoder; Vinh apex/ttm/forecast.py Day 5)"`.
+
+**Rationale.** Galaxy-ambition + quality-over-speed + honesty-tier audit + no-time-pressure-restraint memory rules all converge on the same answer: when the project HITS a documented fail-pivot trigger + executes the pivot in 12h, that IS the highest-quality narrative + judges reward the honesty. Per `feedback_g4_fail_pivot_documented_then_executed.md` memory rule (new wave-45 lock).
+
+**Affected.** Paper §3.2 + §3.5 + §4.2 + §4.5; README Differentiator + §5; Q&A killshots 1 + 3 + 5; ibm-stack.ts TTM entry; /judges page architecture + galaxy-moves sections; ThreeTrackForecastChart Track 1 badge.
+
+---
+
+## 2026-05-25 D-051: Wave-45 mega-wave plan-entry (galaxy-tier 12-phase scope-lock)
+
+**Decision.** Wave-45 plan locked at `~/.claude/plans/all-right-i-want-rippling-moon.md` per Stephen explicit "all of these" across 3 scope-priority questions 2026-05-25 13:30 ET. 12-phase plan absorbs Vinh G4 pivot sync (Block A) + wave-44 residuals (Block B) + galaxy-stretch wow-factor (Block C with 3 sub-batches C.1 + C.2 + C.3) + real Granite TTM in-browser via Transformers.js (Block D) + tier-3 cross-model research dispatch (Block E) + Vinh M3-V12 through V15 additions (Block F) + engine-agnostic byte-equality wow-factor surface (Block G).
+
+**Per Stephen explicit galaxy-ambition mandate 2026-05-25:** "remember we're aiming for the galaxy, we're aiming for the sky. We're aiming for our project to seem unfeasible, but we're going to make it feasible." All 4 scope-priority options + all 4 tier-3 research prompts + all 4 Vinh V12-V15 additions in scope. No defer.
+
+**12-phase shape.**
+
+- Phase 1: Memory + decision-log + pull Vinh (this entry + D-052 + new memory rule).
+- Phase 2 Block A: Vinh G4 pivot sync.
+- Phase 3 Block B: Wave-44 residual polish (8 day-marker + 6 new tests + type-design polish + em-dash + commit-count fix).
+- Phase 4 Block C.1: Judge-walkthrough mode + interactive COA gate toggle.
+- Phase 5 Block C.2: /changelog auto-render + real-time ApexCamPanel.
+- Phase 6 Block C.3: Track tightening + mobile QR + Vercel BotID + /compare + replay slider + /methodology.
+- Phase 7 Block D: Real Granite TimeSeries TTM via Transformers.js in-browser.
+- Phase 8 Block E: 4 tier-3 cross-model research prompts (operator-action; Stephen runs).
+- Phase 9 Block F: Vinh M3-V12-V15 frontend stubs.
+- Phase 10 Block G: Engine-agnostic byte-equality demo on /judges.
+- Phase 11: 7-agent deep-review dispatch.
+- Phase 12: Final close-out + hackathon-pre-deploy + BeMyApp submission.
+
+**Total estimate.** 100-150 atomic commits across 12 phases + 4 tier-3 dispatches + 6-8 new components + 5 new pages + 5+ new memory rules + Vinh V12-V15 stubs + Engine-agnostic byte-equality demo + Transformers.js TTM in-browser. Multi-session execution.
+
+**Affected.** Project-wide posture for wave-45. Cross-references: `~/.claude/plans/all-right-i-want-rippling-moon.md` (plan-file); `project_apex_wave_44_close_out.md` (cumulative state through wave-44); `feedback_galaxy_ambition_no_deferrals.md` + `feedback_no_time_pressure_restraint.md` (load-bearing); `feedback_g4_fail_pivot_documented_then_executed.md` (new wave-45 rule).
+
+---
+
 ## 2026-05-25 D-050: Phase 2 Day 5 task 2.13 V2 cut clause NOT invoked; constant-mu V2 ships as Day-5 floor
 
 **Decision.** Phase 2 Day 5 task 2.12 (CvxpyLayersProjector constant-mu V2) shipped on commit `cb970ed` with 12 tests green including the engine-agnostic byte-equality assertion. Plan task 2.13's "if convergence issues by EOD Day 5, ship V1 NumPy as floor" clause is NOT invoked: V2 converges, the cvxpylayers solve is differentiable end-to-end, and the V1 V2 .to_text() outputs are byte-identical modulo the leading ENGINE line. The 8-tier Pacejka linearization + 3-iteration unrolled SCP (D-031 Stage A + Stage B) remain deferred per the staged ladder; they land as quality lifts after Phase 3 Day 6, not as Day-5 blockers.
