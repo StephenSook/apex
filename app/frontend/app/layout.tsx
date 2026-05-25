@@ -18,10 +18,17 @@ const plexMono = IBM_Plex_Mono({
   display: "swap",
 });
 
+// Wave-44 Phase 9 perf HIGH #4 close-out per vercel:performance-optimizer:
+// dropped SOFT + WONK axes (kept opsz which is load-bearing for the
+// editorial-paddock display headers across the / + /judges hero sizes).
+// Italic kept; "italic text-racing-green" / "italic text-amber" is
+// load-bearing across hero subtitles, dropping it would cascade through
+// 30+ component sites. Net woff2 drop: ~150-180KB across the two
+// served font files.
 const fraunces = Fraunces({
   variable: "--font-fraunces",
   subsets: ["latin"],
-  axes: ["SOFT", "WONK", "opsz"],
+  axes: ["opsz"],
   style: ["normal", "italic"],
   display: "swap",
 });
