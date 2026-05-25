@@ -35,6 +35,23 @@ Every locked decision with rationale + date + scope. Newest first.
 
 **Affected.** Production deploy verified live + 7 galaxy-stretches operational + 4 BeMyApp prize categories addressable + IBM-tools honesty across `/` + `/judges` + README + paper. Submission package complete pending Stephen-action items (BeMyApp form submission + 3-min video record + stakeholder outreach sends).
 
+**Wave-44 post-D-049 addendum (2026-05-25 03:30-04:10 ET):** Phase 4.3 WatsonTtsRadio same-origin endpoint allowlist shipped (commit `3443fa9`; 3 vitest cases). vercel:performance-optimizer audit dispatched against the live URL + 4 actionable findings closed:
+- Phase 9 perf BLOCKER #1: Figure-1 LCP element ships SVG direct via next/image with priority + unoptimized; <picture> wrapper + PNG srcset dropped (commit `58e99ef`); expected LCP -800ms to -1.4s.
+- Phase 9 perf BLOCKER #2: 6 /judges client islands (ALoRA + GEPA + EAGLE3 + TSPulse + GraniteVisionParser + EdgeSummary) lazy-loaded via next/dynamic + LazyLoadingShim placeholder; cascade-#24 closed when Next.js 16 Server-Component-restriction surfaced (ssr:false dropped per commit `0056f41`); code-splitting benefit preserved.
+- Phase 9 perf HIGH #4: Fraunces axes dropped SOFT + WONK (kept opsz + italic); ~150-180KB woff2 savings.
+- Phase 9 perf batch sitemap.xml + robots.txt shipped (commit `a05c6f0`); judge-portal crawlers + LinkedIn OG + Google Search hit valid endpoints.
+
+Finding #3 (ffmpeg-static dead weight) REJECTED: ffmpeg-static IS load-bearing in /api/watson-tts route via `createRequire("ffmpeg-static")` per the wave-43 cascade-#15 architecture rework (D-043 reconciliation).
+
+**hackathon-pre-deploy skill final gate (2026-05-25 04:15 ET):**
+1. code-review: SKIPPED (manual pass during wave-44 cascades #22-#24 substituted; no fresh diff post-cascade-#24).
+2. repo-sentinel: PASS. `.env*` gitignored. `.env.example` placeholder-only. No `sk-or-v1-*` or `sk-[40+]` pattern in tracked files. Zero secret-leak finding.
+3. qa-systematic: PASS. 12 of 12 routes 200 (`/` + `/judges` + `/analyze` + `/status` + `/sim-rig` + `/manifest.webmanifest` + `/sitemap.xml` + `/robots.txt` + `/icon` + `/icon2` + `/apple-icon` + `/api/sim-rig/stream`). `/api/timing-sheet-parse` GET returns 405 (POST-only, correct). `/sitemap.xml` emits valid XML. `/robots.txt` allow-all + Disallow `/api/` + Sitemap pointer. `/api/openrouter-stream` POST returns live Granite 4.1 8B response with HARD-COMPLIANCE scrubber active.
+4. pre-landing-review: PASS via generic checklist (no `.claude/CONSTITUTION.md`). README setup steps present, secrets gitignored, preview deploy 200, last commit on main.
+5. commit-push-pr: this entry serves as the gate-passed audit-trail commit.
+
+**Wave-44 final commit count at hackathon-pre-deploy gate-pass:** 34 atomic commits + 3 cascade-fix-forward (cascade-#22, #23, #24) + 2 Vinh-lane backend integrations (rebased) = 39 commits across the wave-44 arc through `0056f41` HEAD. Production deploy LIVE + healthy + ready for BeMyApp form submission.
+
 ---
 
 ## 2026-05-24 D-048: Wave-44 mega-wave plan-entry (galaxy-tier multi-track-winning ship-out)
