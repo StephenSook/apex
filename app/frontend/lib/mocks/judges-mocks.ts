@@ -20,6 +20,7 @@
 import type { ALoRAStatus } from "../../components/ALoRAStatusBadge";
 import type { EAGLE3State } from "../../components/EAGLE3LatencyBadge";
 import type { GEPAOptimization } from "../../components/GEPAEvolutionPanel";
+import type { TSPulseAnomalyState } from "../../components/TSPulseAnomalyPanel";
 import type { PhysicsConfidence, TriAgentVerdictPanel } from "../../../shared/types";
 
 export const MOCK_TRI_AGENT_VERDICT: TriAgentVerdictPanel = [
@@ -164,4 +165,23 @@ export const MOCK_EAGLE3_ACTIVE: EAGLE3State = {
   accepted_token_rate: 0.78,
   draft_rank: 4,
   draft_model: "granite-instruct-4.1-draft-rank-4",
+};
+
+/**
+ * Wave-44 Phase 6a TSPulse anomaly active mock (D-016 Layer 2). 18.7
+ * ms per-window detection (under the pre-mortem row 71 30 ms budget)
+ * with mid-band + high-band anomaly score 2.94 breaching the p95
+ * threshold 2.10. Demonstrates the discriminated-union anomaly
+ * variant + the polyphase per-band attribution surface that judges
+ * use to read the time-frequency lattice. Affected bands surface to
+ * the projector via the Guardian-Safety pre-flag per the D-016 Layer
+ * 2 contract.
+ */
+export const MOCK_TSPULSE_ACTIVE: TSPulseAnomalyState = {
+  status: "anomaly",
+  window_index: 1428,
+  score: 2.94,
+  threshold_p95: 2.1,
+  affected_bands: ["mid", "high"],
+  detection_ms: 18.7,
 };

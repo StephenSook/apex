@@ -11,6 +11,7 @@ import RaceEventsTilesRow from "../../components/RaceEventsTilesRow";
 import GEPAEvolutionPanel from "../../components/GEPAEvolutionPanel";
 import PhysicsConfidenceRing from "../../components/PhysicsConfidenceRing";
 import TriAgentCriticPanel from "../../components/TriAgentCriticPanel";
+import TSPulseAnomalyPanel from "../../components/TSPulseAnomalyPanel";
 import { CONVERGENCE_FIXTURES } from "../../lib/convergence-fixtures";
 import { EXTENDED_PHYSICS_FIXTURES } from "../../lib/extended-physics-fixtures";
 import { IBM_STACK_TUPLES } from "../../lib/ibm-stack";
@@ -19,6 +20,7 @@ import {
   MOCK_PHYSICS_CONFIDENCE_OOD,
   MOCK_TRI_AGENT_VERDICT,
   MOCK_TRI_AGENT_VERDICT_REJECT,
+  MOCK_TSPULSE_ACTIVE,
 } from "../../lib/mocks/judges-mocks";
 
 export const metadata: Metadata = {
@@ -361,19 +363,22 @@ export default function JudgesPage() {
             move #1 (WebGPU Granite Nano 350M, Layer 0; surfaced below). Wave-40 ships the
             visualization layer for moves #2 (Activated LoRA hot-swap, Layer 6), #3 (GEPA
             reflective prompt evolution, Layer 5), and #4 (EAGLE-3 speculative decoding, Layer 6
-            inference). Move #5 (Agent-as-Judge tri-agent critic loop, Layer 7) renders one
-            section below. Each panel here uses mock fixtures today; backend wire-up arrives
-            Day 7-8 per <span className="font-mono text-xs text-racing-green">docs/vinh-backend-plan.md</span>
-            Phase 4 tasks 4.4 (EAGLE-3) + 4.5 (aLoRA) + 4.6 (GEPA artifact read).
+            inference). Wave-44 Phase 6a adds the IBM TSPulse 1M polyphase time-frequency anomaly
+            detector (D-016 Layer 2; per-window detection before the projector QP fires). Move #5
+            (Agent-as-Judge tri-agent critic loop, Layer 7) renders one section below. Each panel
+            here uses mock fixtures today; backend wire-up arrives Day 7-8 per <span className="font-mono text-xs text-racing-green">docs/vinh-backend-plan.md</span>
+            Phase 4 tasks 4.4 (EAGLE-3) + 4.5 (aLoRA) + 4.6 (GEPA artifact read) + wave-44 plan
+            Vinh-scope V7 (TSPulse anomaly endpoint).
           </p>
           <div className="mt-8 flex flex-col gap-6">
             <ALoRAStatusBadge />
             <GEPAEvolutionPanel />
             <EAGLE3LatencyBadge />
+            <TSPulseAnomalyPanel state={MOCK_TSPULSE_ACTIVE} />
           </div>
           <p className="mt-6 font-mono text-xs italic text-muted">
-            Panels are mock for wave-40 /judges visualisation. Real fetch swaps land Day 7-8 per
-            <span className="not-italic"> docs/decision-log.md D-019 + D-032</span>.
+            Panels are mock for /judges visualisation. Real fetch swaps land Day 7-8 per
+            <span className="not-italic"> docs/decision-log.md D-019 + D-032 + wave-44 Vinh V7</span>.
           </p>
         </div>
       </section>

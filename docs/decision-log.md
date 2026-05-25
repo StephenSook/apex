@@ -480,9 +480,11 @@ If any critic flags, IBM Mellea runs Instruct-Validate-Repair (IVR) with `loop_b
 4. **EAGLE-3 speculative decoding** (Layer 6 inference plane): 2-6x wall-clock speedup on vLLM [PARTLY VERIFIED: EAGLE-3 paper arXiv:2503.01840 reports 2.5-3.7x typical on most evaluated models, up to ~5.9x on Llama-3.3-70B; "2-6x" is a benchmark-dependent envelope per synthesis Q2 secondary summary], hits sub-15s generation latency target.
 5. **Agent-as-Judge tri-agent critic loop** (Layer 7): per D-018.
 
+**Wave-44 Phase 6a addition (2026-05-24):** add a sixth galaxy-tier move surfacing the existing D-016 Layer 2 IBM TSPulse 1M polyphase time-frequency anomaly detector to the /judges visualization layer. The detector was already in the architecture catalog (D-016 item 10) but had no /judges surface; the wave-44 addition adds a 5-state discriminated-union panel (idle + scanning + clean + anomaly + error) with a sub-30 ms detection budget per pre-mortem row 71 + per-band attribution (DC + low + mid + high) for the Guardian-Safety pre-flag path. The 6 moves now form the load-bearing /judges-page narrative for the Best Use of Technology track.
+
 **Rationale.** Source 05 source 09 Q2. Each is a genuine 2025-2026 frontier capability that no existing AI race-engineer ships. Lands the "two students could not have built this in 12 days" perception that turns judges from skeptical to evangelical.
 
-**Affected.** Vinh-backend-plan Phase 4 Day 10-12. arch-spec Layer 0 + Layer 5 + Layer 6 + Layer 7. paper §3.5 + §3.6. Frontend WebGPU Granite Nano path. PLAN new rows 4.2a through 4.2e (one per move). Pre-mortem new rows for each move's failure mode.
+**Affected.** Vinh-backend-plan Phase 4 Day 10-12 + wave-44 plan Vinh-scope V7 (TSPulse anomaly endpoint). arch-spec Layer 0 + Layer 2 + Layer 5 + Layer 6 + Layer 7. paper §3.5 + §3.6. Frontend WebGPU Granite Nano path + wave-44 TSPulseAnomalyPanel. PLAN new rows 4.2a through 4.2e (one per move). Pre-mortem new rows for each move's failure mode.
 
 ---
 
