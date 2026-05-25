@@ -129,6 +129,12 @@ export const IBM_GRANITE_STACK: ReadonlyArray<GraniteStackTool> = [
     version: "149M + 47M",
     role: "Hybrid dense + sparse RAG over setup + theory + COA (D-016)",
     status: "INTEGRATION",
+    // Wave-44 Phase 6b: frontend RAG retrieval surface live on the
+    // AICopilotChat path via lexical TF-IDF retrieval over inline
+    // corpus chunks (architecture-spec + decision-log + methodology
+    // + paper §3). Granite Embedding R2 swap-point: Vinh V8 server-
+    // side cosine similarity over precomputed embeddings per Stream
+    // M.3 spec extension. Status flips to "WIRED" once V8 lands.
   },
   {
     name: "Granite Instruct",

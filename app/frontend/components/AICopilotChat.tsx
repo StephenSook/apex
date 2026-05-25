@@ -33,9 +33,11 @@
  * suggested-question button labels.
  */
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
+import { retrieveChunks } from "../lib/rag-retrieve";
 import { useOpenRouterStream } from "../lib/openrouter-stream";
+import RAGCitationBadge from "./RAGCitationBadge";
 
 // Wave-43 D2.5 close-out per cold-review-2 silent-failure H-R2-5 +
 // type-design H2 + code-reviewer H-3 cross-corroboration. Collapsed
@@ -71,6 +73,15 @@ export default function AICopilotChat({ panelId = "ai-copilot-chat" }: AICopilot
   const activeQuestion =
     localState.status === "idle" ? null : localState.question;
   const streamState = useOpenRouterStream(activeQuestion);
+
+  // Wave-44 Phase 6b RAG retrieval: top-3 corpus chunks for the active
+  // question, deterministic + cheap (synchronous lexical scoring over
+  // an inline corpus). Re-evaluated on every question change via
+  // useMemo. Granite Embedding R2 swap-point per Vinh V8.
+  const retrievals = useMemo(() => {
+    if (activeQuestion === null) return [];
+    return retrieveChunks(activeQuestion, 3);
+  }, [activeQuestion]);
 
   const handleAsk = (question: string) => {
     const trimmed = question.trim();
@@ -183,6 +194,7 @@ export default function AICopilotChat({ panelId = "ai-copilot-chat" }: AICopilot
                 </p>
               )}
             </div>
+            {isAnswered && <RAGCitationBadge retrievals={retrievals} />}
             <button
               type="button"
               onClick={handleReset}
