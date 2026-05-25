@@ -101,8 +101,8 @@ export default async function JudgeTourPage({ searchParams }: JudgeTourPageProps
             body={
               <>
                 <p>
-                  Per D-050 (Vinh commit `9048575`), the V1 NumPy validator's `.to_text()` and the V2
-                  cvxpylayers projector's `.to_text()` produce byte-identical violation strings modulo a
+                  Per D-050 (Vinh commit `9048575`), the V1 NumPy validator&apos;s `.to_text()` and the V2
+                  cvxpylayers projector&apos;s `.to_text()` produce byte-identical violation strings modulo a
                   single ENGINE header line. The test at
                   `app/backend/tests/test_physics_v2.py::test_v1_v2_to_text_byte_equal_modulo_engine_line`
                   is the production lock.
@@ -130,7 +130,7 @@ export default async function JudgeTourPage({ searchParams }: JudgeTourPageProps
               <>
                 <p>
                   The same physical input (residual brake pressure + rising throttle) is feasible or a
-                  violation depending on whether the driver's COA permits simultaneity. APEX reads the COA at
+                  violation depending on whether the driver&apos;s COA permits simultaneity. APEX reads the COA at
                   tensor level; existing tools cannot.
                 </p>
                 <p>

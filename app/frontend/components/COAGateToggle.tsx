@@ -83,7 +83,7 @@ export default function COAGateToggle() {
         </h3>
         <p className="mt-2 text-sm leading-relaxed text-ink-soft">
           The same physical event (brake pressure not fully released + throttle beginning)
-          can be either feasible or a violation depending on the driver's FIA Certificate
+          can be either feasible or a violation depending on the driver&apos;s FIA Certificate
           of Adaptations. APEX reads the COA at tensor level; flip the switch to see the
           projector verdict change.
         </p>
