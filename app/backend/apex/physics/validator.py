@@ -23,6 +23,7 @@ from dataclasses import dataclass
 import numpy as np
 
 from apex.shared.contracts import (
+    CHANNEL_TIER_BINDING,
     PhysicsViolationLog,
     ViolationRecord,
     channel_index,
@@ -98,7 +99,28 @@ def friction_ellipse_check(
     type='friction_ellipse_exceeded', tier=7, ...) and the V2 cvxpylayers
     projector emits the same type for the same step on the same input.
     """
-    raise NotImplementedError("Phase 2 Day 4 task 2.1")
+    long_arr = np.asarray(long_g, dtype=np.float64)
+    lat_arr = np.asarray(lat_g, dtype=np.float64)
+    magnitude = np.sqrt(long_arr * long_arr + lat_arr * lat_arr)
+    records: list[ViolationRecord] = []
+    for step in np.flatnonzero(magnitude > mu):
+        records.append(
+            ViolationRecord(
+                step=int(step),
+                type="friction_ellipse_exceeded",
+                severity=float(magnitude[step] - mu),
+                channel_values={
+                    "long_g": float(long_arr[step]),
+                    "lat_g": float(lat_arr[step]),
+                },
+                tier=7,
+            )
+        )
+    return PhysicsViolationLog(
+        records=records,
+        forecast_step_count=int(long_arr.shape[0]),
+        engine="v1_numpy",
+    )
 
 
 def forward_euler_consistency(
@@ -117,7 +139,33 @@ def forward_euler_consistency(
     Emits ViolationRecord(type='forward_euler_inconsistent', tier=8, ...)
     for each step where the residual exceeds the band.
     """
-    raise NotImplementedError("Phase 2 Day 4 task 2.2")
+    speed_arr = np.asarray(speed_mps, dtype=np.float64)
+    long_arr = np.asarray(long_g, dtype=np.float64)
+    horizon = int(speed_arr.shape[0])
+
+    expected_delta_v = long_arr[:-1] * 9.81 * dt
+    actual_delta_v = speed_arr[1:] - speed_arr[:-1]
+    residual = np.abs(actual_delta_v - expected_delta_v)
+
+    records: list[ViolationRecord] = []
+    for idx in np.flatnonzero(residual > bands.delta_v_band_mps):
+        step = int(idx)
+        records.append(
+            ViolationRecord(
+                step=step,
+                type="forward_euler_inconsistent",
+                severity=float(residual[step] - bands.delta_v_band_mps),
+                channel_values={
+                    "speed_mps": float(speed_arr[step]),
+                    "speed_mps_next": float(speed_arr[step + 1]),
+                    "long_g": float(long_arr[step]),
+                },
+                tier=8,
+            )
+        )
+    return PhysicsViolationLog(
+        records=records, forecast_step_count=horizon, engine="v1_numpy"
+    )
 
 
 def bicycle_kinematic_check(
@@ -132,7 +180,33 @@ def bicycle_kinematic_check(
     Detects steering/speed/lateral-accel triplets that violate the small-angle
     bicycle approximation. Emits type='bicycle_kinematic_break', tier=8.
     """
-    raise NotImplementedError("Phase 2 Day 4 task 2.3")
+    lat_arr = np.asarray(lat_g, dtype=np.float64)
+    steer_arr = np.asarray(steering_rad, dtype=np.float64)
+    speed_arr = np.asarray(speed_mps, dtype=np.float64)
+    horizon = int(lat_arr.shape[0])
+
+    expected_lat_g = steer_arr * speed_arr * speed_arr / (wheelbase_m * 9.81)
+    residual = np.abs(lat_arr - expected_lat_g)
+
+    records: list[ViolationRecord] = []
+    for idx in np.flatnonzero(residual > bands.delta_lat_g_band):
+        step = int(idx)
+        records.append(
+            ViolationRecord(
+                step=step,
+                type="bicycle_kinematic_break",
+                severity=float(residual[step] - bands.delta_lat_g_band),
+                channel_values={
+                    "lat_g": float(lat_arr[step]),
+                    "steering_rad": float(steer_arr[step]),
+                    "speed_mps": float(speed_arr[step]),
+                },
+                tier=8,
+            )
+        )
+    return PhysicsViolationLog(
+        records=records, forecast_step_count=horizon, engine="v1_numpy"
+    )
 
 
 def coa_simultaneity_rule(
@@ -151,7 +225,34 @@ def coa_simultaneity_rule(
     throttle and brake overlap AND simultaneity_channel[step] == 0
     (COA does not permit overlap for this driver/vehicle).
     """
-    raise NotImplementedError("Phase 2 Day 4 task 2.4")
+    thr_arr = np.asarray(throttle_pct, dtype=np.float64)
+    brk_arr = np.asarray(brake_pa, dtype=np.float64)
+    sim_arr = np.asarray(simultaneity_channel, dtype=np.float64)
+    horizon = int(thr_arr.shape[0])
+
+    overlap = (thr_arr > 0.0) & (brk_arr > 0.0)
+    forbidden = sim_arr <= 0.5
+    flagged = overlap & forbidden
+
+    records: list[ViolationRecord] = []
+    for idx in np.flatnonzero(flagged):
+        step = int(idx)
+        records.append(
+            ViolationRecord(
+                step=step,
+                type="coa_simultaneity_violation",
+                severity=0.0,
+                channel_values={
+                    "throttle_pct": float(thr_arr[step]),
+                    "brake_pa": float(brk_arr[step]),
+                    "coa_overlap_flag": float(sim_arr[step]),
+                },
+                tier=0,
+            )
+        )
+    return PhysicsViolationLog(
+        records=records, forecast_step_count=horizon, engine="v1_numpy"
+    )
 
 
 def validate_forecast(
@@ -169,7 +270,36 @@ def validate_forecast(
     Phase 2 Day 4 task 2.5 implementation. Phase 0 ships only the signature
     so downstream modules can type-hint against it.
     """
-    raise NotImplementedError("Phase 2 Day 4 task 2.5")
+    f = np.asarray(forecast, dtype=np.float64)
+    if f.ndim != 2 or f.shape[1] != len(CHANNEL_TIER_BINDING):
+        raise ValueError(
+            f"validate_forecast expects (horizon, channels) per shapes.TENSOR_SHAPE; "
+            f"got {f.shape}"
+        )
+
+    if bands is None:
+        bands = ToleranceBands.for_1hz_aggregation()
+
+    long_g = f[:, channel_index("long_g")]
+    lat_g = f[:, channel_index("lat_g")]
+    speed_mps = f[:, channel_index("speed_mps")]
+    steering_rad = f[:, channel_index("steering_rad")]
+    throttle_pct = f[:, channel_index("throttle_pct")]
+    brake_pa = f[:, channel_index("brake_pa")]
+
+    merged: list[ViolationRecord] = []
+    merged.extend(friction_ellipse_check(long_g, lat_g, mu).records)
+    merged.extend(forward_euler_consistency(speed_mps, long_g, dt=1.0, bands=bands).records)
+    merged.extend(bicycle_kinematic_check(
+        lat_g, steering_rad, speed_mps, wheelbase_m, bands
+    ).records)
+    merged.extend(coa_simultaneity_rule(throttle_pct, brake_pa, simultaneity_channel).records)
+
+    return PhysicsViolationLog(
+        records=merged,
+        forecast_step_count=int(f.shape[0]),
+        engine="v1_numpy",
+    )
 
 
 __all__ = [
