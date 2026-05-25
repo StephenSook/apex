@@ -3,7 +3,7 @@
 /**
  * GuardianAudit: renders the Granite Guardian audit verdict + reasoning trace.
  *
- * Mirrors PLAN task 2.12 (Day 5). The audit type from `app/shared/types.ts`
+ * Mirrors PLAN task 2.12 (Vinh's V2 cvxpylayers projector at commit cb970ed + Guardian BYOC audit at commit 9048573). The audit type from `app/shared/types.ts`
  * is a discriminated union by `verdict` so this component narrows on
  * `audit.verdict` and renders verdict-specific extras (flagged_concerns,
  * blocked_recommendations) without runtime conditionals on optional fields.

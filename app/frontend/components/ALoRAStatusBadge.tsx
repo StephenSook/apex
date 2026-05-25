@@ -25,7 +25,7 @@
  *   - error: unexpected error; underlying message preserved (role=alert).
  *
  * Mock data via `MOCK_ALORA_STATUS_ACTIVE` in lib/mocks/judges-mocks.ts.
- * Live data arrives Day 7-8 when Vinh wires the vLLM adapter hot-swap
+ * Live data arrives when Vinh wires the vLLM adapter hot-swap
  * endpoint (Phase 4 task 4.5 per docs/vinh-backend-plan.md).
  *
  * Exhaustiveness throw on the state discriminator via the wave-37

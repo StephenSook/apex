@@ -18,7 +18,7 @@
  * prompt's faithfulness delta vs the Day-1 baseline. Mock data
  * via `MOCK_GEPA_OPTIMIZATION` in lib/mocks/judges-mocks.ts.
  *
- * Live data lands Day 7-8 when Vinh wires the GEPA offline job's
+ * Live data lands when Vinh wires the GEPA offline job's
  * artifact-write to `app/backend/apex/prompts/optimized/` + the
  * frontend reads the latest run's `gepa_trace.json` via a FastAPI
  * `/api/gepa/latest` endpoint.

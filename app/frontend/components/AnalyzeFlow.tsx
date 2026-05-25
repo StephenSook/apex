@@ -18,7 +18,7 @@
  * 2026 driver_id text + "Corners (3)" rendering continue to work
  * because Coaching is the default activeTab after submit.
  *
- * Day 2 ships against canned mock data because Vinh's backend lands Day 5-6.
+ * Ships against canned mock data; Vinh's backend wires `/api/analyze` per Stream M.3 spec extension.
  * Wave-43 Lane K (Sookra Methodology rule lock 2026-05-24): the mock is
  * a GENERIC illustrative report parameterized from the user-typed
  * driver_id + uploaded file metadata, NOT a Sarah Reynolds persona
@@ -387,8 +387,10 @@ function buildMockReport(submission: DropzoneSubmission): CoachingReportType {
   // user-typed driver_id + GENERIC corner names + GENERIC tuning
   // surface so any uploaded telemetry + COA renders a report shaped
   // by the user's input, not a fictional-persona overlay. Real
-  // backend parsing lands Day 5-6 per Vinh Phase 1 task 1.1-1.6 + 1.9
-  // ownership; pre-backend the report is illustrative against the
+  // backend parsing wires via Vinh Phase 1 tasks 1.1-1.6 + 1.9
+  // (apex/coa/coa_parser.py + apex/instruct/timing_sheet_parser.py
+  // shipped per G2 PASS commit e9c9d11); pre-wire the report is
+  // illustrative against the
   // user's driver_id. The Sarah Reynolds canonical positive-case
   // demonstration loads via the explicit "Try the canonical demo
   // fixture" button (Stretch S2 wave-43 Lane K addition) so judges

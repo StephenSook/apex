@@ -9,8 +9,9 @@
  * the Granite Guardian audit verdict, and the reproducibility provenance
  * footer (PLAN §16.5).
  *
- * Day 2 ships the component scaffold against canned mock data. Vinh's
- * backend Day 5-6 returns a live `CoachingReport` JSON over `/api/analyze`.
+ * Ships against canned mock data; Vinh's backend returns a live
+ * `CoachingReport` JSON over `/api/analyze` per Stream M.3 spec
+ * extension (Phase 1 tasks 1.1-1.6 + 1.9 shipped per G2 PASS).
  * No assumption about live state; the component is a pure function of props.
  */
 

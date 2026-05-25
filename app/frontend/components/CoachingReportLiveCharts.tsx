@@ -116,8 +116,8 @@ function CoachingReportLiveChartsBase(_props: CoachingReportLiveChartsProps) {
         </h3>
         <p className="pt-1 text-xs leading-relaxed text-ink-soft">
           Three panels covering pace progression + tire degradation +
-          speed-vs-brake-temp coupling. Mock fixture for the Day-6 demo;
-          backend wires per Stream M.3 spec extension.
+          speed-vs-brake-temp coupling. Mock fixture; backend wires
+          per Stream M.3 spec extension.
         </p>
       </header>
 

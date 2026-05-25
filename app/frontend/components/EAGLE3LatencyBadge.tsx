@@ -27,7 +27,7 @@
  *   - error: vLLM endpoint failure; falls back to vanilla decode.
  *
  * Mock data via `MOCK_EAGLE3_ACTIVE` in lib/mocks/judges-mocks.ts.
- * Live data lands Day 7-8 when Vinh wires the vLLM speculative-
+ * Live data lands when Vinh wires the vLLM speculative-
  * decode metrics endpoint (Phase 4 task 4.4 per
  * docs/vinh-backend-plan.md).
  *

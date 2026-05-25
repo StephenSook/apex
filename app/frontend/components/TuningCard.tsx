@@ -3,7 +3,7 @@
 /**
  * TuningCard: renders one TuningDelta with FIA Article + COA section citation.
  *
- * Mirrors PLAN task 3.2 (Day 6). Consumed by `CoachingReport` as the
+ * Mirrors PLAN task 3.2. Consumed by `CoachingReport` as the
  * sidebar tuning-recommendation block. Provenance is a citation chip
  * pointing at the specific Appendix L Article that authorises the change.
  */
