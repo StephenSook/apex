@@ -630,7 +630,7 @@ function DriverIdField({
           value={value}
           onChange={(event) => dispatch({ type: "setDriverId", value: event.target.value })}
           aria-describedby={hintId}
-          placeholder="sarah-reynolds-britcar-2026"
+          placeholder="your-driver-slug-2026"
           className="rounded-sm border-2 border-rule bg-paper p-3 font-mono text-sm text-ink placeholder:text-muted focus:border-racing-green focus:outline-none"
         />
         <p id={hintId} className="text-xs leading-relaxed text-muted">
