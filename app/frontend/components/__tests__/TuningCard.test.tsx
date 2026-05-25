@@ -10,7 +10,7 @@ function makeTuning(overrides: Partial<TuningDelta> = {}): TuningDelta {
     current: 38.0,
     recommended: 34.0,
     unit: "mm",
-    citation: { fia_article: "Appendix L", coa_section: "Section 3(c) hardware spec" },
+    citation: { fia_article: "Appendix L", coa_section: "the hardware-spec section" },
     ...overrides,
   };
 }
@@ -36,7 +36,7 @@ describe("TuningCard", () => {
   it("renders citation chip with FIA Appendix L anchor + COA hardware-spec pointer", () => {
     render(<TuningCard tuning={makeTuning()} />);
     expect(screen.getByText("Appendix L")).toBeInTheDocument();
-    expect(screen.getByText("Section 3(c) hardware spec")).toBeInTheDocument();
+    expect(screen.getByText("the hardware-spec section")).toBeInTheDocument();
   });
 
   it("renders role=alert when current is NaN (silent-failure H2 regression guard)", () => {

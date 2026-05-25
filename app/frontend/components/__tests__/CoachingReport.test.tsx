@@ -17,7 +17,7 @@ function makeReport(overrides: Partial<CoachingReportType> = {}): CoachingReport
     current: 38,
     recommended: 34,
     unit: "mm",
-    citation: { fia_article: "Appendix L", coa_section: "Section 3(c) hardware spec" },
+    citation: { fia_article: "Appendix L", coa_section: "the hardware-spec section" },
   };
   const audit: GuardianAudit = {
     verdict: "approve",
@@ -41,7 +41,7 @@ function makeReport(overrides: Partial<CoachingReportType> = {}): CoachingReport
       sector: 2,
       current_delta_s: 0.34,
       recommendation: "Trail-brake in two micro-presses.",
-      citations: [{ fia_article: "Appendix L", coa_section: "Section 3(c) hardware spec" }],
+      citations: [{ fia_article: "Appendix L", coa_section: "the hardware-spec section" }],
     },
   ];
   const forecast: NextSessionForecast = [

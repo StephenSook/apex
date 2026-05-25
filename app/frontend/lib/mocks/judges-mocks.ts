@@ -91,11 +91,11 @@ export const MOCK_TRI_AGENT_VERDICT_REJECT: TriAgentVerdictPanel = [
     critic: "guardian_safety",
     verdict: "reject",
     reasoning_trace: [
-      "Recommendation conflicts with the driver's FIA Certificate of Adaptations Section 3(c) hardware-spec entry.",
+      "Recommendation conflicts with the driver's FIA Certificate of Adaptations hardware-spec section.",
       "COA-permitted brake-throttle simultaneity gate is open in the projection but the recommendation requests a hardware change that would close it.",
     ],
     blocked_recommendations: [
-      "Reduce brake-pedal travel by 4 mm (would invalidate the existing hand-control mapping per COA Section 3(c)).",
+      "Reduce brake-pedal travel by 4 mm (would invalidate the existing hand-control mapping per the COA hardware-spec section).",
     ],
     critic_run_id: "mock-guardian-safety-reject-002",
   },

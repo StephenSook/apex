@@ -63,7 +63,7 @@ const anyReject: TriAgentVerdictPanel = [
   {
     critic: "guardian_safety",
     verdict: "reject",
-    reasoning_trace: ["Recommendation conflicts with COA Section 3(c) hardware spec"],
+    reasoning_trace: ["Recommendation conflicts with COA hardware-spec section"],
     blocked_recommendations: ["Reduce brake travel by 4 mm"],
     critic_run_id: "test-guardian-safety-reject-1",
   },
