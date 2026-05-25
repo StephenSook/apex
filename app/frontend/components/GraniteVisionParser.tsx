@@ -116,9 +116,9 @@ export default function GraniteVisionParser() {
           PDF timing sheet to structured laps.
         </h3>
         <p className="mt-2 text-sm leading-relaxed text-ink-soft">
-          Upload a SRO or Britcar timing-sheet PDF. Granite Vision 4.1 4B parses sector
-          splits per lap. Today routes to the canned fixture for the public deploy;
-          Vinh V1 backend wires the real Granite Vision inference per Stream M.3.
+          Upload a national-championship timing-sheet PDF. Granite Vision 4.1 4B parses
+          sector splits per lap. Today routes to the canned fixture for the public deploy;
+          Vinh FV1 backend wires the real Granite Vision inference per Stream M.3.
         </p>
       </header>
 

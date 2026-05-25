@@ -49,27 +49,31 @@ function isValidPrompt(body: OpenRouterStreamRequestBody): body is { readonly pr
 }
 
 function stubResponseFor(prompt: string): string {
-  // Per cascade-#12 stub phase: hard-coded coaching-engineer prose
-  // for the 5 suggested-question seeds + a generic fallback. Real
+  // Per cascade-#12 stub phase: persona-agnostic coaching-engineer
+  // prose for the 5 suggested-question seeds + a generic fallback.
+  // Wave-44 deep-review gemini BLOCKER #3 Lane K close-out: replaced
+  // all hardcoded track + persona references (Old Hairpin / Coppice
+  // / Craner / Sarah Reynolds / Britcar) with generic equivalents
+  // (slow-hairpin / hardest-braking zone / reference lap). Real
   // OpenRouter response wire-up activates when OPENROUTER_API_KEY is
-  // populated in the server env.
+  // populated; this stub only fires when the env var is unset.
   const trimmed = prompt.trim().toLowerCase();
-  if (trimmed.includes("old hairpin") || trimmed.includes("early-throttle")) {
-    return "The Old Hairpin recommendation flips your lever-input pattern from a single brake pulse into two micro-presses (4mm + 6mm) so the COA-derived c_overlap flag stays inside the projected friction ellipse at apex. Your hand-control hardware permits the simultaneity per the adaptive-equipment provisions of FIA Appendix L; the gap was the lever-travel ramp, not the technique.";
+  if (trimmed.includes("slow-hairpin") || trimmed.includes("slowest corner") || trimmed.includes("early-throttle")) {
+    return "The slow-hairpin recommendation flips your lever-input pattern from a single brake pulse into two micro-presses (4mm + 6mm) so the COA-derived c_overlap flag stays inside the projected friction ellipse at apex. Your hand-control hardware permits the simultaneity per the adaptive-equipment provisions of FIA Appendix L; the gap was the lever-travel ramp, not the technique.";
   }
-  if (trimmed.includes("coppice") || trimmed.includes("braked 5 metres")) {
-    return "Counterfactual replay at +5m braking would shift the apex 3.2m later + cost 0.18s on the corner exit per the V2 cvxpylayers projection. The trail-brake-into-corner geometry your hand controls support gives you 6m more entry runway than able-bodied baseline; reclaiming that 5m would have cost the exit speed advantage.";
+  if (trimmed.includes("braking zone") || trimmed.includes("braked 5 metres") || trimmed.includes("brake point")) {
+    return "Counterfactual replay at +5m braking would shift the apex 3.2m later + cost 0.18s on the corner exit per the cvxpylayers projection. The trail-brake-into-corner geometry your hand controls support gives you 6m more entry runway than able-bodied baseline; reclaiming that 5m would have cost the exit speed advantage.";
   }
   if (trimmed.includes("friction-ellipse") || trimmed.includes("projection")) {
     return "The Stage 1 differentiable QP enforces sqrt(long_g^2 + lat_g^2) <= mu_v at every forecast step. For sector 2 your inputs produced combined 1.18g vs the mu_nominal 1.20 ceiling; well inside the ellipse. The lap loss came from Stage 2 jerk-bound exceeded (steering rate 0.62 rad/s vs the 0.50 bound), not friction.";
   }
   if (trimmed.includes("coa") || trimmed.includes("simultaneity gate")) {
-    return "Your COA carries the MME Motorsport hand-control hardware spec which independently approves brake + throttle paths per the adaptive-equipment provisions of FIA Appendix L. The tier-0 simultaneity gate reads your coa_overlap_flag = 1 + suppresses the standard coa_simultaneity_violation rule. The what-if-replay on /judges demonstrates the counterfactual: flipping the flag to 0 produces the violation an able-bodied driver would receive.";
+    return "Your COA carries the hand-control hardware spec which independently approves brake + throttle paths per the adaptive-equipment provisions of FIA Appendix L. The tier-0 simultaneity gate reads your coa_overlap_flag = 1 + suppresses the standard coa_simultaneity_violation rule. The what-if-replay on /judges demonstrates the counterfactual: flipping the flag to 0 produces the violation an able-bodied driver would receive.";
   }
-  if (trimmed.includes("sarah") || trimmed.includes("craner")) {
-    return "Your delta to Sarah's reference at the Craner Curves entry is +0.21s, dropping to +0.08s by exit. The pattern matches a typical 4-lap-into-stint heat soak on the front-left tire; degradation pct 28% at this lap. Sarah's reference was set on a fresh-tire run. Adjusted for tire delta, your pace is within 0.05s of reference.";
+  if (trimmed.includes("reference") || trimmed.includes("lap delta") || trimmed.includes("trickiest sector")) {
+    return "Your delta to the reference line at the trickiest sector entry is +0.21s, dropping to +0.08s by exit. The pattern matches a typical 4-lap-into-stint heat soak on the front-left tire; degradation pct 28% at this lap. The reference was set on a fresh-tire run. Adjusted for tire delta, your pace is within 0.05s of reference.";
   }
-  return "The race-engineer copilot is in stub-response mode for the wave-42 demo. Populate OPENROUTER_API_KEY in `.env.local` per `docs/vinh-phase-1-handoff.md` Q2 + restart the server to enable live Granite 4.1 8B Instruct streaming responses for arbitrary questions.";
+  return "The race-engineer copilot is in stub-response mode. Populate OPENROUTER_API_KEY in `.env.local` per `docs/vinh-phase-1-handoff.md` Q2 + restart the server to enable live Granite 4.1 8B Instruct streaming responses for arbitrary questions.";
 }
 
 function streamStubResponse(text: string, abortSignal: AbortSignal): ReadableStream<Uint8Array> {
@@ -217,27 +221,42 @@ export async function POST(request: Request): Promise<Response> {
 }
 
 /**
- * Wave-43 cascade-#20 HARD-COMPLIANCE post-processor: strip invented
- * FIA Article + COA Section numeric identifiers from LLM output. The
- * Granite 4.1 8B model (and most LLMs) hallucinate plausible-looking
- * regulatory anchors despite the system-prompt forbidding them. This
- * server-side scrubber enforces the project HARD-COMPLIANCE rule + the
- * no-invented-FIA-articles compliance posture regardless of model
- * behavior. Patterns matched:
+ * Wave-43 cascade-#20 + wave-44 deep-review codex HIGH #2 expansion:
+ * HARD-COMPLIANCE post-processor stripping invented FIA Article +
+ * COA Section numeric identifiers from LLM output. The Granite 4.1
+ * 8B model (and most LLMs) hallucinate plausible-looking regulatory
+ * anchors despite the system-prompt forbidding them. Server-side
+ * scrubber enforces the project HARD-COMPLIANCE rule + the no-
+ * invented-FIA-articles compliance posture regardless of model
+ * behavior.
  *
+ * Codex deep-review wave-44: prior regex covered "FIA Article N.N"
+ * + "COA Section N.N" but bypassed abbreviated forms (Art. + § +
+ * Sec. + Appendix L §) which Granite produces ~10% of the time.
+ * Expanded to cover the abbreviation surface.
+ *
+ * Patterns matched:
  *   - "FIA Article N.N" / "FIA Article N.N.N" / "Article N.N" -> "FIA Appendix L per the published revision"
+ *   - "Art. N.N" / "Art N.N" -> "Appendix L per the published revision"
+ *   - "Appendix L §N.N" / "Appendix L §N" / "§N.N" / "§N(letter)" -> "Appendix L per the published revision"
  *   - "COA Section N.N" / "COA Section N.N.N" / "Section N.N(letter)" -> "the COA simultaneity gate"
+ *   - "COA Sec. N" / "COA Sec N" / "Sec. N(letter)" -> "the COA simultaneity gate"
  *   - "Article N(letter)" -> "Appendix L per the published revision"
  *   - "FIA Appendix L Article N" -> "FIA Appendix L per the published revision"
  *
  * Verification fixture in tests/lib/openrouter-stream-scrub.test.ts
- * (post-cascade-#20).
+ * (post-cascade-#20; wave-44 deep-review fixtures added).
  */
 function scrubInventedRegulatoryAnchors(text: string): string {
   return text
-    .replace(/FIA Appendix L Article \d+(\.\d+)*/gi, "FIA Appendix L per the published revision")
-    .replace(/FIA Article \d+(\.\d+)*/gi, "FIA Appendix L per the published revision")
+    .replace(/FIA Appendix L Article \d+(\.\d+)*[a-z]?/gi, "FIA Appendix L per the published revision")
+    .replace(/FIA Article \d+(\.\d+)*[a-z]?/gi, "FIA Appendix L per the published revision")
     .replace(/Article \d+(\.\d+)*[a-z]?/gi, "Appendix L per the published revision")
+    .replace(/\bArt\.?\s+\d+(\.\d+)*[a-z]?/gi, "Appendix L per the published revision")
+    .replace(/Appendix L\s*[§]\s*\d+(\.\d+)*[a-z]?/gi, "Appendix L per the published revision")
+    .replace(/§\s*\d+(\.\d+)*(\([a-z]\))?/gi, "the published revision section")
     .replace(/COA Section \d+(\.\d+)*[a-z]?/gi, "the COA simultaneity gate")
-    .replace(/Section \d+(\.\d+)*\([a-z]\)/gi, "the COA simultaneity gate");
+    .replace(/COA\s+Sec\.?\s+\d+(\.\d+)*[a-z]?/gi, "the COA simultaneity gate")
+    .replace(/Section \d+(\.\d+)*\([a-z]\)/gi, "the COA simultaneity gate")
+    .replace(/\bSec\.?\s+\d+(\.\d+)*[a-z]?/gi, "the COA simultaneity gate");
 }

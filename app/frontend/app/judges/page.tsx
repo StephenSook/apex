@@ -72,7 +72,7 @@ const RESOURCES: ReadonlyArray<ResourceLink> = [
   {
     label: "Live sim-rig stream",
     href: "/sim-rig",
-    detail: "20 Hz adaptive-controls telemetry tile. Synthetic Sarah Reynolds Donington lap today; live WebSocket Day 9.",
+    detail: "20 Hz adaptive-controls telemetry tile. Canned synthetic GT4 hand-controls lap; HTTP-stream live now, WebSocket Vinh V2.",
     badge: "live",
   },
   {
@@ -199,8 +199,10 @@ export default function JudgesPage() {
             architecture and Q&amp;A defense pack below. Submission deadline {SUBMISSION_DEADLINE}.
           </p>
           <p className="font-mono text-xs text-muted">
-            Hero use case: Sarah Reynolds, a fictional persona (RAF veteran, left-leg amputee,
-            Britcar Trophy 2026, #34 BMW M240i with electronic hand-controls).
+            Hero use case: adaptive racer with electronic hand-controls; veteran-transitioning
+            cohort + paraplegic + amputee competitors across UK national championships. The
+            3-minute submission video walks one named fictional persona end-to-end; product UI
+            is persona-agnostic per Sookra Methodology Pillar 4.
           </p>
           <div className="mt-4">
             <PWAInstallPrompt />
