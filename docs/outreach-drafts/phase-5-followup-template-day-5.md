@@ -26,7 +26,7 @@ Quick progress update:
 
 - Repo public Day 1 (2026-05-20): https://github.com/StephenSook/apex
 - [Day-5-fill: cumulative atomic commits to date] atomic commits in 5 days. Build green, lint clean, full PhysicsTTM 3-layer architecture documented.
-- Live demo: [Day-5-fill: Vercel or apex-race.vercel.app]
+- Live demo: https://apex-one-black.vercel.app
 - Mermaid architecture diagram + Sarah Reynolds canned-case demo running end-to-end as of Day [N]
 
 We're 7 days out from submission and we'd genuinely love a one-sentence quote from [Organisation] on whether a tool like APEX - reading the FIA Certificate of Adaptations at the tensor level, free at the point of use, built for the budget reality of adaptive + grassroots racing - would actually help the drivers [Organisation] supports.
