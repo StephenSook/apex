@@ -194,7 +194,9 @@ The frontend additionally emulates an immutable JSONL audit-log chain at `app/fr
 
 ## 4. Experiments
 
-The §4 prose below specifies the evaluation protocol. The Table 1 / Table 2 / Table 3 skeletons that follow each subsection are populated in the camera-ready revision once the Vinh-lane backend lands per PLAN.md row 5.7. Each skeleton states the exact shape of the table (rows, columns, units) so the camera-ready editor only fills cell values, not structure.
+The §4 prose below specifies the evaluation protocol and the §4.4 latency budget is populated from the verified D-030 Stage-C measurement (Vinh commit `c97caaa`, 2026-05-23). The Table 1 / Table 2 / Table 3 skeletons that follow each subsection retain camera-ready placeholders for the rows that depend on the Vinh-lane backend completion per PLAN.md row 5.7. Each skeleton states the exact shape of the table (rows, columns, units) so the camera-ready editor only fills cell values, not structure.
+
+### 4.1 Evaluation protocol
 
 **Datasets.**
 
@@ -207,6 +209,8 @@ The §4 prose below specifies the evaluation protocol. The Table 1 / Table 2 / T
 |---------|---------------------|-----|----------|--------------|-----|
 | Sarah Reynolds Britcar GP synthetic slice | 60 rows (1.2 seconds) from qualifying lap 17 of 19 | 50 | 8 telemetry + 1 COA flag + 5 wave-30 D-016 additions (fz_total + mu_v + pitch_rad + bank_rad + yaw_rate) = 14 total | yes | COA-simultaneity-gate ablation (Table 3b) + 8-tier physics ablation (Table 3a) |
 | FastF1 holdouts | 5 / -- (>=3 per circuit) | 50 -> 1 (aggregated) | 8 | no | Lap-time MAE + physics-violation rate (Table 2) |
+
+### 4.2 Baselines and forecaster comparison
 
 **Baselines.**
 
@@ -231,7 +235,9 @@ The §4 prose below specifies the evaluation protocol. The Table 1 / Table 2 / T
 - Physics-violation rate, measured separately at three points in the pipeline so Tables 2 + 3 carry differential signal: (a) raw TTM output (the un-corrected Kinetic Hallucination baseline), (b) Stage 1 QP output (residual convex-feasibility violations from numerical tolerance only), (c) Stage 2 audit failures (bicycle-coupling or COA-gate verdicts that fire reject). All three reported as fraction of total forecast steps.
 - Guardian verdict distribution (approve / flag / reject ratio on canned + holdout sets); reported as the Guardian column in Tables 2 + 3a + 3b.
 
-**Convergence 14 validation.** Every kinematic-violation class in the Convergence-14 enumeration has a unit-test fixture firing the violation + asserting the serializer output + Guardian verdict match the expected verdict.
+### 4.3 Convergence 14 validation and ablations
+
+**Convergence 14 validation.** Every kinematic-violation class in the Convergence-14 enumeration has a unit-test fixture firing the violation + asserting the serializer output + Guardian verdict match the expected verdict. The 14-fixture catalog is checked into `app/backend/tests/test_serializer.py` and renders on `/judges` as the ConvergenceFixtureGrid panel for per-fixture verdict inspection.
 
 **Ablations.**
 
@@ -263,7 +269,43 @@ The §4 prose below specifies the evaluation protocol. The Table 1 / Table 2 / T
 | Guardian ON (APEX default) | -- | -- |
 | Guardian OFF | n / a | -- |
 
-**Latency budget.** Target post-onboarding loop wall-clock is <= 60 seconds on a commodity RTX 4060 GPU (Granite-Docling + Granite Vision run once at onboarding and cache to disk; the live loop is forecaster + projection + Guardian audit + Instruct narration). Latency breakdown table pending Day-8 measurement.
+### 4.4 Latency budget
+
+Target post-onboarding loop wall-clock is <= 60 seconds on a commodity RTX 4060 GPU (Granite-Docling + Granite Vision run once at onboarding and cache to disk; the live loop is forecaster + projection + Guardian audit + Instruct narration). The G8 15-second coaching-report sub-budget governs the inner loop.
+
+**Verified measurement (D-030 Stage C, 2026-05-23).** Vinh commit `c97caaa` ran the composed forward + cvxpylayers projection + backward on the Sarah Reynolds 10-row telemetry stub (RTX 3060 Ti + Windows 11 + Python 3.10.7 + CUDA 12.1). The Stage C reduced specification (constant-mu friction ellipse + single SCP iterate) returned the following:
+
+| Criterion | Council v2 threshold | Observed | Verdict |
+|---|---|---|---|
+| Gradient finite | no NaN/Inf anywhere | True | PASS |
+| Gradient norm bounded | `||grad_L|| < 1e4` | 24.12 | PASS |
+| Forecasted constraint violation rate (FCVR) on Sarah stub | `<= 0.0` | 0.000000 | PASS |
+| TTM output shape | `(1, 30, 14)` per `shapes.py` | `(1, 30, 14)` | PASS |
+| cvxpylayers DPP-compliance | `prob.is_dpp() == True` | asserted in code | PASS |
+
+Total wall-clock of the composed forward + projection + backward = ~1.03 seconds on RTX 3060 Ti, leaving ~13.97 seconds of the G8 15-second coaching-report sub-budget for the downstream stages (Granite Instruct narration + Guardian audit + provenance assembly).
+
+**Table 4: End-to-end latency budget (Stage C verified; Stages A + B + downstream pending Day-8 measurement).**
+
+| Stage | Component | Observed (ms) | Budget (ms) | Notes |
+|-------|-----------|---------------|-------------|-------|
+| 0 | Telemetry ingest (Pandas + tensor) | -- | 50 | Day-8 |
+| 1 | TTM forecast (frozen channel-mix decoder; 30-step horizon) | -- | 100 | Day-8 |
+| 2 | TSPulse anomaly detector (polyphase 4-band; D-016 Layer 2) | -- | 30 | Day-8 |
+| 3 | cvxpylayers QP projection (Stage C single iterate, RTX 3060 Ti, Sarah stub) | ~1030 | 1500 | D-030 verified |
+| 4 | SCP outer-loop linearisation (Stages A + B 3-iterate unroll) | -- | 2500 | Day-8 task 2.12 |
+| 5 | Granite Guardian BYOC text audit (Convergence-14 serializer) | -- | 500 | Day-8 |
+| 6 | Granite Instruct narration (8B; EAGLE-3 enabled per D-019 item 4; 2.5-3.7x speedup envelope per arXiv:2503.01840) | -- | 10000 | Day-8 |
+| 7 | Provenance assembly (footer; model SHAs + COA + FIA + Guardian audit_id) | -- | 50 | Day-8 |
+| -- | **End-to-end** | **--** | **14730** | **<= G8 15s sub-budget** |
+
+The single Stage-C verified row (~1030 ms) is well below its 1500 ms budget. Day-8 measurements populate the remaining rows; the camera-ready revision reports the full end-to-end p50 + p95 wall-clock on the Sarah Reynolds 60-row fixture + the FastF1 holdout aggregate.
+
+### 4.5 Case studies
+
+**Sarah Reynolds Britcar GP synthetic case study.** The 60-row 1.2-second telemetry slice (qualifying lap 17 of 19 at the slowest-corner brake-release-to-throttle-on micro-window) carries one COA-permitted simultaneity window between rows 18-24 where brake pressure has not fully released (0.4 MPa residual on the hand-control lever) and throttle has begun (12 percent input via the secondary hand-control). The Stage 2 audit with COA gate ON treats the window as feasible (COA `coa_simul_permitted=true` flag asserts); the audit with COA gate OFF flags the window as a brake-throttle simultaneity violation. The tuning recommendation rendered with the gate ON cites the COA hardware-spec section; with the gate OFF the recommendation reads "release brake before throttle" which is unactionable for a left-leg-amputee driver using electronic hand-controls.
+
+**FastF1 Bahrain Q corner case (camera-ready).** A 5-lap qualifying-pace slice through Turn 10 (slow-speed left-hander preceded by a long DRS straight) is the canonical FastF1 holdout case study. The expected demonstration: TTM zero-shot forecasts a brake-and-trail profile that exceeds the friction ellipse on the entry; Stage 1 QP projects to the feasible-pace envelope; Stage 2 audit confirms feasibility; Instruct narration produces a corner-by-corner coaching report citing the entry-speed delta. Numeric results pending Day-8 measurement.
 
 ### 4.6 Reproducibility (see §7 for the full Reproducibility statement)
 
