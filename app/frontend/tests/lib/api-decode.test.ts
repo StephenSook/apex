@@ -66,6 +66,36 @@ describe("decodeBackendGuardianAudit", () => {
     expect(audit.triggered_rules.length).toBeGreaterThan(0);
   });
 
+  it("BLOCK decode preserves tuple-head (triggered_rules[0]) + ordering invariant across destructure-and-spread", () => {
+    const block = {
+      ...baseValidSafe,
+      verdict: "BLOCK" as const,
+      triggered_rules: ["jerk_bound_exceeded", "pacejka_load_warn", "thermal_envelope_warn"],
+    };
+    const audit = decodeBackendGuardianAudit(block);
+    if (audit.verdict !== "BLOCK") {
+      throw new Error("type-narrowing assert failed; decoder lost the BLOCK tag");
+    }
+    expect(audit.triggered_rules[0]).toBe("jerk_bound_exceeded");
+    expect(audit.triggered_rules[1]).toBe("pacejka_load_warn");
+    expect(audit.triggered_rules[2]).toBe("thermal_envelope_warn");
+    expect(audit.triggered_rules.length).toBe(3);
+  });
+
+  it("BLOCK decode preserves single-element tuple-head correctly (degenerate case)", () => {
+    const block = {
+      ...baseValidSafe,
+      verdict: "BLOCK" as const,
+      triggered_rules: ["coa_simultaneity_violation"],
+    };
+    const audit = decodeBackendGuardianAudit(block);
+    if (audit.verdict !== "BLOCK") {
+      throw new Error("type-narrowing assert failed; decoder lost the BLOCK tag");
+    }
+    expect(audit.triggered_rules[0]).toBe("coa_simultaneity_violation");
+    expect(audit.triggered_rules.length).toBe(1);
+  });
+
   it("throws when raw is not an object", () => {
     expect(() => decodeBackendGuardianAudit("not an object")).toThrow(
       /must be object/i,

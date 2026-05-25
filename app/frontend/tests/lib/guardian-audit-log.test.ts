@@ -115,6 +115,16 @@ describe("guardian-audit-log", () => {
     expect(calledWith.commit_sha).toBe("guarded-commit");
   });
 
+  it("appendVerdict retains bounded tail at MAX_RETAINED_LINES=500 after 600 appends (ring-buffer)", () => {
+    for (let i = 0; i < 600; i++) {
+      appendVerdict(sampleVerdict, `commit-${String(i).padStart(4, "0")}`);
+    }
+    const recent = getRecentVerdicts(600);
+    expect(recent).toHaveLength(500);
+    expect(recent[0].commit_sha).toBe("commit-0599");
+    expect(recent[499].commit_sha).toBe("commit-0100");
+  });
+
   it("emitWithAuditGuard does NOT call emit when appendVerdict throws (storage quota)", () => {
     const setItemSpy = vi
       .spyOn(Storage.prototype, "setItem")
