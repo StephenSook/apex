@@ -46,13 +46,19 @@ type PWAInstallState =
   | { readonly status: "ios" };
 
 /**
- * Lazy initial state computation, runs once on mount, SSR-safe.
- * Returns "hidden" on server (no window) + iOS Safari path detected
- * synchronously on client (no setState-in-effect lint trip per React
- * 19 react-hooks/set-state-in-effect rule). Otherwise starts hidden +
- * the effect transitions to "ready" on beforeinstallprompt fire.
+ * Mounted-flag pattern per feedback_useState_lazy_init_hydration_footgun
+ * memory rule (cascade-#23 lesson). The prior lazy initializer read
+ * typeof window + navigator.userAgent at SSR + client first render,
+ * producing different values (SSR=hidden, client=ios on iOS Safari)
+ * and triggering React 19 hydration mismatch + Playwright pageerror.
+ *
+ * Fix: SSR + client first render both return "hidden" (renders null).
+ * Post-mount useEffect detects iOS Safari + standalone + flips
+ * effective state. The setState-in-effect rule is silenced via
+ * eslint-disable-next-line (one-shot mount setState; no cascading-
+ * render concern).
  */
-function computeInitialState(): PWAInstallState {
+function detectInitialClientState(): PWAInstallState {
   if (typeof window === "undefined") return { status: "hidden" };
   const isStandalone = window.matchMedia("(display-mode: standalone)").matches;
   if (isStandalone) return { status: "hidden" };
@@ -64,13 +70,15 @@ function computeInitialState(): PWAInstallState {
 }
 
 export default function PWAInstallPrompt() {
-  const [state, setState] = useState<PWAInstallState>(computeInitialState);
+  const [mounted, setMounted] = useState(false);
+  const [state, setState] = useState<PWAInstallState>({ status: "hidden" });
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(true);
     if (typeof window === "undefined") return;
 
-    // Suppress if already running in standalone mode OR initial state
-    // already locked iOS path (no install event will fire on iOS).
+    // Suppress if already running in standalone mode (installed app).
     const isStandalone = window.matchMedia("(display-mode: standalone)").matches;
     if (isStandalone) return;
 
@@ -104,11 +112,23 @@ export default function PWAInstallPrompt() {
     }
   };
 
-  if (state.status === "hidden") return null;
+  // Hydration-safe effective state: pre-mount always returns "hidden"
+  // (SSR-matching null render). Post-mount: derive iOS branch from
+  // client detection if state machine is still at "hidden" initial.
+  // Once any event (beforeinstallprompt / appinstalled) or user action
+  // transitions state to ready / installing / etc, the state machine
+  // takes over + the iOS detection is no longer applied.
+  const effectiveState: PWAInstallState = !mounted
+    ? { status: "hidden" }
+    : state.status === "hidden"
+      ? detectInitialClientState()
+      : state;
+
+  if (effectiveState.status === "hidden") return null;
 
   // a11y: reduced-motion users get static (no pulse) on the install
   // affordance via the body className gating tailwind motion-safe variant.
-  if (state.status === "ios") {
+  if (effectiveState.status === "ios") {
     return (
       <aside
         aria-label="Install APEX on iOS"
@@ -125,7 +145,7 @@ export default function PWAInstallPrompt() {
     );
   }
 
-  if (state.status === "installed") {
+  if (effectiveState.status === "installed") {
     return (
       <aside
         aria-label="APEX installed confirmation"
@@ -141,7 +161,7 @@ export default function PWAInstallPrompt() {
     );
   }
 
-  if (state.status === "dismissed") {
+  if (effectiveState.status === "dismissed") {
     return (
       <aside
         aria-label="APEX install dismissed"
@@ -157,7 +177,7 @@ export default function PWAInstallPrompt() {
     );
   }
 
-  const isInstalling = state.status === "installing";
+  const isInstalling = effectiveState.status === "installing";
 
   return (
     <aside

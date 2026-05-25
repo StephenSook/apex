@@ -266,11 +266,24 @@ export default function SimRigStream(props: SimRigStreamProps) {
 function isSimRigFrame(value: unknown): value is SimRigFrame {
   if (typeof value !== "object" || value === null) return false;
   const v = value as Record<string, unknown>;
-  return (
-    typeof v.t_sim === "number" &&
-    typeof v.channels === "object" &&
-    v.channels !== null
-  );
+  if (typeof v.t_sim !== "number" || !Number.isFinite(v.t_sim)) return false;
+  if (typeof v.channels !== "object" || v.channels === null) return false;
+  // Deep-validate every numeric channel + gear range so the downstream
+  // ChannelGrid .toFixed() calls cannot crash the panel on a malformed
+  // frame that passed the shallow object-shape check. Frames with any
+  // missing OR non-finite channel are dropped at the dispatch boundary.
+  const c = v.channels as Record<string, unknown>;
+  const requiredNumerics = [
+    "t_session_s", "throttle_pct", "brake_pa", "steering_rad",
+    "rpm", "lat_g", "long_g", "speed_mps",
+  ];
+  for (const key of requiredNumerics) {
+    if (typeof c[key] !== "number" || !Number.isFinite(c[key])) return false;
+  }
+  if (typeof c.gear !== "number" || !Number.isInteger(c.gear) || c.gear < 0 || c.gear > 8) {
+    return false;
+  }
+  return true;
 }
 
 function StreamView({ state }: { state: StreamState }) {

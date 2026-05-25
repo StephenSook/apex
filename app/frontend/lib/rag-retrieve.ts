@@ -162,8 +162,10 @@ export function retrieveChunks(
     return { chunk, score };
   });
 
-  return scored
-    .filter((s) => s.score > 0)
-    .toSorted((a, b) => b.score - a.score)
-    .slice(0, k);
+  // Use [...arr].sort() spread-copy pattern instead of Array.prototype.toSorted
+  // for compatibility with older Chrome/Safari versions that hackathon judges
+  // may run. toSorted shipped Node 20 + Chrome 110 + Safari 16; pre-2023
+  // browsers throw + the AICopilotChat citation render crashes before paint.
+  const sortable = scored.filter((s) => s.score > 0);
+  return [...sortable].sort((a, b) => b.score - a.score).slice(0, k);
 }

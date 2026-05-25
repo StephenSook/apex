@@ -50,8 +50,38 @@ const CANNED_LAPS: ReadonlyArray<TimingSheetLap> = [
   { lap: 5, sector_1_time_s: 23.504, sector_2_time_s: 27.847, sector_3_time_s: 24.798, lap_time_s: 76.149 },
 ];
 
+const MAX_PDF_BYTES = 10 * 1024 * 1024;
+
 export async function POST(req: NextRequest): Promise<Response> {
   const t0 = performance.now();
+  // Per codex adversarial review wave-44 deep-dive HIGH #3: validate
+  // Content-Length + Content-Type upfront BEFORE req.formData() buffers
+  // the entire multipart body. Without the upfront cap, an adversarial
+  // 100MB+ POST would buffer fully before the file.size check fires
+  // + exhaust Vercel Fluid Compute memory budget.
+  const contentLength = req.headers.get("content-length");
+  if (contentLength !== null) {
+    const declared = Number.parseInt(contentLength, 10);
+    if (Number.isFinite(declared) && declared > MAX_PDF_BYTES + 16 * 1024) {
+      return Response.json(
+        {
+          error: "pdf_too_large",
+          message: `Content-Length ${declared} exceeds 10MB cap.`,
+        },
+        { status: 413 },
+      );
+    }
+  }
+  const contentType = req.headers.get("content-type") ?? "";
+  if (!contentType.toLowerCase().startsWith("multipart/form-data")) {
+    return Response.json(
+      {
+        error: "invalid_multipart",
+        message: `Expected Content-Type multipart/form-data; got ${contentType || "(missing)"}`,
+      },
+      { status: 415 },
+    );
+  }
   let formData: FormData;
   try {
     formData = await req.formData();
@@ -83,13 +113,25 @@ export async function POST(req: NextRequest): Promise<Response> {
       { status: 400 },
     );
   }
-  if (file.size > 10 * 1024 * 1024) {
+  if (file.size > MAX_PDF_BYTES) {
     return Response.json(
       {
         error: "pdf_too_large",
         message: `PDF size ${file.size} exceeds 10MB cap.`,
       },
       { status: 413 },
+    );
+  }
+  // File type sanity check: most browsers tag uploaded PDFs as
+  // application/pdf. Accept missing type for permissive UX but reject
+  // explicit non-PDF types since the parser surface assumes PDF input.
+  if (file.type && file.type !== "application/pdf") {
+    return Response.json(
+      {
+        error: "invalid_pdf_type",
+        message: `Expected file.type application/pdf; got ${file.type}.`,
+      },
+      { status: 415 },
     );
   }
 
