@@ -28,7 +28,15 @@ type FetchResult =
   | { readonly ok: false; readonly cause: "http" | "transport" | "parse"; readonly detail: string };
 
 async function fetchLIPS(): Promise<FetchResult> {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
+  // Wave-45.5 code-reviewer CRITICAL C-1 close: Vercel server lambda has no
+  // localhost:3000; NEXT_PUBLIC_BASE_URL is not set in any deploy. Prefer
+  // VERCEL_URL (Vercel-injected; https-prefixed) > NEXT_PUBLIC_BASE_URL
+  // (explicit override) > localhost (next start dev path only).
+  const vercelUrl = process.env.VERCEL_URL;
+  const explicit = process.env.NEXT_PUBLIC_BASE_URL;
+  const baseUrl = vercelUrl
+    ? `https://${vercelUrl}`
+    : explicit ?? "http://localhost:3000";
   let res: Response;
   try {
     res = await fetch(`${baseUrl}/api/lips-harness`, { cache: "no-store" });

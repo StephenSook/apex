@@ -52,19 +52,22 @@ function formatDelta(a: number, b: number, decimals = 2): { display: string; sig
   return { display: `${prefix}${delta.toFixed(decimals)}`, sign };
 }
 
-function deltaPill(sign: "pos" | "neg" | "zero"): string {
-  switch (sign) {
-    case "pos":
-      return "border-racing-green bg-paper text-racing-green";
-    case "neg":
-      return "border-accent bg-paper text-accent";
-    case "zero":
-      return "border-rule bg-paper text-muted";
-    default: {
-      const _exhaustive: never = sign;
-      throw new Error(`unknown sign: ${String(_exhaustive)}`);
-    }
+function deltaPill(
+  sign: "pos" | "neg" | "zero",
+  higherIsBetter: boolean,
+): string {
+  // Wave-45.5 code-reviewer CRITICAL C-2 close: deltaPill previously mapped
+  // pos -> green + neg -> red regardless of metric direction. Risk + slip are
+  // "lower-is-better" metrics; a pos delta on risk should read red. Per-metric
+  // higherIsBetter flag inverts color when needed so the pill matches the
+  // verdict copy below.
+  const good = sign === "pos" ? higherIsBetter : sign === "neg" ? !higherIsBetter : null;
+  if (good === null) {
+    return "border-rule bg-paper text-muted";
   }
+  return good
+    ? "border-racing-green bg-paper text-racing-green"
+    : "border-accent bg-paper text-accent";
 }
 
 function verdictCopy(a: DriverSnapshot, b: DriverSnapshot): string {
@@ -150,14 +153,14 @@ export default async function ComparePage({ searchParams }: ComparePageProps) {
           <h2 className="font-display text-2xl tracking-tight text-ink">Delta + verdict.</h2>
           <dl className="grid gap-3 sm:grid-cols-3">
             {[
-              { label: "avg speed (m/s)", delta: speedDelta },
-              { label: "risk score", delta: riskDelta },
-              { label: "wheel slip (%)", delta: slipDelta },
-            ].map(({ label, delta }) => (
+              { label: "avg speed (m/s)", delta: speedDelta, higherIsBetter: true },
+              { label: "risk score", delta: riskDelta, higherIsBetter: false },
+              { label: "wheel slip (%)", delta: slipDelta, higherIsBetter: false },
+            ].map(({ label, delta, higherIsBetter }) => (
               <div key={label} className="flex flex-col gap-1">
                 <dt className="font-mono text-[10px] uppercase tracking-wider text-muted">{label}</dt>
                 <dd
-                  className={`self-start rounded-sm border px-3 py-1 font-mono text-lg ${deltaPill(delta.sign)}`}
+                  className={`self-start rounded-sm border px-3 py-1 font-mono text-lg ${deltaPill(delta.sign, higherIsBetter)}`}
                 >
                   {delta.display}
                 </dd>
