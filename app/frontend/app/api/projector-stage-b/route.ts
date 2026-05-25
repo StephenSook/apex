@@ -11,6 +11,8 @@
 
 import type { NextRequest } from "next/server";
 
+import { VINH_SWAP_POINTS } from "../../../lib/vinh-swap-points";
+
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
@@ -44,13 +46,13 @@ export async function GET(_req: NextRequest): Promise<Response> {
       compute_ms: Math.round(performance.now() - t0),
       iterates: CANNED_ITERATES,
       final_residual: 0.0011,
-      swap_point: "Vinh M3-V13 -> app/backend/apex/physics/projection_scp.py (3-iterate SCP wrap of Stage A)",
+      swap_point: VINH_SWAP_POINTS.V13_SCP.swap_point,
     };
     return Response.json(payload, {
       status: 200,
       headers: {
         "Cache-Control": "no-store",
-        "X-Apex-Projector-Swap-Point": "vinh-m3-v13-scp-3-iterate",
+        "X-Apex-Projector-Swap-Point": VINH_SWAP_POINTS.V13_SCP.header,
       },
     });
   } catch (err) {
@@ -66,7 +68,7 @@ export async function GET(_req: NextRequest): Promise<Response> {
       status: 200,
       headers: {
         "Cache-Control": "no-store",
-        "X-Apex-Projector-Swap-Point": "vinh-m3-v13-scp-3-iterate",
+        "X-Apex-Projector-Swap-Point": VINH_SWAP_POINTS.V13_SCP.header,
         "X-Apex-Error": "1",
       },
     });

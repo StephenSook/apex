@@ -11,6 +11,8 @@
 
 import type { NextRequest } from "next/server";
 
+import { VINH_SWAP_POINTS } from "../../../lib/vinh-swap-points";
+
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
@@ -71,13 +73,13 @@ export async function GET(_req: NextRequest): Promise<Response> {
       dataset: "FastF1 Hamilton 2024 Bahrain Q laps 4-5 holdout (canned)",
       seed: 42,
       compute_ms: Math.round(performance.now() - t0),
-      swap_point: "Vinh M3-V15 -> eval/Dockerfile + apex-bench/ (D-026 + G10 reproducibility statement)",
+      swap_point: VINH_SWAP_POINTS.V15_LIPS.swap_point,
     };
     return Response.json(payload, {
       status: 200,
       headers: {
         "Cache-Control": "no-store",
-        "X-Apex-Lips-Swap-Point": "vinh-m3-v15-lips-4-axis",
+        "X-Apex-Lips-Swap-Point": VINH_SWAP_POINTS.V15_LIPS.header,
       },
     });
   } catch (err) {
@@ -94,7 +96,7 @@ export async function GET(_req: NextRequest): Promise<Response> {
       status: 200,
       headers: {
         "Cache-Control": "no-store",
-        "X-Apex-Lips-Swap-Point": "vinh-m3-v15-lips-4-axis",
+        "X-Apex-Lips-Swap-Point": VINH_SWAP_POINTS.V15_LIPS.header,
         "X-Apex-Error": "1",
       },
     });

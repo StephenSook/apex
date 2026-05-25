@@ -12,6 +12,8 @@
 
 import type { NextRequest } from "next/server";
 
+import { VINH_SWAP_POINTS } from "../../../lib/vinh-swap-points";
+
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
@@ -49,13 +51,13 @@ export async function GET(_req: NextRequest): Promise<Response> {
       compute_ms: Math.round(performance.now() - t0),
       tiers: CANNED_TIERS,
       final_violation_count: 0,
-      swap_point: "Vinh M3-V12 -> app/backend/apex/physics/projection_pacejka.py (DifferentiableProjector Protocol)",
+      swap_point: VINH_SWAP_POINTS.V12_PACEJKA.swap_point,
     };
     return Response.json(payload, {
       status: 200,
       headers: {
         "Cache-Control": "no-store",
-        "X-Apex-Projector-Swap-Point": "vinh-m3-v12-pacejka-linearization",
+        "X-Apex-Projector-Swap-Point": VINH_SWAP_POINTS.V12_PACEJKA.header,
       },
     });
   } catch (err) {
@@ -71,7 +73,7 @@ export async function GET(_req: NextRequest): Promise<Response> {
       status: 200,
       headers: {
         "Cache-Control": "no-store",
-        "X-Apex-Projector-Swap-Point": "vinh-m3-v12-pacejka-linearization",
+        "X-Apex-Projector-Swap-Point": VINH_SWAP_POINTS.V12_PACEJKA.header,
         "X-Apex-Error": "1",
       },
     });

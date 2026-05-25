@@ -11,6 +11,8 @@
 
 import type { NextRequest } from "next/server";
 
+import { VINH_SWAP_POINTS } from "../../../lib/vinh-swap-points";
+
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
@@ -46,13 +48,13 @@ export async function GET(_req: NextRequest): Promise<Response> {
       trace_id: `canned-${Date.now().toString(36)}`,
       nodes: CANNED_NODES,
       total_ms,
-      swap_point: "Vinh M3-V14 -> app/backend/apex/orchestration/langgraph_runtime.py (D-017 G7 + D-026 + D-054 LangGraph + MCP + ContextForge)",
+      swap_point: VINH_SWAP_POINTS.V14_LANGGRAPH.swap_point,
     };
     return Response.json(payload, {
       status: 200,
       headers: {
         "Cache-Control": "no-store",
-        "X-Apex-Orchestration-Swap-Point": "vinh-m3-v14-langgraph",
+        "X-Apex-Orchestration-Swap-Point": VINH_SWAP_POINTS.V14_LANGGRAPH.header,
       },
     });
   } catch (err) {
@@ -68,7 +70,7 @@ export async function GET(_req: NextRequest): Promise<Response> {
       status: 200,
       headers: {
         "Cache-Control": "no-store",
-        "X-Apex-Orchestration-Swap-Point": "vinh-m3-v14-langgraph",
+        "X-Apex-Orchestration-Swap-Point": VINH_SWAP_POINTS.V14_LANGGRAPH.header,
         "X-Apex-Error": "1",
       },
     });
