@@ -53,7 +53,7 @@ export async function GET(_req: NextRequest): Promise<Response> {
       swap_point: `Vinh M3-V14 swap-in error: ${err instanceof Error ? err.message : String(err)}`,
     };
     return Response.json(fallback, {
-      status: 200,
+      status: 502,
       headers: {
         "Cache-Control": "no-store",
         "X-Apex-Orchestration-Swap-Point": VINH_SWAP_POINTS.V14_LANGGRAPH.header,
