@@ -164,7 +164,7 @@ const TEAM: ReadonlyArray<TeamMember> = [
     affiliation: "Computer Science, Kennesaw State University",
   },
   {
-    role: "Backend, ML pipeline, FastAPI, Langflow, Infrastructure",
+    role: "Backend, ML pipeline, FastAPI, LangGraph + MCP + ContextForge runtime (Langflow export-graph artifact per D-017 G7 + D-054), Infrastructure",
     name: "Vinh Le",
     affiliation: "Computer Science, Kennesaw State University",
   },
@@ -489,7 +489,7 @@ export default function JudgesPage() {
             Engine-agnostic byte-equality lock. D-050.
           </h2>
           <p className="mt-3 max-w-3xl text-base leading-relaxed text-ink-soft">
-            Wave-45 Phase 10 Block G close-out. The load-bearing technical-positioning headline:
+            Wave-45 Phase 10 Block G close-out. The regression guarantee against engine swaps (D-050 reframed per the new feedback_byte_equality_regression_guarantee_not_killshot memory rule as the engineering safety contract behind the pitch, NOT the load-bearing positioning headline; the pitch headline is Card 4 COA-bound adaptive-controls model):
             two projector engines (V1 NumPy + V2 cvxpylayers) emit byte-identical violation strings
             on the same physical event, modulo a single ENGINE header line. Cross-ref Q&amp;A
             killshot #3 + paper §3.2 + the Vinh pytest assertion shipped 2026-05-25 at commit{" "}
@@ -559,7 +559,7 @@ export default function JudgesPage() {
             Galaxy-tier inference and adaptation moves.
           </h2>
           <p className="mt-3 max-w-3xl text-base leading-relaxed text-ink-soft">
-            Decision-log D-019 enumerates five shouldn&apos;t-be-possible moves that lift APEX from
+            Decision-log D-019 enumerates seven shouldn&apos;t-be-possible moves (D-019 baseline of five plus wave-44 D-049 addition of IBM TSPulse polyphase anomaly detector as #6 plus wave-45 D-053 addition of Granite TTM in-browser scaffold as #7) that lift APEX from
             a hackathon submission into a research-paper-grade artifact. The wave-38 build shipped
             move #1 (WebGPU Granite Nano 350M, Layer 0; surfaced below). Wave-40 ships the
             visualization layer for moves #2 (Activated LoRA hot-swap, Layer 6), #3 (GEPA

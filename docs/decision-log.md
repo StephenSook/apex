@@ -590,7 +590,7 @@ Both yield a `*.vercel.app` URL at $0 cost.
 
 ## 2026-05-22 D-010: Three-track forecasting ensemble (TTM r2.1 channel-mix + FlowState + Chronos-2)
 
-**Decision.** Layer 3 forecasting is now a three-track ensemble. Track 1 = Granite TimeSeries TTM r2.1 running channel-mixing decoder fine-tune on polyphase 1 Hz phase-time streams (5% of target data, ~minutes on RTX 4060). Track 2 = Granite FlowState (9.1M params [VERIFIED: IBM Research FlowState listing], sampling-rate-invariant continuous-time state-space, native 50 Hz). Track 3 = Amazon Chronos-2 (21 quantiles [PARTLY VERIFIED: synthesis Q2 + source 05 specify 21; the Chronos-2 HF model card exposes user-selected quantile counts so 21 is a benchmark-chosen default for APEX], zero-shot probabilistic baseline, maps uncertainty corridor). The (B, 30, 14) tensor contract from Sync Point 1 is the output of the fused ensemble, not just TTM.
+**Decision.** Layer 3 forecasting is now a three-track ensemble. Track 1 = Granite TimeSeries TTM r2.1 running channel-mixing decoder fine-tune on polyphase 1 Hz phase-time streams (5% of target data, ~minutes on RTX 4060). Track 2 = Granite FlowState r1.1 (18.5M params [VERIFIED: IBM Research FlowState listing], sampling-rate-invariant continuous-time state-space, native 50 Hz). Track 3 = Amazon Chronos-2 (21 quantiles [PARTLY VERIFIED: synthesis Q2 + source 05 specify 21; the Chronos-2 HF model card exposes user-selected quantile counts so 21 is a benchmark-chosen default for APEX], zero-shot probabilistic baseline, maps uncertainty corridor). The (B, 30, 14) tensor contract from Sync Point 1 is the output of the fused ensemble, not just TTM.
 
 **Rationale.** D-A original "bare zero-shot TTM" is not a defensible NeurIPS story because (a) channel-independent TTM cannot natively learn cross-channel physical relationships, (b) zero-shot point forecasts have no uncertainty band for the next-session-envelope claim, (c) a single forecaster ties the whole story to a single model's failure mode. Channel-mixing fine-tune + FlowState rate-invariance + Chronos-2 probabilistic baseline together address all three. Source 05 + source 09 Q2.
 
@@ -669,7 +669,7 @@ All execute inside the unrolled SCP outer loop per D-012: the convex inner itera
 
 9. **Granite Embedding R2** (149M encoder + 47M query [VERIFIED: IBM Granite embedding GitHub model list, english-r2 + small-english-r2], hybrid dense/sparse) drives Layer 5 RAG over vehicle setup guides + racing theory + adaptive-equipment specs.
 10. **IBM TSPulse** (1M params [VERIFIED: IBM Research TSPulse article], time-frequency analyzer) drives Layer 2 anomaly detection over polyphase phase streams.
-11. **Granite FlowState** (9.1M [VERIFIED: IBM Research FlowState listing], sampling-rate-invariant SSM) is Track 2 of D-010 three-track ensemble.
+11. **Granite FlowState** (r1.1 18.5M [VERIFIED: IBM Research FlowState r1.1 March 2026 update; CauKer synthetic data + 4096 pre-training context + 2x larger MLP + output gating], sampling-rate-invariant SSM) is Track 2 of D-010 three-track ensemble.
 12. **Granite 4.0 Nano 350M** [VERIFIED: Hugging Face ONNX Granite 4.0 350M model card + IBM Granite docs] runs in-browser via WebGPU + Transformers.js for the offline paddock-summary path per D-021.
 
 Original 8 (Granite-Docling 258M + Granite Vision 4.1 4B + Granite TimeSeries TTM r2.1 + Granite 4.1 8B Instruct + Granite Guardian 4.1 + Langflow + Docling library + IBM Bob) all retained; Langflow demoted from runtime to visual demo facade per D-017.

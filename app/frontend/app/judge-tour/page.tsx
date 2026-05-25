@@ -108,7 +108,7 @@ export default async function JudgeTourPage({ searchParams }: JudgeTourPageProps
                   is the production lock.
                 </p>
                 <p>
-                  This is the load-bearing technical-positioning claim. Granite Guardian audits the same text
+                  This is the engineering safety contract behind the pitch (per the new feedback_byte_equality_regression_guarantee_not_killshot memory rule; the pitch headline is the COA-bound adaptive-controls model in Step 4, not this regression guarantee). Granite Guardian audits the same text
                   regardless of which engine produced it. Stage A (8-tier Pacejka) and Stage B (3-iteration
                   SCP) are deferred per D-031 staged ladder via the `DifferentiableProjector` Protocol
                   one-constructor-call swap.
