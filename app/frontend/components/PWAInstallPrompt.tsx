@@ -45,28 +45,34 @@ type PWAInstallState =
   | { readonly status: "dismissed" }
   | { readonly status: "ios" };
 
+/**
+ * Lazy initial state computation, runs once on mount, SSR-safe.
+ * Returns "hidden" on server (no window) + iOS Safari path detected
+ * synchronously on client (no setState-in-effect lint trip per React
+ * 19 react-hooks/set-state-in-effect rule). Otherwise starts hidden +
+ * the effect transitions to "ready" on beforeinstallprompt fire.
+ */
+function computeInitialState(): PWAInstallState {
+  if (typeof window === "undefined") return { status: "hidden" };
+  const isStandalone = window.matchMedia("(display-mode: standalone)").matches;
+  if (isStandalone) return { status: "hidden" };
+  const ua = window.navigator.userAgent;
+  const isIOSSafari =
+    /iPad|iPhone|iPod/.test(ua) && !/CriOS|FxiOS|EdgiOS|OPiOS/.test(ua);
+  if (isIOSSafari) return { status: "ios" };
+  return { status: "hidden" };
+}
+
 export default function PWAInstallPrompt() {
-  const [state, setState] = useState<PWAInstallState>({ status: "hidden" });
+  const [state, setState] = useState<PWAInstallState>(computeInitialState);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    // Suppress if already running in standalone mode (installed app).
+    // Suppress if already running in standalone mode OR initial state
+    // already locked iOS path (no install event will fire on iOS).
     const isStandalone = window.matchMedia("(display-mode: standalone)").matches;
     if (isStandalone) return;
-
-    // iOS Safari detection: navigator.userAgent contains iPhone | iPad | iPod
-    // AND does NOT contain CriOS (Chrome iOS) / FxiOS (Firefox iOS) / Edg.
-    const ua = window.navigator.userAgent;
-    const isIOSSafari =
-      /iPad|iPhone|iPod/.test(ua) &&
-      !/CriOS|FxiOS|EdgiOS|OPiOS/.test(ua) &&
-      !window.matchMedia("(display-mode: standalone)").matches;
-
-    if (isIOSSafari) {
-      setState({ status: "ios" });
-      return;
-    }
 
     const handleBeforeInstall = (e: Event) => {
       e.preventDefault();
