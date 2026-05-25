@@ -55,8 +55,8 @@ Cross-reference: `research/wave-30/README.md` for source manifest + `research/wa
 | G1b | Granite 4.1 8B Q4 GGUF latency bench | Day 3 night | Tokens/sec measured + logged | aLoRA hot-swap + EAGLE-3 deploy decision (D-019) |
 | G1c | FlowState + Chronos-2 zero-shot smoke (D-010 Tracks 2 + 3) | Day 4 EOD | Both forecasters import + produce (B, 30, 14) tensor on Sarah fixture | Three-track fusion (Sync Point 3) |
 | G2 | COA parse coverage | Day 3 morning (matches Phase 1 header; was Day 5 — council v2 fix) | JSON contains all 9 adaptation domains + COA-derived c_overlap flag per D-A wave-28 refinement | Phase 3 narrator |
-| G3 | V1 NumPy validator catches 5 impossibilities + approves 5 valid + golden-text round-trip serializer assertion passes (Convergence-14 floor) | Day 4 | All 10 fixtures pass + `violation.to_text()` produces deterministic output matching golden fixture | SCP projection layer |
-| G4 | Three-track forecast ensemble beats seasonal-naive on FastF1 holdouts (holdout: laps 4-5 of fixture session, seed=42, channels: speed_mps + long_g, metric: per-channel MAE delta > 0; uncertainty band coverage 0.1 / 0.5 / 0.9 quantiles from Chronos-2) | Day 5 | MAE delta in our favor on defined split + Chronos-2 quantile bands render | If fails -> fine-tune-first pivot |
+| G3 | V1 NumPy validator catches 5 impossibilities + approves 5 valid + golden-text round-trip serializer assertion passes (Convergence-14 floor) | Day 4 | **PASS Day 4** (commit `9e114b5`; 19 tests in `tests/test_physics_v1.py` + `logs/day-04-g3.md`). All 10 fixtures pass + `violation.to_text()` produces deterministic output matching golden fixture. | SCP projection layer |
+| ~~G4~~ | ~~Three-track forecast ensemble beats seasonal-naive on FastF1 holdouts (holdout: laps 4-5 of fixture session, seed=42, channels: speed_mps + long_g, metric: per-channel MAE delta > 0; uncertainty band coverage 0.1 / 0.5 / 0.9 quantiles from Chronos-2)~~ | ~~Day 5~~ | **FAIL Day 4** (`logs/day-04-g4.md`): zero-shot TTM-r2 MAE 35.18 m/s vs seasonal-naive 18.38 m/s on Hamilton Bahrain 2024 Q laps 4-5 speed_mps; long_g absent from FastF1 per pre-mortem row 62. Fine-tune-first pivot triggered per L377: drop "zero-shot beats naive" pitch claim, elevate D-010 Track 1 channel-mix decoder fine-tune to Day 5 morning, reframe TTM as forecast-envelope generator (not point-prediction winner). Q-004 APEX Lite NOT triggered: D-A floor + V1 NumPy validator hold; only the zero-shot accuracy claim is dropped. | Discord 9 PM ET sync escalation tonight; Day 5 fine-tune track starts AM. |
 | G5 | Granite Guardian catches same 5 impossibilities as validator AND lexicographic COA tier-hierarchy stress-test passes (D-022) | Day 6 | All 5 violation logs produce expected verdicts; Tier-0/1 inviolable + Tier-2/3 elastic-slack relaxation verified on hairpin-steering-lock conflict | Convergence-14 suite |
 | G5.5 | Physics-confidence detector (D-024) | Day 6 EOD | Mahalanobis-distance detector flags Pacejka mismatch on injected-incorrect-.tir fixture; Guardian downgrades verdict from SAFE to REVIEW | Guardian audit safety contract |
 | G6 | Narrator end-to-end on Sarah fixture + tri-agent critic loop passes (D-018) + COA citations resolve to fixture (no invented FIA Articles per wave-28 closure) | Day 7 | Coaching report + provenance footer renders + Physics-Critic + Pedagogy-Critic + Guardian-Safety all approve; every citation traces to fixture COA JSON | Phase 4 orchestration |
@@ -136,29 +136,31 @@ Cross-reference: `research/wave-30/README.md` for source manifest + `research/wa
 
 **Goal:** The original contribution. Frozen TTM → physics-projection layer → text violation log. The NeurIPS-paper-worthy code.
 
+**Day 4 status (close-out 2026-05-25):** ✅ G3 PASS (commit `9e114b5`), ✅ task 2.8 TTM wrapper (commit `373a882`), ✅ task 2.9 pipeline (commit `745e4cf`), ✅ task 2.10 FastF1 integration (commit `a157fb6`), ❌ G4 FAIL → fine-tune-first pivot triggered (`logs/day-04-g4.md`). 64 fast + 5 integration tests green. Day 5 starts with task 2.12 cvxpylayers V2 projector + parallel D-010 Track 1 fine-tune track.
+
 #### Day 4 — V1 NumPy validator + violation log (engine-agnostic boundary)
 
 **Council mandate:** `PhysicsViolationLog.to_text()` must be engine-agnostic from Day 4 so V1 NumPy and V2 CvxpyLayer produce identical violation strings. Prevents NeurIPS camera-ready fixture divergence and lets G5 Guardian audits be engine-portable.
 
 | # | Task | File | Status |
 |---|------|------|--------|
-| 2.1 | `friction_ellipse_check(a_long, a_lat, mu, g)` — constant-μ V1 | `app/backend/apex/physics/validator.py` | ⬜ |
-| 2.2 | `forward_euler_consistency(speed, a_long, dt, tolerance_band)` — kinematic V1 **with explicit tolerance band ≥ 1Hz quantization error to prevent false-positives on mid-second braking events (Software Lead fix #7)** | same | ⬜ |
-| 2.3 | `bicycle_kinematic_check(lat_g, steering_rad, speed, wheelbase)` — V1 | same | ⬜ |
-| 2.4 | `coa_simultaneity_rule(throttle_series, brake_series, simultaneity_channel)` — **takes per-step simultaneity_channel `(T,)` tensor (NOT scalar bool) sourced from same `shared.contracts` adapter that builds TTM input. Single source of truth (Software Lead fix #2).** | same | ⬜ |
-| 2.5 | `PhysicsViolationLog` dataclass imported from `shared.contracts` (NOT redefined here). `.to_text()` serializer is **engine-agnostic — identical output whether violations came from NumPy V1 or CvxpyLayer V2 (Long-Term Architect fix)**. Golden-text fixtures committed alongside. | `app/backend/apex/physics/violation_log.py` + `app/backend/tests/fixtures/violation_log_golden/` | ⬜ |
-| 2.6 | Unit tests: 5 impossible-physics traces (one per violation type) + 5 valid traces | `app/backend/tests/test_physics_v1.py` | ⬜ |
-| 2.6b | **Round-trip serializer assertion (Convergence-14 floor, Software Lead fix #4):** every violation type produces deterministic `.to_text()` matching its golden fixture exactly. Re-running with same input twice produces byte-identical output. | `app/backend/tests/test_physics_v1.py` | ⬜ |
-| 2.7 | **Gate G3 — V1 catches 5 impossibilities + approves 5 valid + round-trip serializer assertion passes** | `logs/day-04-g3.md` | ⬜ |
+| 2.1 | `friction_ellipse_check(a_long, a_lat, mu, g)` — constant-μ V1 | `app/backend/apex/physics/validator.py` | ✅ Day 4 (commit `9e114b5`) |
+| 2.2 | `forward_euler_consistency(speed, a_long, dt, tolerance_band)` — kinematic V1 **with explicit tolerance band ≥ 1Hz quantization error to prevent false-positives on mid-second braking events (Software Lead fix #7)** | same | ✅ Day 4 (`ToleranceBands.for_1hz_aggregation()` per channel) |
+| 2.3 | `bicycle_kinematic_check(lat_g, steering_rad, speed, wheelbase)` — V1 | same | ✅ Day 4 (small-angle V1; CLI smoke on Sarah stub flags expected V1 false-positive rate at race-corner speeds; V2 cvxpylayers + 8-tier Pacejka at Day 5 task 2.12 replaces) |
+| 2.4 | `coa_simultaneity_rule(throttle_series, brake_series, simultaneity_channel)` — **takes per-step simultaneity_channel `(T,)` tensor (NOT scalar bool) sourced from same `shared.contracts` adapter that builds TTM input. Single source of truth (Software Lead fix #2).** | same | ✅ Day 4 (per-step tensor consumed; Sarah stub COA-permitted path passes) |
+| 2.5 | `PhysicsViolationLog` dataclass imported from `shared.contracts` (NOT redefined here). `.to_text()` serializer is **engine-agnostic — identical output whether violations came from NumPy V1 or CvxpyLayer V2 (Long-Term Architect fix)**. Golden-text fixtures committed alongside. | `app/backend/apex/physics/violation_log.py` + `app/backend/tests/fixtures/violation_log_golden/` | ✅ Day 4 (engine="v1_numpy" emitted; round-trip serializer determinism asserted in test_physics_v1.py) |
+| 2.6 | Unit tests: 5 impossible-physics traces (one per violation type) + 5 valid traces | `app/backend/tests/test_physics_v1.py` | ✅ Day 4 (19 tests; 5 impossibilities + 5 valid in fixtures) |
+| 2.6b | **Round-trip serializer assertion (Convergence-14 floor, Software Lead fix #4):** every violation type produces deterministic `.to_text()` matching its golden fixture exactly. Re-running with same input twice produces byte-identical output. | `app/backend/tests/test_physics_v1.py` | ✅ Day 4 (3 round-trip assertions; full 14-type Convergence expansion deferred to Phase 4 task 4.2) |
+| 2.7 | **Gate G3 — V1 catches 5 impossibilities + approves 5 valid + round-trip serializer assertion passes** | `logs/day-04-g3.md` | ✅ PASS Day 4 commit `9e114b5` |
 
 #### Day 4 — TTM → validator → text log end-to-end
 
 | # | Task | File | Status |
 |---|------|------|--------|
-| 2.8 | `forecast.py` TTM inference wrapper, 1Hz mini-sector aggregation from 50Hz raw, 30-step context window per wave-30 horizon-expansion D-010 (was 24 pre-wave-30) | `app/backend/apex/ttm/forecast.py` | ⬜ |
-| 2.9 | End-to-end: telemetry CSV → TTM forecast → NumPy validator → text violation log | integration script | ⬜ |
-| 2.10 | Integration test on a FastF1 5-lap slice | `app/backend/tests/test_ttm_integration.py` | ⬜ |
-| 2.11 | **Gate G4 — zero-shot TTM vs seasonal-naive MAE bake-off on FastF1 holdouts** | `logs/day-04-g4.md` | ⬜ |
+| 2.8 | `forecast.py` TTM inference wrapper, 1Hz mini-sector aggregation from 50Hz raw, 30-step context window per wave-30 horizon-expansion D-010 (was 24 pre-wave-30) | `app/backend/apex/ttm/forecast.py` | ✅ Day 4 (commit `373a882`; 15 tests; AggregationConfig with peak/last/mean per-channel rules; TtmForecaster lazy-loaded; FastF1 native rate ~4 Hz derived from `Date` deltas, not the G1 claim of 50 Hz; aggregator dispatches via `source_hz` parameter) |
+| 2.9 | End-to-end: telemetry CSV → TTM forecast → NumPy validator → text violation log | integration script | ✅ Day 4 (commit `745e4cf`; `apex.pipelines.telemetry_to_log` module + `python -m` CLI + 11 tests; modes `naive` (G4 baseline + cheap demo) and `ttm` (lazy-loaded heavy)) |
+| 2.10 | Integration test on a FastF1 5-lap slice | `app/backend/tests/test_ttm_integration.py` | ✅ Day 4 (commit `a157fb6`; 5 integration-marked tests; skipped by default, enabled with `pytest --integration`; default suite stays 0.5s, integration suite 19.7s on .venv) |
+| 2.11 | **Gate G4 — zero-shot TTM vs seasonal-naive MAE bake-off on FastF1 holdouts** | `logs/day-04-g4.md` | ❌ FAIL Day 4 (TTM MAE 35.18 vs naive 18.38 m/s on speed_mps; long_g absent; pivot triggered per L377; bake-off script at `apex.pipelines.g4_mae_bakeoff`; numbers JSON at `logs/day-04-g4-numbers.json`) |
 
 #### Day 5 — CvxpyLayer QP V2 + Guardian wiring
 
@@ -374,7 +376,7 @@ deliverables/
 | **Day 3 EOD** | **D-027 SCP gate fails (3-iteration unrolled SCP oscillates or gradient broken through cvxpylayers + 8-tier Pacejka)** | **Walk fallback ladder per D-027: (a) drop to 2 iterations + trust-region penalty; (b) escalate to Stephen + D-A revision entry if 2 also oscillates. Do NOT proceed unilaterally on fallback path.** |
 | **Day 4 EOD (G6.5)** | **`cvxpylayers` Windows install fails after 4h debug** | **Switch to M2 / WSL2 / Linux container. Log decision in `logs/day-04-cvxpy-fallback.md`.** |
 | Day 3 night | G1 TTM smoke fails on RTX 4060 | APEX Lite — drop TTM, keep Granite Instruct + Guardian on regulatory-only product |
-| Day 4 | G4 zero-shot TTM does not beat seasonal-naive on defined holdout (laps 4-5, seed=42, channels speed_mps + long_g) | Fine-tune-first, skip zero-shot pitch claim |
+| ~~Day 4~~ **FIRED** | ~~G4 zero-shot TTM does not beat seasonal-naive on defined holdout (laps 4-5, seed=42, channels speed_mps + long_g)~~ → **TRIGGERED Day 4** (`logs/day-04-g4.md`): TTM 35.18 m/s vs naive 18.38 m/s on speed_mps; long_g absent per pre-mortem row 62. | **Pivot in motion:** (1) pitch language correction (drop "zero-shot beats naive" on Cards 03 + 04); (2) Day 5 morning elevates D-010 Track 1 channel-mix decoder fine-tune as parallel track; (3) TTM reframed as forecast-envelope generator (not point-prediction winner); (4) Q-004 APEX Lite NOT triggered (D-A floor + V1 NumPy validator hold; only zero-shot accuracy claim is dropped); (5) Discord 9 PM ET sync escalation tonight. |
 | Day 5 | cvxpylayers SCP inner-iterate has convergence issues | Walk D-027 fallback ladder per decision-log (trust-region penalty + Powell ratio acceptance; escalate to D-A revision if rung exhausted). Engine-agnostic `.to_text()` boundary means D-A still holds: SCP-inner-iterate output + V1 NumPy floor emit identical violation strings per paper §3.2 canonical-engine framing. |
 | Day 6 | Granite-Docling fails on real COA | Fallback ladder: LlamaParse → Mistral OCR → manual JSON |
 | Day 8 | 60s budget blown on RTX 4060 | Wave-30 supersedes council-trim G8-demote: D-019 EAGLE-3 + aLoRA hot-swap tighten coaching-report sub-budget to 15s inside 60s wall-clock. If 60s still blown: pre-record demo, use live UI for Q&A only. |
@@ -405,13 +407,13 @@ deliverables/
 
 ---
 
-## Things to bring to 9 PM sync (tonight, Day 3)
+## Things to bring to 9 PM sync (tonight, Day 4 EOD / 2026-05-25)
 
-1. **D-027 SCP go/no-go gate result (pass/fail + fallback-ladder branch).** Single most important number tonight. If fail, escalation conversation starts here.
-2. G1 result (TTM smoke test pass/fail + numbers)
-3. G1b result (Granite 4.1 8B Q4 tokens/sec on RTX 4060)
-4. **COA wording note:** "derived flag, not explicit flag" (for whenever he writes Card 04 or COA pitch language)
-5. Deploy decision FYI: HF Spaces free tier won't host the full stack. Vercel + OpenRouter is the call by Day 9.
+1. **🚨 Gate G4 FAIL number + pivot ask.** Single most important conversation tonight. TTM zero-shot MAE 35.18 m/s vs seasonal-naive 18.38 m/s on Hamilton Bahrain 2024 Q laps 4-5 holdout speed_mps. Plan L377 fine-tune-first pivot triggered; full log at `logs/day-04-g4.md`. Three pitch-language changes that need Stephen alignment before Card 03 + Card 04 redraft: (a) drop "zero-shot beats naive" pitch claim; (b) reframe TTM as forecast-envelope generator (not point-prediction winner); (c) elevate D-010 Track 1 channel-mix decoder fine-tune to Day 5 morning track. Q-004 APEX Lite NOT triggered; D-A floor + V1 NumPy validator hold; engine-agnostic boundary untouched.
+2. **Gate G3 PASS Day 4** (commit `9e114b5`, 19 tests + `logs/day-04-g3.md`). V1 NumPy validator catches 5 impossibilities + approves 5 valid + round-trip serializer assertion (Convergence-14 floor) green. Foundation for Day 5 V2 cvxpylayers projector is solid.
+3. **TTM end-to-end shipped Day 4** (tasks 2.8 + 2.9 + 2.10; commits `373a882` + `745e4cf` + `a157fb6`). 53/53 fast tests green + 5 integration tests green on `.venv`. CLI at `apex.pipelines.telemetry_to_log` runs Sarah CSV + COA → forecast → validator → text log end-to-end.
+4. **Pre-existing G1 issue surfaced by G4:** FastF1 car_data sample rate is ~4 Hz (median Δt = 240 ms), NOT 50 Hz as G1 claimed. G1 still PASS (forward-pass smoke proved bytes work); G4 derives rate from `Date` deltas correctly. Logged for honesty in `logs/day-04-g4.md`.
+5. **COA wording note:** "derived flag, not explicit flag" (for whenever he writes Card 04 or COA pitch language; unchanged from prior plan).
 6. **Council trim status:** SUPERSEDED by wave-30 Maximal Architecture Lock (see line 69). G7 promoted to runtime LangGraph + MCP + ContextForge per D-017; G8 sub-budget tightened to 15s via EAGLE-3 + aLoRA per D-019; sim-rig backend stays killed (frontend `SimRigStream` mocks from static fixture).
 
 Everything else stays in lane and ships per this plan.
