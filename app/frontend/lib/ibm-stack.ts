@@ -104,12 +104,20 @@ export const IBM_GRANITE_STACK: ReadonlyArray<GraniteStackTool> = [
   },
   {
     name: "Granite TimeSeries TTM",
-    version: "r2.1",
-    role: "Track 1 of D-010 three-track ensemble (frozen + channel-mix decoder)",
+    version: "r2.1 + fine-tune",
+    role: "Track 1 of D-010 three-track ensemble (frozen-backbone + channel-mix decoder fine-tune per D-052)",
     status: "INTEGRATION",
-    // Wave-44 Phase 6d: ThreeTrackForecastChart per-track tier badge
-    // surfaces TTM as INTEGRATION (Vinh M3-V3 backend swap-point at Phase 1
-    // task 1.3 + 1.4). Status flips to "WIRED" once V3 lands.
+    // Wave-45 Phase 2 Block A close-out: Vinh shipped Day 4-5 backend
+    // pipeline at apex/ttm/forecast.py + apex/physics/projection.py
+    // (V2 cvxpylayers; D-050 byte-equality lock). G4 zero-shot bake-off
+    // FAILED on speed_mps (~2x naive win); pre-committed pivot trigger
+    // fired per docs/vinh-backend-plan.md L377; D-010 Track 1 channel-
+    // mix decoder fine-tune elevated to production forecaster path per
+    // feedback_g4_fail_pivot_documented_then_executed memory rule.
+    // Engine-agnostic byte-equality boundary preserved as the load-
+    // bearing technical-positioning claim. Status flips to "WIRED"
+    // once Vinh wires the frontend /api/forecast endpoint to the new
+    // fine-tuned channel-mix decoder + Stage A + Stage B per V12-V13.
   },
   {
     name: "Granite FlowState",

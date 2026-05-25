@@ -61,9 +61,9 @@ const TRACK_TIERS: Record<ForecastTrackName, TrackTier> = {
 };
 
 const TRACK_SWAP_POINTS: Record<ForecastTrackName, string> = {
-  ttm_channel_mix: "Vinh M3-V3 backend (Phase 1 task 1.3 + 1.4 forecast)",
-  flowstate: "Vinh M3-V10 backend (queued for next wave)",
-  chronos2: "Vinh M3-V11 backend (queued for next wave)",
+  ttm_channel_mix: "Vinh M3-V3 backend (apex/ttm/forecast.py fine-tune-first per D-052; D-010 Track 1 channel-mix decoder)",
+  flowstate: "Vinh M3-V10 backend",
+  chronos2: "Vinh M3-V11 backend",
 };
 
 export default function ThreeTrackForecastChart({ forecast }: ThreeTrackForecastChartProps) {

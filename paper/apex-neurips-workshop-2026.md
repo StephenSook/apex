@@ -219,15 +219,24 @@ The §4 prose below specifies the evaluation protocol and the §4.4 latency budg
 - TTM + Stage 1 QP only (Stage 2 audit disabled; isolates the differentiable-convex contribution from the nonconvex audit contribution).
 - Deep Dynamics retrained on the same FastF1 holdouts, if a public PINN checkpoint is available; otherwise dropped from Table 2.
 
-**Table 2: Forecaster comparison on FastF1 holdouts.** Skeleton; cell values populated at camera-ready. Lower is better for MAE + violation-rate columns.
+**G4 FAIL pivot honest-disclosure (verified 2026-05-25 per `logs/day-04-g4.md` + Vinh commit `2fddea4`).** The zero-shot TTM-r2 baseline lost to seasonal-naive by ~2x on speed_mps on Hamilton 2024 Bahrain Q laps 4-5 holdout. Per pre-committed plan trigger at `docs/vinh-backend-plan.md` L377, the zero-shot pitch claim was dropped + the D-010 Track 1 channel-mix decoder fine-tune was elevated to the production forecaster path. The seasonal-naive structural advantage on lap-periodic F1 telemetry + the TTM context-window padding distortion (323 1-Hz rows + 189-row first-row replication to reach the 512 `context_length`) are documented as the load-bearing root causes; the FastF1 channel-availability gap on `long_g` is documented per pre-mortem row 62. Table 2 reflects the post-pivot composition path; Table 2-FAIL captures the verified zero-shot honest-disclosure row.
+
+**Table 2: Forecaster + projection composition comparison on FastF1 holdouts (post-G4-pivot framing).** Skeleton; cell values populated at camera-ready. Lower is better for MAE + violation-rate columns.
 
 | Method | Lap-time MAE (s) | Physics-violation rate (fraction of steps) | Guardian approve / flag / reject (%) | Inference latency (ms / step) | Retraining cost (GPU-hours) |
 |--------|------------------|--------------------------------------------|--------------------------------------|-------------------------------|------------------------------|
 | Seasonal-naive (last-lap repeat) | -- | -- | -- | -- | 0 |
-| TTM zero-shot (no projection) | -- | -- | -- | -- | 0 |
-| TTM + Stage 1 QP only | -- | -- | -- | -- | 0 |
-| TTM + Stage 1 QP + Stage 2 feasibility filter (APEX) | -- | -- | -- | -- | 0 |
+| TTM + D-010 Track 1 channel-mix decoder fine-tune (no projection) | -- | -- | -- | -- | <0.1 |
+| TTM + fine-tune + V1 NumPy validator + Guardian audit (D-A floor) | -- | -- | -- | -- | <0.1 |
+| TTM + fine-tune + V2 cvxpylayers projector + Guardian audit (APEX D-050 V2 ship-floor) | -- | -- | -- | -- | <0.1 |
 | Deep Dynamics retrained (if checkpoint available) | -- | -- | -- | -- | -- |
+
+**Table 2-FAIL: G4 zero-shot honest-disclosure (verified 2026-05-25; `logs/day-04-g4-numbers.json`).** Source: Hamilton 2024 Bahrain Q, laps 1-3 context / 4-5 holdout. Seed 42. 30-step horizon at 1 Hz. TTM load 15.23 s; forward 484.0 ms.
+
+| Channel | TTM zero-shot MAE | Seasonal-naive MAE | Delta | Verdict |
+|---------|-------------------|--------------------|-------|---------|
+| speed_mps | 35.1776 m/s | 18.3819 m/s | 16.7957 m/s | naive wins ~2x |
+| long_g | n/a | n/a | n/a | FastF1 channel absent per pre-mortem row 62 |
 
 **Metrics.**
 
@@ -304,6 +313,10 @@ The single Stage-C verified row (~1030 ms) is well below its 1500 ms budget. Day
 ### 4.5 Case studies
 
 **Sarah Reynolds Britcar GP synthetic case study.** The 60-row 1.2-second telemetry slice (qualifying lap 17 of 19 at the slowest-corner brake-release-to-throttle-on micro-window) carries one COA-permitted simultaneity window between rows 18-24 where brake pressure has not fully released (0.4 MPa residual on the hand-control lever) and throttle has begun (12 percent input via the secondary hand-control). The Stage 2 audit with COA gate ON treats the window as feasible (COA `coa_simul_permitted=true` flag asserts); the audit with COA gate OFF flags the window as a brake-throttle simultaneity violation. The tuning recommendation rendered with the gate ON cites the COA hardware-spec section; with the gate OFF the recommendation reads "release brake before throttle" which is unactionable for a left-leg-amputee driver using electronic hand-controls.
+
+**G4 FAIL pivot case study (verified 2026-05-25).** The project pre-committed at `docs/vinh-backend-plan.md` L377 a fail-pivot trigger: "if zero-shot TTM does not beat seasonal-naive on speed_mps, drop the zero-shot pitch claim + elevate D-010 Track 1 channel-mix decoder fine-tune to Day 5 morning". The Day 4 G4 bake-off on Hamilton 2024 Bahrain Q laps 4-5 holdout returned TTM zero-shot speed_mps MAE 35.18 m/s vs seasonal-naive 18.38 m/s (~2x naive win; full numbers in `logs/day-04-g4-numbers.json`). The pivot trigger fired at 2026-05-25 03:47 ET via Vinh commit `2fddea4`; the V2 cvxpylayers projector ship-floor landed later the same day at commit `cb970ed` + the engine-agnostic byte-equality test locked at commit `9048573` per D-050. APEX Lite was NOT triggered (D-A floor + V1 NumPy validator hold); only the zero-shot accuracy claim dropped. This is a verified-and-executed adversarial-readiness case study: the planned pivot trigger fired + the disciplined execution preserved the engine-agnostic boundary + the load-bearing technical-positioning headline (D-050 byte-equality lock) is stronger after the pivot than before.
+
+**Engine-agnostic byte-equality lock (D-050).** The V1 NumPy `friction_ellipse_check.to_text()` + V2 cvxpylayers `cvxpy_friction_ellipse_projection.to_text()` outputs are byte-identical modulo the leading ENGINE header line on the same physical event. The test at `app/backend/tests/test_physics_v2.py::test_v1_v2_to_text_byte_equal_modulo_engine_line` is the production lock; the Guardian BYOC audit reads identical violation strings regardless of which engine produced them. Stage A (8-tier Pacejka linearisation per D-012 + D-015 Tier 7) + Stage B (3-iteration unrolled SCP outer loop per D-012) remain deferred per D-031 staged ladder via the `DifferentiableProjector` Protocol one-constructor-call swap-point; both add precision but do not change the violation strings on the same physical event, so deferring them does not weaken the engine-agnostic D-A claim.
 
 **FastF1 Bahrain Q corner case (camera-ready).** A 5-lap qualifying-pace slice through Turn 10 (slow-speed left-hander preceded by a long DRS straight) is the canonical FastF1 holdout case study. The expected demonstration: TTM zero-shot forecasts a brake-and-trail profile that exceeds the friction ellipse on the entry; Stage 1 QP projects to the feasible-pace envelope; Stage 2 audit confirms feasibility; Instruct narration produces a corner-by-corner coaching report citing the entry-speed delta. Numeric results pending Day-8 measurement.
 

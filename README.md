@@ -53,7 +53,7 @@ What makes APEX different from the existing AI race-engineer category (Track Tit
 
 ### 1. First application of a pretrained time-series foundation model to adaptive motorsport telemetry
 
-We do not retrain. We take a frozen Granite TimeSeries TTM r2.1 forecaster, aggregate raw 50 Hz telemetry to 1-Hz mini-sector tensors that fit the model's published support envelope, and wrap the outputs in a two-stage projection-and-audit layer. To our knowledge no prior published work applies a non-physics TSFM to vehicle dynamics without retraining it from scratch (vs Deep Dynamics, which trains a bespoke PINN; vs Chronos-on-car-following, which uses a different forecaster on different inputs).
+We do not retrain from scratch. We take a frozen-backbone Granite TimeSeries TTM r2.1 forecaster + a D-010 Track 1 channel-mix decoder fine-tune (the pre-committed fine-tune-first pivot per `docs/vinh-backend-plan.md` L377, executed 2026-05-25 within 12 hours of the G4 zero-shot bake-off result), aggregate raw 50 Hz telemetry to 1-Hz mini-sector tensors that fit the model's published support envelope, and wrap the outputs in a two-stage projection-and-audit layer. The V1 NumPy validator + V2 cvxpylayers projector emit byte-identical violation strings modulo the engine header line per D-050; the engine-agnostic boundary is the load-bearing technical-positioning claim. To our knowledge no prior published work applies a non-physics TSFM to vehicle dynamics with fine-tune-only-the-decoder (vs Deep Dynamics, which trains a bespoke PINN from scratch; vs Chronos-on-car-following, which uses a different forecaster on different inputs).
 
 ### 2. Two-stage projection-and-audit layer prevents kinetic hallucinations
 
@@ -180,7 +180,7 @@ Full architecture spec: [`docs/architecture-spec.md`](./docs/architecture-spec.m
 **AI (IBM Granite stack)**
 - Granite-Docling 258M (COA structured-document extraction)
 - Granite Vision 4.1 4B (timing-sheet chart and table extraction)
-- Granite TimeSeries TTM r2.1 (NeurIPS 2024 Tiny Time Mixers, zero-shot multivariate forecasting)
+- Granite TimeSeries TTM r2.1 (NeurIPS 2024 Tiny Time Mixers, fine-tune-first multivariate forecasting per D-010 Track 1 channel-mix decoder + D-050 engine-agnostic byte-equality lock)
 - Granite 4.1 8B Instruct (race-engineer narrative)
 - Granite Guardian 4.1 8B (BYOC custom-rules safety classifier)
 - Langflow (visible agentic orchestration)
