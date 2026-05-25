@@ -4,6 +4,34 @@ Every locked decision with rationale + date + scope. Newest first.
 
 ---
 
+## 2026-05-25 D-050: Phase 2 Day 5 task 2.13 V2 cut clause NOT invoked; constant-mu V2 ships as Day-5 floor
+
+**Decision.** Phase 2 Day 5 task 2.12 (CvxpyLayersProjector constant-mu V2) shipped on commit `cb970ed` with 12 tests green including the engine-agnostic byte-equality assertion. Plan task 2.13's "if convergence issues by EOD Day 5, ship V1 NumPy as floor" clause is NOT invoked: V2 converges, the cvxpylayers solve is differentiable end-to-end, and the V1 V2 .to_text() outputs are byte-identical modulo the leading ENGINE line. The 8-tier Pacejka linearization + 3-iteration unrolled SCP (D-031 Stage A + Stage B) remain deferred per the staged ladder; they land as quality lifts after Phase 3 Day 6, not as Day-5 blockers.
+
+**Status.**
+
+- **Stage C (constant-mu, single iterate):** ✅ shipped Day 3 as the SCP spike (commit `c97caaa`), promoted to production V2 class on Day 5 (commit `cb970ed`, this entry).
+- **Stage A (8-tier Pacejka linearization per D-012 + D-015 Tier 7):** ⬜ deferred. Slot: a new `apex.physics.projection_pacejka.py` swap-point that satisfies the same `DifferentiableProjector` Protocol the V2 class now satisfies, so the swap is one constructor call at the pipeline boundary.
+- **Stage B (3-iteration unrolled SCP outer loop per D-012):** ⬜ deferred. Slot: an `apex.physics.projection_scp.py` wrapper that holds N inner-iterate projector instances + the Taylor-step linearization between iterates.
+
+**Rationale.** Three load-bearing reasons constant-mu V2 ships as the Day-5 floor:
+
+1. **Engine-agnostic boundary is the actual NeurIPS-paper claim.** Paper §3.2 cites the QP formulation as the canonical engine; what matters for D-A is that the violation strings Guardian audits are byte-identical regardless of which engine produced them. The byte-equality test at `tests/test_physics_v2.py::test_v1_v2_to_text_byte_equal_modulo_engine_line` locks this: identical step + type + severity + channel_values output across V1 NumPy and V2 cvxpylayers. Stage A + Stage B add precision but do not change the violation strings on the same physical event, so deferring them does not weaken D-A.
+2. **G4 FAIL pivot already absorbed the "precision pitch claim" risk.** Per `logs/day-04-g4.md`, the zero-shot TTM beats naive claim was dropped Day 4; the pitch now positions TTM + V2 as a forecast-envelope-plus-physics-projection composition, not a point-MAE win. Stage A + Stage B precision uplift does not change this pitch.
+3. **G8 latency budget headroom.** D-031 noted the Stage C spike took ~1.03s. The production V2 class is ~3.5s for the full test suite (76 tests including 12 cvxpylayers projections), so per-projection cost is well under 100ms even with 30 horizon steps. Stage A + Stage B will increase this; the budget allows them but the Day-5 ship-floor doesn't require them.
+
+**Affected.**
+
+- `app/backend/apex/physics/projection.py` ships as the V2 production class (commit `cb970ed`).
+- `app/backend/apex/shared/contracts/projector.py` carries `ProjectionResult` dataclass + `DifferentiableProjector` Protocol that future Stage A + Stage B classes satisfy.
+- `docs/vinh-backend-plan.md` Phase 2 Day 5 task 2.13 row marked accordingly (cut clause NOT invoked; staged ladder rungs deferred).
+- `paper/apex-neurips-workshop-2026.md` §3.2 can cite the byte-equality lock as the engine-agnostic property; the staged ladder appears in §3 as future-work / quality-lift framing, not as a missing Day-5 feature.
+- Pre-committed de-scope rung 1 (cut three-track ensemble FlowState + Chronos-2) does NOT fire; three-track stays on roadmap per G9 Day 9.
+
+**Reproducibility.** V2 byte-equality test at `app/backend/tests/test_physics_v2.py::test_v1_v2_to_text_byte_equal_modulo_engine_line` is the lock. Run with `cd app/backend && .venv/Scripts/python -m pytest tests/test_physics_v2.py -v -p no:cacheprovider`. 12 tests in 3.5s including the QP solve + grad check.
+
+---
+
 ## 2026-05-24 D-049: Wave-44 final close-out + Phase 6 + Phase 9 + Phase 10 pre-submit gate
 
 **Decision.** Wave-44 mega-wave Phase 6 + Phase 9 + Phase 10 close-out captures the galaxy-stretch shipping arc + the pre-submit hygiene gate. Supersedes D-048 plan-entry with the executed-and-shipped wave-44 state.

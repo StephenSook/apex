@@ -150,31 +150,41 @@ class PhysicsViolationLog:
 
 
 # ---- GuardianAudit: BYOC audit verdict + provenance --------------------
+# Schema mirrors the canonical frontend contract at app/shared/types.ts L323-345
+# per D-032 (frontend-backend type alignment via canonical schema mirror).
+# Verdict is the discriminator; shape variants follow per-verdict per the
+# frontend TypeScript discriminated union.
 
-GuardianVerdict = Literal["SAFE", "REVIEW", "BLOCK"]
+GuardianVerdict = Literal["approve", "flag", "reject"]
 
 
 @dataclass(frozen=True)
 class GuardianAudit:
     """Granite Guardian 4.1 BYOC custom-rules audit verdict.
 
-    `audit_id` is set ONCE at Guardian.audit() entry via `uuid4()`, never
-    None per council v2 Software Lead fix #9. The provenance footer
-    (Phase 3 task 3.6) asserts non-None on this field; Phase 3 task 3.6b
-    is the contract test.
+    Mirrors `app/shared/types.ts` L323-345 discriminated union by
+    `verdict`. Three valid shapes:
 
-    `physics_confidence` is the Mahalanobis-distance detector output from
-    D-024 (Phase 2 task G5.5 / G6.5): low confidence -> Guardian downgrades
-    SAFE to REVIEW even if the violation log is empty, because the physics
-    model is not trustworthy on this session's telemetry distribution.
+      approve: {verdict, reasoning_trace, audit_id}
+      flag:    {verdict, reasoning_trace, flagged_concerns, audit_id}
+      reject:  {verdict, reasoning_trace, blocked_recommendations, audit_id}
+
+    The variant fields default to empty tuples so callers can construct
+    any verdict with a single dataclass; the frontend decoder narrows
+    by reading `verdict` and asserting the appropriate optional field
+    is non-empty.
+
+    `audit_id` is set ONCE at Guardian.audit() entry via `uuid4()`,
+    never None per council v2 Software Lead fix #9. The provenance
+    footer (Phase 3 task 3.6) asserts non-None on this field; Phase 3
+    task 3.6b is the contract test.
     """
 
-    audit_id: str                           # uuid4 hex string; never empty
     verdict: GuardianVerdict
-    reasoning: str                          # think-mode trace for UI surface
-    triggered_rules: tuple[str, ...]        # subset of BYOC rule IDs
-    physics_confidence: float | None        # D-024 Mahalanobis detector output
-    audited_at_iso: str                     # ISO 8601 UTC timestamp
+    reasoning_trace: tuple[str, ...]
+    audit_id: str                                    # uuid4 hex; never empty
+    flagged_concerns: tuple[str, ...] = ()           # populated on verdict="flag"
+    blocked_recommendations: tuple[str, ...] = ()    # populated on verdict="reject"
 
 
 def new_audit_id() -> str:
