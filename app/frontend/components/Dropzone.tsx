@@ -42,6 +42,8 @@ import {
   type ReactNode,
 } from "react";
 
+import VoiceDebriefInput from "./VoiceDebriefInput";
+
 export type SlotKey = "telemetry" | "coa";
 
 export const MIN_TELEMETRY_BYTES = 1024;
@@ -578,6 +580,9 @@ function DebriefSlot({ value, error, dispatch }: DebriefSlotProps) {
       <label htmlFor={id} className="font-mono text-xs uppercase tracking-wider text-ink-soft">
         Your debrief
       </label>
+      <VoiceDebriefInput
+        onTranscript={(transcript) => dispatch({ type: "setDebrief", value: transcript })}
+      />
       <textarea
         id={id}
         value={value}
@@ -585,12 +590,12 @@ function DebriefSlot({ value, error, dispatch }: DebriefSlotProps) {
         aria-describedby={`${hintId} ${error ? errorId : ""}`.trim()}
         aria-invalid={overCap}
         rows={6}
-        placeholder="Lost the rears mid-Old Hairpin again. Cannot trail-brake the lever the way I could at Croft."
+        placeholder="Lost the rears mid-corner again. Cannot trail-brake the lever the way I could at the previous round."
         className="min-h-[180px] rounded-sm border-2 border-rule bg-paper p-4 font-sans text-sm leading-relaxed text-ink placeholder:text-muted focus:border-racing-green focus:outline-none"
       />
       <p id={hintId} className="text-xs leading-relaxed text-muted">
-        Two or three sentences from your post-session debrief. APEX cross-references
-        the debrief against the forecast envelope and your COA limits.
+        Two or three sentences from your post-session debrief, typed or dictated. APEX
+        cross-references the debrief against the forecast envelope and your COA limits.
       </p>
       <p className={`font-mono text-xs ${overCap ? "text-accent" : "text-muted"}`}>
         {overCap ? `${-remaining} over the limit.` : `${remaining} characters left.`}
