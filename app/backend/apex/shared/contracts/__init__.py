@@ -8,7 +8,7 @@ Single source of truth for inter-layer types:
 """
 
 from .adapters import build_ttm_input
-from .projector import DifferentiableProjector, PROTOCOL_VERSION
+from .projector import DifferentiableProjector, PROTOCOL_VERSION, ProjectionResult
 from .shapes import (
     CHANNEL_COUNT,
     CHANNEL_TIER_BINDING,
@@ -41,6 +41,7 @@ __all__ = [
     # projector
     "DifferentiableProjector",
     "PROTOCOL_VERSION",
+    "ProjectionResult",
     # adapters
     "build_ttm_input",
     # violations

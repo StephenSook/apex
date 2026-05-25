@@ -24,10 +24,28 @@ This is the single highest-ROI architectural decision flagged by the council.
 
 from __future__ import annotations
 
-from typing import Final, Protocol, runtime_checkable
+from dataclasses import dataclass
+from typing import Any, Final, Protocol, runtime_checkable
 
 # Re-export shape constants so projector consumers only need to import this module.
 from .shapes import CHANNEL_COUNT, HORIZON, TENSOR_SHAPE
+from .violations import PhysicsViolationLog
+
+
+@dataclass(frozen=True)
+class ProjectionResult:
+    """Output of any DifferentiableProjector.project() call.
+
+    `corrected_tensor` preserves the input shape (B, 30, CHANNEL_COUNT) per
+    shapes.TENSOR_SHAPE. The tensor type is concrete to the implementation
+    (numpy.ndarray for V1 NumPy, torch.Tensor for V2 cvxpylayers). The
+    `violation_log` is the engine-agnostic PhysicsViolationLog the
+    Guardian audit + provenance footer consume. Frozen so a result cannot
+    mutate between projector and audit.
+    """
+
+    corrected_tensor: Any
+    violation_log: PhysicsViolationLog
 
 
 @runtime_checkable
@@ -78,5 +96,6 @@ __all__ = [
     "DifferentiableProjector",
     "HORIZON",
     "PROTOCOL_VERSION",
+    "ProjectionResult",
     "TENSOR_SHAPE",
 ]
