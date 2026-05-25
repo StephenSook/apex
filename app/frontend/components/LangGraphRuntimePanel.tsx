@@ -54,31 +54,43 @@ function nodeBorder(status: OrchestrationNode["status"]): string {
   }
 }
 
+const FETCH_TIMEOUT_MS = 8000;
+
 export default function LangGraphRuntimePanel() {
   const [state, setState] = useState<PanelState>({ status: "loading" });
+  const [reload, setReload] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
     const run = async () => {
       try {
-        const res = await fetch("/api/orchestration", { cache: "no-store" });
+        const res = await fetch("/api/orchestration", {
+          cache: "no-store",
+          signal: controller.signal,
+        });
         if (!res.ok) throw new Error(`/api/orchestration -> HTTP ${res.status}`);
         const payload = (await res.json()) as OrchestrationResponse;
         if (!cancelled) setState({ status: "ready", response: payload });
       } catch (err) {
-        if (!cancelled) {
-          setState({
-            status: "error",
-            message: err instanceof Error ? err.message : String(err),
-          });
-        }
+        if (cancelled) return;
+        const message =
+          err instanceof Error && err.name === "AbortError"
+            ? `/api/orchestration timed out after ${FETCH_TIMEOUT_MS} ms`
+            : err instanceof Error
+              ? err.message
+              : String(err);
+        setState({ status: "error", message });
       }
     };
     void run();
     return () => {
       cancelled = true;
+      clearTimeout(timeoutId);
+      controller.abort();
     };
-  }, []);
+  }, [reload]);
 
   return (
     <section
@@ -103,7 +115,7 @@ export default function LangGraphRuntimePanel() {
 
       {state.status === "loading" && (
         <p className="font-mono text-xs uppercase tracking-wider text-amber">
-          Loading orchestration trace…
+          Loading orchestration trace...
         </p>
       )}
 
@@ -164,12 +176,27 @@ export default function LangGraphRuntimePanel() {
       )}
 
       {state.status === "error" && (
-        <p
-          role="alert"
-          className="rounded-sm border-2 border-accent bg-paper p-3 font-mono text-xs leading-relaxed text-accent"
-        >
-          Orchestration trace failed: {state.message}
-        </p>
+        <div className="flex flex-col gap-3">
+          <p
+            role="alert"
+            className="rounded-sm border-2 border-accent bg-paper p-3 font-mono text-xs leading-relaxed text-accent"
+          >
+            Orchestration trace failed: {state.message}
+          </p>
+          <button
+            type="button"
+            onClick={() => {
+              setState({ status: "loading" });
+              setReload((n) => n + 1);
+            }}
+            className="self-start rounded-sm border-2 border-racing-green bg-racing-green px-4 py-2 font-mono text-xs uppercase tracking-wider text-paper transition-colors hover:bg-racing-green-deep"
+          >
+            Retry orchestration trace
+          </button>
+          <p className="font-mono text-[10px] uppercase tracking-wider text-muted">
+            Swap-point: Vinh M3-V14 -&gt; app/backend/apex/orchestration/langgraph_runtime.py
+          </p>
+        </div>
       )}
     </section>
   );
