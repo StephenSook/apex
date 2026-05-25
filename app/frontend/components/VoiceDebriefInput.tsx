@@ -79,13 +79,19 @@ export interface VoiceDebriefInputProps {
 }
 
 export default function VoiceDebriefInput({ onTranscript }: VoiceDebriefInputProps) {
-  const [state, setState] = useState<VoiceDebriefState>(() => {
-    const SpeechRecognition = getSpeechRecognition();
-    return SpeechRecognition === null ? { status: "unsupported" } : { status: "idle" };
-  });
+  // Hydration-safe: both SSR + client first render return "unsupported"
+  // so React 19 hydration mismatches do not fire. useEffect on mount
+  // checks for SpeechRecognition + flips to "idle" if available. Pre-
+  // mount unsupported placeholder renders the typed-debrief fallback
+  // copy which is the universal-platform path anyway.
+  const [state, setState] = useState<VoiceDebriefState>({ status: "unsupported" });
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
 
   useEffect(() => {
+    const SpeechRecognition = getSpeechRecognition();
+    if (SpeechRecognition !== null) {
+      setState({ status: "idle" });
+    }
     return () => {
       recognitionRef.current?.abort();
       recognitionRef.current = null;
