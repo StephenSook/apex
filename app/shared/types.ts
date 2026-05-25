@@ -1573,3 +1573,42 @@ export type StructuredLogEntryExtras = Readonly<Record<string, unknown>>;
  * `StructuredLogEntryCanonical` first.
  */
 export type StructuredLogEntry = StructuredLogEntryCanonical & StructuredLogEntryExtras;
+
+// ============================================================================
+// Wave-45 Phase 11 deep-review type-design promotion: move duplicated
+// V14 LangGraph orchestration response + V15 LIPS harness response from
+// per-file declarations (API route + consumer panel/page) to this shared
+// module. Drift waiting to happen previously; now one source of truth.
+// ============================================================================
+
+export interface OrchestrationNode {
+  readonly id: string;
+  readonly label: string;
+  readonly status: "completed" | "active" | "pending" | "failed";
+  readonly elapsed_ms: number;
+}
+
+export interface OrchestrationResponse {
+  readonly engine: "langgraph-v14-canned-fallback" | "langgraph-v14-real";
+  readonly trace_id: string;
+  readonly nodes: ReadonlyArray<OrchestrationNode>;
+  readonly total_ms: number;
+  readonly swap_point: string;
+}
+
+export interface LIPSRow {
+  readonly configuration: string;
+  readonly lap_time_mae_s: number;
+  readonly physics_violation_rate: number;
+  readonly guardian_approve_pct: number;
+  readonly inference_latency_ms: number;
+}
+
+export interface LIPSResponse {
+  readonly engine: "lips-v15-canned-fallback" | "lips-v15-real";
+  readonly rows: ReadonlyArray<LIPSRow>;
+  readonly dataset: string;
+  readonly seed: number;
+  readonly compute_ms: number;
+  readonly swap_point: string;
+}

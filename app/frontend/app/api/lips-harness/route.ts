@@ -11,27 +11,11 @@
 
 import type { NextRequest } from "next/server";
 
+import type { LIPSResponse, LIPSRow } from "../../../../shared/types";
 import { VINH_SWAP_POINTS } from "../../../lib/vinh-swap-points";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-
-interface LIPSRow {
-  readonly configuration: string;
-  readonly lap_time_mae_s: number;
-  readonly physics_violation_rate: number;
-  readonly guardian_approve_pct: number;
-  readonly inference_latency_ms: number;
-}
-
-interface LIPSResponse {
-  readonly engine: "lips-v15-canned-fallback" | "lips-v15-real";
-  readonly rows: ReadonlyArray<LIPSRow>;
-  readonly dataset: string;
-  readonly seed: number;
-  readonly compute_ms: number;
-  readonly swap_point: string;
-}
 
 const CANNED_ROWS: ReadonlyArray<LIPSRow> = [
   {

@@ -56,6 +56,8 @@ function statusPill(status: "byte-identical" | "engine-line-diff-only" | "conten
 export default function EngineAgnosticByteEqualityDemo() {
   const diff = diffByteEquality(V1_NUMPY_TO_TEXT, V2_CVXPYLAYERS_TO_TEXT);
   const pill = statusPill(diff.status);
+  const v1Body = V1_NUMPY_TO_TEXT.slice(V1_NUMPY_TO_TEXT.indexOf("\n") + 1);
+  const v2Body = V2_CVXPYLAYERS_TO_TEXT.slice(V2_CVXPYLAYERS_TO_TEXT.indexOf("\n") + 1);
 
   return (
     <section
@@ -109,7 +111,7 @@ export default function EngineAgnosticByteEqualityDemo() {
             <code>
               <span className="bg-amber/30 text-ink">{diff.engine_line_v1}</span>
               {"\n"}
-              {V1_NUMPY_TO_TEXT.split("\n").slice(1).join("\n")}
+              {v1Body}
             </code>
           </pre>
         </article>
@@ -119,7 +121,7 @@ export default function EngineAgnosticByteEqualityDemo() {
             <code>
               <span className="bg-amber/30 text-ink">{diff.engine_line_v2}</span>
               {"\n"}
-              {V2_CVXPYLAYERS_TO_TEXT.split("\n").slice(1).join("\n")}
+              {v2Body}
             </code>
           </pre>
         </article>

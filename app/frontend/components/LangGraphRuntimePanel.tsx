@@ -17,20 +17,7 @@
 
 import { useEffect, useState } from "react";
 
-interface OrchestrationNode {
-  readonly id: string;
-  readonly label: string;
-  readonly status: "completed" | "active" | "pending" | "failed";
-  readonly elapsed_ms: number;
-}
-
-interface OrchestrationResponse {
-  readonly engine: "langgraph-v14-canned-fallback" | "langgraph-v14-real";
-  readonly trace_id: string;
-  readonly nodes: ReadonlyArray<OrchestrationNode>;
-  readonly total_ms: number;
-  readonly swap_point: string;
-}
+import type { OrchestrationNode, OrchestrationResponse } from "../../shared/types";
 
 type PanelState =
   | { readonly status: "loading" }

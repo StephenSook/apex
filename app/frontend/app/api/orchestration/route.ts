@@ -11,25 +11,11 @@
 
 import type { NextRequest } from "next/server";
 
+import type { OrchestrationNode, OrchestrationResponse } from "../../../../shared/types";
 import { VINH_SWAP_POINTS } from "../../../lib/vinh-swap-points";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-
-interface OrchestrationNode {
-  readonly id: string;
-  readonly label: string;
-  readonly status: "completed" | "active" | "pending" | "failed";
-  readonly elapsed_ms: number;
-}
-
-interface OrchestrationResponse {
-  readonly engine: "langgraph-v14-canned-fallback" | "langgraph-v14-real";
-  readonly trace_id: string;
-  readonly nodes: ReadonlyArray<OrchestrationNode>;
-  readonly total_ms: number;
-  readonly swap_point: string;
-}
 
 const CANNED_NODES: ReadonlyArray<OrchestrationNode> = [
   { id: "ingest", label: "Telemetry ingest + 1-Hz aggregator", status: "completed", elapsed_ms: 42 },

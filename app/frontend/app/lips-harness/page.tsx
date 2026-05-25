@@ -13,6 +13,8 @@
 
 import type { Metadata } from "next";
 
+import type { LIPSResponse } from "../../../shared/types";
+
 export const metadata: Metadata = {
   title: "APEX · LIPS 4-axis evaluation harness",
   description:
@@ -20,23 +22,6 @@ export const metadata: Metadata = {
 };
 
 export const dynamic = "force-dynamic";
-
-interface LIPSRow {
-  readonly configuration: string;
-  readonly lap_time_mae_s: number;
-  readonly physics_violation_rate: number;
-  readonly guardian_approve_pct: number;
-  readonly inference_latency_ms: number;
-}
-
-interface LIPSResponse {
-  readonly engine: "lips-v15-canned-fallback" | "lips-v15-real";
-  readonly rows: ReadonlyArray<LIPSRow>;
-  readonly dataset: string;
-  readonly seed: number;
-  readonly compute_ms: number;
-  readonly swap_point: string;
-}
 
 type FetchResult =
   | { readonly ok: true; readonly data: LIPSResponse }
