@@ -6,7 +6,7 @@
  * with the ENGINE header line highlighted as the ONLY allowed
  * difference per D-050 byte-equality lock.
  *
- * Cross-ref: paper §3.2 + §4.5 + Q&A killshot #3 + Vinh pytest
+ * Cross-ref: paper §3.2 + §4.5 case studies + §4.6 reproducibility + Q&A killshot #3 + Vinh pytest
  * assertion at app/backend/tests/test_physics_v2.py.
  *
  * Verdict states (3): byte-identical (green; both engines emitted
@@ -76,12 +76,15 @@ export default function EngineAgnosticByteEqualityDemo() {
           The V1 NumPy validator + V2 cvxpylayers projector emit byte-identical
           {" "}<span className="font-mono">.to_text()</span> output on the same physical event,
           modulo the leading ENGINE header line. The Guardian BYOC audit reads identical violation
-          strings regardless of which engine produced them. This is the load-bearing technical-positioning
-          claim of the entire project; the pytest assertion at{" "}
+          strings regardless of which engine produced them. This is the regression guarantee that
+          engine swaps (Stage A 8-tier Pacejka, Stage B 3-iteration SCP, future GPU-accelerated
+          cvxpylayers) cannot silently change the safety contract; the pytest assertion at{" "}
           <span className="font-mono text-xs text-racing-green">
             app/backend/tests/test_physics_v2.py
           </span>{" "}
-          locks it at HEAD.
+          locks it at HEAD. The pitch headline of the project is the COA-bound adaptive-controls
+          model + brake-throttle simultaneity gate; D-050 is the engineering safety contract behind
+          the pitch.
         </p>
       </header>
 

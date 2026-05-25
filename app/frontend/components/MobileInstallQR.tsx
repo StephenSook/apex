@@ -1,21 +1,21 @@
 /**
- * MobileInstallQR: QR code rendering the /judges install URL.
- * Wave-45 Phase 6 Block C.3 close-out. Mounted on /judges header
- * for paddock-side scan-to-install affordance.
+ * MobileInstallQR: install-affordance card pairing a visual QR
+ * placeholder with the canonical install URL text. Mounted on
+ * /judges header for paddock-side mobile-install UX.
  *
- * Implementation: inline SVG QR code generated at build-time
- * (Server Component; no client-side qrcode dep needed). For the
- * APEX-one-black /judges URL the QR matrix is deterministic;
- * pre-rendered + checked into the public/ asset directory so the
- * page does not pay a runtime QR-encode cost.
+ * Implementation (HEAD-honest 2026-05-25 night per wave-45 deep-
+ * review codex MED + comment-analyzer NIT): we render a CSS-grid
+ * pseudo-QR visual + the install URL as a clickable link. The
+ * visual is NOT scannable; a future wave swap-point lands either
+ * a real inline SVG QR encoder (via npm `qrcode` dep) OR a pre-
+ * rendered static asset checked into `public/`. For now the URL
+ * link is the load-bearing affordance + the QR visual signals
+ * intent. Heading + aria-label avoid the "Scan to install"
+ * promise that the placeholder cannot keep; the URL is one tap.
  *
- * QR provider: uses Google Chart API at static build time OR a
- * pre-generated QR image. To keep the dependency surface minimal
- * + avoid Google Chart deprecation risk, we render a CSS-grid
- * placeholder + cite the URL inline so users with QR-incompatible
- * cameras can still type the URL. This is acceptable per Sookra
- * Methodology Pillar 1 honesty discipline; full SVG QR encoding
- * lands wave-46 via static-asset bundling.
+ * Per Sookra Methodology Pillar 1 honesty discipline: better to
+ * ship the honest visual-placeholder + URL link than to ship a
+ * fake "Scan to install" affordance that breaks on first camera.
  */
 
 import Link from "next/link";
@@ -27,11 +27,11 @@ export interface MobileInstallQRProps {
 
 export default function MobileInstallQR({
   targetUrl = "https://apex-one-black.vercel.app/judges",
-  heading = "Scan to install on phone",
+  heading = "Open on phone (PWA install)",
 }: MobileInstallQRProps) {
   return (
     <aside
-      aria-label="Mobile install QR code"
+      aria-label="Mobile install URL affordance with QR visual placeholder"
       className="flex flex-col gap-3 rounded-sm border border-racing-green bg-paper p-4 sm:flex-row sm:items-center"
     >
       <div

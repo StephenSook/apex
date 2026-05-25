@@ -132,7 +132,7 @@ export default function ApexCamPanel() {
         })}
       </ol>
       <p className="font-mono text-[10px] uppercase tracking-wider text-muted">
-        Cross-ref: <span className="text-ink-soft">paper §3 + §4.4 latency budget + D-019 5 shouldn&apos;t-be-possible moves + D-050 byte-equality lock</span>
+        Cross-ref: <span className="text-ink-soft">paper §3 + §4.4 latency budget + D-019 7 shouldn&apos;t-be-possible moves (D-053 + D-049 amendments) + D-050 byte-equality lock</span>
       </p>
     </section>
   );

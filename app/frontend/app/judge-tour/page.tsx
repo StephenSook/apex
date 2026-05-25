@@ -101,7 +101,7 @@ export default async function JudgeTourPage({ searchParams }: JudgeTourPageProps
             body={
               <>
                 <p>
-                  Per D-050 (Vinh commit `9048575`), the V1 NumPy validator&apos;s `.to_text()` and the V2
+                  Per D-050 (Vinh commit `9048573`), the V1 NumPy validator&apos;s `.to_text()` and the V2
                   cvxpylayers projector&apos;s `.to_text()` produce byte-identical violation strings modulo a
                   single ENGINE header line. The test at
                   `app/backend/tests/test_physics_v2.py::test_v1_v2_to_text_byte_equal_modulo_engine_line`
@@ -150,7 +150,7 @@ export default async function JudgeTourPage({ searchParams }: JudgeTourPageProps
             stepNumber={5}
             totalSteps={TOTAL_STEPS}
             eyebrow="Step 5 · Galaxy-tier moves"
-            headline="Six shouldn't-be-possible moves stacked on a frozen-backbone TSFM."
+            headline="Seven shouldn't-be-possible moves stacked on a frozen-backbone TSFM."
             body={
               <>
                 <p>

@@ -8,7 +8,7 @@
  * HEAD ships canned-fallback engine while Vinh wires the Dockerized
  * evaluation harness at eval/Dockerfile + apex-bench/ Day 11.
  *
- * Cross-ref: paper §4.5 Reproducibility statement + D-026 + G10.
+ * Cross-ref: paper §4.6 Reproducibility statement + D-026 + G10.
  */
 
 import type { Metadata } from "next";
@@ -161,7 +161,7 @@ export default async function LIPSHarnessPage() {
           What you are looking at.
         </h2>
         <p className="text-sm leading-relaxed text-ink-soft">
-          The 4 rows map to the canonical ablation in paper §4.5. Row 1 (zero-shot TTM) is
+          The 4 rows map to the canonical ablation in paper §4.6 Reproducibility + §4.2 baselines. Row 1 (zero-shot TTM) is
           the G4 honest-disclosure baseline per D-052. Row 2 (soft-loss-only) demonstrates
           that constraint violation is hard to reduce via differentiable loss alone. Row 3
           (APEX hard projection) shows the V2 cvxpylayers projection eliminating violations.

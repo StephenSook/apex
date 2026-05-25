@@ -8,7 +8,7 @@
  * mark visualization.
  *
  * Pure UI demo. No fetch + no live projector run. Demo artifact
- * for the wave-45 plan + paper §4.5 case-study cross-reference.
+ * for the wave-45 plan + paper §4.5 case-study + §4.6 reproducibility cross-reference.
  */
 
 import { useState } from "react";

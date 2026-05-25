@@ -19,7 +19,7 @@
  * published, but the consumer pipeline class for time-series tasks
  * is not in v4. Running TTM in-browser today requires bypassing
  * the pipeline abstraction + calling onnxruntime-web directly with
- * the TTM tensor shapes — a deeper integration that lands in a
+ * the TTM tensor shapes, a deeper integration that lands in a
  * later wave when upstream catalog support arrives or we ship the
  * direct-ORT bridge.
  *

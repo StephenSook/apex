@@ -137,7 +137,7 @@ export const IBM_GRANITE_STACK: ReadonlyArray<GraniteStackTool> = [
     // Wave-44 Phase 6a: frontend TSPulseAnomalyPanel 5-state discriminated
     // union mounted on /judges (mock data via MOCK_TSPULSE_ACTIVE);
     // backend swap-point Vinh M3-V7 endpoint POST /api/tspulse/anomaly per
-    // wave-44 plan (Vinh-scope V1-V11). Status flips to "WIRED" once
+    // wave-44 plan (Vinh-scope V1-V15 per D-054 wave-45). Status flips to "WIRED" once
     // Vinh M3-V7 lands.
   },
   {
