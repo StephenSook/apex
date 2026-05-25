@@ -79,24 +79,37 @@ export interface VoiceDebriefInputProps {
 }
 
 export default function VoiceDebriefInput({ onTranscript }: VoiceDebriefInputProps) {
-  // Hydration-safe: both SSR + client first render return "unsupported"
-  // so React 19 hydration mismatches do not fire. useEffect on mount
-  // checks for SpeechRecognition + flips to "idle" if available. Pre-
-  // mount unsupported placeholder renders the typed-debrief fallback
-  // copy which is the universal-platform path anyway.
-  const [state, setState] = useState<VoiceDebriefState>({ status: "unsupported" });
+  // Hydration-safe: SSR + client first render produce identical output
+  // by deriving the "unsupported"-or-"idle" decision from the mounted
+  // flag at render time rather than via setState-in-effect (which
+  // trips react-hooks/set-state-in-effect). Pre-mount: render as
+  // unsupported. Post-mount: re-render flips to "idle" if Speech-
+  // Recognition is available. State machine state holds the recording
+  // / done / error transitions only; mounted controls the unsupported-
+  // vs-idle base.
+  const [mounted, setMounted] = useState(false);
+  const [state, setState] = useState<VoiceDebriefState>({ status: "idle" });
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
 
   useEffect(() => {
-    const SpeechRecognition = getSpeechRecognition();
-    if (SpeechRecognition !== null) {
-      setState({ status: "idle" });
-    }
+    // SSR-vs-client hydration-safe mount flip. setState is intentional
+    // here: pre-mount render uses unsupported placeholder (matches SSR
+    // output) + first effect tick switches to the live SpeechRecognition
+    // detection. No cascading-render concern (single setState, runs once
+    // on mount only via empty dependency array).
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(true);
     return () => {
       recognitionRef.current?.abort();
       recognitionRef.current = null;
     };
   }, []);
+
+  const effectiveState: VoiceDebriefState = !mounted
+    ? { status: "unsupported" }
+    : getSpeechRecognition() === null && state.status === "idle"
+      ? { status: "unsupported" }
+      : state;
 
   const handleStart = () => {
     const SpeechRecognition = getSpeechRecognition();
@@ -149,7 +162,7 @@ export default function VoiceDebriefInput({ onTranscript }: VoiceDebriefInputPro
     setState({ status: "idle" });
   };
 
-  if (state.status === "unsupported") {
+  if (effectiveState.status === "unsupported") {
     return (
       <p className="font-mono text-[10px] uppercase tracking-wider text-muted">
         Voice debrief not supported in this browser. Type your debrief below instead.
@@ -162,10 +175,10 @@ export default function VoiceDebriefInput({ onTranscript }: VoiceDebriefInputPro
       <div className="flex items-baseline justify-between gap-3">
         <p className="apex-eyebrow">Voice debrief (browser-native; Watson STT swap-point per Vinh V9)</p>
         <span className="font-mono text-[10px] uppercase tracking-wider text-muted">
-          {state.status}
+          {effectiveState.status}
         </span>
       </div>
-      {state.status === "idle" && (
+      {effectiveState.status === "idle" && (
         <button
           type="button"
           onClick={handleStart}
@@ -174,15 +187,15 @@ export default function VoiceDebriefInput({ onTranscript }: VoiceDebriefInputPro
           Start voice debrief
         </button>
       )}
-      {state.status === "recording" && (
+      {effectiveState.status === "recording" && (
         <div className="flex flex-col gap-2">
           <div className="flex items-baseline gap-2" aria-live="polite">
             <span className="inline-block h-2 w-2 motion-safe:animate-pulse rounded-full bg-accent" aria-hidden="true" />
             <span className="font-mono text-[11px] uppercase tracking-wider text-accent">Recording</span>
           </div>
-          {state.partial.length > 0 && (
+          {effectiveState.partial.length > 0 && (
             <p className="rounded-sm border-l-2 border-amber bg-paper px-3 py-2 text-sm leading-relaxed text-ink-soft">
-              {state.partial}
+              {effectiveState.partial}
             </p>
           )}
           <button
@@ -194,10 +207,10 @@ export default function VoiceDebriefInput({ onTranscript }: VoiceDebriefInputPro
           </button>
         </div>
       )}
-      {state.status === "done" && (
+      {effectiveState.status === "done" && (
         <div className="flex flex-col gap-2">
           <p className="rounded-sm border-l-2 border-racing-green bg-paper px-3 py-2 text-sm leading-relaxed text-ink">
-            {state.transcript}
+            {effectiveState.transcript}
           </p>
           <button
             type="button"
@@ -208,12 +221,12 @@ export default function VoiceDebriefInput({ onTranscript }: VoiceDebriefInputPro
           </button>
         </div>
       )}
-      {state.status === "error" && (
+      {effectiveState.status === "error" && (
         <p
           role="alert"
           className="rounded-sm border-2 border-accent bg-paper p-3 font-mono text-xs leading-relaxed text-accent"
         >
-          Voice error: {state.message}. Type your debrief below instead.
+          Voice error: {effectiveState.message}. Type your debrief below instead.
         </p>
       )}
     </div>
