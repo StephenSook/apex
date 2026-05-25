@@ -127,10 +127,13 @@ describe("WatsonTtsRadio (inline-blob streaming shape, cascade-#15 rework)", () 
     await waitFor(() => expect(abortReceived).toBe(true));
   });
 
-  it("Phase 4.3 cross-origin synthesizeEndpoint blocked + falls back to Web Speech API", async () => {
-    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+  it("Phase 4.3 cross-origin synthesizeEndpoint blocked + surfaces error state (per silent-failure BLOCKER #1)", async () => {
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => undefined);
     // fetchMock should NEVER be called for the cross-origin path; the
-    // validateSameOriginEndpoint throw fires before fetch.
+    // validateSameOriginEndpoint throw fires before fetch. Per wave-44
+    // deep-review silent-failure BLOCKER #1: cross-origin block now
+    // routes to error state (NOT ready_fallback) so operators see the
+    // exfiltration-attempt signal distinct from a Watson outage.
     render(
       <WatsonTtsRadio
         auditId={TEST_AUDIT_ID}
@@ -138,14 +141,18 @@ describe("WatsonTtsRadio (inline-blob streaming shape, cascade-#15 rework)", () 
         synthesizeEndpoint="https://attacker.example.com/exfiltrate"
       />,
     );
-    await waitFor(() => expect(screen.getByText(/Web Speech API fallback/i)).toBeInTheDocument());
+    await waitFor(() => {
+      const alert = screen.queryByRole("alert");
+      expect(alert).not.toBeNull();
+      expect(alert?.textContent).toMatch(/cross-origin|validateSameOriginEndpoint/i);
+    });
     expect(fetchMock).not.toHaveBeenCalled();
-    expect(warnSpy).toHaveBeenCalled();
-    warnSpy.mockRestore();
+    expect(errorSpy).toHaveBeenCalled();
+    errorSpy.mockRestore();
   });
 
-  it("Phase 4.3 protocol-relative URL (//) blocked + falls back to Web Speech API", async () => {
-    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+  it("Phase 4.3 protocol-relative URL (//) blocked + surfaces error state (per silent-failure BLOCKER #1)", async () => {
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => undefined);
     render(
       <WatsonTtsRadio
         auditId={TEST_AUDIT_ID}
@@ -153,9 +160,12 @@ describe("WatsonTtsRadio (inline-blob streaming shape, cascade-#15 rework)", () 
         synthesizeEndpoint="//attacker.example.com/exfiltrate"
       />,
     );
-    await waitFor(() => expect(screen.getByText(/Web Speech API fallback/i)).toBeInTheDocument());
+    await waitFor(() => {
+      const alert = screen.queryByRole("alert");
+      expect(alert).not.toBeNull();
+    });
     expect(fetchMock).not.toHaveBeenCalled();
-    warnSpy.mockRestore();
+    errorSpy.mockRestore();
   });
 
   it("Phase 4.3 same-origin absolute URL accepted (passes validateSameOriginEndpoint)", async () => {
