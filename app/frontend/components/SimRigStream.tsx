@@ -3,22 +3,34 @@
 /**
  * SimRigStream: client-side consumer for live sim-rig telemetry.
  *
- * Ships against an in-memory simulated stream today (synthetic Sarah Reynolds
- * Donington lap on a 50 ms tick = 20 Hz). Live mode connects to a backend
- * WebSocket at the URL passed via `websocketUrl` per the SimRigFrame contract
- * in app/shared/types.ts. Simulated mode + live mode share the same render
- * path so the production cutover is a one-prop change.
+ * Three render-path-identical modes:
+ *   - simulated: in-memory canned synthetic GT4 hand-controls lap on
+ *     a 50 ms tick = 20 Hz. Ships Day-2-default; loop indefinitely.
+ *   - httpStream: NDJSON streaming from /api/sim-rig/stream
+ *     (wave-44 Phase 6h). Vercel-deployable. Frames arrive at 20 Hz
+ *     via fetch().body.getReader() + TextDecoder + newline split.
+ *   - live: backend WebSocket at the URL passed via `websocketUrl`
+ *     per the SimRigFrame contract in app/shared/types.ts. Vinh V2
+ *     backend swap-point per wave-44 plan addition.
+ *
+ * All three modes share the same render path so the production
+ * cutover is a one-prop change.
  *
  * Failure modes handled:
  *   - WebSocket connection lost mid-session: reconnect with exponential backoff,
  *     capped at MAX_RECONNECT_ATTEMPTS before a terminal error.
+ *   - HTTP stream disconnect / read error: same scheduleReconnect path.
  *   - Backend returns malformed frames: drop the frame, log to console with the
  *     specific failure cause (non-string transport vs JSON parse vs shape),
  *     keep the stream alive.
  *   - User navigates away mid-stream: WebSocket.close() + pending reconnect
- *     timer cleared on unmount.
+ *     timer cleared on unmount; httpStream AbortController fires on unmount.
  *   - Props mis-set: SimRigStreamProps is a discriminated union, so the
  *     compiler rejects `<SimRigStream mode="live" />` without `websocketUrl`.
+ *
+ * Wave-44 Lane K persona-decoupling sweep: synthetic GT4 hand-controls
+ * stream; circuit-agnostic synthetic layout. No persona name in
+ * render or comment text.
  */
 
 import { useEffect, useReducer, useRef } from "react";
@@ -31,7 +43,7 @@ const RECONNECT_DELAY_START_MS = 1000;
 const RECONNECT_DELAY_CAP_MS = 30_000;
 const MAX_RECONNECT_ATTEMPTS = 6;
 
-type StreamMode = "simulated" | "live";
+type StreamMode = "simulated" | "httpStream" | "live";
 
 interface StreamState {
   readonly mode: StreamMode;
@@ -73,12 +85,15 @@ function reducer(state: StreamState, action: Action): StreamState {
  */
 export type SimRigStreamProps =
   | { readonly mode?: "simulated" }
+  | { readonly mode: "httpStream"; readonly httpStreamUrl: string }
   | { readonly mode: "live"; readonly websocketUrl: string };
 
 export default function SimRigStream(props: SimRigStreamProps) {
   const mode: StreamMode = props.mode ?? "simulated";
   const websocketUrl: string | undefined =
     props.mode === "live" ? props.websocketUrl : undefined;
+  const httpStreamUrl: string | undefined =
+    props.mode === "httpStream" ? props.httpStreamUrl : undefined;
 
   const [state, dispatch] = useReducer(reducer, {
     mode,
@@ -100,6 +115,70 @@ export default function SimRigStream(props: SimRigStreamProps) {
       }, TICK_INTERVAL_MS);
       return () => {
         if (intervalRef.current) clearInterval(intervalRef.current);
+      };
+    }
+
+    if (mode === "httpStream") {
+      if (!httpStreamUrl) {
+        dispatch({
+          type: "error",
+          message: "httpStream mode requires httpStreamUrl prop.",
+        });
+        return;
+      }
+      const controller = new AbortController();
+      let cancelled = false;
+      (async () => {
+        try {
+          const response = await fetch(httpStreamUrl, {
+            signal: controller.signal,
+            headers: { Accept: "application/x-ndjson" },
+          });
+          if (!response.ok || response.body === null) {
+            dispatch({
+              type: "error",
+              message: `httpStream connect failed: HTTP ${response.status}`,
+            });
+            return;
+          }
+          dispatch({ type: "connect" });
+          const reader = response.body.getReader();
+          const decoder = new TextDecoder();
+          let buffer = "";
+          while (!cancelled) {
+            const { value, done } = await reader.read();
+            if (done) break;
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split("\n");
+            buffer = lines.pop() ?? "";
+            for (const line of lines) {
+              if (line.length === 0) continue;
+              let parsed: unknown;
+              try {
+                parsed = JSON.parse(line);
+              } catch {
+                console.warn("[SimRigStream] httpStream JSON parse error");
+                continue;
+              }
+              if (!isSimRigFrame(parsed)) {
+                console.warn("[SimRigStream] httpStream dropped malformed frame");
+                continue;
+              }
+              dispatch({ type: "frame", frame: parsed });
+            }
+          }
+        } catch (err) {
+          if (cancelled) return;
+          if (err instanceof DOMException && err.name === "AbortError") return;
+          dispatch({
+            type: "error",
+            message: `httpStream error: ${err instanceof Error ? err.message : String(err)}`,
+          });
+        }
+      })();
+      return () => {
+        cancelled = true;
+        controller.abort();
       };
     }
 
@@ -179,7 +258,7 @@ export default function SimRigStream(props: SimRigStreamProps) {
       }
       wsRef.current?.close();
     };
-  }, [mode, websocketUrl]);
+  }, [mode, websocketUrl, httpStreamUrl]);
 
   return <StreamView state={state} />;
 }
@@ -229,7 +308,14 @@ function ConnectionIndicator({
   connected: boolean;
   mode: StreamMode;
 }) {
-  const label = mode === "simulated" ? "Simulated" : connected ? "Live" : "Reconnecting";
+  const label =
+    mode === "simulated"
+      ? "Simulated"
+      : connected
+        ? mode === "httpStream"
+          ? "Live (HTTP)"
+          : "Live"
+        : "Reconnecting";
   const tone = mode === "simulated" ? "text-amber" : connected ? "text-racing-green" : "text-accent";
   return (
     <span className={`font-mono text-xs uppercase tracking-wider ${tone}`}>{label}</span>
@@ -274,23 +360,24 @@ function pickGear(speed: number): 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 {
   return 6;
 }
 
-// Sarah Reynolds Donington Park lap-17 canned synthetic stream.
-// Roughly one lap of telemetry on a 50 ms tick (20 Hz; see TICK_INTERVAL_MS).
-// The simulator loops infinitely so the live tile is animated for the demo
-// before the live WebSocket path lands.
+// Canned synthetic GT4 hand-controls lap stream. Roughly one lap of
+// telemetry on a 50 ms tick (20 Hz; see TICK_INTERVAL_MS). The
+// simulator loops infinitely so the live tile is animated for the
+// demo before the live HTTP/WebSocket path lands. Circuit-agnostic
+// synthetic layout per wave-44 Lane K persona-decoupling sweep.
 function buildSimulatedFrame(elapsed: number): SimRigFrame {
   const lapTime = 78.0;
   const lap_t = elapsed % lapTime;
   const phase = (lap_t / lapTime) * 2 * Math.PI;
 
-  // Synthesize a plausible lap with a sector-2 Old Hairpin slowdown.
+  // Synthesize a plausible lap with a sector-2 slow-hairpin slowdown.
   const baseSpeed = 50 + 30 * Math.sin(phase) + 20 * Math.sin(phase * 2);
-  const old_hairpin = lap_t > 28 && lap_t < 36;
-  const speed = old_hairpin ? Math.max(22, baseSpeed * 0.45) : baseSpeed;
-  const throttle = old_hairpin ? 0.15 + 0.05 * Math.sin(phase * 4) : 0.6 + 0.3 * Math.sin(phase * 2);
-  const brake_pa = old_hairpin ? 1.8e6 : Math.max(0, 1.2e6 * Math.sin(phase * 3));
-  const steering = old_hairpin ? 0.92 * Math.sin(phase * 2) : 0.35 * Math.sin(phase * 1.5);
-  const lat_g = -Math.abs(0.7 * Math.sin(phase * 2)) - (old_hairpin ? 0.15 : 0);
+  const slow_hairpin = lap_t > 28 && lap_t < 36;
+  const speed = slow_hairpin ? Math.max(22, baseSpeed * 0.45) : baseSpeed;
+  const throttle = slow_hairpin ? 0.15 + 0.05 * Math.sin(phase * 4) : 0.6 + 0.3 * Math.sin(phase * 2);
+  const brake_pa = slow_hairpin ? 1.8e6 : Math.max(0, 1.2e6 * Math.sin(phase * 3));
+  const steering = slow_hairpin ? 0.92 * Math.sin(phase * 2) : 0.35 * Math.sin(phase * 1.5);
+  const lat_g = -Math.abs(0.7 * Math.sin(phase * 2)) - (slow_hairpin ? 0.15 : 0);
   const long_g = (throttle - brake_pa / 5e6) * 0.9;
   const rpm = 3500 + (speed / 80) * 4500;
 

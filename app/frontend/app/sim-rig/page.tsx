@@ -69,11 +69,19 @@ export default function SimRigPage() {
             Live frame.
           </h2>
           <p className="mt-3 max-w-2xl text-base leading-relaxed text-ink-soft">
-            Synthetic stream. Real shape. The render path is identical to the live mode
-            that lands Day 9.
+            Wave-44 Phase 6h: live HTTP-stream from /api/sim-rig/stream (NDJSON 20Hz
+            via Vercel Fluid Compute ReadableStream). Per-frame parse + ring-buffer +
+            disconnect-reconnect already in the existing client. Render path is identical
+            to the simulated mode below + the Vinh V2 WebSocket mode that follows.
           </p>
-          <div className="mt-8">
-            <SimRigStream mode="simulated" />
+          <div className="mt-8 flex flex-col gap-6">
+            <SimRigStream mode="httpStream" httpStreamUrl="/api/sim-rig/stream" />
+            <div className="flex flex-col gap-2">
+              <p className="font-mono text-[11px] uppercase tracking-wider text-muted">
+                In-memory simulated tile (control)
+              </p>
+              <SimRigStream mode="simulated" />
+            </div>
           </div>
         </div>
       </section>
