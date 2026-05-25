@@ -29,7 +29,7 @@
  *
  * - WIRED: real production routing live at HEAD (verified live-smoke)
  * - INTEGRATION: frontend surface + canonical type contract shipped;
- *   backend swap-point documented (Vinh-scope V1-V11); render path
+ *   backend swap-point documented (Vinh-scope V1-V15 per D-054); render path
  *   stays identical between mock + real per Stream M.3 spec extension
  * - FACADE: demoted to demo-facade per a project decision (e.g. D-017
  *   Langflow facade per wave-30); does not represent runtime wiring

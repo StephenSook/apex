@@ -32,9 +32,9 @@
 
 **Q:** Granite Guardian judges text, not numbers. If your Python script that translates physics violations into English has a bug, your whole safety story collapses. How do you protect against that?
 
-**A:** You're right that Guardian audits text, not tensors. Architecture is explicit about it. The defense is a unit-test suite: every kinematic violation type has a fixture producing a known text log and a verified Guardian verdict. The serializer is safety-critical code with safety-critical test coverage. Guardian's reasoning trace surfaces in think-mode in the UI, so the audit is never a black box.
+**A:** You're right that Guardian audits text, not tensors. The defense has two locks. First, the engine-agnostic byte-equality lock per D-050: the V1 NumPy validator and the V2 cvxpylayers projector both serialize to `.to_text()` output that is byte-identical modulo the leading ENGINE header line, on the same physical event. The Vinh pytest assertion at `app/backend/tests/test_physics_v2.py::test_v1_v2_to_text_byte_equal_modulo_engine_line` locks this at HEAD. Guardian reads identical violation strings regardless of which projector engine produced them. Second, the Convergence-14 fixture suite: every kinematic violation type has a fixture producing a known text log and a verified Guardian verdict. The serializer is safety-critical code with safety-critical test coverage. Guardian's reasoning trace surfaces in think-mode in the UI, so the audit is never a black box.
 
-**Why this lands.** Demonstrates engineering-level thinking, not just ML-level. "Safety-critical code with unit tests" is exactly what an IBM judge wants to hear.
+**Why this lands.** Engine-agnostic byte-equality is the single most defensible technical-positioning claim in the project. Stage A (8-tier Pacejka) and Stage B (3-iteration SCP) per D-031 staged ladder add precision but do not change the violation strings on the same physical event; deferring them does not weaken the safety contract. The /judges page renders the demo at the EngineAgnosticByteEqualityDemo surface for tactile confirmation.
 
 ---
 
