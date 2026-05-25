@@ -257,6 +257,55 @@ function decodeChatCompletionResponse(raw: unknown): ChatCompletionResponse {
         `apex.openrouter-client: response.choices[${idx}].message.content must be string.`,
       );
     }
+    // Wave-44 Phase 4.2 type-design-analyzer H1 close-out: validate the
+    // remaining declared fields instead of casting-through. Prior shape
+    // validated only id + model + choices[].message.content; finish_reason
+    // literal union + index numeric + message.role literal + optional
+    // usage shape passed through unchecked. Provider regressions on
+    // finish_reason "tool_use" or similar would silently flow through.
+    if (typeof choiceRec.index !== "number") {
+      throw new Error(
+        `apex.openrouter-client: response.choices[${idx}].index must be number; got ${typeof choiceRec.index}.`,
+      );
+    }
+    const role = messageRec.role;
+    if (role !== "assistant" && role !== "user" && role !== "system") {
+      throw new Error(
+        `apex.openrouter-client: response.choices[${idx}].message.role must be assistant|user|system; got ${JSON.stringify(role)}.`,
+      );
+    }
+    const finishReason = choiceRec.finish_reason;
+    if (
+      finishReason !== "stop"
+      && finishReason !== "length"
+      && finishReason !== "content_filter"
+      && finishReason !== "tool_calls"
+      && finishReason !== null
+    ) {
+      throw new Error(
+        `apex.openrouter-client: response.choices[${idx}].finish_reason must be stop|length|content_filter|tool_calls|null; got ${JSON.stringify(finishReason)}.`,
+      );
+    }
+  }
+  if (typeof raw.created !== "number") {
+    throw new Error(
+      `apex.openrouter-client: response.created must be number; got ${typeof raw.created}.`,
+    );
+  }
+  if (raw.usage !== undefined) {
+    if (!isRecord(raw.usage)) {
+      throw new Error(
+        `apex.openrouter-client: response.usage must be object when present; got ${typeof raw.usage}.`,
+      );
+    }
+    const usageRec = raw.usage as Record<string, unknown>;
+    for (const field of ["prompt_tokens", "completion_tokens", "total_tokens"]) {
+      if (typeof usageRec[field] !== "number") {
+        throw new Error(
+          `apex.openrouter-client: response.usage.${field} must be number when usage present; got ${typeof usageRec[field]}.`,
+        );
+      }
+    }
   }
   return raw as unknown as ChatCompletionResponse;
 }
