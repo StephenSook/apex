@@ -9,7 +9,7 @@
  * inverse-document-frequency scoring across an inline corpus of
  * canonical project chunks (architecture-spec, decision-log,
  * methodology, paper §3, README). Real retrieval, no model required.
- * Vinh V8 backend swap-point: replace this module's `retrieveChunks`
+ * Vinh M3-V8 backend swap-point: replace this module's `retrieveChunks`
  * with a fetch to /api/rag-retrieve (server-side Granite Embedding
  * R2 + precomputed corpus embeddings + cosine similarity). Render
  * path on the chat surface stays identical per Stream M.3 spec
@@ -128,7 +128,7 @@ export const CORPUS: ReadonlyArray<RAGChunk> = [
  * Lexical retrieval via term-overlap with IDF weighting. Returns
  * top-k chunks sorted by score descending. Granite Embedding R2 swap
  * point: replace the scoring function with cosine similarity over
- * precomputed embeddings per wave-44 plan Vinh V8.
+ * precomputed embeddings per wave-44 plan Vinh M3-V8.
  */
 export function retrieveChunks(
   query: string,

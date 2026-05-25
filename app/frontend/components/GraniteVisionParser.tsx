@@ -9,7 +9,7 @@
  * Surface: upload a timing-sheet PDF (or click the canned-fixture
  * button to skip the file picker) + render the parsed lap table
  * with sector splits + lap time. Parser identifier ("granite-vision-
- * 4.1-4b" once Vinh V1 lands; "canned-fixture" today) surfaces under
+ * 4.1-4b" once Vinh M3-V1 lands; "canned-fixture" today) surfaces under
  * the table so judges see the honest wire-up tier per the BLOCKER 4
  * honesty audit.
  *
@@ -118,7 +118,7 @@ export default function GraniteVisionParser() {
         <p className="mt-2 text-sm leading-relaxed text-ink-soft">
           Upload a national-championship timing-sheet PDF. Granite Vision 4.1 4B parses
           sector splits per lap. Today routes to the canned fixture for the public deploy;
-          Vinh FV1 backend wires the real Granite Vision inference per Stream M.3.
+          Vinh M3-V1 backend wires the real Granite Vision inference per Stream M.3.
         </p>
       </header>
 
@@ -197,7 +197,7 @@ export default function GraniteVisionParser() {
       )}
 
       <p className="font-mono text-[10px] uppercase tracking-wider text-muted">
-        Cross-ref: <span className="text-ink-soft">D-016 + wave-44 plan Vinh V1 + Stream M.3 spec extension</span>
+        Cross-ref: <span className="text-ink-soft">D-016 + wave-44 plan Vinh M3-V1 + Stream M.3 spec extension</span>
       </p>
     </section>
   );

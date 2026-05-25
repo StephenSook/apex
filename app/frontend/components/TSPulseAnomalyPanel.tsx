@@ -27,7 +27,7 @@
  *     (role=alert).
  *
  * Mock data via `MOCK_TSPULSE_ACTIVE` in lib/mocks/judges-mocks.ts.
- * Live data arrives once Vinh V7 backend wires the polyphase
+ * Live data arrives once Vinh M3-V7 backend wires the polyphase
  * detector endpoint (POST /api/tspulse/anomaly per wave-44 plan
  * Vinh-scope addition V7).
  *
@@ -149,7 +149,7 @@ export default function TSPulseAnomalyPanel({
       {state.status === "idle" && (
         <p className="text-sm leading-relaxed text-ink-soft">
           Detector mounted. No telemetry window seen yet. The polyphase decomposition fires
-          on the first 50 Hz telemetry window via the Vinh V7 backend endpoint at POST
+          on the first 50 Hz telemetry window via the Vinh M3-V7 backend endpoint at POST
           /api/tspulse/anomaly. Pre-mortem row 71 success criterion is sub-30 ms per-window
           detection so the projector QP retains its budget.
         </p>
@@ -231,7 +231,7 @@ export default function TSPulseAnomalyPanel({
       )}
 
       <p className="font-mono text-[10px] uppercase tracking-wider text-muted">
-        Cross-ref: <span className="text-ink-soft">D-016 Layer 2 + arch-spec Appendix W30 polyphase decomposition + Vinh V7 endpoint</span>
+        Cross-ref: <span className="text-ink-soft">D-016 Layer 2 + arch-spec Appendix W30 polyphase decomposition + Vinh M3-V7 endpoint</span>
       </p>
     </section>
   );

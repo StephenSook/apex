@@ -77,7 +77,7 @@ export default function AICopilotChat({ panelId = "ai-copilot-chat" }: AICopilot
   // Wave-44 Phase 6b RAG retrieval: top-3 corpus chunks for the active
   // question, deterministic + cheap (synchronous lexical scoring over
   // an inline corpus). Re-evaluated on every question change via
-  // useMemo. Granite Embedding R2 swap-point per Vinh V8.
+  // useMemo. Granite Embedding R2 swap-point per Vinh M3-V8.
   const retrievals = useMemo(() => {
     if (activeQuestion === null) return [];
     return retrieveChunks(activeQuestion, 3);

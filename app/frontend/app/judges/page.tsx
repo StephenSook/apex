@@ -72,7 +72,7 @@ const RESOURCES: ReadonlyArray<ResourceLink> = [
   {
     label: "Live sim-rig stream",
     href: "/sim-rig",
-    detail: "20 Hz adaptive-controls telemetry tile. Canned synthetic GT4 hand-controls lap; HTTP-stream live now, WebSocket Vinh V2.",
+    detail: "20 Hz adaptive-controls telemetry tile. Canned synthetic GT4 hand-controls lap; HTTP-stream live now, WebSocket Vinh M3-V2.",
     badge: "live",
   },
   {
@@ -423,7 +423,7 @@ export default function JudgesPage() {
           </div>
           <p className="mt-6 font-mono text-xs italic text-muted">
             Panels are mock for /judges visualisation. Real fetch swaps land Day 7-8 per
-            <span className="not-italic"> docs/decision-log.md D-019 + D-032 + wave-44 Vinh V7</span>.
+            <span className="not-italic"> docs/decision-log.md D-019 + D-032 + wave-44 Vinh M3-V7</span>.
           </p>
         </div>
       </section>

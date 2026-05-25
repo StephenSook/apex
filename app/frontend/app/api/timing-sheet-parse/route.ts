@@ -5,11 +5,11 @@
  * Accepts multipart/form-data PDF upload + returns structured
  * TimingSheetParsedLaps shape. Today's HEAD implementation routes the
  * uploaded PDF through a canned-fixture parse path so the demo on
- * /judges is exercise-able end-to-end without the Vinh V1 Granite
+ * /judges is exercise-able end-to-end without the Vinh M3-V1 Granite
  * Vision 4.1 4B backend wire-up. The fixture corresponds to the
  * public/fixtures/timing-sheets/example.pdf checked-in stub.
  *
- * Backend swap-point: Vinh V1 endpoint at
+ * Backend swap-point: Vinh M3-V1 endpoint at
  * `app/backend/apex/instruct/timing_sheet_parser.py` will invoke
  * Granite Vision 4.1 4B locally + return the same JSON shape. Per
  * Stream M.3 spec extension contract: render path stays identical

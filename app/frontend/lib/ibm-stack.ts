@@ -99,7 +99,7 @@ export const IBM_GRANITE_STACK: ReadonlyArray<GraniteStackTool> = [
     status: "INTEGRATION",
     // Wave-44 Phase 6c: frontend GraniteVisionParser component live
     // on /judges + POST /api/timing-sheet-parse canned-fixture path
-    // operational. Status flips to "WIRED" once Vinh V1 swaps in real
+    // operational. Status flips to "WIRED" once Vinh M3-V1 swaps in real
     // Granite Vision 4.1 4B inference per Stream M.3 contract.
   },
   {
@@ -108,7 +108,7 @@ export const IBM_GRANITE_STACK: ReadonlyArray<GraniteStackTool> = [
     role: "Track 1 of D-010 three-track ensemble (frozen + channel-mix decoder)",
     status: "INTEGRATION",
     // Wave-44 Phase 6d: ThreeTrackForecastChart per-track tier badge
-    // surfaces TTM as INTEGRATION (Vinh V3 backend swap-point at Phase 1
+    // surfaces TTM as INTEGRATION (Vinh M3-V3 backend swap-point at Phase 1
     // task 1.3 + 1.4). Status flips to "WIRED" once V3 lands.
   },
   {
@@ -117,7 +117,7 @@ export const IBM_GRANITE_STACK: ReadonlyArray<GraniteStackTool> = [
     role: "Track 2 of D-010 (sampling-rate-invariant continuous-time SSM at 50 Hz)",
     status: "INTEGRATION",
     // Wave-44 Phase 6d: ThreeTrackForecastChart per-track tier badge
-    // surfaces FlowState as MOCK at HEAD. Backend swap-point Vinh V10
+    // surfaces FlowState as MOCK at HEAD. Backend swap-point Vinh M3-V10
     // (post-submission). Status stays INTEGRATION on the inventory
     // (frontend contract live; backend route documented).
   },
@@ -128,8 +128,8 @@ export const IBM_GRANITE_STACK: ReadonlyArray<GraniteStackTool> = [
     status: "INTEGRATION",
     // Wave-44 Phase 6a: frontend TSPulseAnomalyPanel 5-state discriminated
     // union mounted on /judges (mock data via MOCK_TSPULSE_ACTIVE);
-    // backend swap-point Vinh V7 endpoint POST /api/tspulse/anomaly per
-    // wave-44 plan addition. Status flips to "WIRED" once Vinh V7 lands.
+    // backend swap-point Vinh M3-V7 endpoint POST /api/tspulse/anomaly per
+    // wave-44 plan addition. Status flips to "WIRED" once Vinh M3-V7 lands.
   },
   {
     name: "Granite Embedding R2",
@@ -139,7 +139,7 @@ export const IBM_GRANITE_STACK: ReadonlyArray<GraniteStackTool> = [
     // Wave-44 Phase 6b: frontend RAG retrieval surface live on the
     // AICopilotChat path via lexical TF-IDF retrieval over inline
     // corpus chunks (architecture-spec + decision-log + methodology
-    // + paper §3). Granite Embedding R2 swap-point: Vinh V8 server-
+    // + paper §3). Granite Embedding R2 swap-point: Vinh M3-V8 server-
     // side cosine similarity over precomputed embeddings per Stream
     // M.3 spec extension. Status flips to "WIRED" once V8 lands.
   },

@@ -11,7 +11,7 @@
  * 5-minute function-timeout budget exceeds any single coaching
  * session.
  *
- * Backend swap-point: Vinh V2 endpoint at app/backend/apex/sim_rig/
+ * Backend swap-point: Vinh M3-V2 endpoint at app/backend/apex/sim_rig/
  * websocket_server.py per wave-44 plan Vinh-scope V2 addition. When
  * that lands, /api/sim-rig/stream stays as the Vercel-side proxy /
  * fallback + the Live page can opt into either path via the mode prop.

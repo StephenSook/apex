@@ -10,7 +10,7 @@
  *     (wave-44 Phase 6h). Vercel-deployable. Frames arrive at 20 Hz
  *     via fetch().body.getReader() + TextDecoder + newline split.
  *   - live: backend WebSocket at the URL passed via `websocketUrl`
- *     per the SimRigFrame contract in app/shared/types.ts. Vinh V2
+ *     per the SimRigFrame contract in app/shared/types.ts. Vinh M3-V2
  *     backend swap-point per wave-44 plan addition.
  *
  * All three modes share the same render path so the production

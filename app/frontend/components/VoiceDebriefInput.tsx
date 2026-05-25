@@ -5,7 +5,7 @@
  * /analyze form. Wave-44 Phase 6i galaxy-stretch close-out per the
  * plan-file Phase 6i rollback path: HEAD ships Web Speech Recognition
  * API (no IBM Cloud account required); Watson STT swap-point
- * documented as Vinh V9 backend wire-up post-submission.
+ * documented as Vinh M3-V9 backend wire-up post-submission.
  *
  * Per BLOCKER 4 honesty audit + Phase 6i rollback path: the IBM
  * Watson STT wire is INTENT not REAL at HEAD. The affordance is real
@@ -173,7 +173,7 @@ export default function VoiceDebriefInput({ onTranscript }: VoiceDebriefInputPro
   return (
     <div className="flex flex-col gap-2 rounded-sm border border-rule bg-paper-warm p-3">
       <div className="flex items-baseline justify-between gap-3">
-        <p className="apex-eyebrow">Voice debrief (browser-native; Watson STT swap-point per Vinh V9)</p>
+        <p className="apex-eyebrow">Voice debrief (browser-native; Watson STT swap-point per Vinh M3-V9)</p>
         <span className="font-mono text-[10px] uppercase tracking-wider text-muted">
           {effectiveState.status}
         </span>

@@ -8,7 +8,7 @@
  * factual base of the response.
  *
  * Today reads from `lib/rag-retrieve.ts` lexical retrieval (term
- * overlap + IDF; deterministic + zero-dependency). Vinh V8 backend
+ * overlap + IDF; deterministic + zero-dependency). Vinh M3-V8 backend
  * swap-point at /api/rag-retrieve replaces with server-side Granite
  * Embedding R2 cosine similarity per Stream M.3 spec extension; this
  * component's render path stays identical.
@@ -23,7 +23,7 @@ export interface RAGCitationBadgeProps {
 
 export default function RAGCitationBadge({
   retrievals,
-  retrieverLabel = "lexical (Granite Embedding R2 swap-point per Vinh V8)",
+  retrieverLabel = "lexical (Granite Embedding R2 swap-point per Vinh M3-V8)",
 }: RAGCitationBadgeProps) {
   if (retrievals.length === 0) {
     return (

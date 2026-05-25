@@ -72,7 +72,7 @@ export default function SimRigPage() {
             Wave-44 Phase 6h: live HTTP-stream from /api/sim-rig/stream (NDJSON 20Hz
             via Vercel Fluid Compute ReadableStream). Per-frame parse + ring-buffer +
             disconnect-reconnect already in the existing client. Render path is identical
-            to the simulated mode below + the Vinh V2 WebSocket mode that follows.
+            to the simulated mode below + the Vinh M3-V2 WebSocket mode that follows.
           </p>
           <div className="mt-8 flex flex-col gap-6">
             <SimRigStream mode="httpStream" httpStreamUrl="/api/sim-rig/stream" />
