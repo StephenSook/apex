@@ -3,23 +3,39 @@
  * inference via Transformers.js + onnxruntime-web. Module exports
  * a graceful-fallback API surface.
  *
- * HEAD shape: tries to dynamic-import @huggingface/transformers. If
- * the dep is present (wave-46 install adds it), the real Granite
- * TTM r2.1 ONNX export runs in-browser via WebGPU / WASM SIMD. If
- * the dep is NOT present (current state), returns a canned forecast
- * shape so the consumer surface (TTMInBrowserPanel) renders
- * gracefully with the swap-point documented.
+ * HEAD-honest shape (corrected 2026-05-25 night per tier-3
+ * NotebookLM + ChatGPT review triangulation). The
+ * @huggingface/transformers v4.2.0 npm dep IS installed
+ * (verified via package.json + pnpm-lock + node_modules); the
+ * sibling lib/webgpu-nano.ts uses it to run Granite 4.0 Nano 350M
+ * WIRED in-browser via `pipeline("text-generation", ...)`. So
+ * "the dep is missing" is NOT the reason TTM ships canned-fallback
+ * here.
  *
- * shouldn't-be-possible move #7 (galaxy-tier) per D-053: a real
- * fine-tuned TSFM running in the driver's browser, paddock-side,
- * with no server roundtrip. Wave-45 ships the component + lib
- * scaffold; wave-46 adds the @huggingface/transformers dep + the
- * service-worker cache for the ~500MB ONNX model.
+ * The actual reason: Transformers.js v4 does NOT yet expose a
+ * `time-series-forecasting` pipeline task in its public catalog
+ * (verified via Context7 query 2026-05-25). Granite TimeSeries TTM
+ * r2.1 ONNX export at ibm-granite/granite-timeseries-ttm-r2 is
+ * published, but the consumer pipeline class for time-series tasks
+ * is not in v4. Running TTM in-browser today requires bypassing
+ * the pipeline abstraction + calling onnxruntime-web directly with
+ * the TTM tensor shapes — a deeper integration that lands in a
+ * later wave when upstream catalog support arrives or we ship the
+ * direct-ORT bridge.
+ *
+ * Therefore the canned-fallback path is the honest current
+ * runtime, NOT a bundle-budget or quota constraint as wave-45
+ * D-053 originally framed it. The shouldn't-be-possible move #7
+ * status downgrades from "Granite TTM running in-browser TODAY" to
+ * "Granite TTM in-browser scaffold ready for the day the upstream
+ * pipeline task lands; sibling Granite Nano 350M WIRED via the same
+ * dep proves the architecture is real, not aspirational."
  *
  * Per the wave-45 plan + ApexIQ deep-dive: ApexIQ runs Granite via
  * local Ollama (server-side); APEX's differentiated angle is the
- * SAME Granite stack running in-browser, lazy-loaded on opt-in,
- * cached via service worker, paddock-side viable.
+ * SAME Granite stack running in-browser, lazy-loaded on opt-in.
+ * The WIRED proof is Granite Nano 350M via lib/webgpu-nano.ts +
+ * EdgeSummary.tsx surface; the TTM-specific path is the scaffold.
  */
 
 import type { SimRigFrame } from "../../shared/types";
@@ -36,28 +52,34 @@ export type TTMBrowserStatus =
  * (the canonical horizon per app/backend/apex/shared/contracts/
  * shapes.py:TENSOR_SHAPE = (None, 30, 14)).
  *
- * Today's HEAD: dynamic-import fails because @huggingface/transformers
- * is not in package.json yet. The catch-fallback returns a canned
- * forecast so the UI surface renders + the swap-point stays
- * documented. Wave-46 adds the dep.
+ * Today's HEAD: returns canned-fallback because Transformers.js v4
+ * does NOT yet expose a `time-series-forecasting` pipeline task in
+ * its public catalog. The @huggingface/transformers v4.2.0 dep IS
+ * installed; lib/webgpu-nano.ts proves it works for Granite Nano via
+ * `pipeline("text-generation", ...)`. TTM-specific browser inference
+ * needs either upstream catalog addition OR a direct onnxruntime-web
+ * bridge that bypasses the pipeline abstraction.
  */
 export async function runGraniteTTMInBrowser(
   _frames: ReadonlyArray<SimRigFrame>,
 ): Promise<TTMBrowserStatus> {
   const start = performance.now();
   try {
-    // Dynamic-import the dep; if absent, this throws + the catch
-    // fires the canned-fallback path. Comment-only intent for the
-    // wave-46 swap.
+    // Dynamic-import attempt commented out: the dep IS installed
+    // (lib/webgpu-nano.ts wires it for Granite Nano), but the
+    // pipeline factory does NOT yet expose a "time-series-forecasting"
+    // task. Uncomment when upstream Transformers.js v4 catalog adds
+    // the task OR replace with a direct onnxruntime-web call against
+    // the TTM r2 ONNX export.
     // const { pipeline } = await import("@huggingface/transformers");
     // const ttm = await pipeline("time-series-forecasting", "ibm-granite/granite-timeseries-ttm-r2");
     // const result = await ttm(frames);
     // return { status: "ready", forecast: Array.from(result.data), elapsed_ms: Math.round(performance.now() - start), runtime: "transformers-js" };
 
-    // HEAD: the dep is intentionally NOT installed yet (wave-46
-    // task). Falling through to the canned-fallback path is the
+    // HEAD: Transformers.js v4 does not expose time-series-forecasting
+    // as a pipeline task; falling through to canned-fallback is the
     // honest behavior per Sookra Methodology Pillar 1.
-    throw new Error("transformers-js-dep-not-installed");
+    throw new Error("transformers-js-v4-no-time-series-forecasting-task");
   } catch {
     // Canned forecast: deterministic 30-step horizon synthesizing a
     // plausible coaching-loop output shape. NOT scientifically valid;

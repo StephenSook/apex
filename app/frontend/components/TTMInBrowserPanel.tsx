@@ -11,10 +11,13 @@
  * 4-state DU per the feedback_discriminated_unions_over_contradiction
  * memory rule + _exhaustive: never default.
  *
- * HEAD ships canned-fallback runtime since @huggingface/transformers
- * dep is wave-46 task; lib/ttm-browser.ts handles the graceful
- * fallback. The UI surface is identical between runtime modes per
- * Stream M.3 spec extension contract.
+ * HEAD ships canned-fallback runtime because Transformers.js v4 does
+ * not yet expose a `time-series-forecasting` pipeline task in its
+ * public catalog. The @huggingface/transformers v4.2.0 dep IS
+ * installed; lib/webgpu-nano.ts proves it works for Granite Nano
+ * 350M via pipeline("text-generation", ...). lib/ttm-browser.ts
+ * carries the honest framing + the swap-point. UI surface is
+ * identical between runtime modes per Stream M.3 contract.
  */
 
 import { useState } from "react";
@@ -76,11 +79,14 @@ export default function TTMInBrowserPanel() {
           Run Granite TimeSeries TTM r2.1 in your browser.
         </h3>
         <p className="mt-2 text-sm leading-relaxed text-ink-soft">
-          The same IBM Granite forecaster that ships server-side in the production pipeline, running
-          locally in the driver&apos;s browser via Transformers.js + WebGPU / WASM SIMD. Lazy-loaded
-          on opt-in; cached via service worker after first download (wave-46 adds the cache layer).
-          Today&apos;s HEAD runs canned-fallback while the @huggingface/transformers dep stays gated;
-          UI surface is identical between runtime modes per Stream M.3.
+          The same IBM Granite forecaster that ships server-side in the production pipeline, ready
+          to run locally in the driver&apos;s browser via Transformers.js + WebGPU / WASM SIMD.
+          Lazy-loaded on opt-in. The @huggingface/transformers v4.2.0 dep IS installed (sibling
+          Granite Nano 350M ships WIRED via the same dep at lib/webgpu-nano.ts). Today&apos;s HEAD
+          runs canned-fallback because Transformers.js v4 does not yet expose a
+          {" "}<span className="font-mono">time-series-forecasting</span> pipeline task; the
+          scaffold lights up the moment the upstream catalog adds it OR a direct onnxruntime-web
+          bridge lands.
         </p>
       </header>
 
@@ -139,8 +145,9 @@ export default function TTMInBrowserPanel() {
           role="alert"
           className="rounded-sm border-2 border-accent bg-paper p-3 font-mono text-xs leading-relaxed text-accent"
         >
-          TTM in-browser run failed: {state.message}. The @huggingface/transformers dep ships wave-46;
-          today&apos;s fallback path is canned-fallback runtime per D-053.
+          TTM in-browser run failed: {state.message}. Honest fallback path active per D-053
+          (Transformers.js v4 lacks a time-series-forecasting pipeline task at HEAD; dep is
+          installed + Granite Nano runs WIRED via the same dep).
         </p>
       )}
 
