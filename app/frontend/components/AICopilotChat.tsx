@@ -49,8 +49,8 @@ type ChatLocalState =
   | { readonly status: "asking"; readonly question: string };
 
 const SUGGESTED_QUESTIONS: ReadonlyArray<string> = [
-  "Why did you recommend the early-throttle line at Old Hairpin?",
-  "What if I had braked 5 metres later into Coppice?",
+  "Why did you recommend the early-throttle line at the slowest corner?",
+  "What if my brake point was 5 metres later into the hardest braking zone?",
   "Show me the friction-ellipse projection for sector 2.",
   "Walk me through the COA simultaneity gate for my hand controls.",
   "Compare my lap delta to the reference line at the trickiest sector.",

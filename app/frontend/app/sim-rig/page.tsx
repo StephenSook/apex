@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 };
 
 const STRETCH_CONTEXT = `Stretch inclusion S1 in PLAN.md §18. Day 2 of build (today) ships against a
-canned synthetic Sarah Reynolds Donington Park lap-17 stream so the live tile
+canned synthetic adaptive-controls GT4 lap stream so the live tile
 is real on the demo video Day 10. Day 9 swap: this component connects to the
 Vinh-lane WebSocket at GET /api/sim-rig/stream returning a SimRigFrame stream
 per app/shared/types.ts. The render path does not change between simulated and
@@ -19,11 +19,11 @@ live modes, so the swap is a one-line prop change.`;
 const CHANNEL_NOTES: ReadonlyArray<readonly [string, string]> = [
   [
     "Speed",
-    "Vehicle speed in metres per second. The simulated lap encodes a Sector 2 Old Hairpin slowdown around the 28-36 second mark of every 78-second loop.",
+    "Vehicle speed in metres per second. The simulated lap encodes a mid-sector slow-hairpin slowdown around the 28-36 second mark of every 78-second loop.",
   ],
   [
     "Throttle / Brake",
-    "Throttle in percent, brake in megapascals. The canned profile drops throttle and lifts brake through the Old Hairpin window; outside that window, throttle modulates against brake on a 3x oscillation.",
+    "Throttle in percent, brake in megapascals. The canned profile drops throttle and lifts brake through the slow-hairpin window; outside that window, throttle modulates against brake on a 3x oscillation.",
   ],
   [
     "Steering / Lat G",
@@ -35,7 +35,7 @@ const CHANNEL_NOTES: ReadonlyArray<readonly [string, string]> = [
   ],
   [
     "Gear / RPM",
-    "Engine RPM scaled with speed; gear bucketed against speed thresholds matched to the BMW M240i Britcar setup that the Sarah Reynolds persona races.",
+    "Engine RPM scaled with speed; gear bucketed against speed thresholds matched to a generic GT4 hand-controls setup used by the canned simulated stream.",
   ],
 ];
 
@@ -50,12 +50,12 @@ export default function SimRigPage() {
           </h1>
           <p className="max-w-3xl text-base leading-relaxed text-ink-soft">
             A 20 Hz stream of adaptive-controls telemetry flowing into the APEX coaching
-            loop. Day 2 ships a canned synthetic Sarah Reynolds Donington Park lap so the
+            loop. Day 2 ships a canned synthetic GT4 hand-controls lap so the
             tile is animated for the 3-minute demo video. Day 9 swaps in a live WebSocket
             from the sim rig.
           </p>
           <p className="font-mono text-xs text-muted">
-            Hand-controls demo · BMW M240i Britcar Trophy 2026 setup · Donington Park GP layout.
+            Adaptive hand-controls demo · GT4 sprint-series setup · circuit-agnostic synthetic layout.
           </p>
         </div>
       </header>
