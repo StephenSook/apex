@@ -6,7 +6,7 @@ Every locked decision with rationale + date + scope. Newest first.
 
 ## 2026-05-25 D-054: Wave-45 Phase 9 + Phase 10 Block F + Block G close-out (Vinh M3-V12-V15 frontend stubs + EngineAgnosticByteEqualityDemo)
 
-**Decision.** Wave-45 Phase 9 Block F ships frontend stubs for Vinh's four wave-45 backend swap-points (V12 Stage A 8-tier Pacejka linearization + V13 Stage B 3-iteration SCP outer loop + V14 LangGraph runtime + V15 LIPS 4-axis evaluation harness) as canned-fallback API routes + visualization components. Wave-45 Phase 10 Block G ships the EngineAgnosticByteEqualityDemo on /judges as the load-bearing technical-positioning surface for D-050 byte-equality lock. ibm-stack.ts Langflow entry promoted from FACADE to INTEGRATION-LANGGRAPH per D-017 G7. paper §4.5 Reproducibility statement adds LIPS 4-axis harness + APEX-Bench release cross-reference per D-026 + G10.
+**Decision.** Wave-45 Phase 9 Block F ships frontend stubs for Vinh's four wave-45 backend swap-points (V12 Stage A 8-tier Pacejka linearization + V13 Stage B 3-iteration SCP outer loop + V14 LangGraph runtime + V15 LIPS 4-axis evaluation harness) as canned-fallback API routes + visualization components. Wave-45 Phase 10 Block G ships the EngineAgnosticByteEqualityDemo on /judges as the load-bearing technical-positioning surface for D-050 byte-equality lock. ibm-stack.ts Langflow entry promoted from FACADE to INTEGRATION-LANGGRAPH per D-017 G7. paper §4.6 Reproducibility statement adds LIPS 4-axis harness + APEX-Bench release cross-reference per D-026 + G10.
 
 **HEAD shape.**
 
