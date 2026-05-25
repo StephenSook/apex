@@ -4,6 +4,39 @@ Every locked decision with rationale + date + scope. Newest first.
 
 ---
 
+## 2026-05-24 D-049: Wave-44 final close-out + Phase 6 + Phase 9 + Phase 10 pre-submit gate
+
+**Decision.** Wave-44 mega-wave Phase 6 + Phase 9 + Phase 10 close-out captures the galaxy-stretch shipping arc + the pre-submit hygiene gate. Supersedes D-048 plan-entry with the executed-and-shipped wave-44 state.
+
+**Phase 6 galaxy-stretch ships (7 of 9 phases shipped; 6g DROPPED per vercel:ai-architect; 6f shipped pre-D-048):**
+- Phase 6a TSPulse polyphase anomaly panel (5-state DU + MOCK_TSPULSE_ACTIVE + /judges mount + 5-case vitest + D-019 amendment to 6 shouldn't-be-possible moves)
+- Phase 6b Granite Embedding R2 RAG (lib/rag-retrieve.ts lexical retrieval + RAGCitationBadge + AICopilotChat wire + 8-case vitest + ibm-stack.ts honesty note + Vinh V8 swap-point documented)
+- Phase 6c Granite Vision timing-sheet parser (POST /api/timing-sheet-parse + GraniteVisionParser 4-state DU + 3-case vitest + /judges mount + Vinh V1 swap-point)
+- Phase 6d Three-track ensemble per-track honesty badge (INTEGRATION + MOCK tier pills per track + swap-point identifiers per track; ibm-stack.ts TTM + FlowState annotated)
+- Phase 6e PWA manifest + install-as-app affordance (app/manifest.ts + 3 icon generators + PWAInstallPrompt 6-state DU + /judges mount; shouldn't-be-possible move #6)
+- Phase 6h sim-rig HTTP-stream backend (/api/sim-rig/stream NDJSON 20Hz Edge ReadableStream + SimRigStream httpStream mode + persona-decoupling within-file sweep; Stretch S1 activated)
+- Phase 6i Voice debrief input (VoiceDebriefInput 5-state DU + browser Web Speech Recognition + Dropzone mount + Watson STT swap-point per Vinh V9; Old Hairpin persona placeholder swept)
+
+**Phase 6g DROPPED:** vercel:ai-architect verified IBM Granite NOT available on Vercel AI Gateway model inventory at HEAD; migration would drop the load-bearing IBM Granite narrative + create DQ-grade risk against IBM SkillsBuild rules. Direct OpenRouter routing remains (Granite 4.1 8B verified live via `ibm-granite/granite-4.1-8b` slug).
+
+**Phase 7 NeurIPS paper §4 Experiments restructure:** flat §4 block restructured into §4.1 Evaluation protocol + §4.2 Baselines + §4.3 Convergence-14 + ablations + §4.4 Latency budget + §4.5 Case studies + §4.6 Reproducibility. §4.4 populates the cvxpylayers QP projection row with the D-030 Stage-C verified ~1030 ms wall-clock + 5 of 5 PASS Council-v2 thresholds. §4.5 case studies populates the Sarah Reynolds Britcar synthetic case in full.
+
+**Phase 8 stakeholder outreach finalize:** 16 outreach drafts swept for AI-tone + 2 stale URL placeholders updated to `https://apex-one-black.vercel.app` canonical URL. Send action remains operator-action (Stephen) per existing draft headers.
+
+**Phase 9 UI tightening batches:** 9.A a11y batch (motion-safe:animate-pulse + aria-live=polite across PWAInstallPrompt + VoiceDebriefInput + AICopilotChat Live indicator + GraniteVisionParser + TSPulseAnomalyPanel). 9.B README §5 narrative replaces "Twelve IBM tools, all load-bearing" overclaim with honest per-tool tier + adds wave-44 Phase 6 expansion narrative covering all 7 galaxy-stretch ships.
+
+**Phase 10 final-gate sweep:** em-dash composed-prose sweep returns zero hits across docs/decision-log.md + PLAN.md + README.md + app/frontend/app + app/frontend/components + paper/. Single PLAN.md Q-005 line carrying an em-dash converted to comma syntax. Tool-inventory audit per non-trivial sub-task per the global rule. ibm-stack.ts honesty tier preserved across all 12 tools (2 wired + 7 integration + 1 facade + 2 accelerator).
+
+**Cascade-#22 closed during wave-44 (PWA manifest type + setState-in-effect lint).** Two-commit fix-wave (`12f570a` + `1477226`) per the cascade-fix-forward discipline + the drill-log-failed-before-fix memory rule.
+
+**Production deploy status at D-049 entry:** `apex-one-black.vercel.app` LIVE; all 5 routes 200 (`/`, `/judges`, `/analyze`, `/status`, `/sim-rig`) + 4 PWA-asset routes 200 (`/manifest.webmanifest` + `/icon` + `/icon2` + `/apple-icon`) + 2 new wave-44 API routes 200 (`/api/sim-rig/stream` + `/api/timing-sheet-parse`). Granite 4.1 8B routing end-to-end via 5 OpenRouter env vars + HARD-COMPLIANCE server-side scrubber active. Watson production path operational via ffmpeg-static bundled binary + inline streaming response. ssoProtection disabled (judges access without Vercel login).
+
+**Wave-44 commit count at D-049 entry:** 26 atomic commits shipped + 1 cascade closed + 9 task-tracker rows completed. Counted via `git log --oneline --grep="wave-44\|cascade-#22"` against `a88daac`.
+
+**Affected.** Production deploy verified live + 7 galaxy-stretches operational + 4 BeMyApp prize categories addressable + IBM-tools honesty across `/` + `/judges` + README + paper. Submission package complete pending Stephen-action items (BeMyApp form submission + 3-min video record + stakeholder outreach sends).
+
+---
+
 ## 2026-05-24 D-048: Wave-44 mega-wave plan-entry (galaxy-tier multi-track-winning ship-out)
 
 **Decision.** Wave-44 plan locked at `~/.claude/plans/all-right-i-want-rippling-moon.md` per Stephen explicit galaxy-ambition mandate 2026-05-24: "win all 4 tracks + need the best project possible + everything within scope + nothing held back + use every tool + most shocking wow-factor possible." Per reference_ibm_skillsbuild_org memory-verified: ONE submission auto-enters all 4 award categories ($2,250 1st + $1,250 Runner-up + $750 Best Use of Technology + $750 Most Innovative + $5K Grand Prize); no opt-in required. Max-scope wave-44 = max-payout-surface-area.
