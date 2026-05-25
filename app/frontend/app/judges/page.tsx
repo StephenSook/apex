@@ -11,6 +11,7 @@ import Link from "next/link";
 // ships as a separate async chunk loaded on first paint) which
 // BLOCKER #2 booked but the prior cascade-#24 close-out did not
 // deliver. ssr:false safely back-in (allowed in Client Components).
+import COAGateToggle from "../../components/COAGateToggle";
 import JudgesGalaxyMovesShell from "../../components/JudgesGalaxyMovesShell";
 import JudgesEdgePlaneShell from "../../components/JudgesEdgePlaneShell";
 
@@ -180,6 +181,17 @@ export default function JudgesPage() {
             3-minute submission video walks one named fictional persona end-to-end; product UI
             is persona-agnostic per Sookra Methodology Pillar 4.
           </p>
+          <div className="mt-6 flex flex-wrap items-center gap-3">
+            <Link
+              href="/judge-tour?step=1"
+              className="rounded-sm border-2 border-racing-green bg-racing-green px-5 py-3 font-mono text-sm uppercase tracking-wider text-paper transition-colors hover:bg-racing-green-deep"
+            >
+              Start 2-minute judge tour →
+            </Link>
+            <span className="font-mono text-xs text-muted">
+              Six-step narrative walkthrough · paced for two minutes
+            </span>
+          </div>
           <div className="mt-4">
             <PWAInstallPrompt />
           </div>
@@ -365,6 +377,27 @@ export default function JudgesPage() {
             with file paths at <span className="not-italic">app/backend/apex/physics/tier_{`{1..8}`}.py</span>
             and <span className="not-italic">app/backend/apex/physics/scp_outer.py</span>.
           </p>
+        </div>
+      </section>
+
+      <section
+        id="coa-toggle"
+        aria-labelledby="coa-toggle-section-title"
+        className="border-b border-rule bg-paper-warm"
+      >
+        <div className="mx-auto max-w-6xl px-6 py-16 lg:px-10 lg:py-20">
+          <h2 id="coa-toggle-section-title" className="font-display text-3xl tracking-tight text-ink">
+            The differentiator, on a switch.
+          </h2>
+          <p className="mt-3 max-w-3xl text-base leading-relaxed text-ink-soft">
+            Wave-45 Phase 4 Block C.1 close-out per the wave-45 plan + the ApexIQ competitor
+            deep-dive steal-list. The COA-parameterized simultaneity gate is the load-bearing
+            differentiator nobody else in the field has. Click the toggle to flip the COA flag
+            + watch the projector verdict change on the same physical event.
+          </p>
+          <div className="mt-8">
+            <COAGateToggle />
+          </div>
         </div>
       </section>
 
