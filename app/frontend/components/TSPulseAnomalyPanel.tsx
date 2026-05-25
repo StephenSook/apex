@@ -60,7 +60,12 @@ export type TSPulseAnomalyState =
       readonly window_index: number;
       readonly score: number;
       readonly threshold_p95: number;
-      readonly affected_bands: ReadonlyArray<TSPulseBand>;
+      // Wave-45 Phase 3 type-design HIGH #4 close-out: non-empty
+      // tuple invariant. Anomaly variant with empty affected_bands
+      // is semantically incoherent (anomaly fired with no bands).
+      // Tuple shape makes the empty case unrepresentable at compile
+      // time matching the variant's role=alert messaging contract.
+      readonly affected_bands: readonly [TSPulseBand, ...TSPulseBand[]];
       readonly detection_ms: number;
     }
   | { readonly status: "error"; readonly message: string };

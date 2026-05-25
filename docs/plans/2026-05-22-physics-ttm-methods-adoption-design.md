@@ -59,7 +59,7 @@ Three commits, atomic.
 - **C14 arity stays at 14.** D-A holds. No new fixture rows. Yaw-rate consistency lives as a projection-objective term (`lambda_yaw * Phi_yaw`) per the doc, not a violation class. C14-05 and C14-06 are untouched.
 - **`/judges` page Convergence-14 grid stays as-is.** No new visual elements until Stephen reviews.
 - **`docs/decision-log.md` D-A** does not change. The methods doc supports D-A rather than escalating it.
-- **Tier-2 catalogue (tire load, weight transfer, aero, yaw moment fixtures)** is shelved to wave-29+. Today's leverage is the methods doc + the three fixes.
+- **Tier-2 catalogue (tire load, weight transfer, aero, yaw moment fixtures)** is shelved to wave-29+. Today's focus is the methods doc + the three fixes.
 
 ### Coordination posture
 
@@ -119,7 +119,7 @@ Every place "Article 18.3" or "Section 3(c)" appears needs the wording fix, or t
 |---|---|---|---|
 | 1 | `fix(fixtures,paper,docs): COA-derived wording sweep + pre-mortem row` | Grep-driven rewording of `Article 18.3` + `Section 3(c)` across every surface. C14-07 + C14-08 expected_guardian_reason + sample_violation_log_excerpt rewritten. Pre-mortem row added. | `git grep -nE "18\.3\|3\(c\)"` returns zero hits in non-cold-review files. Cold-review docs keep their historical quotes (audit trail, not live claims). |
 | 2 | `docs(arch-spec,fixtures): jerk-bound applies at >=10 Hz; C14-04 is demo-only` | arch-spec jerk_max section gets the rate-aliasing caveat. C14-04 summary appends the 1 Hz demo-only note. | Read arch-spec section + C14-04 summary back. Confirm caveat is honest, not defensive. |
-| 3 | `docs(methods): land paper/physics-ttm-methods.md` | Copy `physics-ttm-neurips-methods.md` to `paper/physics-ttm-methods.md`. Strip §"Methods claim to defend" framing + §"Recommended next file tasks" scaffolding. Em-dash sweep with `replace_all`. | `git grep -c "—" paper/physics-ttm-methods.md` returns 0. Spot-check 5 equations render in markdown preview. Confirm all citations present. |
+| 3 | `docs(methods): land paper/physics-ttm-methods.md` | Copy `physics-ttm-neurips-methods.md` to `paper/physics-ttm-methods.md`. Strip §"Methods claim to defend" framing + §"Recommended next file tasks" scaffolding. Em-dash sweep with `replace_all`. | `git grep -c "-" paper/physics-ttm-methods.md` returns 0. Spot-check 5 equations render in markdown preview. Confirm all citations present. |
 | 4 | `docs(plans): land 2026-05-22 physics-ttm-methods-adoption design` | This design doc lands at `docs/plans/2026-05-22-physics-ttm-methods-adoption-design.md`. | Em-dash sweep on this doc too. |
 
 ### Why this order

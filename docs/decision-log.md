@@ -107,7 +107,7 @@ Every locked decision with rationale + date + scope. Newest first.
 
 **Production deploy status at D-049 entry:** `apex-one-black.vercel.app` LIVE; all 5 routes 200 (`/`, `/judges`, `/analyze`, `/status`, `/sim-rig`) + 4 PWA-asset routes 200 (`/manifest.webmanifest` + `/icon` + `/icon2` + `/apple-icon`) + 2 new wave-44 API routes 200 (`/api/sim-rig/stream` + `/api/timing-sheet-parse`). Granite 4.1 8B routing end-to-end via 5 OpenRouter env vars + HARD-COMPLIANCE server-side scrubber active. Watson production path operational via ffmpeg-static bundled binary + inline streaming response. ssoProtection disabled (judges access without Vercel login).
 
-**Wave-44 commit count at D-049 entry:** 26 atomic commits shipped + 1 cascade closed + 9 task-tracker rows completed. Counted via `git log --oneline --grep="wave-44\|cascade-#22"` against `a88daac`.
+**Wave-44 commit count at D-049 entry:** 28 atomic commits shipped + 1 cascade closed + 9 task-tracker rows completed. Counted via `git log --oneline --grep="wave-44\|cascade-#22" b380710..a88daac | wc -l` (wave-45 Phase 3 verified, post-comment-analyzer HIGH #7 fix).
 
 **Affected.** Production deploy verified live + 7 galaxy-stretches operational + 4 BeMyApp prize categories addressable + IBM-tools honesty across `/` + `/judges` + README + paper. Submission package complete pending Stephen-action items (BeMyApp form submission + 3-min video record + stakeholder outreach sends).
 
