@@ -19,6 +19,8 @@ import JudgesGalaxyMovesShell from "../../components/JudgesGalaxyMovesShell";
 import JudgesEdgePlaneShell from "../../components/JudgesEdgePlaneShell";
 import LangGraphRuntimePanel from "../../components/LangGraphRuntimePanel";
 import MobileInstallQR from "../../components/MobileInstallQR";
+import PacejkaStageAPanel from "../../components/PacejkaStageAPanel";
+import SCPStageBPanel from "../../components/SCPStageBPanel";
 import TTMInBrowserPanel from "../../components/TTMInBrowserPanel";
 
 import { ConvergenceFixtureGrid } from "../../components/ConvergenceFixtureGrid";
@@ -495,6 +497,33 @@ export default function JudgesPage() {
           </p>
           <div className="mt-8">
             <EngineAgnosticByteEqualityDemo />
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="staged-ladder"
+        aria-labelledby="staged-ladder-section-title"
+        className="border-b border-rule bg-paper"
+      >
+        <div className="mx-auto max-w-6xl px-6 py-16 lg:px-10 lg:py-20">
+          <h2
+            id="staged-ladder-section-title"
+            className="font-display text-3xl tracking-tight text-ink"
+          >
+            D-031 staged ladder. Stage A + Stage B in flight.
+          </h2>
+          <p className="mt-3 max-w-3xl text-base leading-relaxed text-ink-soft">
+            Wave-45 Phase 9 Block F V12 + V13 close-out per D-050 + D-031. Stage A linearizes
+            the 8-tier Pacejka physics. Stage B wraps Stage A in a 3-iterate SCP outer loop
+            with Powell-ratio trust-region adjustment. Both engines preserve the engine-agnostic
+            byte-equality boundary per D-050: violation strings stay byte-identical on the same
+            physical event regardless of which projector engine fired. HEAD ships canned-fallback
+            for both stages; Vinh wires the real runtime at the V12 + V13 swap-points.
+          </p>
+          <div className="mt-8 grid gap-6 lg:grid-cols-2">
+            <PacejkaStageAPanel />
+            <SCPStageBPanel />
           </div>
         </div>
       </section>
