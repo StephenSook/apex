@@ -1,0 +1,34 @@
+- generic [active] [ref=e1]:
+  - link "Skip to main content" [ref=e2] [cursor=pointer]:
+    - /url: "#main"
+  - main [ref=e3]:
+    - generic [ref=e5]:
+      - paragraph [ref=e6]: IBM SkillsBuild AI Builders Challenge · May 2026 · Judges’ tour
+      - heading "APEX, in one page." [level=1] [ref=e7]
+      - paragraph [ref=e8]: Everything you need to evaluate APEX in five minutes. Live demo first, video second, architecture and Q&A defense pack below. Submission deadline 2026-05-31, 11:59 PM ET.
+      - paragraph [ref=e9]: "Hero use case: Sarah Reynolds, a fictional persona (RAF veteran, left-leg amputee, Britcar Trophy 2026, #34 BMW M240i with electronic hand-controls)."
+    - region "Five-second resource map." [ref=e10]:
+      - generic [ref=e11]
+    - region "The twelve IBM tools, each with a role." [ref=e99]:
+      - generic [ref=e100]
+    - region "The pipeline, one diagram." [ref=e139]:
+      - generic [ref=e140]
+    - region "Convergence 14 · the safety contract." [ref=e146]:
+      - generic [ref=e147]
+    - region "Eight-tier physics implementation." [ref=e464]:
+      - generic [ref=e465]
+    - region "Galaxy-tier inference and adaptation moves." [ref=e632]:
+      - generic [ref=e633]
+    - region "Tri-agent Agent-as-Judge critic loop." [ref=e719]:
+      - generic [ref=e720]
+    - region "WebGPU Granite Nano edge inference." [ref=e845]:
+      - generic [ref=e846]
+    - region "Q&A defense pack." [ref=e862]:
+      - generic [ref=e863]
+    - region "Two-person team." [ref=e902]:
+      - generic [ref=e903]
+    - generic [ref=e915]:
+      - paragraph [ref=e916]: APEX
+      - paragraph [ref=e917]: The race engineer for the drivers who do not have one.
+      - paragraph [ref=e918]: Apache 2.0 · github.com/StephenSook/apex · Built on IBM Granite
+  - alert [ref=e919]
