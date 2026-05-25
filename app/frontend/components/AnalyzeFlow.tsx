@@ -43,6 +43,7 @@ import CoachingReport from "./CoachingReport";
 import Dropzone, { type DropzoneSubmission } from "./Dropzone";
 import GraniteCitationFooter from "./GraniteCitationFooter";
 import GuardianAudit from "./GuardianAudit";
+import ReplayHorizonSlider from "./ReplayHorizonSlider";
 import TuningCard from "./TuningCard";
 
 type AnalyzeTab = "coaching" | "tuning" | "forecast" | "audit" | "chat";
@@ -205,6 +206,9 @@ export default function AnalyzeFlow() {
                   */}
                   <div className={activeTab === "coaching" ? "" : "hidden"}>
                     <CoachingReport report={report} />
+                    <div className="mt-6">
+                      <ReplayHorizonSlider horizonSteps={30} />
+                    </div>
                   </div>
                   <div className={activeTab === "tuning" ? tabPaneClass() : `${tabPaneClass()} hidden`}>
                     <h3 className="font-display text-2xl tracking-tight text-ink">
