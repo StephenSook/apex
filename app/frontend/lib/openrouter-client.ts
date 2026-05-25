@@ -120,12 +120,25 @@ function delay(ms: number, signal?: AbortSignal): Promise<void> {
       reject(new DOMException(String(signal.reason ?? "aborted"), "AbortError"));
       return;
     }
-    const handle = setTimeout(resolve, ms);
-    const onAbort = () => {
-      clearTimeout(handle);
-      reject(new DOMException(String(signal?.reason ?? "aborted"), "AbortError"));
-    };
+    // Wave-44 Phase 4.1 type-design-analyzer BLOCKER B1 close-out:
+    // remove abort listener on resolve so it does not leak across
+    // multiple retry-loop iterations sharing the same consumer signal.
+    // Prior shape used `{ once: true }` which only removed AFTER the
+    // listener fired; if setTimeout resolved first (no abort), the
+    // listener stayed registered against the long-lived signal +
+    // accumulated N listeners across N retries.
+    let onAbort: (() => void) | null = null;
+    const handle = setTimeout(() => {
+      if (signal !== undefined && onAbort !== null) {
+        signal.removeEventListener("abort", onAbort);
+      }
+      resolve();
+    }, ms);
     if (signal !== undefined) {
+      onAbort = () => {
+        clearTimeout(handle);
+        reject(new DOMException(String(signal.reason ?? "aborted"), "AbortError"));
+      };
       signal.addEventListener("abort", onAbort, { once: true });
     }
   });
