@@ -52,6 +52,27 @@ Finding #3 (ffmpeg-static dead weight) REJECTED: ffmpeg-static IS load-bearing i
 
 **Wave-44 final commit count at hackathon-pre-deploy gate-pass:** 34 atomic commits + 3 cascade-fix-forward (cascade-#22, #23, #24) + 2 Vinh-lane backend integrations (rebased) = 39 commits across the wave-44 arc through `0056f41` HEAD. Production deploy LIVE + healthy + ready for BeMyApp form submission.
 
+**Plan-gap-scanner retro addendum (2026-05-25 04:35 ET, post hackathon-pre-deploy gate-pass):** plan-gap-scanner dispatched against `~/.claude/plans/all-right-i-want-rippling-moon.md` against this D-049 + addendum. Returned 10 gaps (2 BLOCKER + 6 WARN + 2 NIT). Doc-only retro reconciliation below:
+
+**BLOCKER closures.**
+
+- **BLOCKER #3 R6 realized risk (cascade-#22+ during Phase 6 multi-feature ship).** Wave-44 cascade chain realized: cascade-#22 (commits `12f570a` PWA manifest type + `1477226` PWA setState-in-effect lazy-initializer), cascade-#23 (commits `76481c3` round-1 conditional setState + `5b1a3bc` round-2 mounted-flag eslint-disable + rebased `9651d25` + `6a459eb` after Vinh integration), cascade-#24 (commit `0056f41` Next.js 16 Server Component ssr:false drop). R6 reclassified from residual to realized; all 3 cascades closed via the cascade-fix-forward + drill-log-failed-before-fix discipline.
+- **BLOCKER #7 cascade-#23 SHA explicit.** Cascade-#23 close-out commits: `76481c3` round-1 + `5b1a3bc` round-2 + rebased `9651d25` + `6a459eb`. Pattern: VoiceDebriefInput SSR hydration mismatch via mounted-flag + eslint-disable-next-line per the React 19 react-hooks/set-state-in-effect workarounds memory rule.
+
+**WARN reconciliations.**
+
+- **R8 PWA service-worker rollback path FIRED.** Plan Phase 6e shipped manifest + 3 icon generators (icon.tsx + icon2.tsx + apple-icon.tsx) + 6-state PWAInstallPrompt DU. Service worker NOT shipped per the rollback path in plan-file Phase 6e ("if service worker breaks /judges hard-refresh during demo, ship manifest + icons only"). Acceptance criterion "offline reload renders from service-worker cache" intentionally retired; PWA install affordance remains the load-bearing wave-44 shouldn't-be-possible move #6 per D-019 amendment.
+- **R10 Phase 6h sim-rig WebSocket rollback path FIRED.** Plan Phase 6h shipped `/api/sim-rig/stream` NDJSON 20Hz Edge ReadableStream + SimRigStream httpStream mode (Vercel-deployable; no FastAPI WebSocket dependency on Vinh-lane). Per the documented rollback path ("if Vinh V2 backend blocked, ship Next.js Edge API route ReadableStream emitting canned 20Hz fixture"). Vinh V2 WebSocket swap-point preserved in the SimRigStream client's discriminated-union prop.
+- **R-Phase-6i Watson STT rollback path FIRED.** Plan Phase 6i shipped browser Web Speech Recognition via VoiceDebriefInput per the rollback path ("if Watson STT requires IBM Cloud account setup beyond scope, ship browser-native Web Speech Recognition API"). Vinh V9 Watson STT swap-point documented in component header + ibm-stack.ts annotation.
+- **Session A/B/C/D sequencing collapsed into single arc.** Plan estimated 4 sessions; D-049 captures the actual single-session execution including cascades #22-#24 inserted between phases. Post-hoc reconciliation; no ship state change.
+- **Phase 6g Vercel AI Gateway DROPPED.** Consistent across plan + D-049; vercel:ai-architect verified IBM Granite not on Vercel AI Gateway inventory at HEAD; migration would drop the load-bearing IBM Granite narrative.
+- **Risk register R1/R2/R3/R5/R7/R9/R11/R12/R13/R14 status.** All 10 = residual (NOT fired). R1 token budget held via session-end memory writes. R2 Granite Embedding R2 browser-side bundle size sidestepped via the Phase 6b lexical-retrieval rollback (no model load at all). R3 Chronos-2 model size sidestepped via the Phase 6d per-track honesty badge (no model load). R5 stakeholder non-reply: Stephen operator-action queue, NOT realized in Claude lane. R7 Auto-mode classifier blocks: not triggered wave-44 (prior wave-43 lessons absorbed). R9 NeurIPS §4 backend-dependent values: D-030 Stage-C verified numbers populate the cvxpylayers QP projection row; remaining 7 latency-budget rows + Tables 2-3 honest pending Day-8 Vinh benches. R11 bundle-size regression: NOT realized (perf BLOCKER #1 + #2 + HIGH #4 closures reduced net bundle). R12 Vercel deploy queue: not realized this wave (single-instance deploys via main-push). R13 Watson STT IBM Cloud setup: sidestepped via Phase 6i rollback. R14 commit-subject 100-char history rewrite: deferred per plan; subjects forward-compliant.
+
+**NIT reconciliations.**
+
+- **NIT plan estimate "80-120 commits" vs actual 39.** Final count under envelope per the rollback-path-aware execution (R2 + R3 + Phase 6d + Phase 6i + Phase 6e service-worker rollbacks consolidated commits). Galaxy ambition preserved via 7-of-9 Phase 6 ships + per-rollback honesty annotations across the affected components. R15 ("Galaxy ambition tempting to add new ideas mid-execution") held: no scope-creep additions beyond the locked plan.
+- **Commit-range b0c6585..0056f41 explicit.** Wave-44 arc head-at-entry: `b0c6585` (D-047 cascade-#21 close-out per D-048 plan-file line 5). Wave-44 arc HEAD-at-plan-gap-scanner-retro: `5fb4650` (this D-049 addendum). Delta-commit range = b0c6585..5fb4650 = 39 commits per `git log --oneline b0c6585..5fb4650 | wc -l`.
+
 ---
 
 ## 2026-05-24 D-048: Wave-44 mega-wave plan-entry (galaxy-tier multi-track-winning ship-out)
