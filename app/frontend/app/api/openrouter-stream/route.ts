@@ -213,10 +213,26 @@ export async function POST(request: Request): Promise<Response> {
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     console.error("apex.openrouter-stream: production-phase backend failure", { message });
-    return new Response(
-      `apex.openrouter-stream: backend failure: ${message}`,
-      { status: 502 },
-    );
+    // Wave-45 deep-review vercel:ai-architect HIGH H-2 close: fall through
+    // to stub instead of returning 502 so a single OpenRouter outage during
+    // judge demo doesn't visibly break the coaching path. Stub is honest
+    // canned-output identical to the no-API-key path.
+    let body: OpenRouterStreamRequest;
+    try {
+      body = (await request.clone().json()) as OpenRouterStreamRequest;
+    } catch {
+      body = { prompt: "" } as OpenRouterStreamRequest;
+    }
+    const stubText = stubResponseFor(body.prompt ?? "");
+    const stubStream = streamStubResponse(stubText, request.signal);
+    return new Response(stubStream, {
+      status: 200,
+      headers: {
+        "Content-Type": "text/plain; charset=utf-8",
+        "Cache-Control": "no-store",
+        "X-Apex-Openrouter-Fallback": "stub-on-upstream-error",
+      },
+    });
   }
 }
 

@@ -63,7 +63,9 @@ function loadCommits(maxCount = 80): ReadonlyArray<CommitEntry> {
         };
       })
       .filter((c) => c.sha.length > 0);
-  } catch {
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    console.error("[apex/changelog] git log execFileSync failed:", message);
     return [];
   }
 }
