@@ -8,7 +8,7 @@ export default function Home() {
       <SiteHeader />
       <main id="main" className="flex flex-col flex-1">
         <Hero />
-        <SarahMoment />
+        <DriverContext />
         <Architecture />
         <Differentiators />
         <BuildStatus />
@@ -33,9 +33,6 @@ function SiteHeader() {
         >
           <span className="font-display text-2xl font-medium tracking-tight text-ink">
             APEX
-          </span>
-          <span className="font-display italic text-2xl text-accent group-hover:text-racing-green transition-colors">
-            .race
           </span>
         </Link>
         <nav aria-label="Primary navigation" className="hidden md:flex items-center gap-8 font-sans text-sm text-ink-soft">
@@ -113,10 +110,10 @@ function Hero() {
             style={{ "--apex-delay": "360ms" } as React.CSSProperties}
           >
             <a
-              href="#sarah"
+              href="#driver-context"
               className="inline-flex items-center gap-2 rounded-sm bg-racing-green px-5 py-3 font-mono text-xs uppercase tracking-wider text-paper transition-transform hover:translate-y-[-1px] hover:bg-racing-green-deep"
             >
-              See the demo case
+              See how it works
               <span aria-hidden="true">↓</span>
             </a>
             <Link
@@ -256,34 +253,32 @@ function Hero() {
 }
 
 /* -------------------------------------------------------------- */
-/* Sarah Reynolds moment                                            */
+/* Driver context (Lane K persona-decoupled; generic illustrative)  */
 /* -------------------------------------------------------------- */
-function SarahMoment() {
+function DriverContext() {
   return (
     <section
-      id="sarah"
+      id="driver-context"
       className="border-b border-rule bg-paper-warm"
-      aria-labelledby="sarah-title"
+      aria-labelledby="driver-context-title"
     >
       <div className="mx-auto grid max-w-6xl gap-12 px-6 py-20 lg:grid-cols-12 lg:gap-16 lg:px-10 lg:py-24">
         <div className="lg:col-span-4 flex flex-col gap-3">
-          <p className="apex-eyebrow">Hero use case</p>
+          <p className="apex-eyebrow">What the driver brings</p>
           <h2
-            id="sarah-title"
+            id="driver-context-title"
             className="font-display text-3xl leading-tight text-ink"
           >
-            What the driver brings to APEX.
+            Three artifacts, one report.
           </h2>
           <p className="text-base text-ink-soft leading-relaxed">
-            Britcar Trophy 2026 grid. #34 BMW M240i. Sarah Reynolds, first full
-            season, chasing two tenths at Donington Park GP, Lap 17 of 19 of
-            Saturday qualifying. MME Motorsport electronic hand-controls (per
-            consent receipt 2026-05-22 logged in docs/consent-log.md). FIA
-            Certificate of Adaptations under the FIA Appendix L provisions on
-            file. Veteran. Left-leg amputee from a 2021 service incident.
+            Telemetry CSV from the data logger. FIA Certificate of Adaptations
+            PDF when the driver has one on file under FIA Appendix L provisions.
+            A sentence or two from the driver&rsquo;s own debrief. APEX returns a
+            corner-by-corner coaching report inside five minutes.
           </p>
           <p className="pt-4 font-mono text-xs uppercase tracking-wider text-muted">
-            Persona is fictional by design. No real driver named without consent.
+            See the canonical demo at <Link href="/judges" className="underline hover:text-racing-green">/judges</Link>. Try with your own files at <Link href="/analyze" className="underline hover:text-racing-green">/analyze</Link>.
           </p>
         </div>
         <blockquote className="lg:col-span-8 relative">
@@ -294,16 +289,16 @@ function SarahMoment() {
             &ldquo;
           </span>
           <p className="font-display text-3xl italic leading-snug text-ink sm:text-4xl lg:text-[2.4rem]">
-            Lost the rears mid-Old Hairpin again. Can&rsquo;t trail-brake on the lever
-            the way I did at Croft last month. Sector 2 was plus zero point three four
-            against my PB.
+            Lost the rears mid the slow hairpin again. Trail-braking on the lever
+            doesn&rsquo;t come back the way it did last month. The middle sector
+            was plus zero point three against my PB.
           </p>
           <footer className="mt-6 flex flex-wrap items-baseline gap-3 text-sm text-muted">
-            <span className="font-mono uppercase tracking-wider">Driver debrief</span>
+            <span className="font-mono uppercase tracking-wider">Illustrative debrief</span>
             <span aria-hidden="true">·</span>
-            <span className="font-mono">2026-05-23 14:02 BST</span>
+            <span className="font-mono">corner-agnostic example</span>
             <span aria-hidden="true">·</span>
-            <span className="font-mono">DEL +0.34s S2</span>
+            <span className="font-mono">+0.34s mid-sector delta</span>
           </footer>
         </blockquote>
       </div>
