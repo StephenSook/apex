@@ -42,7 +42,9 @@ Every locked decision with rationale + date + scope. Newest first.
 
 **3 memory rules locked wave-43:** persona-not-hardcoded-in-ui (Sookra Methodology Pillar 4) + exhaustive-tool-inventory-before-every-task + claude-code-auto-mode-classifier-discovery.
 
-**Wave-43 session arc total: ~70 atomic commits across 12 lanes (A2 + B2 + D2 + E2 + G2.1 + G2.2 D-041 + G2.3 D-042 + G2.4 + G2.5 + G2.6 + C2 9-of-13 + cascade-#15 through #21 fix-wave + Lane K persona-decoupling + Lane H2 memory).** HEAD CI green at every push per verify-or-cascade discipline.
+**Wave-43 session arc total: 79 atomic commits across 12 lanes through D-047 entry (A2 + B2 + D2 + E2 + G2.1 + G2.2 D-041 + G2.3 D-042 + G2.4 + G2.5 + G2.6 + C2 9-of-13 + cascade-#13 through #21 fix-wave + Lane K persona-decoupling + Lane H2 memory). Count via `git log --oneline b380710 --grep="wave-43\|cascade-#1[3-9]\|cascade-#2[0-1]\|Lane K\|cold-review-2"`.** HEAD CI green at every push per verify-or-cascade discipline.
+
+**Per-D-entry mid-wave point-in-time counts (superseded by this entry; retained for audit-trail):** D-042 "25 commits" (Lane A2-B2-D2-E2 mid-wave) + D-044 "~55 atomic commits" (mid-Lane-K close-out window before cascade-#15-#21 + 6-agent review landed) + this D-047 "79 commits" (final wave-43 close-out through b380710). All three counts are accurate at their respective entry timestamps; D-047 is the canonical wave-43 final count.
 
 **Affected.** Production deploy verified live + Granite routing end-to-end + Watson production-path operational + HARD-COMPLIANCE preserved across LLM output + persona-decoupling preserved across product UI + 21-cascade discipline + Sookra Methodology 4 amendments. Project genuinely submission-ready as of 2026-05-24; wave-44 absorbs galaxy-stretch + multi-track-winning leverage moves.
 
