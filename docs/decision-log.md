@@ -4,6 +4,27 @@ Every locked decision with rationale + date + scope. Newest first.
 
 ---
 
+## 2026-05-25 D-054: Wave-45 Phase 9 + Phase 10 Block F + Block G close-out (Vinh M3-V12-V15 frontend stubs + EngineAgnosticByteEqualityDemo)
+
+**Decision.** Wave-45 Phase 9 Block F ships frontend stubs for Vinh's four wave-45 backend swap-points (V12 Stage A 8-tier Pacejka linearization + V13 Stage B 3-iteration SCP outer loop + V14 LangGraph runtime + V15 LIPS 4-axis evaluation harness) as canned-fallback API routes + visualization components. Wave-45 Phase 10 Block G ships the EngineAgnosticByteEqualityDemo on /judges as the load-bearing technical-positioning surface for D-050 byte-equality lock. ibm-stack.ts Langflow entry promoted from FACADE to INTEGRATION-LANGGRAPH per D-017 G7. paper §4.5 Reproducibility statement adds LIPS 4-axis harness + APEX-Bench release cross-reference per D-026 + G10.
+
+**HEAD shape.**
+
+- `/api/projector-stage-a` (V12 swap-point): canned 8-tier Pacejka linearization JSON.
+- `/api/projector-stage-b` (V13 swap-point): canned 3-iteration SCP convergence trace.
+- `/api/orchestration` (V14 swap-point): canned LangGraph 6-node state-machine trace.
+- `/api/lips-harness` (V15 swap-point): canned 4-row ablation table.
+- `/lips-harness` route: Server Component rendering the V15 harness table; ISR hourly.
+- `LangGraphRuntimePanel` component: state-machine visualization mounted on /judges.
+- `EngineAgnosticByteEqualityDemo` component + `lib/byte-equality-fixture.ts`: 3-state DU (byte-identical | engine-line-diff-only | content-diff); D-050 PASS pill on canonical V1 NumPy + V2 cvxpylayers pair; mounted on /judges between apex-cam + coa-toggle sections.
+- ibm-stack.ts: Langflow entry name updated to "LangGraph + MCP + ContextForge" with INTEGRATION tier + retained Langflow-as-export-graph mention.
+
+**Rationale.** Galaxy-ambition + quality-over-speed + maximal-architecture-lock (D-026) all converge on "ship every wave-45 swap-point as a frontend-visible artifact with a clear Vinh-side swap path." Frontend canned-fallback engines preserve the UI surface end-to-end so the production wire-up is a single-constructor-call swap when Vinh's backend ships. EngineAgnosticByteEqualityDemo elevates the D-050 byte-equality test from a backend pytest assertion to a tactile judge-facing visualization; this is the single most defensible technical-positioning claim of the entire project.
+
+**Affected.** 4 new API routes + 2 new components + 1 new page + 1 new fixture lib + ibm-stack.ts Langflow entry rewrite + paper §4.5 Reproducibility statement extension + /judges page mounts (LangGraphRuntimePanel between apex-cam + ttm-in-browser; EngineAgnosticByteEqualityDemo between apex-cam + coa-toggle). Vitest specs for LangGraphRuntimePanel + EngineAgnosticByteEqualityDemo + diffByteEquality.
+
+---
+
 ## 2026-05-25 D-053: Wave-45 Block D shouldn't-be-possible move #7 (Granite TTM in-browser via Transformers.js)
 
 **Decision.** Wave-45 Phase 7 Block D ships the TTMInBrowserPanel + lib/ttm-browser.ts scaffold on /judges as the 7th shouldn't-be-possible move (D-019 amendment). The same Granite TimeSeries TTM r2.1 model that ships server-side in Vinh's production pipeline (apex/ttm/forecast.py) runs lazy-loaded in the driver's browser via Transformers.js + WebGPU / WASM SIMD. Differentiator vs ApexIQ which runs Granite via local Ollama server-side.
