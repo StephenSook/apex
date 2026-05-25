@@ -112,17 +112,21 @@ Cross-reference: `research/wave-30/README.md` for source manifest + `research/wa
 
 **Goal:** Granite-Docling parses FIA COA → JSON. Granite Vision parses timing sheet → CSV. Both are pre-cached at onboarding, not in demo critical path.
 
+> **Path migration 2026-05-24 (wave-44 sweep):** Stephen's wave-42 (`82d1f85`) + wave-44 (`2557d5f`) commits both put parsers at `app/backend/apex/instruct/` (mirrors the Phase 3 narrator + provenance modules already at `instruct/`). The original plan said `intake/` + `vision/`. Migrating Phase 1 task paths from `intake/coa_parser.py` -> `instruct/coa_parser.py` and `vision/timing_parser.py` -> `instruct/timing_sheet_parser.py` to match the de-facto convention. The `intake/cache.py` (Phase 4 task 4.4) stays at `intake/` since caching is intake-domain, not instruction-domain.
+
+> **Phase 1 Stephen-side answers landed at `docs/vinh-phase-1-handoff.md`:** Q1 COA fixture source = synthetic Sarah (shipped at `fixtures/personas/sarah-reynolds-coa-stub.json` commit `82d1f85`); Q2 API path = OpenRouter primary (shipped at `app/frontend/app/api/openrouter-stream/route.ts` commit `89da292`, plus task 1.7 + 1.8 retired on Vinh side); Q3 split = Vinh owns 1.1-1.6 + 1.9 (parsing + simultaneity flag), Stephen owns 1.7 + 1.8 (API plumbing + streaming-response handler).
+
 | # | Task | File | Status |
 |---|------|------|--------|
-| 1.1 | Granite-Docling 258M parses one fixture FIA COA PDF → structured JSON preserving all 9 adaptation domains + section IDs | `app/backend/apex/intake/coa_parser.py` | ⬜ |
-| 1.2 | Granite Vision 4.1 parses one fixture SRO timing-sheet PDF → CSV (lap times + sector splits) | `app/backend/apex/vision/timing_parser.py` | ⬜ |
-| 1.3 | Public FIA COA + SRO timing-sheet fixtures committed | `fixtures/coa/`, `fixtures/timing-sheets/` | ⬜ |
-| 1.4 | Unit tests for intake + vision parsers (schema fixtures) | `app/backend/tests/test_intake.py`, `test_vision.py` | ⬜ |
-| 1.5 | **Docling fallback ladder test** — if Granite-Docling fails on multi-column or French legal PDF, document failure mode and fall back: Docling → LlamaParse → Mistral OCR → manual JSON | `logs/day-03-docling-bench.md` | ⬜ |
-| 1.6 | **Gate G2 — COA parse coverage:** JSON contains all 9 adaptation domains + section IDs | `logs/day-03-g2.md` | ⬜ |
-| 1.7 | OpenRouter API key wired + Granite 4.1 8B free-tier sample call (`openrouter.ai/ibm-granite/granite-4.1-8b`) | `.env.example` + `logs/day-03-openrouter.md` | ⬜ |
-| 1.8 | watsonx.ai free account stood up as backup | `logs/day-03-watsonx.md` | ⬜ |
-| 1.9 | COA parser detects approved hand-control hardware specs and **derives** simultaneity-permission flag (per Perplexity validation wording). **Output is a scalar bool stored in `CoaParseResult.simultaneity_permitted`. The broadcast adapter in `shared.contracts.build_ttm_input()` is the SINGLE place that tiles this scalar to the per-step simultaneity channel; it imports `TENSOR_SHAPE` from `shapes.py` (task 0.4e) rather than restating the shape literal (council v2 Software Lead + Junior-peer fix — was `(batch, 24, 1)` pre-wave-30, now canonical via `shapes.py`); never duplicated in `forecast.py` or `validator.py` (Software Lead fix #2).** | `app/backend/apex/intake/coa_parser.py` (new fn `derive_simultaneity_flag`) | ⬜ |
+| 1.1 | Granite-Docling 258M parses one fixture FIA COA PDF → structured JSON preserving all 9 adaptation domains + section IDs. **Sarah Reynolds synthetic COA fixture pre-staged at `fixtures/personas/sarah-reynolds-coa-stub.json` per Stephen wave-42 Lane F.A (commit `82d1f85`); `_meta.annotations_for_extraction_pipeline` names `simultaneity_permission_flag` as the root extraction target + the two text-anchor strings for the fallback Granite-Docling text-extraction path.** | `app/backend/apex/instruct/coa_parser.py` | ⬜ |
+| 1.2 | Granite Vision 4.1 4B parses one fixture SRO timing-sheet PDF → CSV (lap times + sector splits). **Stephen wave-44 (commit `2557d5f`) shipped the frontend route `app/frontend/app/api/timing-sheet-parse/route.ts` with the `TimingSheetParsedLaps` JSON shape locked + the canned-fixture path + the `X-Apex-Parser-Swap-Point: vinh-v1-granite-vision-4.1-4b` header marker. Vinh V1 swaps in real Granite Vision 4.1 4B inference behind the same JSON contract.** | `app/backend/apex/instruct/timing_sheet_parser.py` | ⬜ |
+| 1.3 | Public FIA COA + SRO timing-sheet fixtures committed | `fixtures/personas/sarah-reynolds-coa-stub.json` ✅ shipped wave-42 (`82d1f85`); `fixtures/timing-sheets/` ⬜ pending | 🟡 partial |
+| 1.4 | Unit tests for intake + vision parsers (schema fixtures). **Tests live at `tests/test_instruct.py` after path migration; module-level renames acceptable.** | `app/backend/tests/test_instruct.py` | ⬜ |
+| 1.5 | **Docling fallback ladder test** — if Granite-Docling fails on multi-column or French legal PDF, document failure mode and fall back: Docling → LlamaParse → Mistral OCR → manual JSON | `logs/day-04-docling-bench.md` | ⬜ |
+| 1.6 | **Gate G2 — COA parse coverage:** JSON contains all 9 adaptation domains + section IDs. **Sarah fixture covers 4 FIA Appendix L conditional approvals + medical findings + adaptive equipment spec + root simultaneity flag; G2 verifies all 9 domains parse end-to-end.** | `logs/day-04-g2.md` | ⬜ |
+| ~~1.7~~ | ~~OpenRouter API key wired + Granite 4.1 8B free-tier sample call~~ | n/a | ✅ DONE Stephen-side wave-42 commit `7179dc1` (OpenRouter Granite API plumbing) + `89da292` (`/api/openrouter-stream` route) + cold-review fixes `df3109d` + `b87f618`. Vinh consumes via Stephen's frontend route; never touches OpenRouter directly. |
+| ~~1.8~~ | ~~watsonx.ai free account stood up as backup~~ | n/a | ✅ DONE Stephen-side wave-42 commit `dc5bd7e` (streaming-response handler). Reframed per handoff Q2 decision: watsonx.ai is bonus track for "Best Use of IBM Tech" judging if Stephen has ≥4h runway pre-submit, not a Vinh-lane stand-up. |
+| 1.9 | COA parser detects approved hand-control hardware specs and **derives** simultaneity-permission flag (per Perplexity validation wording). **Output is a scalar bool stored in `CoaParseResult.simultaneity_permitted`. The broadcast adapter in `shared.contracts.build_ttm_input()` is the SINGLE place that tiles this scalar to the per-step simultaneity channel; it imports `TENSOR_SHAPE` from `shapes.py` (task 0.4e) rather than restating the shape literal (council v2 Software Lead + Junior-peer fix — was `(batch, 24, 1)` pre-wave-30, now canonical via `shapes.py`); never duplicated in `forecast.py` or `validator.py` (Software Lead fix #2).** | `app/backend/apex/instruct/coa_parser.py` (new fn `derive_simultaneity_flag`) | ⬜ |
 
 **Pass condition:** G2 green + one COA + one timing sheet parsed end-to-end + fallback ladder documented.
 
@@ -203,6 +207,9 @@ Cross-reference: `research/wave-30/README.md` for source manifest + `research/wa
 | 4.1b | Langflow visual demo facade — screenshot deliverable only (D-017 facade role) | `app/backend/apex/langflow/graph.json` + screenshot | ⬜ |
 | 4.2 | **Convergence-14 serializer expansion (extends G3 Day-4 floor, council v2 fix — was dual-listed).** G3 already proved round-trip serializer assertion on 5 violation types Day 4; this task expands fixtures to all 14 kinematic violation types + verified Guardian verdict per type. Not a fresh build. | `app/backend/tests/test_serializer.py` | ⬜ |
 | 4.3 | **Gate G7 — LangGraph runtime executes end-to-end + Langflow facade renders at 1920x1080** | screenshot + log in `logs/day-07-g7.md` | ⬜ |
+| **4.M3a** | **Stream M.3 endpoint 1: `POST /api/audit-log`** (per `docs/wave-41-backend-spec-handoff.md` L32-89; council v2 addendum from Stephen wave-41 cascade-#11 plan-gap-scanner BLOCKER#2 close-out). JSONL audit-chain persistence with POSIX append atomicity (≤PIPE_BUF byte writes + `fcntl.flock` exclusive lock for >4 KiB lines). `fsync()` per write (~1ms on SSD; acceptable for ≤10 audit/sec Guardian emit rate). Rolling 500-line tail; older lines rotate to `audit-log-YYYY-MM-DD.jsonl.gz`. 8 KiB per-line cap. Status codes 200/400/413/503 per spec. Frontend stub at `app/frontend/lib/guardian-audit-log.ts` swap-point ready. | `app/backend/apex/orchestration/api/audit_log.py` | ⬜ |
+| **4.M3b** | **Stream M.3 endpoint 2: `POST /api/what-if-replay`** (per spec L91-150). Deterministic V2 cvxpylayers re-projection over mutated fixtures. Determinism contract: same `(baseline_fixture_id, mutation_key)` MUST produce byte-identical `replayed_violation_log` per `violations.py to_text()` output across calls. Backend MUST use the same frozen-TSFM checkpoint + cvxpylayers projection coefficients as `/api/forecast` (replay is counterfactual over the SAME engine). Status codes 200/400/503. Frontend stub at `app/frontend/lib/what-if-replay.ts` with named mutation `MUTATION_COA_OVERLAP_INVERT`. | `app/backend/apex/orchestration/api/what_if_replay.py` | ⬜ |
+| **4.M3c** | **Stream M.3 endpoint 3: `GET /api/session-context`** (per spec L152-192). Race-event telemetry tiles for /judges session-context row. 30s per-track cache for slow-changing fields (track-temp, weather, tire-state); session-phase tile invalidates per-lap on lap-completion event. Returns `tiles: ReadonlyArray<{key, label, value, detail, severity}>` + `fetched_at_iso`. Status codes 200/404/503. Frontend stub at `app/frontend/components/RaceEventsTilesRow.tsx` 4-tile mock fixture. | `app/backend/apex/orchestration/api/session_context.py` | ⬜ |
 
 #### Day 8 — Caching + latency closure
 
@@ -279,32 +286,44 @@ Stephen-led. My role:
 app/backend/
 ├── apex/
 │   ├── shared/                    # Phase 0 — single source of truth (Software Lead fix #2)
-│   │   ├── contracts.py           # PhysicsViolationLog, ViolationRecord, GuardianAudit, build_ttm_input adapter
-│   │   └── logging.py             # Structured logging with audit_id + commit_sha + model_versions (SRE fix)
+│   │   ├── contracts/             # canonical (B, 30, 14) + Protocol + violations
+│   │   │   ├── shapes.py          # TENSOR_SHAPE + SCHEMA_VERSION + 14 CHANNELS
+│   │   │   ├── projector.py       # DifferentiableProjector Protocol seam
+│   │   │   └── violations.py      # PhysicsViolationLog + GuardianAudit + audit_id
+│   │   └── logging.py             # Structured JSON logging with audit_id + commit_sha + model_versions (SRE fix)
 │   ├── intake/
-│   │   ├── coa_parser.py          # Phase 1
-│   │   └── cache.py               # Phase 4 (SHA256 invalidation key)
-│   ├── vision/
-│   │   └── timing_parser.py       # Phase 1
+│   │   └── cache.py               # Phase 4 (SHA256 invalidation key); parser modules migrated to instruct/ per wave-44 sweep
 │   ├── ttm/
-│   │   └── forecast.py            # Phase 2 Day 4
+│   │   ├── forecast.py            # Phase 2 Day 4
+│   │   └── g1_smoke.py            # Phase 0 task 0.7 ✅
 │   ├── physics/
-│   │   ├── validator.py           # Phase 2 Day 4
-│   │   ├── violation_log.py       # Phase 2 Day 4 (engine-agnostic .to_text())
-│   │   └── projection.py          # Phase 2 Day 5 (V2 — imports from shared.contracts)
+│   │   ├── validator.py           # Phase 2 Day 4 (signatures ✅ Phase 0; bodies Phase 2)
+│   │   ├── violation_log.py       # superseded by shared/contracts/violations.py
+│   │   ├── projection.py          # Phase 2 Day 5 (V2 — imports from shared.contracts)
+│   │   └── scp_spike.py           # Phase 0 task 0.5 ✅ D-027 Stage C PASS spike
 │   ├── guardian/
 │   │   └── audit.py               # Phase 2 Day 5 (returns audit_id non-None)
-│   ├── instruct/
+│   ├── instruct/                  # parser + narrator + provenance all live here (wave-44 path migration)
+│   │   ├── coa_parser.py          # Phase 1 task 1.1 + 1.9
+│   │   ├── timing_sheet_parser.py # Phase 1 task 1.2 (was vision/timing_parser.py pre-wave-44)
 │   │   ├── narrator.py            # Phase 3
-│   │   └── provenance.py          # Phase 3
+│   │   ├── provenance.py          # Phase 3
+│   │   └── g1b_latency_bench.py   # Phase 0 task 0.8 ✅
+│   ├── orchestration/
+│   │   ├── langgraph_state_machine.py  # Phase 4 task 4.1 (D-017 runtime)
+│   │   └── api/                   # FastAPI endpoints (Phase 4 Stream M.3 + Phase 5)
+│   │       ├── audit_log.py       # Phase 4 task 4.M3a — POST /api/audit-log
+│   │       ├── what_if_replay.py  # Phase 4 task 4.M3b — POST /api/what-if-replay
+│   │       ├── session_context.py # Phase 4 task 4.M3c — GET /api/session-context
+│   │       ├── coa_upload.py      # Phase 1 — POST /api/coa/upload
+│   │       └── forecast.py        # Phase 5 — POST /api/forecast (production critical path)
 │   ├── langflow/
-│   │   └── graph.json             # Phase 4 Day 7 (screenshot-only deliverable per council)
+│   │   └── graph.json             # Phase 4 Day 7 (screenshot-only facade per D-017 + council)
 │   └── ~~sim_rig/~~               # KILLED per council trim 2026-05-22
 ├── tests/
 │   ├── fixtures/
 │   │   └── violation_log_golden/  # Phase 2 Day 4 — Convergence-14 round-trip fixtures
-│   ├── test_intake.py
-│   ├── test_vision.py
+│   ├── test_instruct.py           # Phase 1 task 1.4 — coa_parser + timing_sheet_parser
 │   ├── test_physics_v1.py         # Includes round-trip serializer assertion (G3)
 │   ├── test_ttm_integration.py
 │   ├── test_guardian_audit.py
