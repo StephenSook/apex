@@ -11,6 +11,7 @@ import Link from "next/link";
 // ships as a separate async chunk loaded on first paint) which
 // BLOCKER #2 booked but the prior cascade-#24 close-out did not
 // deliver. ssr:false safely back-in (allowed in Client Components).
+import ApexCamPanel from "../../components/ApexCamPanel";
 import COAGateToggle from "../../components/COAGateToggle";
 import JudgesGalaxyMovesShell from "../../components/JudgesGalaxyMovesShell";
 import JudgesEdgePlaneShell from "../../components/JudgesEdgePlaneShell";
@@ -377,6 +378,27 @@ export default function JudgesPage() {
             with file paths at <span className="not-italic">app/backend/apex/physics/tier_{`{1..8}`}.py</span>
             and <span className="not-italic">app/backend/apex/physics/scp_outer.py</span>.
           </p>
+        </div>
+      </section>
+
+      <section
+        id="apex-cam"
+        aria-labelledby="apex-cam-section-title"
+        className="border-b border-rule bg-paper"
+      >
+        <div className="mx-auto max-w-6xl px-6 py-16 lg:px-10 lg:py-20">
+          <h2 id="apex-cam-section-title" className="font-display text-3xl tracking-tight text-ink">
+            The pipeline, paced for a judge tour.
+          </h2>
+          <p className="mt-3 max-w-3xl text-base leading-relaxed text-ink-soft">
+            Wave-45 Phase 5 Block C.2 close-out. Six stages cycle every 1.5 seconds: ingest -&gt; TTM
+            forecast -&gt; V2 projector -&gt; Guardian audit -&gt; Instruct narration -&gt; provenance
+            footer. Full pipeline runs sub-60s on RTX 4060 per G8 budget; this visualization is the
+            architecture paced for a 9-second judge tour.
+          </p>
+          <div className="mt-8">
+            <ApexCamPanel />
+          </div>
         </div>
       </section>
 
