@@ -38,18 +38,37 @@ const CANNED_ITERATES: ReadonlyArray<SCPIterate> = [
 
 export async function GET(_req: NextRequest): Promise<Response> {
   const t0 = performance.now();
-  const payload: SCPResponse = {
-    engine: "scp-v13-canned-fallback",
-    compute_ms: Math.round(performance.now() - t0),
-    iterates: CANNED_ITERATES,
-    final_residual: 0.0011,
-    swap_point: "Vinh M3-V13 -> app/backend/apex/physics/projection_scp.py (3-iterate SCP wrap of Stage A)",
-  };
-  return Response.json(payload, {
-    status: 200,
-    headers: {
-      "Cache-Control": "no-store",
-      "X-Apex-Projector-Swap-Point": "vinh-m3-v13-scp-3-iterate",
-    },
-  });
+  try {
+    const payload: SCPResponse = {
+      engine: "scp-v13-canned-fallback",
+      compute_ms: Math.round(performance.now() - t0),
+      iterates: CANNED_ITERATES,
+      final_residual: 0.0011,
+      swap_point: "Vinh M3-V13 -> app/backend/apex/physics/projection_scp.py (3-iterate SCP wrap of Stage A)",
+    };
+    return Response.json(payload, {
+      status: 200,
+      headers: {
+        "Cache-Control": "no-store",
+        "X-Apex-Projector-Swap-Point": "vinh-m3-v13-scp-3-iterate",
+      },
+    });
+  } catch (err) {
+    console.error("[apex/projector-stage-b]", err);
+    const fallback: SCPResponse = {
+      engine: "scp-v13-canned-fallback",
+      compute_ms: Math.round(performance.now() - t0),
+      iterates: [],
+      final_residual: -1,
+      swap_point: `Vinh M3-V13 swap-in error: ${err instanceof Error ? err.message : String(err)}`,
+    };
+    return Response.json(fallback, {
+      status: 200,
+      headers: {
+        "Cache-Control": "no-store",
+        "X-Apex-Projector-Swap-Point": "vinh-m3-v13-scp-3-iterate",
+        "X-Apex-Error": "1",
+      },
+    });
+  }
 }

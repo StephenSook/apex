@@ -38,19 +38,37 @@ interface LIPSResponse {
   readonly swap_point: string;
 }
 
-async function fetchLIPS(): Promise<LIPSResponse | null> {
+type FetchResult =
+  | { readonly ok: true; readonly data: LIPSResponse }
+  | { readonly ok: false; readonly cause: "http" | "transport" | "parse"; readonly detail: string };
+
+async function fetchLIPS(): Promise<FetchResult> {
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
+  let res: Response;
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
-    const res = await fetch(`${baseUrl}/api/lips-harness`, { cache: "no-store" });
-    if (!res.ok) return null;
-    return (await res.json()) as LIPSResponse;
-  } catch {
-    return null;
+    res = await fetch(`${baseUrl}/api/lips-harness`, { cache: "no-store" });
+  } catch (err) {
+    const detail = err instanceof Error ? err.message : String(err);
+    console.error("[apex/lips-harness] transport error", detail);
+    return { ok: false, cause: "transport", detail };
+  }
+  if (!res.ok) {
+    const detail = `HTTP ${res.status} ${res.statusText}`;
+    console.error("[apex/lips-harness] http error", detail);
+    return { ok: false, cause: "http", detail };
+  }
+  try {
+    const data = (await res.json()) as LIPSResponse;
+    return { ok: true, data };
+  } catch (err) {
+    const detail = err instanceof Error ? err.message : String(err);
+    console.error("[apex/lips-harness] parse error", detail);
+    return { ok: false, cause: "parse", detail };
   }
 }
 
 export default async function LIPSHarnessPage() {
-  const data = await fetchLIPS();
+  const result = await fetchLIPS();
 
   return (
     <main className="mx-auto flex max-w-5xl flex-col gap-8 px-6 py-12">
@@ -68,32 +86,32 @@ export default async function LIPSHarnessPage() {
         </p>
       </header>
 
-      {data === null && (
+      {!result.ok && (
         <p
           role="alert"
           className="rounded-sm border-2 border-accent bg-paper p-4 font-mono text-sm text-accent"
         >
-          /api/lips-harness unavailable at server-render. Vercel-side fetch failed.
+          /api/lips-harness {result.cause} failure: {result.detail}.
         </p>
       )}
 
-      {data !== null && (
+      {result.ok && (
         <section className="flex flex-col gap-4 rounded-sm border-2 border-rule bg-paper p-6">
           <div className="flex flex-wrap items-baseline gap-3">
             <span
               className={`rounded-sm border px-3 py-1 font-mono text-[11px] uppercase tracking-wider ${
-                data.engine === "lips-v15-real"
+                result.data.engine === "lips-v15-real"
                   ? "border-racing-green bg-paper text-racing-green"
                   : "border-amber bg-paper text-amber"
               }`}
             >
-              Engine: {data.engine}
+              Engine: {result.data.engine}
             </span>
             <span className="rounded-sm border border-rule bg-paper px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-ink-soft">
-              Dataset: {data.dataset}
+              Dataset: {result.data.dataset}
             </span>
             <span className="rounded-sm border border-rule bg-paper px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-ink-soft">
-              Seed: {data.seed}
+              Seed: {result.data.seed}
             </span>
           </div>
 
@@ -119,11 +137,11 @@ export default async function LIPSHarnessPage() {
                 </tr>
               </thead>
               <tbody>
-                {data.rows.map((row, idx) => (
+                {result.data.rows.map((row, idx) => (
                   <tr
                     key={row.configuration}
                     className={`border-b border-rule ${
-                      idx === data.rows.length - 1 ? "bg-paper-warm" : "bg-paper"
+                      idx === result.data.rows.length - 1 ? "bg-paper-warm" : "bg-paper"
                     }`}
                   >
                     <td className="px-3 py-3 font-mono text-xs text-ink">
@@ -148,7 +166,7 @@ export default async function LIPSHarnessPage() {
           </div>
 
           <p className="font-mono text-[11px] uppercase tracking-wider text-muted">
-            Swap-point: <span className="text-ink-soft">{data.swap_point}</span>
+            Swap-point: <span className="text-ink-soft">{result.data.swap_point}</span>
           </p>
         </section>
       )}

@@ -39,21 +39,38 @@ const CANNED_NODES: ReadonlyArray<OrchestrationNode> = [
 ];
 
 export async function GET(_req: NextRequest): Promise<Response> {
-  const t0 = performance.now();
-  const total_ms = CANNED_NODES.reduce((sum, node) => sum + node.elapsed_ms, 0);
-  const payload: OrchestrationResponse = {
-    engine: "langgraph-v14-canned-fallback",
-    trace_id: `canned-${Date.now().toString(36)}`,
-    nodes: CANNED_NODES,
-    total_ms,
-    swap_point: "Vinh M3-V14 -> app/backend/apex/orchestration/langgraph_runtime.py (D-017 G7 LangGraph + MCP + ContextForge)",
-  };
-  Math.round(performance.now() - t0);
-  return Response.json(payload, {
-    status: 200,
-    headers: {
-      "Cache-Control": "no-store",
-      "X-Apex-Orchestration-Swap-Point": "vinh-m3-v14-langgraph",
-    },
-  });
+  try {
+    const total_ms = CANNED_NODES.reduce((sum, node) => sum + node.elapsed_ms, 0);
+    const payload: OrchestrationResponse = {
+      engine: "langgraph-v14-canned-fallback",
+      trace_id: `canned-${Date.now().toString(36)}`,
+      nodes: CANNED_NODES,
+      total_ms,
+      swap_point: "Vinh M3-V14 -> app/backend/apex/orchestration/langgraph_runtime.py (D-017 G7 + D-026 + D-054 LangGraph + MCP + ContextForge)",
+    };
+    return Response.json(payload, {
+      status: 200,
+      headers: {
+        "Cache-Control": "no-store",
+        "X-Apex-Orchestration-Swap-Point": "vinh-m3-v14-langgraph",
+      },
+    });
+  } catch (err) {
+    console.error("[apex/orchestration]", err);
+    const fallback: OrchestrationResponse = {
+      engine: "langgraph-v14-canned-fallback",
+      trace_id: `error-${Date.now().toString(36)}`,
+      nodes: [],
+      total_ms: 0,
+      swap_point: `Vinh M3-V14 swap-in error: ${err instanceof Error ? err.message : String(err)}`,
+    };
+    return Response.json(fallback, {
+      status: 200,
+      headers: {
+        "Cache-Control": "no-store",
+        "X-Apex-Orchestration-Swap-Point": "vinh-m3-v14-langgraph",
+        "X-Apex-Error": "1",
+      },
+    });
+  }
 }

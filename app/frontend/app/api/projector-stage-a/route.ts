@@ -43,18 +43,37 @@ const CANNED_TIERS: ReadonlyArray<PacejkaTier> = [
 
 export async function GET(_req: NextRequest): Promise<Response> {
   const t0 = performance.now();
-  const payload: PacejkaResponse = {
-    engine: "pacejka-v12-canned-fallback",
-    compute_ms: Math.round(performance.now() - t0),
-    tiers: CANNED_TIERS,
-    final_violation_count: 0,
-    swap_point: "Vinh M3-V12 -> app/backend/apex/physics/projection_pacejka.py (DifferentiableProjector Protocol)",
-  };
-  return Response.json(payload, {
-    status: 200,
-    headers: {
-      "Cache-Control": "no-store",
-      "X-Apex-Projector-Swap-Point": "vinh-m3-v12-pacejka-linearization",
-    },
-  });
+  try {
+    const payload: PacejkaResponse = {
+      engine: "pacejka-v12-canned-fallback",
+      compute_ms: Math.round(performance.now() - t0),
+      tiers: CANNED_TIERS,
+      final_violation_count: 0,
+      swap_point: "Vinh M3-V12 -> app/backend/apex/physics/projection_pacejka.py (DifferentiableProjector Protocol)",
+    };
+    return Response.json(payload, {
+      status: 200,
+      headers: {
+        "Cache-Control": "no-store",
+        "X-Apex-Projector-Swap-Point": "vinh-m3-v12-pacejka-linearization",
+      },
+    });
+  } catch (err) {
+    console.error("[apex/projector-stage-a]", err);
+    const fallback: PacejkaResponse = {
+      engine: "pacejka-v12-canned-fallback",
+      compute_ms: Math.round(performance.now() - t0),
+      tiers: [],
+      final_violation_count: -1,
+      swap_point: `Vinh M3-V12 swap-in error: ${err instanceof Error ? err.message : String(err)}`,
+    };
+    return Response.json(fallback, {
+      status: 200,
+      headers: {
+        "Cache-Control": "no-store",
+        "X-Apex-Projector-Swap-Point": "vinh-m3-v12-pacejka-linearization",
+        "X-Apex-Error": "1",
+      },
+    });
+  }
 }

@@ -64,19 +64,39 @@ const CANNED_ROWS: ReadonlyArray<LIPSRow> = [
 
 export async function GET(_req: NextRequest): Promise<Response> {
   const t0 = performance.now();
-  const payload: LIPSResponse = {
-    engine: "lips-v15-canned-fallback",
-    rows: CANNED_ROWS,
-    dataset: "FastF1 Hamilton 2024 Bahrain Q laps 4-5 holdout (canned)",
-    seed: 42,
-    compute_ms: Math.round(performance.now() - t0),
-    swap_point: "Vinh M3-V15 -> eval/Dockerfile + apex-bench/ (D-026 + G10 reproducibility statement)",
-  };
-  return Response.json(payload, {
-    status: 200,
-    headers: {
-      "Cache-Control": "no-store",
-      "X-Apex-Lips-Swap-Point": "vinh-m3-v15-lips-4-axis",
-    },
-  });
+  try {
+    const payload: LIPSResponse = {
+      engine: "lips-v15-canned-fallback",
+      rows: CANNED_ROWS,
+      dataset: "FastF1 Hamilton 2024 Bahrain Q laps 4-5 holdout (canned)",
+      seed: 42,
+      compute_ms: Math.round(performance.now() - t0),
+      swap_point: "Vinh M3-V15 -> eval/Dockerfile + apex-bench/ (D-026 + G10 reproducibility statement)",
+    };
+    return Response.json(payload, {
+      status: 200,
+      headers: {
+        "Cache-Control": "no-store",
+        "X-Apex-Lips-Swap-Point": "vinh-m3-v15-lips-4-axis",
+      },
+    });
+  } catch (err) {
+    console.error("[apex/lips-harness]", err);
+    const fallback: LIPSResponse = {
+      engine: "lips-v15-canned-fallback",
+      rows: [],
+      dataset: "error",
+      seed: -1,
+      compute_ms: Math.round(performance.now() - t0),
+      swap_point: `Vinh M3-V15 swap-in error: ${err instanceof Error ? err.message : String(err)}`,
+    };
+    return Response.json(fallback, {
+      status: 200,
+      headers: {
+        "Cache-Control": "no-store",
+        "X-Apex-Lips-Swap-Point": "vinh-m3-v15-lips-4-axis",
+        "X-Apex-Error": "1",
+      },
+    });
+  }
 }

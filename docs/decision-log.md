@@ -14,7 +14,7 @@ Every locked decision with rationale + date + scope. Newest first.
 - `/api/projector-stage-b` (V13 swap-point): canned 3-iteration SCP convergence trace.
 - `/api/orchestration` (V14 swap-point): canned LangGraph 6-node state-machine trace.
 - `/api/lips-harness` (V15 swap-point): canned 4-row ablation table.
-- `/lips-harness` route: Server Component rendering the V15 harness table; ISR hourly.
+- `/lips-harness` route: Server Component rendering the V15 harness table; force-dynamic per-request fetch from /api/lips-harness.
 - `LangGraphRuntimePanel` component: state-machine visualization mounted on /judges.
 - `EngineAgnosticByteEqualityDemo` component + `lib/byte-equality-fixture.ts`: 3-state DU (byte-identical | engine-line-diff-only | content-diff); D-050 PASS pill on canonical V1 NumPy + V2 cvxpylayers pair; mounted on /judges between apex-cam + coa-toggle sections.
 - ibm-stack.ts: Langflow entry name updated to "LangGraph + MCP + ContextForge" with INTEGRATION tier + retained Langflow-as-export-graph mention.

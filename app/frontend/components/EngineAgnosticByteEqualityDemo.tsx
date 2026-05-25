@@ -84,6 +84,7 @@ export default function EngineAgnosticByteEqualityDemo() {
       </header>
 
       <div
+        role={diff.status === "content-diff" ? "alert" : undefined}
         className={`flex flex-wrap items-baseline gap-3 rounded-sm border-2 bg-paper-warm p-3 ${pill.border}`}
       >
         <span
@@ -94,6 +95,11 @@ export default function EngineAgnosticByteEqualityDemo() {
         <span className="font-mono text-[11px] uppercase tracking-wider text-muted">
           body bytes {diff.body_byte_count} · body lines {diff.body_lines}
         </span>
+        {diff.status === "content-diff" && (
+          <span className="font-mono text-[11px] uppercase tracking-wider text-accent">
+            D-050 byte-equality lock VIOLATED. V1 + V2 violation strings diverge.
+          </span>
+        )}
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
