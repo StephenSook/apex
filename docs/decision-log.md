@@ -4,6 +4,50 @@ Every locked decision with rationale + date + scope. Newest first.
 
 ---
 
+## 2026-05-24 D-048: Wave-44 mega-wave plan-entry (galaxy-tier multi-track-winning ship-out)
+
+**Decision.** Wave-44 plan locked at `~/.claude/plans/all-right-i-want-rippling-moon.md` per Stephen explicit galaxy-ambition mandate 2026-05-24: "win all 4 tracks + need the best project possible + everything within scope + nothing held back + use every tool + most shocking wow-factor possible." Per reference_ibm_skillsbuild_org memory-verified: ONE submission auto-enters all 4 award categories ($2,250 1st + $1,250 Runner-up + $750 Best Use of Technology + $750 Most Innovative + $5K Grand Prize); no opt-in required. Max-scope wave-44 = max-payout-surface-area.
+
+**10-phase plan:** Phase 1 memory + closure (6 commits) + Phase 2 live UI QA via Playwright MCP (3 commits + 25 screenshots) + Phase 3 parallel agent dispatch cc-gemini + vercel:performance + vercel:ai-architect + plan-gap-scanner (4 agents + fix-wave commits) + Phase 4 test + type residuals (8 commits) + Phase 5 comment-analyzer doc accuracy (6 commits) + Phase 6 GALAXY STRETCH new features 6a TSPulse + 6b Granite Embedding R2 RAG + 6c Granite Vision parser + 6d Three-track ensemble real + 6e PWA manifest + 6f Vercel Speed Insights + 6g Vercel AI Gateway + 6h sim-rig WebSocket + 6i Watson STT (20-30 commits) + Phase 7 NeurIPS paper §4 Experiments table population (5 commits) + Phase 8 stakeholder outreach final passes Mission 44 + Team BRIT + LinkedIn + IBM Discord + Vinh msg (3 commits) + Phase 9 UI tightening 24 items per Explore agent findings (12-15 commits) + Phase 10 Day-12 final-gate hackathon-pre-deploy (5 commits) + BeMyApp form submission.
+
+**Stephen plan-review answers (locked):**
+- All 3 Phase 6 priorities in scope (IBM-tool maximizers + demo wow-factor + tighten-existing). No defer.
+- Vinh-scope items: frontend-only via Next.js API routes ship from Claude; backend real implementation queued for Vinh via Discord message. 7 explicit Vinh tasks V1-V7 documented in plan.
+
+**Total estimate:** 80-120 atomic commits across 4 sessions (A through D) + 4 parallel agent dispatches + 1 Obsidian session note per session + 3 new memory rules + paper §4 fully populated + 6 new IBM-tool wire-ups.
+
+**Affected.** Multi-session execution across Day 6 evening through Day 12 morning. Quality discipline per cascade-fix-forward + per-push CI verify + drill-log-failed-before-fix rule throughout. No new V2/V3/post-hackathon labels per galaxy-ambition rule; only apex.race custom domain remains operator-action-only-post-hackathon per Stephen explicit ($).
+
+---
+
+## 2026-05-24 D-047: Wave-43 final close-out cascade-#15 through #21 + 6-agent code review + Vercel deploy LIVE
+
+**Decision.** Wave-43 mega-wave final close-out captures the cascade-#15 through #21 fix-forward chain + 6-agent code review + production deploy LIVE at apex-one-black.vercel.app. Supersedes D-041 + D-042 + D-043 + D-044 + D-045 + D-046 with comprehensive cumulative wave-43 state.
+
+**Cascade chain closed (7 cascades #15-#21; 21 cumulative across session arc):**
+
+- Cascade-#15 (`89dcd56` + `85b3051` + `ddbe71c` + `a8daa27` + `57e7ab0`) F2-round-2 codex adversarial: BLOCKER em-dash sweep + HIGH#3 abort-aware delay + MED#4 WatsonTtsRadio AbortController + MED#6 Playwright drop swallowed catch + HIGH#1+#3 Watson early-return on Vercel
+- Cascade-#16 (`ade3e3f` + `88dc400` + `af91863`) Watson route Buffer to Uint8Array TS2345 + apex.race full-repo sweep + Watson wired into CoachingReport + vitest mock + Playwright scope-down + safeParseAuditId fallback
+- Cascade-#17 (`af91863`) safeParseAuditId fallback to no_audit sentinel for non-canonical test fixtures
+- Cascade-#18 (`e63daec`) inline AuditId validator in CoachingReport per Turbopack client-bundle cross-tree resolution
+- Cascade-#19 (`b32c82b`) comment-analyzer BLOCKER batch: PLAN.md wave-38-cutover falsehood + BeMyApp payload + types JSDoc + M.3 spec full rewrite for inline blob streaming + bad SHA fix + persona leak in chat suggested-question
+- Cascade-#20 (`a2a98c6`) HARD-COMPLIANCE system prompt no-invented-FIA-articles
+- Cascade-#21 (`b0c6585`) HARD-COMPLIANCE server-side regex scrubber strips invented FIA Article + COA Section numbers regardless of model behavior
+
+**6-agent code review complete:** codex-rescue F2 round 2 (1 BLOCKER + 3 HIGH + 3 MED) + silent-failure-hunter (0 BLOCKER + 3 HIGH + 6 MED) + type-design-analyzer (1 BLOCKER + 3 HIGH + 2 MED + 2 NIT) + pr-test-analyzer (2 BLOCKER + 4 HIGH + 4 MED + 3 NIT) + code-reviewer (1 BLOCKER + 3 HIGH + 3 MED) + comment-analyzer (8 BLOCKER + 9 HIGH + 11 MED + 4 NIT). BLOCKER + HIGH categories addressed via cascade-#15 through #21 fix-wave commits. MED + NIT residuals queued for wave-44 Phase 4 + Phase 5.
+
+**Vercel deploy LIVE:** apex-one-black.vercel.app + apex-git-main-ssookra-7703s-projects.vercel.app + apex-ssookra-7703s-projects.vercel.app (3 stable production aliases). All 4 static routes 200. /api/openrouter-stream proxies real Granite 4.1 8B via OpenRouter with HARD-COMPLIANCE scrubber active. /api/watson-tts production path operational via ffmpeg-static bundled binary + inline streaming response + SIGTERM abort propagation. ssoProtection disabled (judges access without Vercel login).
+
+**5 OpenRouter env vars on Vercel:** OPENROUTER_API_KEY (encrypted) + OPENROUTER_BASE_URL + OPENROUTER_MODEL (ibm-granite/granite-4.1-8b verified slug) + OPENROUTER_HTTP_REFERER + OPENROUTER_X_TITLE.
+
+**3 memory rules locked wave-43:** persona-not-hardcoded-in-ui (Sookra Methodology Pillar 4) + exhaustive-tool-inventory-before-every-task + claude-code-auto-mode-classifier-discovery.
+
+**Wave-43 session arc total: ~70 atomic commits across 12 lanes (A2 + B2 + D2 + E2 + G2.1 + G2.2 D-041 + G2.3 D-042 + G2.4 + G2.5 + G2.6 + C2 9-of-13 + cascade-#15 through #21 fix-wave + Lane K persona-decoupling + Lane H2 memory).** HEAD CI green at every push per verify-or-cascade discipline.
+
+**Affected.** Production deploy verified live + Granite routing end-to-end + Watson production-path operational + HARD-COMPLIANCE preserved across LLM output + persona-decoupling preserved across product UI + 21-cascade discipline + Sookra Methodology 4 amendments. Project genuinely submission-ready as of 2026-05-24; wave-44 absorbs galaxy-stretch + multi-track-winning leverage moves.
+
+---
+
 ## 2026-05-24 D-044: Wave-43 Lane K + final close-out - persona-decoupling + C2 vitest completion
 
 **Decision.** Wave-43 mega-wave final close-out lands two significant additions beyond the original 8-lane plan:
