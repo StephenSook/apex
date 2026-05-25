@@ -1612,3 +1612,42 @@ export interface LIPSResponse {
   readonly compute_ms: number;
   readonly swap_point: string;
 }
+
+// ============================================================================
+// Wave-45.5 deep-review type-design HIGH close-out: promote V12 Pacejka +
+// V13 SCP response types from per-file declarations (route + panel inline
+// duplicates) to this shared module. V14 + V15 already promoted; V12 + V13
+// were missed in the wave-45 Phase 11 type-design promotion. Same drift
+// hazard.
+// ============================================================================
+
+export interface PacejkaTier {
+  readonly tier: number;
+  readonly name: string;
+  readonly residual_norm: number;
+  readonly status: "converged" | "linearized" | "deferred";
+}
+
+export interface PacejkaResponse {
+  readonly engine: "pacejka-v12-canned-fallback" | "pacejka-v12-real";
+  readonly compute_ms: number;
+  readonly tiers: ReadonlyArray<PacejkaTier>;
+  readonly final_violation_count: number;
+  readonly swap_point: string;
+}
+
+export interface SCPIterate {
+  readonly iterate: number;
+  readonly residual_norm: number;
+  readonly trust_region_radius: number;
+  readonly powell_rho: number;
+  readonly status: "convergent" | "trust-region-step" | "converged";
+}
+
+export interface SCPResponse {
+  readonly engine: "scp-v13-canned-fallback" | "scp-v13-real";
+  readonly compute_ms: number;
+  readonly iterates: ReadonlyArray<SCPIterate>;
+  readonly final_residual: number;
+  readonly swap_point: string;
+}

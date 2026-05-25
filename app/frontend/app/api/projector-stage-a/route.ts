@@ -12,25 +12,11 @@
 
 import type { NextRequest } from "next/server";
 
+import type { PacejkaResponse, PacejkaTier } from "../../../../shared/types";
 import { VINH_SWAP_POINTS } from "../../../lib/vinh-swap-points";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-
-interface PacejkaTier {
-  readonly tier: number;
-  readonly name: string;
-  readonly residual_norm: number;
-  readonly status: "converged" | "linearized" | "deferred";
-}
-
-interface PacejkaResponse {
-  readonly engine: "pacejka-v12-canned-fallback" | "pacejka-v12-real";
-  readonly compute_ms: number;
-  readonly tiers: ReadonlyArray<PacejkaTier>;
-  readonly final_violation_count: number;
-  readonly swap_point: string;
-}
 
 const CANNED_TIERS: ReadonlyArray<PacejkaTier> = [
   { tier: 0, name: "Vehicle dynamics", residual_norm: 0.0021, status: "converged" },

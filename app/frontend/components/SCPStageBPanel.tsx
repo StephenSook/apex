@@ -17,21 +17,7 @@
 
 import { useEffect, useState } from "react";
 
-interface SCPIterate {
-  readonly iterate: number;
-  readonly residual_norm: number;
-  readonly trust_region_radius: number;
-  readonly powell_rho: number;
-  readonly status: "convergent" | "trust-region-step" | "converged";
-}
-
-interface SCPResponse {
-  readonly engine: "scp-v13-canned-fallback" | "scp-v13-real";
-  readonly compute_ms: number;
-  readonly iterates: ReadonlyArray<SCPIterate>;
-  readonly final_residual: number;
-  readonly swap_point: string;
-}
+import type { SCPIterate, SCPResponse } from "../../shared/types";
 
 type PanelState =
   | { readonly status: "loading" }

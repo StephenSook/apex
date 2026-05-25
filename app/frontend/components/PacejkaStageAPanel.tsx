@@ -16,20 +16,7 @@
 
 import { useEffect, useState } from "react";
 
-interface PacejkaTier {
-  readonly tier: number;
-  readonly name: string;
-  readonly residual_norm: number;
-  readonly status: "converged" | "linearized" | "deferred";
-}
-
-interface PacejkaResponse {
-  readonly engine: "pacejka-v12-canned-fallback" | "pacejka-v12-real";
-  readonly compute_ms: number;
-  readonly tiers: ReadonlyArray<PacejkaTier>;
-  readonly final_violation_count: number;
-  readonly swap_point: string;
-}
+import type { PacejkaResponse, PacejkaTier } from "../../shared/types";
 
 type PanelState =
   | { readonly status: "loading" }

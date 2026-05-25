@@ -11,26 +11,11 @@
 
 import type { NextRequest } from "next/server";
 
+import type { SCPIterate, SCPResponse } from "../../../../shared/types";
 import { VINH_SWAP_POINTS } from "../../../lib/vinh-swap-points";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-
-interface SCPIterate {
-  readonly iterate: number;
-  readonly residual_norm: number;
-  readonly trust_region_radius: number;
-  readonly powell_rho: number;
-  readonly status: "convergent" | "trust-region-step" | "converged";
-}
-
-interface SCPResponse {
-  readonly engine: "scp-v13-canned-fallback" | "scp-v13-real";
-  readonly compute_ms: number;
-  readonly iterates: ReadonlyArray<SCPIterate>;
-  readonly final_residual: number;
-  readonly swap_point: string;
-}
 
 const CANNED_ITERATES: ReadonlyArray<SCPIterate> = [
   { iterate: 1, residual_norm: 0.0418, trust_region_radius: 1.0, powell_rho: 0.74, status: "convergent" },
