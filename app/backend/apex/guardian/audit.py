@@ -247,8 +247,62 @@ class Guardian:
         )
 
 
+# ---- UI text-render helper (task 2.15) ---------------------------------
+
+_RENDER_MODES: Final[tuple[str, ...]] = ("think", "no-think")
+
+
+def render_audit(audit: GuardianAudit, mode: str = "think") -> str:
+    """Render a GuardianAudit as UI-consumable text.
+
+    Two modes per the Granite Guardian 4.1 hybrid-thinking surface
+    documented at docs/architecture-spec.md L440:
+
+      - 'think' (default): includes the full reasoning_trace chain so
+        the UI can show the audit's thinking. Used in the /analyze
+        Guardian panel + the provenance footer.
+      - 'no-think': verdict header + concerns/blocks + audit_id only.
+        Used in low-latency surfaces (coaching-report header banner)
+        where the reasoning chain would be visually noisy.
+
+    Output is plain text; the frontend renderer (GuardianAudit
+    component, wave-42) handles its own markdown / structure parsing
+    from the discriminated-union audit object. This helper is for
+    backend log surfaces (provenance footer, BeMyApp submission
+    artifacts, paper §4 reproducibility appendix).
+    """
+    if mode not in _RENDER_MODES:
+        raise ValueError(
+            f"render_audit mode must be one of {_RENDER_MODES}; got {mode!r}."
+        )
+
+    lines: list[str] = []
+    lines.append(f"GUARDIAN AUDIT verdict={audit.verdict} audit_id={audit.audit_id}")
+
+    if audit.verdict == "flag" and audit.flagged_concerns:
+        lines.append("")
+        lines.append("Flagged concerns:")
+        for concern in audit.flagged_concerns:
+            lines.append(f"  - {concern}")
+
+    if audit.verdict == "reject" and audit.blocked_recommendations:
+        lines.append("")
+        lines.append("Blocked recommendations:")
+        for block in audit.blocked_recommendations:
+            lines.append(f"  - {block}")
+
+    if mode == "think" and audit.reasoning_trace:
+        lines.append("")
+        lines.append("Reasoning trace:")
+        for step in audit.reasoning_trace:
+            lines.append(f"  - {step}")
+
+    return "\n".join(lines) + "\n"
+
+
 __all__ = [
     "BYOCRule",
     "DEFAULT_RULE_REGISTRY",
     "Guardian",
+    "render_audit",
 ]

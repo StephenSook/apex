@@ -33,6 +33,7 @@ from apex.guardian.audit import (
     BYOCRule,
     DEFAULT_RULE_REGISTRY,
     Guardian,
+    render_audit,
 )
 from apex.instruct.coa_parser import parse_coa_json
 from apex.physics.validator import friction_ellipse_check, validate_forecast
@@ -50,6 +51,7 @@ SARAH_COA_STUB = REPO_ROOT / "fixtures" / "personas" / "sarah-reynolds-coa-stub.
 
 MU_DEMO = 1.2
 WHEELBASE_M = 2.7
+G = 9.81
 
 
 @pytest.fixture
@@ -252,6 +254,161 @@ def _build_5_impossibility_forecast() -> np.ndarray:
     f[11, channel_index("brake_pa")] = 0.4e6
     # 5. top-level catch via validate_forecast merging all of the above
     return f
+
+
+# ---- Guardian text-rendering helper (task 2.15) -----------------------
+
+def test_render_audit_think_mode_includes_reasoning_trace(sarah_coa):
+    guardian = Guardian()
+    audit = guardian.audit(violation_log=_friction_log(steps=(3,)), coa=sarah_coa)
+    text = render_audit(audit, mode="think")
+    # Header announces verdict; think-mode surfaces the reasoning chain.
+    assert audit.verdict in text.lower()
+    assert "reasoning" in text.lower()
+    # First reasoning-trace line must appear in the rendered text.
+    assert audit.reasoning_trace[0] in text
+
+
+def test_render_audit_no_think_mode_omits_reasoning_trace(sarah_coa):
+    guardian = Guardian()
+    audit = guardian.audit(violation_log=_friction_log(steps=(3,)), coa=sarah_coa)
+    text = render_audit(audit, mode="no-think")
+    # No-think still shows verdict + concerns + audit_id; not the reasoning chain.
+    assert audit.verdict in text.lower()
+    assert audit.audit_id in text
+    # Reasoning-trace lines must NOT appear in no-think output.
+    for line in audit.reasoning_trace:
+        assert line not in text
+
+
+def test_render_audit_flag_surfaces_flagged_concerns(sarah_coa):
+    guardian = Guardian()
+    audit = guardian.audit(violation_log=_friction_log(steps=(3,)), coa=sarah_coa)
+    text = render_audit(audit, mode="think")
+    assert audit.flagged_concerns[0] in text
+
+
+def test_render_audit_reject_surfaces_blocked_recommendations(sarah_coa):
+    guardian = Guardian()
+    audit = guardian.audit(violation_log=_coa_violation_log(step=4), coa=sarah_coa)
+    text = render_audit(audit, mode="think")
+    assert audit.blocked_recommendations[0] in text
+
+
+def test_render_audit_approve_renders_audit_id_only(sarah_coa):
+    guardian = Guardian()
+    audit = guardian.audit(violation_log=_empty_log(), coa=sarah_coa)
+    text = render_audit(audit, mode="think")
+    # Approve verdict has no flagged_concerns or blocked_recommendations
+    # to surface; render must still produce a non-empty text with audit_id.
+    assert audit.audit_id in text
+    assert "approve" in text.lower()
+
+
+def test_render_audit_unknown_mode_raises(sarah_coa):
+    guardian = Guardian()
+    audit = guardian.audit(violation_log=_empty_log(), coa=sarah_coa)
+    with pytest.raises(ValueError, match="mode"):
+        render_audit(audit, mode="hyperdrive")
+
+
+def test_render_audit_default_mode_is_think(sarah_coa):
+    """Hybrid-thinking default per docs/architecture-spec.md L440."""
+    guardian = Guardian()
+    audit = guardian.audit(violation_log=_friction_log(steps=(3,)), coa=sarah_coa)
+    default_text = render_audit(audit)
+    think_text = render_audit(audit, mode="think")
+    assert default_text == think_text
+
+
+# ---- G5 hairpin lexicographic stress test (task 2.16) -----------------
+
+def test_g5_hairpin_lexicographic_precedence_demonstration(sarah_coa):
+    """D-022 lexicographic COA constraint hierarchy demonstration on
+    the BYOC rule-engine floor: a forecast with many Tier-7/8 physics
+    violations (bicycle + friction; the hairpin-steering-lock proxy
+    scenario at race-corner speeds) AND one Tier-0 COA simultaneity
+    violation produces a single reject verdict; Tier-0 wins precedence
+    over the Tier-7/8 flag count.
+
+    Full elastic-slack constraint relaxation (the actual numerical
+    slack-variable optimization) lives in the SCP solver Stage A + B
+    per D-031 staged ladder; the rule-engine floor demonstrates the
+    verdict precedence half of D-022. See logs/day-05-g5.md.
+    """
+    # Hairpin proxy: heavy lat_g + steering + speed (bicycle floods)
+    # plus one Tier-0 simultaneity at step 8.
+    records = []
+    for step in range(2, 8):
+        records.append(ViolationRecord(
+            step=step, type="bicycle_kinematic_break",
+            severity=12.0 + step,
+            channel_values={"lat_g": 1.3, "steering_rad": 0.45,
+                            "speed_mps": 35.0},
+            tier=8,
+        ))
+        records.append(ViolationRecord(
+            step=step, type="friction_ellipse_exceeded",
+            severity=0.16,
+            channel_values={"long_g": -0.85, "lat_g": 1.05},
+            tier=7,
+        ))
+    records.append(ViolationRecord(
+        step=8, type="coa_simultaneity_violation",
+        severity=0.0,
+        channel_values={"throttle_pct": 30.0, "brake_pa": 4.0e5,
+                        "coa_overlap_flag": 0.0},
+        tier=0,
+    ))
+    log = PhysicsViolationLog(records=records, engine="v1_numpy")
+
+    guardian = Guardian()
+    audit = guardian.audit(violation_log=log, coa=sarah_coa)
+
+    # Verdict precedence locks: one Tier-0 reject > many Tier-7/8 flags.
+    assert audit.verdict == "reject"
+    # blocked_recommendations carries the simultaneity block;
+    # flagged_concerns carries the friction + bicycle warnings (those
+    # still get surfaced, the verdict precedence does not silence them).
+    assert len(audit.blocked_recommendations) >= 1
+    assert len(audit.flagged_concerns) >= 1
+    trace = "\n".join(audit.reasoning_trace).lower()
+    assert "simultaneity" in trace
+    # Reasoning trace surfaces the inviolable framing.
+    assert "tier-0" in trace or "inviolable" in trace
+
+
+def test_g5_v1_v2_guardian_audits_agree_on_verdict_for_same_violations(sarah_coa):
+    """The engine-agnostic boundary (Long-Term Architect load-bearing
+    wall #2) means a V1 NumPy violation log and a V2 cvxpylayers
+    violation log over identical input produce identical Guardian
+    audits modulo audit_id (uuid4 per call). This is the property that
+    lets the demo run V1 while the paper §3.2 cites V2 as canonical.
+    """
+    long_g = np.zeros(HORIZON, dtype=np.float64)
+    lat_g = np.zeros(HORIZON, dtype=np.float64)
+    long_g[3] = 1.5
+    v1_log = friction_ellipse_check(long_g, lat_g, mu=MU_DEMO, g=G)
+
+    # Manually build a V2-engine log with the same ViolationRecord
+    # content (V2 import would require torch + cvxpylayers; this proves
+    # the rule engine is engine-agnostic at the type level without the
+    # heavy dependency).
+    v2_log = PhysicsViolationLog(
+        records=tuple(v1_log.records),
+        forecast_step_count=v1_log.forecast_step_count,
+        engine="v2_cvxpylayers",
+    )
+
+    guardian = Guardian()
+    v1_audit = guardian.audit(violation_log=v1_log, coa=sarah_coa)
+    v2_audit = guardian.audit(violation_log=v2_log, coa=sarah_coa)
+
+    assert v1_audit.verdict == v2_audit.verdict
+    assert v1_audit.flagged_concerns == v2_audit.flagged_concerns
+    assert v1_audit.blocked_recommendations == v2_audit.blocked_recommendations
+    # audit_id differs (uuid4 per call) -- documented intentional.
+    assert v1_audit.audit_id != v2_audit.audit_id
 
 
 def test_g5_guardian_catches_all_v1_impossibilities(sarah_coa):
