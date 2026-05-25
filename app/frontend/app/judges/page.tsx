@@ -11,6 +11,7 @@ import RaceEventsTilesRow from "../../components/RaceEventsTilesRow";
 import GEPAEvolutionPanel from "../../components/GEPAEvolutionPanel";
 import PhysicsConfidenceRing from "../../components/PhysicsConfidenceRing";
 import TriAgentCriticPanel from "../../components/TriAgentCriticPanel";
+import PWAInstallPrompt from "../../components/PWAInstallPrompt";
 import TSPulseAnomalyPanel from "../../components/TSPulseAnomalyPanel";
 import { CONVERGENCE_FIXTURES } from "../../lib/convergence-fixtures";
 import { EXTENDED_PHYSICS_FIXTURES } from "../../lib/extended-physics-fixtures";
@@ -171,6 +172,9 @@ export default function JudgesPage() {
             Hero use case: Sarah Reynolds, a fictional persona (RAF veteran, left-leg amputee,
             Britcar Trophy 2026, #34 BMW M240i with electronic hand-controls).
           </p>
+          <div className="mt-4">
+            <PWAInstallPrompt />
+          </div>
         </div>
       </header>
 
