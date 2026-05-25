@@ -1,42 +1,19 @@
 import type { Metadata } from "next";
-import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 
-// Wave-44 Phase 9 perf BLOCKER #2 close-out per vercel:performance-
-// optimizer: dynamic-import the 6 mock-only client islands below the
-// architecture fold (ALoRA + GEPA + EAGLE3 + TSPulse + GraniteVisionParser
-// + EdgeSummary). Code-splits these into separate async chunks so the
-// initial /judges JS bundle ships smaller. Loading placeholder
-// preserves the visual rhythm so layout-shift stays bounded.
-// ssr:false NOT used here (Next.js 16 Server Component restriction);
-// the imported modules are already "use client" so the SSR pass emits
-// them with the rest of the Client Component tree + hydration happens
-// per the dynamic-import boundary.
-const LazyLoadingShim = () => (
-  <div className="h-40 rounded-sm border border-rule bg-paper-warm motion-safe:animate-pulse" />
-);
+// Wave-44 deep-review code-reviewer BLOCKER #1 close-out: dynamic-
+// import shell moved to a Client Component wrapper (`JudgesGalaxyMovesShell`)
+// because Next.js 16 does NOT code-split when a Server Component
+// dynamic-imports a Client Component (node_modules/next/dist/docs/01-app/
+// 02-guides/lazy-loading.md:60). The Client Component wrapper restores
+// the actual code-split benefit (each dynamic-imported component
+// ships as a separate async chunk loaded on first paint) which
+// BLOCKER #2 booked but the prior cascade-#24 close-out did not
+// deliver. ssr:false safely back-in (allowed in Client Components).
+import JudgesGalaxyMovesShell from "../../components/JudgesGalaxyMovesShell";
+import JudgesEdgePlaneShell from "../../components/JudgesEdgePlaneShell";
 
-const ALoRAStatusBadge = dynamic(() => import("../../components/ALoRAStatusBadge"), {
-  loading: LazyLoadingShim,
-});
-const EAGLE3LatencyBadge = dynamic(() => import("../../components/EAGLE3LatencyBadge"), {
-  loading: LazyLoadingShim,
-});
-const EdgeSummary = dynamic(() => import("../../components/EdgeSummary"), {
-  loading: LazyLoadingShim,
-});
-const GEPAEvolutionPanel = dynamic(() => import("../../components/GEPAEvolutionPanel"), {
-  loading: LazyLoadingShim,
-});
-const GraniteVisionParser = dynamic(() => import("../../components/GraniteVisionParser"), {
-  loading: LazyLoadingShim,
-});
-const TSPulseAnomalyPanel = dynamic(() => import("../../components/TSPulseAnomalyPanel"), {
-  loading: LazyLoadingShim,
-});
-
-// SSR-rendered (above-fold or SEO-relevant): keep eager imports.
 import { ConvergenceFixtureGrid } from "../../components/ConvergenceFixtureGrid";
 import { ExtendedPhysicsFixtureGrid } from "../../components/ExtendedPhysicsFixtureGrid";
 import RaceEventsTilesRow from "../../components/RaceEventsTilesRow";
@@ -51,7 +28,6 @@ import {
   MOCK_PHYSICS_CONFIDENCE_OOD,
   MOCK_TRI_AGENT_VERDICT,
   MOCK_TRI_AGENT_VERDICT_REJECT,
-  MOCK_TSPULSE_ACTIVE,
 } from "../../lib/mocks/judges-mocks";
 
 export const metadata: Metadata = {
@@ -414,13 +390,7 @@ export default function JudgesPage() {
             Phase 4 tasks 4.4 (EAGLE-3) + 4.5 (aLoRA) + 4.6 (GEPA artifact read) + wave-44 plan
             Vinh-scope V7 (TSPulse anomaly endpoint).
           </p>
-          <div className="mt-8 flex flex-col gap-6">
-            <ALoRAStatusBadge />
-            <GEPAEvolutionPanel />
-            <EAGLE3LatencyBadge />
-            <TSPulseAnomalyPanel state={MOCK_TSPULSE_ACTIVE} />
-            <GraniteVisionParser />
-          </div>
+          <JudgesGalaxyMovesShell />
           <p className="mt-6 font-mono text-xs italic text-muted">
             Panels are mock for /judges visualisation. Real fetch swaps land Day 7-8 per
             <span className="not-italic"> docs/decision-log.md D-019 + D-032 + wave-44 Vinh M3-V7</span>.
@@ -517,7 +487,7 @@ export default function JudgesPage() {
             Appendix W30 Layer 0 (Edge/Client Plane).
           </p>
           <div className="mt-6">
-            <EdgeSummary />
+            <JudgesEdgePlaneShell />
           </div>
           <p className="mt-6 font-mono text-xs italic text-muted">
             Edge inference is advisory per D-021. The canonical APEX pipeline runs server-side
