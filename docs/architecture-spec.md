@@ -368,7 +368,7 @@ Per Stephen's galaxy ambition directive + 9-source multi-model deep-research syn
 
 **Track 1: Granite TTM r2.1 with channel-mix decoder fine-tune + exogenous infusion.** Reads Path A 1 Hz tensor + Path B polyphase streams. Channel-mix decoder fine-tuned on ~5% of target data as a personalization head (frozen backbone, fine-tuned head only). Exogenous infusion: known control channels (throttle / brake / steering) fed as exogenous conditioning so TTM's forecast respects driver intent.
 
-**Track 2: Granite FlowState (9.1M params).** Reads Path C native 50 Hz channels directly. Sampling-rate-invariant continuous-time SSM. Output at native 50 Hz.
+**Track 2: Granite FlowState r1.1 (18.5M params; upgraded from r1.0 9.1M per March 2026 release with CauKer synthetic data + 4096 pre-training context + 2x larger MLP + output gating).** Reads Path C native 50 Hz channels directly. Sampling-rate-invariant continuous-time SSM. Output at native 50 Hz.
 
 **Track 3: Amazon Chronos-2.** Zero-shot probabilistic baseline. Outputs 21 quantiles per channel; maps uncertainty corridor (0.1 / 0.5 / 0.9 bands) for the next-session envelope.
 
