@@ -37,8 +37,9 @@ export default function JudgeWalkthroughStep({
 }: JudgeWalkthroughStepProps) {
   return (
     <article
+      key={stepNumber}
       aria-labelledby={`judge-tour-step-${stepNumber}-title`}
-      className="flex flex-col gap-6 rounded-sm border border-rule bg-paper p-8 lg:p-12"
+      className="apex-rise flex flex-col gap-6 rounded-sm border border-rule bg-paper p-8 lg:p-12"
     >
       <p className="apex-eyebrow">{eyebrow}</p>
       <h2

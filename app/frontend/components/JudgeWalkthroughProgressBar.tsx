@@ -44,7 +44,7 @@ export default function JudgeWalkthroughProgressBar({
             <li
               key={stepNum}
               aria-current={isActive ? "step" : undefined}
-              className={`h-1 flex-1 rounded-sm motion-safe:transition-colors ${
+              className={`h-1 flex-1 rounded-sm motion-safe:transition-colors motion-safe:duration-500 ${
                 isActive
                   ? "bg-racing-green"
                   : isCompleted
