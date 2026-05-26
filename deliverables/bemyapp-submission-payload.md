@@ -1,6 +1,6 @@
 # BeMyApp Submission Payload, APEX
 
-> Verbatim copy for each field on the BeMyApp submission form for IBM SkillsBuild AI Builders Challenge May 2026. Draft Day 2 PM from the live BeMyApp form structure pulled 2026-05-21 PM; wave-42 Day 6 refresh applied to reflect 12-tool IBM stack + 5 shouldn't-be-possible moves + Phase 0 contracts shipped + cascade-#11 brand-propagation + wave-42 Lane E.M.1/M.2 type-spec PRs; refine Day 10-11 with the live demo URL + recorded video link.
+> Verbatim copy for each field on the BeMyApp submission form for IBM SkillsBuild AI Builders Challenge May 2026. Draft Day 2 PM from the live BeMyApp form structure pulled 2026-05-21 PM; wave-42 Day 6 refresh applied to reflect 12-tool IBM stack + 5 shouldn't-be-possible moves + Phase 0 contracts shipped + cascade-#11 brand-propagation + wave-42 Lane E.M.1/M.2 type-spec PRs; wave-46 D-058 refresh expands the stack to 15 tools (added Granite 4.1 3B Instruct fast-path AICopilotChat routing + Granite Speech 4.1 2B-Plus speaker-attributed ASR + Mellea Instruct-Validate-Repair critic loop); refine Day 10-11 with the live demo URL + recorded video link.
 >
 > **Owner:** Stephen Sookra. **Submission window opens:** TBD. **Hard deadline:** 2026-05-31, 11:59 PM ET.
 >
@@ -110,7 +110,7 @@ APEX is a three-layer PhysicsTTM architecture with a two-stage projection-and-au
 Three constituencies share one product gap. Adaptive racers running hand-control rigs in Britcar Trophy, the adaptive-driver UK championships, and FFSA Handikart. Veteran-team drivers competing through veteran motorsport rehabilitation programmes with combat-injury-driven adaptations. Grassroots clubman and amateur racers in SRO regional series and Britcar endurance. Their FIA Certificate of Adaptations (governed by Appendix L of the International Sporting Code) is a binding document. APEX reads it at the tensor level. When the COA permits simultaneous brake-throttle inputs, the physics layer permits them. When the COA does not, the constraint enforces. Same coaching pipeline, different output, depending on what the driver's COA actually says they are allowed to do. The Scuderia Ferrari precedent matters because IBM already shipped this stack to a Formula One team; APEX takes the same architecture and points it at the drivers who need it most.
 ```
 
-## IBM tools used (every load-bearing slot; 12 tools per wave-30 D-016 stack expansion)
+## IBM tools used (every load-bearing slot; 15 tools at wave-46 per D-058 stack expansion = wave-30 D-016 baseline 12 + wave-46 D-058 additions Granite 4.1 3B Instruct + Granite Speech 4.1 2B-Plus + Mellea)
 
 ```
 1. Granite-Docling 258M model. Parses the driver's FIA Certificate of Adaptations PDF into structured JSON. Preserves Appendix L section IDs and the adaptation domain headings.

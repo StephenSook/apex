@@ -35,10 +35,10 @@
 
 ### Best Use of Technology ($2K)
 
-**APEX argument.** APEX uses 12 IBM Granite tools per the wave-30 D-016 stack expansion. Every tool is load-bearing (no "logo on slide" tools). The integration depth includes:
+**APEX argument.** APEX uses 15 IBM Granite stack tools at wave-46 (twelve through wave-30 D-016 + wave-45 D-054 baseline; wave-46 D-058 added Granite 4.1 3B Instruct fast-path AICopilotChat routing + Granite Speech 4.1 2B-Plus speaker-attributed ASR + Mellea Instruct-Validate-Repair critic loop). Every tool is load-bearing (no "logo on slide" tools). The integration depth includes:
 
 - Granite TimeSeries TTM r2.1 as the frozen TSFM forecaster (NeurIPS 2024)
-- Granite FlowState 9.1M as Track 2 of the 3-track forecasting ensemble per D-010
+- Granite FlowState r1.1 18.5M as Track 2 of the 3-track forecasting ensemble per D-010
 - IBM TSPulse 1M for polyphase anomaly detection on 50 Hz phase streams per D-016
 - Granite Guardian 4.1 as the BYOC custom-rules audit gate + D-024 physics-confidence detector verdict downgrade
 - Granite Embedding R2 149M + 47M as the RAG retrieval layer for FIA Appendix L citations per D-016
@@ -46,12 +46,15 @@
 - Granite Vision 4.1 4B for timing-sheet PDF parsing
 - Docling library as the document conversion backend
 - Granite 4.1 8B Instruct as the race-engineer narrator
+- Granite 4.1 3B Instruct as the AICopilotChat fast-path router per D-058
+- Granite Speech 4.1 2B-Plus for speaker-attributed ASR per D-058
 - Granite 4.0 Nano 350M as the in-browser WebGPU edge model per D-019 item 1 + D-021
-- Langflow for visible orchestration graph per D-017
+- LangGraph + Granite MCP Gateway + ContextForge for the orchestration runtime per D-017 G7 + D-054 (Langflow retained as the export-graph artifact)
+- Mellea Instruct-Validate-Repair critic loop on the narrator per D-058
 - IBM Bob as the build accelerator
 
 **Evidence surfaces:**
-- /judges page Stack tab enumerates all 12 tools with per-tool layer mapping
+- /judges page Stack tab enumerates all 15 tools with per-tool layer mapping
 - README + paper §3.6 cite each tool with D-### decision-log anchor
 - watsonx.ai bonus path lands if Day 10-11 runway permits per `docs/vinh-phase-1-handoff.md` Q2 decision
 
