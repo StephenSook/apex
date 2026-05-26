@@ -31,10 +31,19 @@ export default function SimRigPaddockNightShell({
   const [mounted, setMounted] = useState<boolean>(false);
 
   useEffect(() => {
+    // Mounted-flag + eslint-disable per
+    // feedback_react19_set_state_in_effect_workarounds.md: localStorage is a
+    // post-hydration client-only signal, and the dark-state must NOT leak into
+    // SSR (per feedback_useState_lazy_init_hydration_footgun.md). The
+    // workaround is the documented mounted-flag pattern with disable comments.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
     try {
       const stored = window.localStorage.getItem(STORAGE_KEY);
-      if (stored === "true") setDark(true);
+      if (stored === "true") {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setDark(true);
+      }
     } catch {
       // localStorage unavailable (private mode + iframe sandbox); ignore.
     }
