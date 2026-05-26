@@ -43,20 +43,20 @@
 | 10 | Final close-out coordination + Vinh smoke tests on all V1-V15 swap-points | per-route | TBD | n/a | Phase 10 hackathon-pre-deploy gate |
 
 **Vinh action items priority order (highest judges-impact first):**
-1. V14 LangGraph runtime (`apex/orchestration/langgraph_runtime.py`) — unlocks RealtimeCOADiffPanel + LangGraphRuntimePanel real verdicts on /judges + flips Langflow FACADE -> LangGraph INTEGRATION-LANGGRAPH per D-054
-2. V12 Pacejka + V13 SCP (Phase 2 physics layer ascent per D-031 staged ladder) — unlocks PacejkaStageAPanel + SCPStageBPanel real residuals
-3. V1 Granite Vision real timing-sheet PDF inference — Granite-Docling 258M cascade for judge-uploadable COA
-4. V7 TSPulse polyphase anomaly endpoint — flips MOCK_TSPULSE_ACTIVE -> real-time band detections
-5. V8 Granite Embedding R2 cosine-similarity RAG — flips AICopilotChat from lexical TF-IDF to real Granite embeddings
-6. V3 TTM r2.1 D-010 Track 1 channel-mix decoder fine-tune EXECUTION — flips ThreeTrackForecastChart Track 1 MOCK -> WIRED + addresses G4 zero-shot FAIL pivot (per `logs/day-04-g4.md` + `feedback_g4_fail_pivot_documented_then_executed.md`)
-7. V10 FlowState Track 2 wire — flips ThreeTrackForecastChart MOCK badge to real continuous-time SSM
-8. V11 Chronos-2 Track 3 baseline — flips ThreeTrackForecastChart Track 3 MOCK badge to real probabilistic 21-quantile baseline; completes the D-010 three-track ensemble
-9. Mellea IVR loop on narrator (Phase 5.2) — flips coaching report from single-pass to validated-and-repaired
-10. D-018 Mellea tri-agent critic orchestrator (`apex/critics/orchestrator.py` + `apex/physics/confidence.py`) — flips TriAgentCriticPanel from canned-fallback to real critic verdicts
-11. V9 Watson STT via Granite Speech 4.1 2B-Plus — replaces Web Speech API HEAD on VoiceDebriefInput
-12. V2 sim-rig WebSocket live telemetry source — flips /sim-rig from httpStream simulated mode to live mode
+1. V14 LangGraph runtime (`apex/orchestration/langgraph_runtime.py`): enables RealtimeCOADiffPanel + LangGraphRuntimePanel real verdicts on /judges, flips Langflow FACADE to LangGraph INTEGRATION-LANGGRAPH per D-054
+2. V12 Pacejka + V13 SCP (Phase 2 physics layer ascent per D-031 staged ladder): enables PacejkaStageAPanel + SCPStageBPanel real residuals
+3. V1 Granite Vision real timing-sheet PDF inference: Granite-Docling 258M cascade for judge-uploadable COA
+4. V7 TSPulse polyphase anomaly endpoint: flips MOCK_TSPULSE_ACTIVE to real-time band detections
+5. V8 Granite Embedding R2 cosine-similarity RAG: flips AICopilotChat from lexical TF-IDF to real Granite embeddings
+6. V3 TTM r2.1 D-010 Track 1 channel-mix decoder fine-tune EXECUTION: flips ThreeTrackForecastChart Track 1 MOCK to WIRED, addresses G4 zero-shot FAIL pivot (per `logs/day-04-g4.md` + `feedback_g4_fail_pivot_documented_then_executed.md`)
+7. V10 FlowState Track 2 wire: flips ThreeTrackForecastChart MOCK badge to real continuous-time SSM
+8. V11 Chronos-2 Track 3 baseline: flips ThreeTrackForecastChart Track 3 MOCK badge to real probabilistic 21-quantile baseline, completes the D-010 three-track ensemble
+9. Mellea IVR loop on narrator (Phase 5.2): flips coaching report from single-pass to validated-and-repaired
+10. D-018 Mellea tri-agent critic orchestrator (`apex/critics/orchestrator.py` + `apex/physics/confidence.py`): flips TriAgentCriticPanel from canned-fallback to real critic verdicts
+11. V9 Watson STT via Granite Speech 4.1 2B-Plus: replaces Web Speech API HEAD on VoiceDebriefInput
+12. V2 sim-rig WebSocket live telemetry source: flips /sim-rig from httpStream simulated mode to live mode
 13. D-010 Stage A/B real linearization (Vinh V12 + V13 ship the physics; D-010 Track 1 fine-tune feeds into V12/V13 staged ladder)
-14. D-019 #3 GEPA reflective prompt evolution + optimized-prompt artifact writes — flips GEPAEvolutionPanel from canned-fallback to real evolution log
+14. D-019 #3 GEPA reflective prompt evolution + optimized-prompt artifact writes: flips GEPAEvolutionPanel from canned-fallback to real evolution log
 15. V15 LIPS harness + APEX-Bench public release (Day 11 ship)
 
 **Vinh deploy convention:** every backend module ships with the SAME response shape the corresponding frontend stub returns. The frontend wire-flip is then a single `NEXT_PUBLIC_USE_REAL_<KEY>=1` flag in Vercel (plus `NEXT_PUBLIC_VINH_BACKEND_BASE_URL=https://<vinh-deploy>`). All routes fall back to canned-fallback on any fetch failure (network + 5xx + parse error), so a partial Vinh deploy never cascades 502s across /judges + /lips-harness panels.
