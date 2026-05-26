@@ -30,6 +30,7 @@
  */
 
 import { openRouterChatCompletion, type ChatMessage } from "../../../lib/openrouter-client";
+import { scrubInventedRegulatoryAnchors } from "../../../lib/scrub-regulatory-anchors";
 
 // Wave-42 cold-review #2 silent-failure-hunter B-R2-1 close-out:
 // explicit Node.js runtime declaration. Without this, Next.js 16 may
@@ -238,7 +239,14 @@ export async function POST(request: Request): Promise<Response> {
 }
 
 /**
- * Wave-43 cascade-#20 + wave-44 deep-review codex HIGH #2 expansion:
+ * Wave-43 cascade-#20 + wave-44 deep-review codex HIGH #2 expansion +
+ * wave-46 Phase 6.2 extraction: scrubInventedRegulatoryAnchors moved to
+ * `app/frontend/lib/scrub-regulatory-anchors.ts` so /api/coach-code + any
+ * future LLM-output route imports the canonical regex set per
+ * `feedback_llm_output_compliance_scrubber.md` memory rule.
+ *
+ * Original docstring retained below for historical context.
+ *
  * HARD-COMPLIANCE post-processor stripping invented FIA Article +
  * COA Section numeric identifiers from LLM output. The Granite 4.1
  * 8B model (and most LLMs) hallucinate plausible-looking regulatory
@@ -264,16 +272,5 @@ export async function POST(request: Request): Promise<Response> {
  * Verification fixture in tests/lib/openrouter-stream-scrub.test.ts
  * (post-cascade-#20; wave-44 deep-review fixtures added).
  */
-function scrubInventedRegulatoryAnchors(text: string): string {
-  return text
-    .replace(/FIA Appendix L Article \d+(\.\d+)*[a-z]?/gi, "FIA Appendix L per the published revision")
-    .replace(/FIA Article \d+(\.\d+)*[a-z]?/gi, "FIA Appendix L per the published revision")
-    .replace(/Article \d+(\.\d+)*[a-z]?/gi, "Appendix L per the published revision")
-    .replace(/\bArt\.?\s+\d+(\.\d+)*[a-z]?/gi, "Appendix L per the published revision")
-    .replace(/Appendix L\s*[§]\s*\d+(\.\d+)*[a-z]?/gi, "Appendix L per the published revision")
-    .replace(/§\s*\d+(\.\d+)*(\([a-z]\))?/gi, "the published revision section")
-    .replace(/COA Section \d+(\.\d+)*[a-z]?/gi, "the COA simultaneity gate")
-    .replace(/COA\s+Sec\.?\s+\d+(\.\d+)*[a-z]?/gi, "the COA simultaneity gate")
-    .replace(/Section \d+(\.\d+)*\([a-z]\)/gi, "the COA simultaneity gate")
-    .replace(/\bSec\.?\s+\d+(\.\d+)*[a-z]?/gi, "the COA simultaneity gate");
-}
+// Wave-46 Phase 6.2 scrubInventedRegulatoryAnchors moved to lib/scrub-regulatory-anchors.ts
+// (canonical implementation imported at top of file). See lib for current regex set + tests.
