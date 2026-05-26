@@ -5,12 +5,19 @@ import { execFileSync } from "node:child_process";
 import CommitTimelineEntry from "../../components/CommitTimelineEntry";
 
 /**
- * /changelog page. Wave-45 Phase 5 Block C.2 close-out. Server
- * Component reads `git log --oneline --no-merges --pretty=format`
- * at build-time via `execFileSync` (NOT exec; no shell evaluation)
- * + renders a vertical timeline of recent commits. ISR via
- * `revalidate = 3600` so judges see fresh commits within an
- * hour-bounded render window.
+ * /changelog page. Wave-45 Phase 5 Block C.2 close-out + wave-45.5
+ * code-reviewer IMPORTANT I-3 close. Server Component reads
+ * `git log` at build-time via `execFileSync` (NOT exec; no shell
+ * evaluation) + renders a vertical timeline.
+ *
+ * I-3 fix 2026-05-25 night: changed from `revalidate = 3600` to
+ * `dynamic = "force-static"`. Reason: Vercel lambda runtime has no
+ * `.git` directory unless next.config.ts declares
+ * `outputFileTracingIncludes` for `.git/**` (which would balloon the
+ * deploy by ~hundreds of MB). After first ISR revalidation tick the
+ * page would silently empty. force-static generates at build time +
+ * each deploy refreshes the history; honest framing for judges who
+ * see "commits as of last deploy" not "commits as of an hour ago".
  *
  * Conventional-commit prefix color pill per CommitTimelineEntry +
  * filter to feat-only by default (avoid muddying the storyline with
@@ -22,10 +29,10 @@ import CommitTimelineEntry from "../../components/CommitTimelineEntry";
 export const metadata: Metadata = {
   title: "Changelog | APEX",
   description:
-    "Public commit history for APEX. Conventional-commit color pills + click-to-expand per commit. Built from git log at hourly ISR. Default view feat-only for judges.",
+    "Public commit history for APEX. Conventional-commit color pills + click-to-expand per commit. Built from git log at deploy time. Default view feat-only for judges.",
 };
 
-export const revalidate = 3600;
+export const dynamic = "force-static";
 
 interface CommitEntry {
   readonly sha: string;

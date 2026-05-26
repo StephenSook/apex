@@ -18,7 +18,7 @@
  * renders with muted-rule fallback.
  */
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export interface CommitTimelineEntryProps {
   readonly sha: string;
@@ -93,6 +93,16 @@ export default function CommitTimelineEntry({
   authorIso,
 }: CommitTimelineEntryProps) {
   const [expanded, setExpanded] = useState(false);
+  // Wave-45.5 code-reviewer IMPORTANT I-1 close: formatRelative calls
+  // Date.now() which differs between SSR + client hydration, triggering
+  // React hydration-mismatch warnings + flipping "0s ago" -> "32m ago"
+  // on hydrate. mounted-flag pattern per feedback_useState_lazy_init_
+  // hydration_footgun: render raw authorIso during SSR + replace with
+  // relative form after mount.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   const prefix = classifyPrefix(subject);
   const truncated = subject.length > 80 ? `${subject.slice(0, 77)}...` : subject;
   return (
@@ -105,7 +115,7 @@ export default function CommitTimelineEntry({
         </span>
         <span className="font-mono text-xs text-racing-green">{sha.slice(0, 7)}</span>
         <span className="font-mono text-[10px] uppercase tracking-wider text-muted">
-          {author} · {formatRelative(authorIso)}
+          {author} · {mounted ? formatRelative(authorIso) : authorIso.slice(0, 10)}
         </span>
       </div>
       <button

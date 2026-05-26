@@ -21,7 +21,11 @@ export default function ReplayHorizonSlider({ horizonSteps = 30 }: ReplayHorizon
   const [frame, setFrame] = useState(0);
   const safe = Math.max(0, Math.min(horizonSteps - 1, frame));
   const percent = ((safe + 1) / horizonSteps) * 100;
-  const elapsed = (safe / 50).toFixed(2);
+  // Wave-45.5 code-reviewer IMPORTANT I-4 close: prior `safe / 50` mislabeled
+  // a 30-second 1 Hz forecast horizon as 0.6 seconds. Per app/shared/types.ts
+  // HORIZON contract: 30 steps at 1 Hz aggregation = 30-second forecast. Each
+  // frame is 1 second.
+  const elapsed = safe.toFixed(2);
   return (
     <section
       aria-labelledby="replay-horizon-slider-title"
