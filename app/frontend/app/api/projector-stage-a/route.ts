@@ -15,7 +15,7 @@ import type { NextRequest } from "next/server";
 import type { PacejkaResponse, PacejkaTier } from "../../../../shared/types";
 import { VINH_SWAP_POINTS } from "../../../lib/vinh-swap-points";
 
-export const runtime = "nodejs";
+export const runtime = "edge";
 export const dynamic = "force-dynamic";
 
 const CANNED_TIERS: ReadonlyArray<PacejkaTier> = [
