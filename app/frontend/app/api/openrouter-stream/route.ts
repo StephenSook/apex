@@ -40,11 +40,11 @@ import { openRouterChatCompletion, type ChatMessage } from "../../../lib/openrou
 // connection lifetimes for streaming SSE responses.
 export const runtime = "nodejs";
 
-interface OpenRouterStreamRequestBodyBody {
+interface OpenRouterStreamRequestBody {
   readonly prompt?: unknown;
 }
 
-function isValidPrompt(body: OpenRouterStreamRequestBodyBody): body is { readonly prompt: string } {
+function isValidPrompt(body: OpenRouterStreamRequestBody): body is { readonly prompt: string } {
   return typeof body.prompt === "string" && body.prompt.trim().length > 0;
 }
 
@@ -133,9 +133,9 @@ function streamStubResponse(text: string, abortSignal: AbortSignal): ReadableStr
 }
 
 export async function POST(request: Request): Promise<Response> {
-  let body: OpenRouterStreamRequestBodyBody;
+  let body: OpenRouterStreamRequestBody;
   try {
-    body = (await request.json()) as OpenRouterStreamRequestBodyBody;
+    body = (await request.json()) as OpenRouterStreamRequestBody;
   } catch {
     return new Response(
       "apex.openrouter-stream: request body must be valid JSON.",
