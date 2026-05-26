@@ -65,19 +65,24 @@ export interface GraniteStackTool {
    * IBM_STACK panel to render an explicit "WIRED" / "INTEGRATION"
    * pill per tool so README + page copy + paper match runtime reality.
    * Avoids the credibility-hit of "15 tools every one load-bearing"
-   * narrative when 7 of 12 are still backend-swap-point mocks.
+   * narrative when 10 of 15 are still backend swap-points (INTEGRATION
+   * tier) + 3 are build-time accelerators (ACCELERATOR tier).
    */
   readonly status: GraniteStackToolStatus;
 }
 
 /**
- * The 12-tool IBM Granite stack catalog. Order is load-bearing: the
- * StackBadges grid renders tools in this order top-to-bottom + left-
+ * The 15-tool IBM Granite stack catalog (per D-058 wave-46 expansion:
+ * prior 12-tool catalog plus Granite Instruct 4.1 3B chat-routing,
+ * Granite Speech 4.1 2B-Plus Watson STT proxy preview, and Mellea v0.5.0
+ * IVR-loop ACCELERATOR slot per D-060 reframe). Order is load-bearing:
+ * the StackBadges grid renders tools in this order top-to-bottom + left-
  * to-right + the IBM_STACK panel mirrors the same sequence. Order
  * tracks pipeline data-flow: ingest (Docling, Vision) -> forecast
  * (TTM, FlowState, TSPulse) -> retrieval (Embedding) -> generation
- * (Instruct, Guardian) -> edge (Nano) -> orchestration (Langflow,
- * Bob).
+ * (Instruct 8B + 3B + Speech) -> guardrails (Guardian) -> edge (Nano)
+ * -> orchestration (LangGraph + MCP + ContextForge) -> build-time
+ * accelerators (Docling library, IBM Bob, Mellea).
  */
 export const IBM_GRANITE_STACK: ReadonlyArray<GraniteStackTool> = [
   {
