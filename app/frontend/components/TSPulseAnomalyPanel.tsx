@@ -37,38 +37,15 @@
  * Editorial-paddock palette + Fraunces display + IBM Plex Mono numerics.
  */
 
+import type { TSPulseAnomalyState, TSPulseBand } from "../../shared/types";
+
 import { MOCK_TSPULSE_ACTIVE } from "../lib/mocks/judges-mocks";
 
-export type TSPulseBand = "dc" | "low" | "mid" | "high";
-
-export type TSPulseAnomalyState =
-  | { readonly status: "idle" }
-  | {
-      readonly status: "scanning";
-      readonly window_index: number;
-      readonly elapsed_ms: number;
-    }
-  | {
-      readonly status: "clean";
-      readonly window_index: number;
-      readonly score: number;
-      readonly threshold_p95: number;
-      readonly detection_ms: number;
-    }
-  | {
-      readonly status: "anomaly";
-      readonly window_index: number;
-      readonly score: number;
-      readonly threshold_p95: number;
-      // Wave-45 Phase 3 type-design HIGH #4 close-out: non-empty
-      // tuple invariant. Anomaly variant with empty affected_bands
-      // is semantically incoherent (anomaly fired with no bands).
-      // Tuple shape makes the empty case unrepresentable at compile
-      // time matching the variant's role=alert messaging contract.
-      readonly affected_bands: readonly [TSPulseBand, ...TSPulseBand[]];
-      readonly detection_ms: number;
-    }
-  | { readonly status: "error"; readonly message: string };
+// Wave-46 Phase 4.4 type-design promotion: TSPulseBand + TSPulseAnomalyState
+// hoisted to `app/shared/types.ts` so the new /api/tspulse/anomaly route
+// returns the same shape Vinh M3-V7 backend will produce. Re-exported here
+// for backwards compatibility with existing component-tests + mocks consumers.
+export type { TSPulseAnomalyState, TSPulseBand };
 
 function statusBorder(status: TSPulseAnomalyState["status"]): string {
   switch (status) {

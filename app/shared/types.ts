@@ -1684,3 +1684,44 @@ export interface COADiffResponse {
   readonly blocked: COADiffVerdict;
   readonly swap_point: string;
 }
+
+// ============================================================================
+// Wave-46 Phase 4.4: promote TSPulseBand + TSPulseAnomalyState from
+// components/TSPulseAnomalyPanel.tsx to shared so the new
+// /api/tspulse/anomaly route can return the same shape Vinh M3-V7
+// backend will produce. Discriminated-union 5-variant state machine
+// preserved verbatim per `feedback_discriminated_unions_over_contradiction`.
+// ============================================================================
+
+export type TSPulseBand = "dc" | "low" | "mid" | "high";
+
+export type TSPulseAnomalyState =
+  | { readonly status: "idle" }
+  | {
+      readonly status: "scanning";
+      readonly window_index: number;
+      readonly elapsed_ms: number;
+    }
+  | {
+      readonly status: "clean";
+      readonly window_index: number;
+      readonly score: number;
+      readonly threshold_p95: number;
+      readonly detection_ms: number;
+    }
+  | {
+      readonly status: "anomaly";
+      readonly window_index: number;
+      readonly score: number;
+      readonly threshold_p95: number;
+      readonly affected_bands: readonly [TSPulseBand, ...TSPulseBand[]];
+      readonly detection_ms: number;
+    }
+  | { readonly status: "error"; readonly message: string };
+
+export interface TSPulseResponse {
+  readonly engine: "tspulse-v7-canned-fallback" | "tspulse-v7-real";
+  readonly compute_ms: number;
+  readonly state: TSPulseAnomalyState;
+  readonly swap_point: string;
+}

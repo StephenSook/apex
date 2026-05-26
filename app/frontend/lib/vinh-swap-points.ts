@@ -31,6 +31,16 @@ export const VINH_SWAP_POINTS = {
       "Vinh M3-V15 -> eval/Dockerfile + apex-bench/ (D-026 + G10 reproducibility statement)",
     header: "vinh-m3-v15-lips-4-axis",
   },
+  V7_TSPULSE: {
+    swap_point:
+      "Vinh M3-V7 -> app/backend/apex/tspulse/anomaly.py (D-016 Layer 2 polyphase anomaly detector)",
+    header: "vinh-m3-v7-tspulse-anomaly",
+  },
+  V8_EMBEDDING: {
+    swap_point:
+      "Vinh M3-V8 -> app/backend/apex/embedding/rag_retrieve.py (Granite Embedding R2 cosine-similarity over precomputed corpus)",
+    header: "vinh-m3-v8-embedding-r2-rag",
+  },
 } as const;
 
 export type VinhSwapPoint = keyof typeof VINH_SWAP_POINTS;
