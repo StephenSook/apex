@@ -179,7 +179,7 @@ APEX is the first public AI race-engineer workflow we found that reads the FIA C
 NO opt-in tracks. ONE submission per team. Judges decide the per-challenge categories.
 ```
 
-Resolved 2026-05-21 night via Discord answer from `Lucas-BMA`: "You're submitting 1 project and prizes such as best use of technology are decided by the judges!" The four per-challenge awards (1st Place, Runner-up, Best Use of Technology, Most Innovative) are juried on the single submission. Grand Prize is awarded across both May + June challenges to one standout project. Our work falls back to: build the best single submission across all four official judging criteria (Technical Execution / Innovation / Challenge Fit / Implementation & Feasibility). Cross-reference: `~/.claude/projects/-Users-stephensookra-Desktop-IBM-May/memory/reference_competitors_calibration.md`.
+Resolved 2026-05-21 night via Discord answer from a BeMyApp organizer-side Discord moderator: "You're submitting 1 project and prizes such as best use of technology are decided by the judges!" The four per-challenge awards (1st Place, Runner-up, Best Use of Technology, Most Innovative) are juried on the single submission. Grand Prize is awarded across both May + June challenges to one standout project. Our work falls back to: build the best single submission across all four official judging criteria (Technical Execution / Innovation / Challenge Fit / Implementation & Feasibility). Cross-reference: `~/.claude/projects/-Users-stephensookra-Desktop-IBM-May/memory/reference_competitors_calibration.md`.
 
 ---
 

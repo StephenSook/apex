@@ -1,6 +1,6 @@
 # APEX Multi-Track Checklist - IBM SkillsBuild AI Builders Challenge May 2026
 
-> Wave-42 Lane B.E.3 close-out per docs/vinh-phase-1-handoff.md project context. Documents APEX positioning per official judging category. Per Discord clarification from Lucas-BMA (Day 1 EOD; reference: `~/.claude/projects/-Users-stephensookra-Desktop-IBM-May/memory/reference_discord_intel_day_1.md`): NO opt-in tracks; ONE submission per team; judges award 4 prizes based on 4 evaluation criteria.
+> Wave-42 Lane B.E.3 close-out per docs/vinh-phase-1-handoff.md project context. Documents APEX positioning per official judging category. Per Discord clarification from a BeMyApp organizer-side Discord moderator (Day 1 EOD; reference: `~/.claude/projects/-Users-stephensookra-Desktop-IBM-May/memory/reference_discord_intel_day_1.md`): NO opt-in tracks; ONE submission per team; judges award 4 prizes based on 4 evaluation criteria.
 
 ## Hackathon mechanics
 
