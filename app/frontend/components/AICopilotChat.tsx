@@ -39,6 +39,49 @@ import { retrieveChunks } from "../lib/rag-retrieve";
 import { useOpenRouterStream } from "../lib/openrouter-stream";
 import RAGCitationBadge from "./RAGCitationBadge";
 
+// Wave-46 Phase 6.1 Granite 4.1 3B Instruct fast-path routing scaffold.
+// When NEXT_PUBLIC_USE_GRANITE_3B_ROUTING is "1", the chat surface shows
+// a per-query routed-model pill ("Granite 4.1 3B fast-path" or
+// "Granite 4.1 8B complex"). The classifier below is a Stephen-side
+// heuristic placeholder (word-count + simple-pattern keyword check);
+// the real intent classifier ships at Vinh `apex/instruct/chat_router.py`
+// per D-058 wave-46 Phase 6.1 plan. Actual model routing still hits
+// OpenRouter Granite 4.1 8B at HEAD; the 3B fast-path activates once
+// Vinh's chat_router.py + Granite 4.1 3B Instruct OpenRouter access
+// land + the routing logic flips inside useOpenRouterStream.
+const GRANITE_3B_ROUTING_ENABLED =
+  process.env.NEXT_PUBLIC_USE_GRANITE_3B_ROUTING === "1" ||
+  process.env.NEXT_PUBLIC_USE_GRANITE_3B_ROUTING === "true";
+
+type RoutedModel = "granite-4-1-3b-instruct" | "granite-4-1-8b-instruct";
+
+const COMPLEX_KEYWORDS: ReadonlyArray<string> = [
+  "why",
+  "explain",
+  "compare",
+  "walk me through",
+  "what if",
+  "show me",
+  "trace",
+  "violation",
+  "projection",
+  "physics",
+];
+
+function classifyToModel(query: string): RoutedModel {
+  const normalized = query.trim().toLowerCase();
+  if (normalized.length === 0) return "granite-4-1-3b-instruct";
+  if (normalized.length >= 80) return "granite-4-1-8b-instruct";
+  if (COMPLEX_KEYWORDS.some((kw) => normalized.includes(kw))) return "granite-4-1-8b-instruct";
+  return "granite-4-1-3b-instruct";
+}
+
+function routedModelLabel(model: RoutedModel): string {
+  return model === "granite-4-1-3b-instruct"
+    ? "Granite 4.1 3B (fast-path)"
+    : "Granite 4.1 8B (complex)";
+}
+
 // Wave-43 D2.5 close-out per cold-review-2 silent-failure H-R2-5 +
 // type-design H2 + code-reviewer H-3 cross-corroboration. Collapsed
 // to 2-variant union (idle | asking); "answered" is derived from the
@@ -102,6 +145,9 @@ export default function AICopilotChat({ panelId = "ai-copilot-chat" }: AICopilot
 
   const isAsking = localState.status === "asking";
   const isStreaming = isAsking && streamState.status === "streaming";
+  const routedModel: RoutedModel = classifyToModel(
+    localState.status === "asking" ? localState.question : inputValue,
+  );
   // Wave-43 D2.5: "answered" UI state derived directly from streamState
   // (no shadow local-state variant required). isAsking + streamState
   // ready/error narrows the QA-pair render branch below.
@@ -122,15 +168,29 @@ export default function AICopilotChat({ panelId = "ai-copilot-chat" }: AICopilot
             Ask the race engineer.
           </h3>
         </div>
-        {isStreaming && (
-          <span
-            className="flex items-center gap-2 rounded-sm border border-racing-green bg-paper px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-racing-green"
-            aria-live="polite"
-          >
-            <span className="inline-block h-2 w-2 motion-safe:animate-pulse rounded-full bg-racing-green" />
-            Live
-          </span>
-        )}
+        <div className="flex items-center gap-2">
+          {GRANITE_3B_ROUTING_ENABLED && (
+            <span
+              className={`rounded-sm border px-3 py-1 font-mono text-[10px] uppercase tracking-wider ${
+                routedModel === "granite-4-1-3b-instruct"
+                  ? "border-amber bg-paper text-amber"
+                  : "border-racing-green bg-paper text-racing-green"
+              }`}
+              aria-label={`Routed model: ${routedModelLabel(routedModel)} per Vinh M3 chat-router heuristic`}
+            >
+              Routed: {routedModelLabel(routedModel)}
+            </span>
+          )}
+          {isStreaming && (
+            <span
+              className="flex items-center gap-2 rounded-sm border border-racing-green bg-paper px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-racing-green"
+              aria-live="polite"
+            >
+              <span className="inline-block h-2 w-2 motion-safe:animate-pulse rounded-full bg-racing-green" />
+              Live
+            </span>
+          )}
+        </div>
       </header>
 
       {localState.status === "idle" && (
