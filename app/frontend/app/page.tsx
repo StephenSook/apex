@@ -78,7 +78,7 @@ function Hero() {
       <div className="mx-auto grid max-w-6xl gap-12 px-6 py-20 lg:grid-cols-12 lg:gap-16 lg:px-10 lg:py-28">
         <div className="lg:col-span-7 flex flex-col gap-6">
           <p className="apex-eyebrow apex-rise" style={{ "--apex-delay": "0ms" } as React.CSSProperties}>
-            IBM SkillsBuild · May Challenge 2026 · Day 5 of 12
+            IBM SkillsBuild · May Challenge 2026 · Day 7 of 12
           </p>
           <h1
             id="hero-title"
@@ -515,7 +515,7 @@ function BuildStatus() {
             id="status-title"
             className="font-display text-4xl leading-tight text-ink sm:text-5xl"
           >
-            Day 5 of 12, in public.
+            Day 7 of 12, in public.
           </h2>
           <p className="text-base text-ink-soft leading-relaxed pt-2">
             Every commit lands on{" "}
@@ -701,7 +701,7 @@ function SiteFooter() {
           </div>
         </div>
         <div className="mt-12 border-t border-paper/10 pt-6 flex flex-wrap items-center justify-between gap-3 font-mono text-[11px] uppercase tracking-wider text-paper/45">
-          <span>Day 5 of 12 · 2026-05-23</span>
+          <span>Day 7 of 12 · 2026-05-26</span>
           <span>The race engineer beyond the finish line.</span>
         </div>
       </div>
