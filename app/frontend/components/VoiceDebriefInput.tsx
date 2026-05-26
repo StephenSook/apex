@@ -24,6 +24,26 @@
 
 import { useEffect, useRef, useState } from "react";
 
+import type { STTResponse } from "../../shared/types";
+
+// Wave-46 Phase 5.6.B env-flag check for Granite Speech 4.1 2B-Plus
+// preview path. When NEXT_PUBLIC_USE_GRANITE_SPEECH is "1", the Granite
+// Speech preview panel renders below the Web Speech UI; clicking the
+// preview button POSTs to /api/stt + surfaces the returned transcript
+// via the same onTranscript callback Web Speech uses. The /api/stt route
+// wire-flips to Vinh M3-V9 backend when NEXT_PUBLIC_VINH_BACKEND_BASE_URL
+// is also set; otherwise returns canned-fallback race-engineer voice-
+// debrief mock.
+const GRANITE_SPEECH_ENABLED =
+  process.env.NEXT_PUBLIC_USE_GRANITE_SPEECH === "1" ||
+  process.env.NEXT_PUBLIC_USE_GRANITE_SPEECH === "true";
+
+type GraniteSpeechPreviewState =
+  | { readonly status: "idle" }
+  | { readonly status: "fetching" }
+  | { readonly status: "ready"; readonly transcript: string; readonly engine: string }
+  | { readonly status: "error"; readonly message: string };
+
 interface SpeechRecognitionLike extends EventTarget {
   continuous: boolean;
   interimResults: boolean;
@@ -89,6 +109,7 @@ export default function VoiceDebriefInput({ onTranscript }: VoiceDebriefInputPro
   // vs-idle base.
   const [mounted, setMounted] = useState(false);
   const [state, setState] = useState<VoiceDebriefState>({ status: "idle" });
+  const [granitePreview, setGranitePreview] = useState<GraniteSpeechPreviewState>({ status: "idle" });
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
 
   useEffect(() => {
@@ -176,6 +197,28 @@ export default function VoiceDebriefInput({ onTranscript }: VoiceDebriefInputPro
     setState({ status: "idle" });
   };
 
+  const handleGraniteSpeechTest = async () => {
+    setGranitePreview({ status: "fetching" });
+    try {
+      const res = await fetch("/api/stt", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({}),
+      });
+      if (!res.ok) throw new Error(`/api/stt -> HTTP ${res.status}`);
+      const payload = (await res.json()) as STTResponse;
+      setGranitePreview({
+        status: "ready",
+        transcript: payload.transcript,
+        engine: payload.engine,
+      });
+      onTranscript(payload.transcript);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      setGranitePreview({ status: "error", message });
+    }
+  };
+
   if (effectiveState.status === "unsupported") {
     return (
       <p className="font-mono text-[10px] uppercase tracking-wider text-muted">
@@ -242,6 +285,51 @@ export default function VoiceDebriefInput({ onTranscript }: VoiceDebriefInputPro
         >
           Voice error: {effectiveState.message}. Type your debrief below instead.
         </p>
+      )}
+
+      {GRANITE_SPEECH_ENABLED && mounted && (
+        <div className="mt-2 flex flex-col gap-2 rounded-sm border border-racing-green bg-paper-warm p-3">
+          <p className="apex-eyebrow">Granite Speech 4.1 2B-Plus preview (Vinh M3-V9 swap-point)</p>
+          {granitePreview.status === "idle" && (
+            <>
+              <p className="text-xs leading-relaxed text-ink-soft">
+                Posts to /api/stt + surfaces the returned transcript. Canned-fallback
+                at HEAD; real path activates once Vinh M3-V9 deploys + NEXT_PUBLIC_VINH_BACKEND_BASE_URL
+                is set in Vercel.
+              </p>
+              <button
+                type="button"
+                onClick={handleGraniteSpeechTest}
+                className="self-start rounded-sm border border-racing-green bg-racing-green px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-paper transition-colors hover:bg-racing-green-deep"
+              >
+                Test Granite Speech preview
+              </button>
+            </>
+          )}
+          {granitePreview.status === "fetching" && (
+            <p className="font-mono text-[11px] uppercase tracking-wider text-muted">
+              Fetching /api/stt...
+            </p>
+          )}
+          {granitePreview.status === "ready" && (
+            <>
+              <p className="font-mono text-[10px] uppercase tracking-wider text-racing-green">
+                engine: {granitePreview.engine}
+              </p>
+              <p className="rounded-sm border-l-2 border-racing-green bg-paper px-3 py-2 text-sm leading-relaxed text-ink">
+                {granitePreview.transcript}
+              </p>
+            </>
+          )}
+          {granitePreview.status === "error" && (
+            <p
+              role="alert"
+              className="rounded-sm border-2 border-accent bg-paper p-2 font-mono text-[11px] text-accent"
+            >
+              Granite Speech preview error: {granitePreview.message}
+            </p>
+          )}
+        </div>
       )}
     </div>
   );
