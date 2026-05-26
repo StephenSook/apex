@@ -92,8 +92,26 @@ async function fetchRealBackend(req: NextRequest, t0: number): Promise<STTRespon
   }
 }
 
+const MAX_AUDIO_BYTES = 5 * 1024 * 1024;
+
 export async function POST(req: NextRequest): Promise<Response> {
   const t0 = performance.now();
+  // Wave-46 Phase 9.3 code-reviewer HIGH 3: cap request body size BEFORE
+  // forwarding to the upstream Vinh backend OR reading into memory on the
+  // edge runtime. Matches the 5 MB cap pattern in upload-telemetry/route.ts.
+  const declared = req.headers.get("content-length");
+  if (declared !== null) {
+    const declaredBytes = Number.parseInt(declared, 10);
+    if (!Number.isNaN(declaredBytes) && declaredBytes > MAX_AUDIO_BYTES) {
+      return Response.json(
+        {
+          error: "audio_too_large",
+          message: `Audio body declared ${declaredBytes} bytes; cap is ${MAX_AUDIO_BYTES} bytes (5 MB).`,
+        },
+        { status: 413 },
+      );
+    }
+  }
   try {
     let payload = cannedPayload(t0);
     if (shouldUseRealBackend("USE_GRANITE_SPEECH")) {
