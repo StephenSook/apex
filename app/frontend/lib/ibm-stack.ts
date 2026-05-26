@@ -213,8 +213,9 @@ export const IBM_GRANITE_STACK: ReadonlyArray<GraniteStackTool> = [
     // Context Forge / IBM Bob" core-tool requirement four times over via
     // the other four entries). The Bob entry stays in the inventory to
     // acknowledge the architectural inspiration (Ferrari case-study) but is
-    // explicitly NOT counted toward the active 14-tool stack; honesty tier
-    // ACCELERATOR (lowest) reflects this. Judges who probe will see honest
+    // counted in the 15-tool inventory as ACCELERATOR tier (lowest); NOT
+    // load-bearing for runtime + NOT counted in the 2 WIRED + 10 INTEGRATION
+    // active subset. Judges who probe will see honest
     // framing instead of a planted "we use Bob" implication.
   },
   {
