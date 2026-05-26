@@ -1,6 +1,6 @@
 /**
  * Canonical IBM Granite stack catalog. Single source of truth for the
- * 12-tool inventory cited across `/` (StackBadges section) + `/judges`
+ * 15-tool inventory cited across `/` (StackBadges section) + `/judges`
  * (IBM_STACK panel) + paper §3.5 §3.6 + deck + 3-min pitch script.
  *
  * Wave-39 codex MED close-out (comment-analyzer says identical;
@@ -10,7 +10,7 @@
  * pin changes (e.g. Granite 4.1 8B Instruct -> Granite 4.2 9B Instruct
  * post-NeurIPS-2026) propagate to every surface in a single commit.
  *
- * Wave-30 maximal architecture lock D-026: the 12-tool inventory is
+ * Wave-30 maximal architecture lock D-026: the 15-tool inventory is
  * the "shouldn't-be-possible move" surface. Adding or removing any
  * tool MUST update:
  *   1. This file (the canonical list).
@@ -23,7 +23,7 @@
 
 /**
  * Wave-44 honesty tier per gemini-agent BLOCKER 4 (2026-05-24): the
- * 12-tool catalog asserts "every one load-bearing" but factual wire-up
+ * 15-tool catalog asserts "every one load-bearing" but factual wire-up
  * status varies. Tier per tool surfaces the actual production routing
  * status so README + page + paper + deck copy can match reality.
  *
@@ -64,7 +64,7 @@ export interface GraniteStackTool {
    * production-routing status at HEAD. Used by the StackBadges grid +
    * IBM_STACK panel to render an explicit "WIRED" / "INTEGRATION"
    * pill per tool so README + page copy + paper match runtime reality.
-   * Avoids the credibility-hit of "12 tools every one load-bearing"
+   * Avoids the credibility-hit of "15 tools every one load-bearing"
    * narrative when 7 of 12 are still backend-swap-point mocks.
    */
   readonly status: GraniteStackToolStatus;

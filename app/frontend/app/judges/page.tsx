@@ -238,10 +238,10 @@ export default function JudgesPage() {
       >
         <div className="mx-auto max-w-6xl px-6 py-16 lg:px-10 lg:py-20">
           <h2 id="stack-title" className="font-display text-3xl tracking-tight text-ink">
-            Twelve IBM tools. Per-tool wire-up status, honest.
+            Fifteen IBM tools. Per-tool wire-up status, honest.
           </h2>
           <p className="mt-4 max-w-3xl text-base leading-relaxed text-ink-soft">
-            Two wired at HEAD (Granite Instruct + Granite 4.0 Nano). Eight at frontend-integration with canonical type contracts and backend swap-points per Stream M.3, including LangGraph + Granite MCP Gateway + ContextForge as the orchestration runtime (Langflow demoted to export-graph artifact per D-017 G7 + D-054). Two build-time accelerators (Docling library + IBM Bob). No tool listed without a runtime role.
+            Two wired at HEAD (Granite Instruct 4.1 8B + Granite 4.0 Nano 350M). Eleven at frontend-integration with canonical type contracts and backend swap-points per Stream M.3 + the D-058 wave-46 expansion (LangGraph + Granite MCP Gateway + ContextForge as the orchestration runtime per D-017 G7 + D-054 + Granite Instruct 4.1 3B chat-routing + Granite Speech 4.1 2B-Plus Watson STT proxy preview; Langflow retained as export-graph artifact). Two build-time accelerators (Docling library + IBM Bob; Bob is build-time architectural inspiration only per D-060, not a runtime dependency).
           </p>
           <dl className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {IBM_STACK.map(([name, role, status]) => (
