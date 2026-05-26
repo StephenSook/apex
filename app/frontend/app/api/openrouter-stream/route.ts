@@ -218,14 +218,16 @@ export async function POST(request: Request): Promise<Response> {
     // to stub instead of returning 502 so a single OpenRouter outage during
     // judge demo doesn't visibly break the coaching path. Stub is honest
     // canned-output identical to the no-API-key path.
-    let body: OpenRouterStreamRequestBody;
-    try {
-      body = (await request.clone().json()) as OpenRouterStreamRequestBody;
-    } catch {
-      body = { prompt: "" } as OpenRouterStreamRequestBody;
-    }
-    const promptSafe = typeof body.prompt === "string" ? body.prompt : "";
-    const stubText = stubResponseFor(promptSafe);
+    //
+    // Wave-46.5 silent-failure-hunter HIGH 1 close: reuse the outer-scope
+    // `body` already parsed at line 139 (passed isValidPrompt at line 147)
+    // instead of re-cloning the request body. The original `request.json()`
+    // call at line 139 consumed the underlying ReadableStream, so calling
+    // `request.clone().json()` here would throw TypeError + silently degrade
+    // to an empty prompt + a generic "API key not set" stub response that
+    // misleads judges into thinking the env var is missing when the actual
+    // failure was upstream.
+    const stubText = stubResponseFor(body.prompt);
     const stubStream = streamStubResponse(stubText, request.signal);
     return new Response(stubStream, {
       status: 200,
