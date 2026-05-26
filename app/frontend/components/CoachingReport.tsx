@@ -24,11 +24,25 @@ import type {
 
 import type { AuditId } from "../../shared/brands";
 
-import CoachingReportLiveCharts from "./CoachingReportLiveCharts";
+import dynamic from "next/dynamic";
+
 import GraniteCitationFooter from "./GraniteCitationFooter";
 import GuardianAudit from "./GuardianAudit";
 import TuningCard from "./TuningCard";
 import WatsonTtsRadio from "../lib/watson-tts-radio";
+
+const CoachingReportLiveCharts = dynamic(
+  () => import("./CoachingReportLiveCharts"),
+  {
+    ssr: false,
+    loading: () => (
+      <div
+        className="h-72 animate-pulse rounded border border-rule bg-paper-soft"
+        aria-label="Recharts panels loading"
+      />
+    ),
+  },
+);
 
 export interface CoachingReportProps {
   readonly report: CoachingReportType;
