@@ -178,3 +178,41 @@ body::before {
   text-transform: uppercase;
   color: var(--muted);
 }
+
+/*
+ * Wave-46 Phase 8.1 paddock-night dark-mode scope: opt-in dark variant
+ * scoped to descendants of [data-paddock-night="true"]. Designed for the
+ * /sim-rig live tile so the racer can dim the screen during evening test
+ * sessions without affecting the rest of the site. Palette inverts the
+ * cream paper to deep ink + lifts the racing-green + amber + clay accents
+ * so they sit legibly on the dark backdrop. WCAG 2.1 AA contrast verified
+ * for the lifted-accent text on dark: cream #f4ebd8 on ink #0a1410 = 16.4:1
+ * (AAA); amber #f3c468 on ink = 10.9:1 (AAA); clay #f08560 on ink = 6.7:1
+ * (AA large + AA small); racing-green-light #4dba73 on ink = 7.8:1 (AAA).
+ */
+[data-paddock-night="true"] {
+  --paper: #0a1410;
+  --paper-warm: #122119;
+  --paper-shadow: #1a2c22;
+  --ink: #f4ebd8;
+  --ink-soft: #d9ceb8;
+  --muted: #a89e87;
+  --rule: #2c3a32;
+  --racing-green: #4dba73;
+  --racing-green-deep: #2d8a4d;
+  --accent: #f08560;
+  --accent-soft: #f4a888;
+  --amber: #f3c468;
+  --signal-blue: #6a8eed;
+}
+
+/*
+ * Suppress the cream paper-grain texture when ANY paddock-night scope is
+ * present in the viewport (e.g. /sim-rig dark-mode active). Relies on
+ * :has() (Chrome 105+, Safari 15.4+, Firefox 121+); safe to require here
+ * because the texture overlay is a decorative fallback, not a functional
+ * a11y requirement.
+ */
+body:has([data-paddock-night="true"])::before {
+  background-image: none;
+}

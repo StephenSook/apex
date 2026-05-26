@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import SimRigPaddockNightShell from "../../components/SimRigPaddockNightShell";
 import SimRigStream from "../../components/SimRigStream";
 
 export const metadata: Metadata = {
@@ -42,6 +43,7 @@ const CHANNEL_NOTES: ReadonlyArray<readonly [string, string]> = [
 export default function SimRigPage() {
   return (
     <main id="main" className="flex flex-col">
+      <SimRigPaddockNightShell>
       <header className="border-b border-rule bg-paper">
         <div className="mx-auto flex max-w-6xl flex-col gap-4 px-6 py-14 lg:px-10 lg:py-20">
           <p className="apex-eyebrow">APEX · Live sim-rig demo</p>
@@ -141,6 +143,7 @@ export default function SimRigPage() {
         </div>
       </section>
 
+      </SimRigPaddockNightShell>
       <footer className="bg-racing-green py-12 text-paper">
         <div className="mx-auto flex max-w-6xl flex-col gap-2 px-6 lg:px-10">
           <p className="apex-eyebrow text-paper-warm">APEX</p>
