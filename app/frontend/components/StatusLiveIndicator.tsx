@@ -167,7 +167,15 @@ function RunTile({ run }: { run: ActionsRun }) {
       aria-live="polite"
       className={`flex flex-col gap-3 rounded-sm border-2 ${tone.border} bg-paper p-5`}
     >
-      <p className="font-mono text-xs uppercase tracking-wider text-muted">CI on main</p>
+      <p className="flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-muted">
+        <span className="text-muted">CI on main</span>
+        {verdict === "in_progress" && (
+          <span
+            className="inline-block h-2 w-2 motion-safe:animate-pulse rounded-full bg-amber"
+            aria-hidden="true"
+          />
+        )}
+      </p>
       <p className={`font-display text-3xl ${tone.text}`}>{label}</p>
       <dl className="grid grid-cols-2 gap-2 font-mono text-xs leading-relaxed">
         <div className="flex flex-col gap-1">
