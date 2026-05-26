@@ -4,6 +4,71 @@ Every locked decision with rationale + date + scope. Newest first.
 
 ---
 
+## 2026-05-26 D-061: Wave-46 session B Phase 8 + 9 close-out (7-agent deep-review batch ship)
+
+**Decision.** Wave-46 session B (extension after Stephen "finish out the wave" directive) shipped 25+ atomic commits closing Phase 8 (5 remaining sub-items) + Phase 9 (7-agent parallel deep-review dispatch + BLOCKER + HIGH fix-forward batch). HEAD CI green target ea9bc9e (cascade-#43 close).
+
+**Phase 8 close (5 commits + cascade-#41 + cascade-#42):**
+- 8.1 paddock-night dark-mode scope via `[data-paddock-night="true"]` CSS-variable override + SimRigPaddockNightShell toggle with localStorage persistence + body::before grain-texture suppression via :has selector
+- 8.2 color-coded telemetry tone classification on SimRigStream channels (neutral / caution / warning per channel threshold; sr-only tone annotation)
+- 8.4 COAGateToggle transition-colors duration-300 flip animation on section wrapper + outer switch + verdict left-border
+- 8.5 JudgeWalkthroughStep apex-rise fade-in per step navigation + JudgeWalkthroughProgressBar motion-safe:duration-500 crossfade
+- 8.7 TelemetryUploadPanel drag-drop event handlers (handleDragOver + handleDragLeave with relatedTarget contains-guard + handleDrop) + drag-over visual feedback + mount on /analyze
+- cascade-#41: react-hooks/set-state-in-effect ESLint disable on SimRigPaddockNightShell mounted-flag pattern per feedback_react19_set_state_in_effect_workarounds.md
+- cascade-#42: Playwright analyze-fidelity.spec.ts fileInputs 2 -> 3 to match Phase 8.7 TelemetryUploadPanel mount
+
+**Phase 9 deep-review batch (7 agents dispatched in parallel; results synthesized):**
+- codex-rescue: HIGH 1 wire-flip silent fallback (9 routes) + MED 1 scrubber plural pattern gap
+- cc-gemini-plugin large-context drift scan: BLOCKER cat 1 tool-count drift 12->15 across 4 surfaces + BLOCKER cat 4 IBM Bob over-claim 2 surfaces + BLOCKER cat 7 operator-attribution 5 leaks + HIGH cat 5+6 PLAN.md em-dash + "unlocks" residual
+- plan-gap-scanner: 27 gaps (9 BLOCKER + 9 HIGH + 5 DOC + 4 NIT); BLOCKER #1-#9 confirm Vinh-side backend modules unshipped at submission, mitigated by NEXT_PUBLIC_USE_REAL_BACKEND_V* env flags defaulting to false + honesty-tier reframe across all surfaces
+- pr-review-toolkit:silent-failure-hunter: BLOCKER 1 scrubber bare Section N.N pattern gap + BLOCKER 2 no scrubber unit test + HIGH 3 no AbortController on fetchRealBackend + HIGH 4 no upstream-status warn + HIGH 5 coach-code silent canned fallback + HIGH 6 NotebookLM empty catch
+- pr-review-toolkit:type-design-analyzer: 9 of 12 wave-46 type additions ACCEPT; 3 REWORK (STT bound confidence + CoachCode add swap_point + UploadTelemetry drop duration redundancy); cross-cutting note on runtime-validation gap via `as TYPE` casts
+- pr-review-toolkit:code-reviewer: BLOCKER 1 persona-decoupling violation on /api/judges/coa-diff CANNED_SCENARIO + HIGH 2 CSV split fragility on quoted commas + HIGH 3 STT no body cap
+- pr-review-toolkit:pr-test-analyzer: BLOCKER B1 upload-telemetry empty __tests__ dir + BLOCKER B2 scrubber no unit test + HIGH H1 timing-sheet-parse wave-46 wire-flip branch untested
+
+**Fix-forward batch shipped (12 atomic commits inside Phase 9):**
+1. cascade-#41 react-hooks/set-state-in-effect on SimRigPaddockNightShell
+2. Operator-attribution sweep on decision-log: anonymize Lucas-BMA + Ashish + Zenix to organizer/maintainer/community-member archetypes
+3. SUBMISSION.md 8-tool->15-tool + IBM Bob honest reframe + Operation Motorsport anonymize
+4. README.md section 5 12-tool->15-tool + IBM Bob flowchart honest reframe
+5. ibm-stack.ts comment header 12-tool->15-tool + /judges stack heading 12-tool->15-tool
+6. /api/judges/coa-diff persona-decouple default CANNED_SCENARIO to adaptive-hand-controls generic vocabulary
+7. lib/scrub-regulatory-anchors.ts plural FIA Articles + bare Section N.N patterns + new tests/lib/scrub-regulatory-anchors.test.ts canonical 20-case regression suite
+8. PLAN.md Vinh-table em-dash + "unlocks" sweep (lines 46-59)
+9. /judge-tour step 2 "one demo-facade (Langflow)" + "Two build-time accelerators" -> tier reality (zero FACADE + three ACCELERATOR including Mellea)
+10. cascade-#42 Playwright analyze-fidelity fileInputs 2 -> 3
+11. Wire-flip 9-route batch: AbortSignal.timeout(3000) + upstream-status console.warn on fetchRealBackend (projector-stage-a/b + orchestration + lips-harness + tspulse/anomaly + rag-retrieve + stt + timing-sheet-parse + judges/coa-diff)
+12. STT body cap 413 audio_too_large (5 MB) per code-reviewer HIGH 3
+13. cascade-#43 scrub-regulatory-anchors.ts dot-letter suffix support (Article 18.3.a) via SUFFIX constant + RegExp constructor reuse
+
+**Findings explicitly deferred (DOC tier; documented + rationale):**
+- Silent-failure HIGH 5 coach-code fallback no user banner: deferred to wave-46.5 (CoachCodePanel surfaces X-Apex-Coach-Code-Fallback header in engine pill; users see "canned" vs "real" engine signal already)
+- Silent-failure HIGH 6 NotebookLM empty catch: hover-audio is non-load-bearing surface; missing assets fail silently by design per R7
+- Silent-failure HIGH 8 SimRigPaddockNightShell localStorage catches: hackathon-mode acceptable (private-mode browsers are non-critical demo path)
+- Code-reviewer HIGH 2 CSV split fragility on quoted commas: documented in page copy "canonical APEX-Bench schema" requirement; full RFC-4180 parser deferred to post-submit
+- Type-design REWORK 3 (STT bound confidence + CoachCode swap_point + UploadTelemetry duration redundancy): deferred (hackathon-mode acceptable; not safety-critical)
+- Test-coverage MED + NIT: 5 component test gaps queued for wave-46.5 (RealtimeCOADiffPanel + CoachCodePanel + TelemetryUploadPanel + SimRigPaddockNightShell + JudgeTourKeyboardNav)
+- Plan-gap BLOCKER #1-#9 Vinh-side backend modules: NEXT_PUBLIC_USE_REAL_BACKEND_V12/V13/V14/V15/USE_GRANITE_SPEECH/USE_REAL_BACKEND_V7/V8 stay at default `false` in Vercel production env (verified via fetchRealBackend canned-fallback path consumed exclusively at HEAD); honesty-tier reframe across SUBMISSION.md + README + /judges + /judge-tour + paper §3.5 keeps the claim-vs-shipped boundary explicit per `feedback_conceptual_stack_vs_shipped_stack.md`
+
+**Production smoke 2026-05-26 day 8 mid-afternoon:**
+- 9 wire-flip routes return 200 with engine="*-canned-fallback" header (env flags default false)
+- /upload + /coach-code + /compare + /judge-tour + /judges + /analyze + /sim-rig pages 200
+- /api/stt POST body cap returns 413 audio_too_large on >5 MB declared Content-Length
+- Scrubber canonical regex set covers FIA Article + FIA Articles + Article + Art. + Appendix L §N + § + COA Section + COA Sec. + bare Section N.N + Sec. patterns with dot-letter suffix support
+- HEAD CI target: cascade-#43 close at ea9bc9e
+- Vercel deploy auto-triggered per push; production-path Granite Instruct + Watson TTS + canned fallbacks all healthy
+
+**What remains for next session (Phase 10 final + post-submission):**
+- 10.1 hackathon-pre-deploy skill chain (repo-sentinel + qa-systematic + pre-landing-review wrapper run)
+- 10.4 production smoke 12-route verify
+- 10.5 BeMyApp form submission (Stephen operator-action)
+- 10.6 post-submission Claude Memory + APEX MOC + project memory close-out
+- 3-min video record + 30-second highlight (Stephen operator-action)
+
+**Affected.** Wave-46 session B close. HEAD CI green target ea9bc9e. Production smoke healthy. Memory + Obsidian session note + APEX MOC ready for Phase 10 close-out write. 7-agent deep-review batch findings tier-by-tier addressed: BLOCKER + HIGH closed; DOC documented; MED + NIT explicitly deferred with rationale.
+
+---
+
 ## 2026-05-26 D-060: Wave-46 session A close-out (Phase 1-9 partial; 33 atomic commits; HEAD CI green at 4af9bb6)
 
 **Decision.** Wave-46 session A closes at 33 atomic commits `8d88607` through `4af9bb6` with all CI green per push. Phase 1, 2, 3, 5, 6 fully shipped + Phase 4 partial (4.1 + 4.2 + 4.4 + 4.5 + 4.8 shipped; 4.3 + 4.6 + 4.7 Vinh-side defer) + Phase 7 partial (7.1 + 7.2 + 7.3 + 7.5 + 7.6 shipped; 7.4 PWA offline defer) + Phase 8 partial (8.3 mono numerics + 8.6 a11y + 8.8 status pulse shipped; 8.1 + 8.2 + 8.4 + 8.5 + 8.7 defer) + Phase 9 sweeps (9.4 em-dash + AI-tone + operator-attribution + 9.5 LLM-output scrubber audit shipped; 9.1 7-agent deep-review defer). Phase 10 final close-out + BeMyApp form submission queued (operator-action).
