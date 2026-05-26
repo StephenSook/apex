@@ -1651,3 +1651,36 @@ export interface SCPResponse {
   readonly final_residual: number;
   readonly swap_point: string;
 }
+
+// ============================================================================
+// Wave-46 Phase 3.5: NEW /api/judges/coa-diff route + RealtimeCOADiffPanel
+// component. Returns paired verdicts (coa_overlap_flag = 1 vs = 0) on the
+// same physical event, demonstrating the COA-parameterized simultaneity
+// gate (D-A + D-052 paper §3.4) as live LangGraph runtime output rather
+// than UI-toggle decoration. Canned at HEAD; flips to V14 LangGraph
+// runtime real verdicts when NEXT_PUBLIC_USE_REAL_BACKEND_V14 + base URL
+// are set per wave-46 D-058.
+// ============================================================================
+
+export interface COADiffProjectionTraceEntry {
+  readonly stage: string;
+  readonly residual_norm: number;
+  readonly status: "converged" | "violation" | "linearized";
+}
+
+export interface COADiffVerdict {
+  readonly coa_overlap_flag: 0 | 1;
+  readonly verdict: "feasible" | "violation";
+  readonly headline: string;
+  readonly body: string;
+  readonly projection_trace: ReadonlyArray<COADiffProjectionTraceEntry>;
+}
+
+export interface COADiffResponse {
+  readonly engine: "coa-diff-canned-fallback" | "coa-diff-real";
+  readonly compute_ms: number;
+  readonly scenario: string;
+  readonly permitted: COADiffVerdict;
+  readonly blocked: COADiffVerdict;
+  readonly swap_point: string;
+}
