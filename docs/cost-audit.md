@@ -16,17 +16,17 @@ Per PLAN §17.10 + global CLAUDE.md cost-discipline. Pull-forward Day 2 night-la
 |-----------|------|------------------------|----------------------|--------------------------|
 | Day 1 | 2026-05-20 | -- (snapshot at Day 11 evening per PLAN 6.6) | -- | `feedback_galaxy_ambition_no_deferrals.md`, `feedback_research_tool_discipline.md`, `feedback_atomic_commit_discipline.md`, `feedback_em_dash_zero_tolerance.md`, `feedback_quality_over_speed.md` |
 | Day 2 | 2026-05-21 | -- (snapshot at Day 11 evening per PLAN 6.6) | -- | `feedback_three_brain_review_pattern.md`, `feedback_privacy_sweep_three_surfaces.md`, `feedback_anonymization_pre_consent.md`, `feedback_discriminated_unions_over_contradiction.md`, `feedback_propagation_full_repo_sweep.md` |
-| Day 3 | 2026-05-22 | -- | -- | -- |
-| Day 4 | 2026-05-23 | -- | -- | -- |
-| Day 5 | 2026-05-24 | -- | -- | -- |
-| Day 6 | 2026-05-25 | -- | -- | -- |
-| Day 7 | 2026-05-26 | -- | -- | -- |
+| Day 3 | 2026-05-22 | -- | -- | `feedback_plan_mode_trigger_proactive.md`, `feedback_read_before_edit_bash_inspection_distinction.md`, `feedback_propagation_within_file_sweep.md` |
+| Day 4 | 2026-05-23 | -- | -- | `feedback_ci_green_per_push_verify_or_cascade.md`, `feedback_research_escalation_protocol.md`, `feedback_competitor_deep_dive_protocol.md`, `feedback_no_time_pressure_restraint.md` |
+| Day 5 | 2026-05-24 | -- | -- | `feedback_persona_not_hardcoded_in_ui.md`, `feedback_exhaustive_tool_inventory_before_every_task.md`, `feedback_claude_code_auto_mode_classifier.md`, `feedback_llm_output_compliance_scrubber.md`, `feedback_vercel_mcp_deployment_workflow.md`, `feedback_cascade_fix_forward_discipline.md` |
+| Day 6 | 2026-05-25 | -- | -- | `feedback_nextjs16_dynamic_ssr_false_client_only.md`, `feedback_react19_set_state_in_effect_workarounds.md`, `feedback_useState_lazy_init_hydration_footgun.md`, `feedback_g4_fail_pivot_documented_then_executed.md`, `feedback_external_review_triangulation_load_bearing.md`, `feedback_conceptual_stack_vs_shipped_stack.md`, `feedback_byte_equality_regression_guarantee_not_killshot.md`, `feedback_replace_all_substring_trap.md` |
+| Day 7 | 2026-05-26 | -- | -- | `feedback_quality_over_speed.md` (research-cycles extension per Stephen explicit 2026-05-25 night-2 verbatim; wave-46 D-058) |
 | Day 8 | 2026-05-27 | -- | -- | -- |
 | Day 9 | 2026-05-28 | -- | -- | -- |
 | Day 10 | 2026-05-29 | -- | -- | -- |
 | Day 11 | 2026-05-30 | -- (canonical snapshot) | -- | -- |
 | Day 12 | 2026-05-31 | -- | -- | -- |
-| Total | -- | -- | -- | 10+ feedback memories accumulated across the 12-day window |
+| Total | -- | -- | -- | 27+ feedback memories accumulated across the 12-day window through Day 7 (8 net-new wave-44/45/45.5 Day 6; 1 amendment Day 7 wave-46) |
 
 ---
 
@@ -66,6 +66,6 @@ The Day-11 canonical codeburn snapshot will verify or refine these three finding
 
 ## Open questions
 
-- **Codeburn project granularity.** Does codeburn separate frontend tsc + lint + vitest spend from backend pytest spend? We need per-lane numbers to support the "8 IBM tools each earning their slot" claim. If codeburn aggregates the whole repo, we will need to add per-lane labels manually.
+- **Codeburn project granularity.** Does codeburn separate frontend tsc + lint + vitest spend from backend pytest spend? We need per-lane numbers to support the "15 IBM tools each earning their slot" claim (per wave-46 D-058 expansion from the wave-30 D-016 12-tool baseline). If codeburn aggregates the whole repo, we will need to add per-lane labels manually.
 - **OpenRouter + IBM watsonx vs. Anthropic API mix.** Today the build is all Anthropic via Claude Code. Lite-mode contingency at `docs/apex-lite-contingency.md` switches to a single watsonx.ai API call for Granite Instruct narration. The cost-audit will need to show both lines.
 - **Codeburn's "optimize" findings.** Whatever it suggests Day 11 evening gets prioritized by Stephen+Vinh against the remaining Day-12 capacity. Most optimizations are deferred to the engineering retro rather than committed Day 12.
