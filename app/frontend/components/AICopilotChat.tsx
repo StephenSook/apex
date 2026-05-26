@@ -176,9 +176,10 @@ export default function AICopilotChat({ panelId = "ai-copilot-chat" }: AICopilot
                   ? "border-amber bg-paper text-amber"
                   : "border-racing-green bg-paper text-racing-green"
               }`}
-              aria-label={`Routed model: ${routedModelLabel(routedModel)} per Vinh M3 chat-router heuristic`}
+              aria-label={`Routing scaffold preview: classifier would route to ${routedModelLabel(routedModel)} once Vinh M3 chat_router.py + Granite 4.1 3B Instruct OpenRouter access lands. Live routing is not active at HEAD.`}
+              title="Routing scaffold preview. Live routing activates after Vinh M3 chat_router.py + 3B OpenRouter access lands."
             >
-              Routed: {routedModelLabel(routedModel)}
+              Routing scaffold: {routedModelLabel(routedModel)}
             </span>
           )}
           {isStreaming && (
