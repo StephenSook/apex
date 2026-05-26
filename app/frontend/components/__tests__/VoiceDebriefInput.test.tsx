@@ -49,25 +49,25 @@ describe("VoiceDebriefInput (wave-44 Phase 6i + wave-45 Phase 3)", () => {
   });
 
   it("renders 'unsupported' state when SpeechRecognition API absent", () => {
-    render(<VoiceDebriefInput />);
+    render(<VoiceDebriefInput onTranscript={vi.fn()} />);
     expect(screen.getByText(/voice debrief unavailable/i)).toBeInTheDocument();
   });
 
   it("renders idle state with start button when API present", () => {
     installMockSpeechRecognition();
-    render(<VoiceDebriefInput />);
+    render(<VoiceDebriefInput onTranscript={vi.fn()} />);
     expect(screen.getByRole("button", { name: /start voice debrief/i })).toBeInTheDocument();
   });
 
   it("renders Watson STT swap-point cross-ref in idle state", () => {
     installMockSpeechRecognition();
-    render(<VoiceDebriefInput />);
+    render(<VoiceDebriefInput onTranscript={vi.fn()} />);
     expect(screen.getByText(/Vinh M3-V9/i)).toBeInTheDocument();
   });
 
   it("surfaces honesty-tier note that Web Speech API is HEAD path", () => {
     installMockSpeechRecognition();
-    render(<VoiceDebriefInput />);
+    render(<VoiceDebriefInput onTranscript={vi.fn()} />);
     expect(
       screen.getByText(/browser.native|Web Speech/i),
     ).toBeInTheDocument();
@@ -75,7 +75,7 @@ describe("VoiceDebriefInput (wave-44 Phase 6i + wave-45 Phase 3)", () => {
 
   it("renders accessible heading with aria semantics", () => {
     installMockSpeechRecognition();
-    render(<VoiceDebriefInput />);
+    render(<VoiceDebriefInput onTranscript={vi.fn()} />);
     const heading = screen.getByRole("heading", { level: 3 });
     expect(heading).toBeInTheDocument();
   });

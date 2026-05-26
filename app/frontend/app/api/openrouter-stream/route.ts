@@ -40,11 +40,11 @@ import { openRouterChatCompletion, type ChatMessage } from "../../../lib/openrou
 // connection lifetimes for streaming SSE responses.
 export const runtime = "nodejs";
 
-interface OpenRouterStreamRequestBody {
+interface OpenRouterStreamRequestBodyBody {
   readonly prompt?: unknown;
 }
 
-function isValidPrompt(body: OpenRouterStreamRequestBody): body is { readonly prompt: string } {
+function isValidPrompt(body: OpenRouterStreamRequestBodyBody): body is { readonly prompt: string } {
   return typeof body.prompt === "string" && body.prompt.trim().length > 0;
 }
 
@@ -133,9 +133,9 @@ function streamStubResponse(text: string, abortSignal: AbortSignal): ReadableStr
 }
 
 export async function POST(request: Request): Promise<Response> {
-  let body: OpenRouterStreamRequestBody;
+  let body: OpenRouterStreamRequestBodyBody;
   try {
-    body = (await request.json()) as OpenRouterStreamRequestBody;
+    body = (await request.json()) as OpenRouterStreamRequestBodyBody;
   } catch {
     return new Response(
       "apex.openrouter-stream: request body must be valid JSON.",
@@ -217,11 +217,11 @@ export async function POST(request: Request): Promise<Response> {
     // to stub instead of returning 502 so a single OpenRouter outage during
     // judge demo doesn't visibly break the coaching path. Stub is honest
     // canned-output identical to the no-API-key path.
-    let body: OpenRouterStreamRequest;
+    let body: OpenRouterStreamRequestBody;
     try {
-      body = (await request.clone().json()) as OpenRouterStreamRequest;
+      body = (await request.clone().json()) as OpenRouterStreamRequestBody;
     } catch {
-      body = { prompt: "" } as OpenRouterStreamRequest;
+      body = { prompt: "" } as OpenRouterStreamRequestBody;
     }
     const stubText = stubResponseFor(body.prompt ?? "");
     const stubStream = streamStubResponse(stubText, request.signal);
