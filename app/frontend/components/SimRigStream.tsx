@@ -31,6 +31,13 @@
  * Wave-44 Lane K persona-decoupling sweep: synthetic GT4 hand-controls
  * stream; circuit-agnostic synthetic layout. No persona name in
  * render or comment text.
+ *
+ * Wave-46 Phase 8.2 ship: ChannelGrid renders per-channel tone
+ * classification (neutral / caution / warning) via classifyChannel
+ * thresholds on Throttle / Brake / Steering / Lat G / Long G / RPM.
+ * sr-only aria-label suffix surfaces "caution" / "warning" tones for
+ * screen-reader operator-empathy. Per-tone color uses the editorial-
+ * paddock palette (text-ink / text-amber / text-accent).
  */
 
 import { useEffect, useReducer, useRef } from "react";

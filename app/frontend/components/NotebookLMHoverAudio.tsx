@@ -12,6 +12,13 @@
  * `app/frontend/public/audio/`. Component lazy-loads on user interaction
  * + falls back to placeholder text when 404 (asset not yet generated).
  *
+ * As of D-062 (2026-05-26): only the COA-gate panel is mounted on /judges
+ * with the production-shipped `coa-gate.mp3` asset. The other 5 panels
+ * remain scaffold-only pending future NotebookLM-asset generation. Adding
+ * mounts before the matching MP3 ships would render the `missing`
+ * placeholder visible + clutter /judges; mount each panel one commit at a
+ * time after its corresponding MP3 lands in `public/audio/<panelId>.mp3`.
+ *
  * Discriminated-union state per `feedback_discriminated_unions_over_contradiction.md`:
  *   - idle: button surfaced; audio src not set; no network call
  *   - loading: src set; audio element fetching; loading state visible
