@@ -548,8 +548,8 @@ function BuildStatus() {
                 </div>
                 <span
                   className={`font-mono text-xs uppercase tracking-wider ${
-                    p.state === "in progress"
-                      ? "text-accent"
+                    p.state === "done"
+                      ? "text-racing-green"
                       : "text-muted"
                   }`}
                 >
