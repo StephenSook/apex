@@ -35,9 +35,41 @@ import type {
   TimingSheetLap,
   TimingSheetParsedLaps,
 } from "../../../../shared/types";
+import { getVinhBackendBaseUrl, shouldUseRealBackend } from "../../../lib/env";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+
+// Wave-46 D-058 Phase 4.2: when `NEXT_PUBLIC_USE_REAL_TIMING_SHEET` is
+// "1" + `NEXT_PUBLIC_VINH_BACKEND_BASE_URL` is set, forward the
+// validated PDF to Vinh M3-V1 backend's Granite Vision 4.1 4B inference
+// at `${base}/api/timing-sheet-parse`. Returns real parser result with
+// parser = "granite-vision-4.1-4b". Falls back to canned-fixture on any
+// fetch failure (network + 5xx + parse error) to keep the /judges +
+// /analyze surfaces rendering during Vinh deploy transitions.
+async function fetchRealBackend(file: File, t0: number): Promise<TimingSheetParsedLaps | null> {
+  const base = getVinhBackendBaseUrl();
+  if (base === null) return null;
+  try {
+    const forwardForm = new FormData();
+    forwardForm.append("pdf", file, file.name);
+    const upstream = await fetch(`${base}/api/timing-sheet-parse`, {
+      method: "POST",
+      body: forwardForm,
+      cache: "no-store",
+    });
+    if (!upstream.ok) return null;
+    const body = (await upstream.json()) as TimingSheetParsedLaps;
+    return {
+      ...body,
+      parser: "granite-vision-4.1-4b",
+      parse_ms: Math.round(performance.now() - t0),
+    };
+  } catch (err) {
+    console.error("[apex/timing-sheet-parse] real-backend forward failed", err);
+    return null;
+  }
+}
 
 const CANNED_LAPS: ReadonlyArray<TimingSheetLap> = [
   { lap: 1, sector_1_time_s: 24.182, sector_2_time_s: 28.945, sector_3_time_s: 25.612, lap_time_s: 78.739, gap_s: 0.0, position: 1, tyre: "Slick", in_pit: false },
@@ -132,17 +164,22 @@ export async function POST(req: NextRequest): Promise<Response> {
     );
   }
 
-  const payload: TimingSheetParsedLaps = {
+  let payload: TimingSheetParsedLaps = {
     source_filename: file.name,
     parser: "canned-fixture",
     parse_ms: Math.round(performance.now() - t0),
     laps: CANNED_LAPS,
   };
+  if (shouldUseRealBackend("USE_REAL_TIMING_SHEET")) {
+    const real = await fetchRealBackend(file, t0);
+    if (real !== null) payload = real;
+  }
   return Response.json(payload, {
     status: 200,
     headers: {
       "Cache-Control": "no-store",
       "X-Apex-Parser-Swap-Point": "vinh-v1-granite-vision-4.1-4b",
+      "X-Apex-Parser-Engine": payload.parser,
     },
   });
 }
