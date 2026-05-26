@@ -77,9 +77,16 @@ function loadCommits(maxCount = 80): ReadonlyArray<CommitEntry> {
   }
 }
 
-export default function ChangelogPage() {
+interface ChangelogPageProps {
+  readonly searchParams: Promise<{ all?: string }>;
+}
+
+export default async function ChangelogPage({ searchParams }: ChangelogPageProps) {
+  const { all } = await searchParams;
+  const showAll = all === "1";
   const commits = loadCommits();
   const featOnly = commits.filter((c) => c.subject.startsWith("feat"));
+  const displayed = showAll ? commits : featOnly;
   return (
     <main id="main" className="flex flex-col">
       <header className="border-b border-rule bg-paper">
@@ -89,28 +96,29 @@ export default function ChangelogPage() {
             APEX, every commit.
           </h1>
           <p className="max-w-3xl text-base leading-relaxed text-ink-soft">
-            Public commit history rendered at hourly ISR from the project repo. {commits.length} commits
-            on record. Default view = feat-only ({featOnly.length} entries) to keep the storyline tight;
-            <Link href="/changelog?all=1" className="ml-1 text-racing-green underline decoration-dotted underline-offset-2">
-              show all
-            </Link>
-            {" "}for the full record including fix + docs + test + refactor + chore + perf.
+            Public commit history rendered at deploy time from the project repo. {commits.length} commits
+            on record. {showAll
+              ? <>Showing all {commits.length}; <Link href="/changelog" className="ml-1 text-racing-green underline decoration-dotted underline-offset-2">return to feat-only ({featOnly.length})</Link>.</>
+              : <>Default view = feat-only ({featOnly.length} entries) to keep the storyline tight; <Link href="/changelog?all=1" className="ml-1 text-racing-green underline decoration-dotted underline-offset-2">show all</Link> for the full record including fix + docs + test + refactor + chore + perf.</>
+            }
           </p>
           <p className="font-mono text-xs text-muted">
-            Source: github.com/StephenSook/apex · build-time git log · ISR hourly. Conventional-commit
-            prefix color pill per entry.
+            Source: github.com/StephenSook/apex · build-time git log · force-static. Conventional-commit
+            prefix color pill per entry. History refreshes on each deploy.
           </p>
         </div>
       </header>
 
       <section className="mx-auto w-full max-w-4xl px-6 py-12 lg:px-10 lg:py-16">
-        {featOnly.length === 0 ? (
+        {displayed.length === 0 ? (
           <p className="font-mono text-xs text-muted">
-            No feat-prefix commits found in current build. Verify git log is reachable from build env.
+            {commits.length === 0
+              ? "No commits available; git log failed at build time (see Vercel runtime logs)."
+              : "No commits match the current filter; try the show-all link above."}
           </p>
         ) : (
           <ol className="flex flex-col gap-3">
-            {featOnly.map((commit) => (
+            {displayed.map((commit) => (
               <CommitTimelineEntry
                 key={commit.sha}
                 sha={commit.sha}

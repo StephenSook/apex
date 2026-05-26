@@ -89,10 +89,23 @@ interface ComparePageProps {
   readonly searchParams: Promise<{ drivers?: string }>;
 }
 
+function pickDriverById(id: string): DriverSnapshot | null {
+  if (id === DEFAULT_DRIVER_A.id) return DEFAULT_DRIVER_A;
+  if (id === DEFAULT_DRIVER_B.id) return DEFAULT_DRIVER_B;
+  return null;
+}
+
 export default async function ComparePage({ searchParams }: ComparePageProps) {
-  await searchParams;
-  const a = DEFAULT_DRIVER_A;
-  const b = DEFAULT_DRIVER_B;
+  const { drivers } = await searchParams;
+  // Wave-45.5 code-reviewer codex MED close: ?drivers=a,b query param now
+  // honored. Format: "driver-a,driver-b" with comma-separated IDs. Unknown
+  // IDs or missing param fall back to default fixture pair. Lane K
+  // persona-decoupling rule kept: only generic Driver A + Driver B labels
+  // ship; real driver-by-name selection lands when Vinh M3-V## session-
+  // store endpoint goes live.
+  const [parsedA, parsedB] = (drivers ?? "").split(",");
+  const a = (parsedA && pickDriverById(parsedA)) || DEFAULT_DRIVER_A;
+  const b = (parsedB && pickDriverById(parsedB)) || DEFAULT_DRIVER_B;
   const speedDelta = formatDelta(a.avg_speed_mps, b.avg_speed_mps, 2);
   const riskDelta = formatDelta(a.risk_score, b.risk_score, 2);
   const slipDelta = formatDelta(a.wheel_slip_pct, b.wheel_slip_pct, 2);
