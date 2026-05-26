@@ -1807,3 +1807,34 @@ export interface CoachCodeResponse {
   readonly prompt_tokens: number;
   readonly completion_tokens: number;
 }
+
+// ============================================================================
+// Wave-46 Phase 7.5: NEW /upload route + page for judge-uploadable telemetry
+// CSV. Per D-058 wave-46 plan: "Vercel Sandbox judge-uploadable telemetry CSV;
+// strict CSV parser + 5MB cap + content-type allowlist". Sandbox isolation
+// deferred to wave-46.5 once Vercel Sandbox SDK installed; wave-46 ships
+// secure CSV parser with strict row schema validation + per-channel summary
+// stats (min/max/mean for throttle_pct + speed_mps + lat_g) as the
+// authoritative parse output. UploadTelemetryResponse shape sized so judges
+// who upload their own driving CSV see immediate per-channel telemetry stats.
+// ============================================================================
+
+export interface TelemetryChannelSummary {
+  readonly channel: string;
+  readonly min: number;
+  readonly max: number;
+  readonly mean: number;
+  readonly samples: number;
+}
+
+export interface UploadTelemetryResponse {
+  readonly engine: "upload-telemetry-strict-parser";
+  readonly compute_ms: number;
+  readonly source_filename: string;
+  readonly row_count: number;
+  readonly first_row_t_session_s: number;
+  readonly last_row_t_session_s: number;
+  readonly duration_s: number;
+  readonly channels: ReadonlyArray<TelemetryChannelSummary>;
+  readonly head_preview: ReadonlyArray<Record<string, number>>;
+}
