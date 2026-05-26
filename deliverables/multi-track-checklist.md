@@ -21,7 +21,7 @@
 
 ## APEX positioning per prize category
 
-### 1st Place ($5K)
+### 1st Place ($2,250)
 
 **APEX argument.** Adaptive racers + veterans + grassroots competitors are an underserved audience the May Challenge brief explicitly names. APEX is the first IBM-Granite-stack AI race engineer that reads the FIA Certificate of Adaptations at the tensor level. The Convergence-14 fixture suite (visible at /judges) is the unit-tested safety contract that prevents the "adaptive driving misdiagnosed as driver error" failure mode. apex-one-black.vercel.app ships live in production.
 
@@ -33,7 +33,7 @@
 - 3-min demo video + 11-frame deck PDF
 - 60+ atomic commits across 12 days; CI green per push
 
-### Best Use of Technology ($2K)
+### Best Use of Technology ($750)
 
 **APEX argument.** APEX uses 15 IBM Granite stack tools at wave-46 (twelve through wave-30 D-016 + wave-45 D-054 baseline; wave-46 D-058 added Granite 4.1 3B Instruct fast-path AICopilotChat routing + Granite Speech 4.1 2B-Plus speaker-attributed ASR + Mellea Instruct-Validate-Repair critic loop). Every tool is load-bearing (no "logo on slide" tools). The integration depth includes:
 
@@ -58,7 +58,7 @@
 - README + paper §3.6 cite each tool with D-### decision-log anchor
 - watsonx.ai bonus path lands if Day 10-11 runway permits per `docs/vinh-phase-1-handoff.md` Q2 decision
 
-### Most Innovative ($2K)
+### Most Innovative ($750)
 
 **APEX argument.** The innovation density rests on 5 composition moves per wave-42 paper §3.5 expansion. Each is independently cuttable per APEX Lite contingency; the composition is the contribution.
 
@@ -77,7 +77,7 @@
 - what-if-replay demonstrates COA mutation flips violation log per wave-41 G.1
 - 5 React surfaces (EdgeSummary + ALoRAStatusBadge + GEPAEvolutionPanel + EAGLE3LatencyBadge + TriAgentCriticPanel) all visible on /judges
 
-### Runner-up ($2K)
+### Runner-up ($1,250)
 
 **APEX argument.** Per the Devpost stacking-rules clarification (`reference_competitors_calibration.md`), Runner-up is the consolation prize if 1st Place is awarded to a competitor; APEX qualifies for the same evaluation criteria so the same evidence surfaces apply.
 
