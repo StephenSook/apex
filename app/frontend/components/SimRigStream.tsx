@@ -354,11 +354,11 @@ function ChannelGrid({
     ["RPM", `${channels.rpm.toFixed(0)}`],
   ];
   return (
-    <dl className="grid grid-cols-3 gap-2 font-mono text-xs leading-relaxed">
+    <dl className="grid grid-cols-3 gap-2 font-mono text-xs leading-relaxed tabular-nums">
       {rows.map(([label, value]) => (
         <div key={label} className="flex flex-col gap-1">
           <dt className="uppercase tracking-wider text-muted">{label}</dt>
-          <dd className="text-base text-ink">{value}</dd>
+          <dd className="text-base text-ink tabular-nums">{value}</dd>
         </div>
       ))}
     </dl>

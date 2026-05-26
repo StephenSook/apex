@@ -177,18 +177,18 @@ function RunTile({ run }: { run: ActionsRun }) {
         )}
       </p>
       <p className={`font-display text-3xl ${tone.text}`}>{label}</p>
-      <dl className="grid grid-cols-2 gap-2 font-mono text-xs leading-relaxed">
+      <dl className="grid grid-cols-2 gap-2 font-mono text-xs leading-relaxed tabular-nums">
         <div className="flex flex-col gap-1">
           <dt className="uppercase tracking-wider text-muted">Run</dt>
-          <dd className="text-ink">#{runNumber}</dd>
+          <dd className="text-ink tabular-nums">#{runNumber}</dd>
         </div>
         <div className="flex flex-col gap-1">
           <dt className="uppercase tracking-wider text-muted">SHA</dt>
-          <dd className="text-ink">{shortSha}</dd>
+          <dd className="text-ink tabular-nums">{shortSha}</dd>
         </div>
         <div className="flex flex-col gap-1 sm:col-span-2">
           <dt className="uppercase tracking-wider text-muted">Updated</dt>
-          <dd className="text-ink">{updated}</dd>
+          <dd className="text-ink tabular-nums">{updated}</dd>
         </div>
       </dl>
       <a
