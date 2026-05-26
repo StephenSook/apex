@@ -26,6 +26,14 @@
 export function scrubInventedRegulatoryAnchors(text: string): string {
   return text
     .replace(/FIA Appendix L Article \d+(\.\d+)*[a-z]?/gi, "FIA Appendix L per the published revision")
+    .replace(
+      /FIA Articles \d+(\.\d+)*[a-z]?(\s+and\s+\d+(\.\d+)*[a-z]?)?/gi,
+      "FIA Appendix L per the published revision",
+    )
+    .replace(
+      /Articles \d+(\.\d+)*[a-z]?(\s+and\s+\d+(\.\d+)*[a-z]?)?/gi,
+      "Appendix L per the published revision",
+    )
     .replace(/FIA Article \d+(\.\d+)*[a-z]?/gi, "FIA Appendix L per the published revision")
     .replace(/Article \d+(\.\d+)*[a-z]?/gi, "Appendix L per the published revision")
     .replace(/\bArt\.?\s+\d+(\.\d+)*[a-z]?/gi, "Appendix L per the published revision")
@@ -33,6 +41,7 @@ export function scrubInventedRegulatoryAnchors(text: string): string {
     .replace(/§\s*\d+(\.\d+)*(\([a-z]\))?/gi, "the published revision section")
     .replace(/COA Section \d+(\.\d+)*[a-z]?/gi, "the COA simultaneity gate")
     .replace(/COA\s+Sec\.?\s+\d+(\.\d+)*[a-z]?/gi, "the COA simultaneity gate")
-    .replace(/Section \d+(\.\d+)*\([a-z]\)/gi, "the COA simultaneity gate")
+    .replace(/\bSection \d+\.\d+(\.\d+)*\([a-z]\)/g, "the COA simultaneity gate")
+    .replace(/\bSection \d+\.\d+(\.\d+)*[a-z]?/g, "the COA simultaneity gate")
     .replace(/\bSec\.?\s+\d+(\.\d+)*[a-z]?/gi, "the COA simultaneity gate");
 }
