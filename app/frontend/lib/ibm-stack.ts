@@ -1,6 +1,6 @@
 /**
  * Canonical IBM Granite stack catalog. Single source of truth for the
- * 15-tool inventory cited across `/` (StackBadges section) + `/judges`
+ * 14-tool inventory cited across `/` (StackBadges section) + `/judges`
  * (IBM_STACK panel) + paper §3.5 §3.6 + deck + 3-min pitch script.
  *
  * Wave-39 codex MED close-out (comment-analyzer says identical;
@@ -10,7 +10,7 @@
  * pin changes (e.g. Granite 4.1 8B Instruct -> Granite 4.2 9B Instruct
  * post-NeurIPS-2026) propagate to every surface in a single commit.
  *
- * Wave-30 maximal architecture lock D-026: the 15-tool inventory is
+ * Wave-30 maximal architecture lock D-026: the 14-tool inventory is
  * the "shouldn't-be-possible move" surface. Adding or removing any
  * tool MUST update:
  *   1. This file (the canonical list).
@@ -23,7 +23,7 @@
 
 /**
  * Wave-44 honesty tier per gemini-agent BLOCKER 4 (2026-05-24): the
- * 15-tool catalog asserts "every one load-bearing" but factual wire-up
+ * 14-tool catalog asserts "every one load-bearing" but factual wire-up
  * status varies. Tier per tool surfaces the actual production routing
  * status so README + page + paper + deck copy can match reality.
  *
@@ -64,9 +64,9 @@ export interface GraniteStackTool {
    * production-routing status at HEAD. Used by the StackBadges grid +
    * IBM_STACK panel to render an explicit "WIRED" / "INTEGRATION"
    * pill per tool so README + page copy + paper match runtime reality.
-   * Avoids the credibility-hit of "15 tools every one load-bearing"
-   * narrative when 10 of 15 are still backend swap-points (INTEGRATION
-   * tier) + 3 are build-time accelerators (ACCELERATOR tier).
+   * Avoids the credibility-hit of "14 tools every one load-bearing"
+   * narrative when 10 of 14 are still backend swap-points (INTEGRATION
+   * tier) + 2 are build-time accelerators (ACCELERATOR tier).
    */
   readonly status: GraniteStackToolStatus;
 }
@@ -82,7 +82,7 @@ export interface GraniteStackTool {
  * (TTM, FlowState, TSPulse) -> retrieval (Embedding) -> generation
  * (Instruct 8B + 3B + Speech) -> guardrails (Guardian) -> edge (Nano)
  * -> orchestration (LangGraph + MCP + ContextForge) -> build-time
- * accelerators (Docling library, IBM Bob, Mellea).
+ * accelerators (Docling library + Mellea).
  */
 export const IBM_GRANITE_STACK: ReadonlyArray<GraniteStackTool> = [
   {
@@ -196,27 +196,6 @@ export const IBM_GRANITE_STACK: ReadonlyArray<GraniteStackTool> = [
     // LangGraphRuntimePanel surface ship the 6-node trace; Vinh M3-V14
     // wires apex/orchestration/langgraph_runtime.py to flip status from
     // INTEGRATION to WIRED.
-  },
-  {
-    name: "IBM Bob",
-    version: "n/a (documented inspiration only, not actively wired)",
-    role: "Documented inspiration per IBM Granite Ferrari case-study precedent (bob.ibm.com is an AI dev-partner SaaS for engineer workflow, not a runtime APEX consumes); kept in inventory to acknowledge the architectural precedent but not load-bearing for any APEX runtime path",
-    status: "ACCELERATOR",
-    // Wave-46 Phase 4.8 honest reframing per Stephen Discord question
-    // 2026-05-26 + `feedback_conceptual_stack_vs_shipped_stack.md` brutal-
-    // judge rule. IBM Bob launched 2026-04-28 at bob.ibm.com as an AI
-    // development partner SaaS for engineering team workflow (multi-model
-    // routing across SDLC; Anthropic Claude + Mistral + Granite). It is NOT
-    // a runtime model APEX invokes. APEX does NOT sign up for the Bob trial
-    // + does NOT depend on Bob for any compliance threshold (we satisfy the
-    // BeMyApp "use at least one of IBM Granite / Docling / Langflow /
-    // Context Forge / IBM Bob" core-tool requirement four times over via
-    // the other four entries). The Bob entry stays in the inventory to
-    // acknowledge the architectural inspiration (Ferrari case-study) but is
-    // counted in the 15-tool inventory as ACCELERATOR tier (lowest); NOT
-    // load-bearing for runtime + NOT counted in the 2 WIRED + 10 INTEGRATION
-    // active subset. Judges who probe will see honest
-    // framing instead of a planted "we use Bob" implication.
   },
   {
     name: "Granite Instruct 3B",

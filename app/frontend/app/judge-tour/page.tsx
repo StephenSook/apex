@@ -87,7 +87,7 @@ export default async function JudgeTourPage({ searchParams }: JudgeTourPageProps
             stepNumber={2}
             totalSteps={TOTAL_STEPS}
             eyebrow="Step 2 · IBM stack"
-            headline="Fifteen IBM tools. Per-tool honesty tier."
+            headline="Fourteen IBM tools. Per-tool honesty tier."
             body={
               <>
                 <p>
@@ -95,9 +95,9 @@ export default async function JudgeTourPage({ searchParams }: JudgeTourPageProps
                   WebGPU edge model). Ten at integration with canonical type contracts and backend swap-points
                   per Vinh M3-V1 through M3-V15 (Granite-Docling + Vision + TTM + FlowState + TSPulse + Embedding +
                   Guardian + LangGraph + 3B routing + Granite Speech; Langflow retained as the export-graph
-                  artifact per D-017 G7 + D-054). Three build-time accelerators (Docling library + IBM Bob +
-                  Mellea IVR-loop architectural slot per D-060). Wave-46 D-058 expansion brought Granite 4.1 3B
-                  Instruct fast-path routing + Granite Speech 4.1 2B-Plus speaker-attributed ASR.
+                  artifact per D-017 G7 + D-054). Two build-time accelerators (Docling library + Mellea v0.5.0
+                  IVR-loop architectural slot). Wave-46 D-058 expansion brought Granite 4.1 3B Instruct
+                  fast-path routing + Granite Speech 4.1 2B-Plus speaker-attributed ASR.
                 </p>
                 <p>
                   Honesty tier rendered as a per-tool status pill on the / page StackBadges grid and the
