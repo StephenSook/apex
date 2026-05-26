@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import TwinDriverNarrativePanel from "../../components/TwinDriverNarrativePanel";
+
 /**
  * /compare?drivers=a,b route. Wave-45 Phase 6 Block C.3 close-out
  * per the ApexIQ competitor deep-dive steal-list item #3 (Compare-
@@ -182,6 +184,8 @@ export default async function ComparePage({ searchParams }: ComparePageProps) {
           </dl>
           <p className="mt-2 font-display text-lg leading-snug text-ink">{verdict}</p>
         </section>
+
+        <TwinDriverNarrativePanel />
 
         <p className="mt-8 font-mono text-xs text-muted">
           Cross-ref: ApexIQ competitor deep-dive (2026-05-25) steal-list item #3 + Lane K persona-
