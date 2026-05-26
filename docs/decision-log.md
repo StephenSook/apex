@@ -4,6 +4,24 @@ Every locked decision with rationale + date + scope. Newest first.
 
 ---
 
+## 2026-05-25 D-057: Vercel BotID explicit defer per wave-45.5 plan-gap-scanner BLOCKER #2
+
+**Decision.** Wave-45 plan §6.3 specified `pnpm add @vercel/botid` + middleware setup for bot-detection on production. Per plan R3 risk-mitigation: "monitor mode for 24h to verify no false-positives before flipping to block mode; drop entirely if false-positive rate is >0.5%". Implementation never landed; wave-45.5 plan-gap-scanner flagged as BLOCKER. This entry explicitly defers BotID install to wave-46+.
+
+**Rationale.** Two compounding factors:
+
+1. **Judge eval false-positive risk.** Vercel BotID flags non-human traffic patterns. Judges visiting from corporate IP ranges, automated link-unfurl bots (Slack + Discord + LinkedIn previews), and headless-browser tooling (codespace previews + Devpost embed iframes) may register as bots. A false-positive on a judge during eval window is a submission-killing risk that cannot be retroactively excused.
+
+2. **Monitor-mode false security.** Plan R3 mitigation calls for "monitor mode for 24h" — but the 24h window straddles the submission-eval window. A judge hitting a false-positive during the monitor period has no recourse; "we were going to flip to block mode based on monitor data" doesn't help a real human who got blocked.
+
+**What's deferred.** `@vercel/botid` npm install + middleware.ts BotID configuration + dashboard env var setup. The defensive value (spam scrapers + automated content lifting) is real but not pre-deadline-critical given the submission is open-source on GitHub anyway.
+
+**Affected.** Plan §6.3 (BotID install task superseded by this defer). Plan §R3 risk-mitigation language (monitor-then-block flow retired). DEEP_REVIEW_PLAN.md plan-gap-scanner BLOCKER #2 close-out.
+
+**Reopen trigger.** Post-submission, after judge eval window closes (2026-06-01+), revisit if scraper-bot traffic becomes measurable problem.
+
+---
+
 ## 2026-05-25 D-056: D-053 honest reframing per tier-3 NotebookLM + ChatGPT triangulation (TTM in-browser is upstream-pipeline-gated, not bundle-gated)
 
 **Decision.** D-053 originally framed Granite TTM in-browser as "wave-46 will install `@huggingface/transformers` + service-worker cache". Tier-3 NotebookLM (Topic 2 + Topic 4) + ChatGPT Brutal Judge Review + ChatGPT Weaknesses all flagged this as the single biggest over-claim risk. Triangulated review uncovered a factual error in the reviewers' inference AND a real refinement of the honest framing.
