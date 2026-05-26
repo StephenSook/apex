@@ -82,6 +82,9 @@ const CANNED_FEEDBACK = [
   "Suggestion: extract the aggregation step into a separate testable function so the 50 Hz -> 1 Hz mini-sector transform has its own unit test against the canonical CHANNELS tuple in shapes.py.",
 ].join("\n");
 
+const COACH_CODE_SWAP_POINT =
+  "app/frontend/app/api/coach-code/route.ts -> openrouter-client.ts -> ibm-granite/granite-4.1-8b-instruct via OpenRouter (D-058 wave-46 Phase 6.2; HEAD-wired, no Vinh-side proxy)";
+
 function cannedPayload(t0: number): CoachCodeResponse {
   return {
     engine: "coach-code-canned-fallback",
@@ -90,6 +93,7 @@ function cannedPayload(t0: number): CoachCodeResponse {
     feedback: scrubInventedRegulatoryAnchors(CANNED_FEEDBACK),
     prompt_tokens: 0,
     completion_tokens: 0,
+    swap_point: COACH_CODE_SWAP_POINT,
   };
 }
 
@@ -160,6 +164,7 @@ export async function POST(req: NextRequest): Promise<Response> {
       feedback: scrubbed,
       prompt_tokens: completion.usage?.prompt_tokens ?? 0,
       completion_tokens: completion.usage?.completion_tokens ?? 0,
+      swap_point: COACH_CODE_SWAP_POINT,
     };
     return Response.json(payload, {
       status: 200,

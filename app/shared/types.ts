@@ -1806,6 +1806,12 @@ export interface CoachCodeResponse {
   readonly feedback: string;
   readonly prompt_tokens: number;
   readonly completion_tokens: number;
+  // Wave-46.5 type-design-analyzer REWORK close: every other wave-46
+  // response carries a swap_point string for stack-consistency with the
+  // V12-V15 + V7 + V8 + V9 swap-point family. Coach-code is HEAD-wired
+  // via OpenRouter direct (no Vinh-side proxy), so the swap_point
+  // documents the live wiring path rather than a future deferred handler.
+  readonly swap_point: string;
 }
 
 // ============================================================================
