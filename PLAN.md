@@ -24,7 +24,11 @@
 | 4.4 V7 | IBM TSPulse 1M polyphase anomaly detector | `app/backend/apex/tspulse/anomaly.py` | NOT STARTED | `NEXT_PUBLIC_USE_REAL_TSPULSE` | `/api/tspulse/anomaly` shipped wave-46 `0181fc4` |
 | 4.5 V8 | Granite Embedding R2 RAG cosine-similarity backend | `app/backend/apex/embedding/rag_retrieve.py` | NOT STARTED | `NEXT_PUBLIC_USE_REAL_RAG` | `/api/rag-retrieve` shipped wave-46 `5bfa215` |
 | 4.6 | Granite Guardian 4.1 custom-rule expansion (TIER ladder for new Stage A/B violations) | `app/backend/apex/guardian/audit.py` | partial (BYOC live; new rules pending) | n/a (Guardian already WIRED via /api/openrouter-stream) | already shipped |
-| 4.7 | Granite TTM r2.1 D-010 Track 1 channel-mix decoder fine-tune EXECUTION | run fine-tune on RTX 3060 Ti per `logs/day-04-g4.md` pivot trigger | NOT STARTED | n/a (TTM consumes via /api/forecast) | already shipped |
+| 4.7 V3 | Granite TTM r2.1 D-010 Track 1 channel-mix decoder fine-tune EXECUTION | `app/backend/apex/ttm/forecast.py` channel-mix fine-tune + run on RTX 3060 Ti per `logs/day-04-g4.md` pivot trigger | NOT STARTED | n/a (TTM consumes via /api/forecast) | ThreeTrackForecastChart Track 1 badge already wired to label "Vinh M3-V3 backend"; flips MOCK -> WIRED on Vinh deploy |
+| 4.7-extra V11 | Amazon Chronos-2 Track 3 baseline (21-quantile probabilistic forecaster per D-010 three-track ensemble) | `app/backend/apex/ttm/chronos2.py` (or external Chronos-2 HF model serve) | NOT STARTED | n/a (consumed via /api/forecast Track 3 channel) | ThreeTrackForecastChart Track 3 badge wired to "Vinh M3-V11 backend"; flips MOCK -> WIRED on Vinh deploy |
+| extra V2 | Sim-rig real WebSocket telemetry source (live driver-rig stream) | `app/backend/apex/sim_rig/ws_server.py` (or any WS endpoint surfaced at deployed sim-rig URL) | NOT STARTED | n/a (SimRigStream auto-switches to `mode="live"` when `websocketUrl` prop is non-empty) | /sim-rig page currently uses httpStream simulated mode; flip to live mode by passing `websocketUrl="wss://<vinh-deploy>/ws/sim-rig"` once Vinh ships |
+| extra Tri-agent | D-018 Mellea Instruct-Validate-Repair tri-agent critic orchestrator (NOT same as Phase 5.2 Mellea-on-narrator; separate critic-loop pass over recommendations) | `app/backend/apex/critics/orchestrator.py` + `app/backend/apex/physics/confidence.py` | NOT STARTED | n/a (server-side internal; surfaced via TriAgentCriticPanel data hook) | TriAgentCriticPanel already wires `useTriAgentCriticVerdict` hook to /api/critics/verdict (canned-fallback at HEAD); flips MOCK -> real verdicts on Vinh deploy |
+| extra GEPA | D-019 #3 GEPA reflective prompt evolution (shouldn't-be-possible move) writes optimized prompt artifacts | `app/backend/apex/prompts/optimized/` artifact-write + Mellea `req()`-driven evolution loop | NOT STARTED | n/a (server-side internal; surfaced via GEPAEvolutionPanel data hook) | GEPAEvolutionPanel already wires panel with canned-fallback; flips MOCK -> real optimized-prompt evolution log on Vinh deploy |
 | 5.1 | Mellea install | `pyproject.toml` add `mellea>=0.5.0` | NOT STARTED | n/a (server-only) | n/a |
 | 5.2 | Mellea Instruct-Validate-Repair tri-agent on narrator | `app/backend/apex/instruct/narrator.py` Mellea-orchestrated + `app/backend/apex/instruct/requirements.py` validators (FIA Article registry + COA section + citation + conditional phrasing) | NOT STARTED | `MELLEA_IVR_ENABLED` (server-only flag) | n/a |
 | 5.3 | Granite 4.1 8B Instruct narrator real wire | `app/backend/apex/instruct/narrator.py` via WatsonX or OpenRouter | partial (OpenRouter Granite 4.1 8B via /api/openrouter-stream) | n/a | already shipped |
@@ -44,11 +48,16 @@
 3. V1 Granite Vision real timing-sheet PDF inference — Granite-Docling 258M cascade for judge-uploadable COA
 4. V7 TSPulse polyphase anomaly endpoint — flips MOCK_TSPULSE_ACTIVE -> real-time band detections
 5. V8 Granite Embedding R2 cosine-similarity RAG — flips AICopilotChat from lexical TF-IDF to real Granite embeddings
-6. V10 FlowState Track 2 wire — flips ThreeTrackForecastChart MOCK badge to real continuous-time SSM
-7. Mellea IVR loop on narrator (Phase 5.2) — flips coaching report from single-pass to validated-and-repaired
-8. V9 Watson STT via Granite Speech 4.1 2B-Plus — replaces Web Speech API HEAD on VoiceDebriefInput
-9. D-010 Track 1 channel-mix decoder fine-tune execution + Stage A/B real linearization
-10. V15 LIPS harness + APEX-Bench public release (Day 11 ship)
+6. V3 TTM r2.1 D-010 Track 1 channel-mix decoder fine-tune EXECUTION — flips ThreeTrackForecastChart Track 1 MOCK -> WIRED + addresses G4 zero-shot FAIL pivot (per `logs/day-04-g4.md` + `feedback_g4_fail_pivot_documented_then_executed.md`)
+7. V10 FlowState Track 2 wire — flips ThreeTrackForecastChart MOCK badge to real continuous-time SSM
+8. V11 Chronos-2 Track 3 baseline — flips ThreeTrackForecastChart Track 3 MOCK badge to real probabilistic 21-quantile baseline; completes the D-010 three-track ensemble
+9. Mellea IVR loop on narrator (Phase 5.2) — flips coaching report from single-pass to validated-and-repaired
+10. D-018 Mellea tri-agent critic orchestrator (`apex/critics/orchestrator.py` + `apex/physics/confidence.py`) — flips TriAgentCriticPanel from canned-fallback to real critic verdicts
+11. V9 Watson STT via Granite Speech 4.1 2B-Plus — replaces Web Speech API HEAD on VoiceDebriefInput
+12. V2 sim-rig WebSocket live telemetry source — flips /sim-rig from httpStream simulated mode to live mode
+13. D-010 Stage A/B real linearization (Vinh V12 + V13 ship the physics; D-010 Track 1 fine-tune feeds into V12/V13 staged ladder)
+14. D-019 #3 GEPA reflective prompt evolution + optimized-prompt artifact writes — flips GEPAEvolutionPanel from canned-fallback to real evolution log
+15. V15 LIPS harness + APEX-Bench public release (Day 11 ship)
 
 **Vinh deploy convention:** every backend module ships with the SAME response shape the corresponding frontend stub returns. The frontend wire-flip is then a single `NEXT_PUBLIC_USE_REAL_<KEY>=1` flag in Vercel (plus `NEXT_PUBLIC_VINH_BACKEND_BASE_URL=https://<vinh-deploy>`). All routes fall back to canned-fallback on any fetch failure (network + 5xx + parse error), so a partial Vinh deploy never cascades 502s across /judges + /lips-harness panels.
 
