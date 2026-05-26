@@ -494,7 +494,7 @@ function BuildStatus() {
   const phases = [
     { n: "0", label: "Bootstrap", day: "Day 1", state: "done" as const },
     { n: "1", label: "Document parsing", day: "Day 2", state: "done" as const },
-    { n: "2", label: "Physics layer + wave-30 lock", day: "Days 3-5", state: "in progress" as const },
+    { n: "2", label: "Physics layer + wave-30 lock", day: "Days 3-5", state: "done" as const },
     { n: "3", label: "Narrator + COA gate", day: "Day 6", state: "pending" as const },
     { n: "4", label: "Orchestration + polish", day: "Days 7-8", state: "pending" as const },
     { n: "5", label: "Demo + deploy (WebGPU edge ✅ wave-38)", day: "Days 9-10", state: "pending" as const },
