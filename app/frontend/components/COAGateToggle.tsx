@@ -71,7 +71,7 @@ export default function COAGateToggle() {
     <section
       aria-labelledby="coa-gate-toggle-title"
       aria-live="polite"
-      className={`flex flex-col gap-4 rounded-sm border-2 ${statusBorder(state)} bg-paper p-5`}
+      className={`flex flex-col gap-4 rounded-sm border-2 ${statusBorder(state)} bg-paper p-5 transition-colors duration-300`}
     >
       <header>
         <p className="apex-eyebrow">Interactive differentiator (D-A + D-052)</p>
@@ -95,7 +95,7 @@ export default function COAGateToggle() {
           role="switch"
           aria-checked={state === "permitted"}
           onClick={handleToggle}
-          className={`flex items-center justify-between rounded-sm border-2 px-4 py-3 font-mono text-sm uppercase tracking-wider transition-colors ${
+          className={`flex items-center justify-between rounded-sm border-2 px-4 py-3 font-mono text-sm uppercase tracking-wider transition-colors duration-300 ${
             state === "permitted"
               ? "border-racing-green bg-racing-green text-paper"
               : "border-accent bg-paper text-accent"
@@ -119,7 +119,7 @@ export default function COAGateToggle() {
       </div>
 
       <div
-        className={`flex flex-col gap-2 rounded-sm border-l-2 ${
+        className={`flex flex-col gap-2 rounded-sm border-l-2 transition-colors duration-300 ${
           state === "permitted" ? "border-racing-green" : "border-accent"
         } bg-paper p-3`}
         role={state === "blocked" ? "alert" : undefined}
