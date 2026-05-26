@@ -21,9 +21,9 @@ Every locked decision with rationale + date + scope. Newest first.
 
 **Discord intel locked 2026-05-26:**
 
-- Prize structure correctly understood: $5K May pool + $5K June pool + $5K cross-month grand prize = $15K total. May 1st = $2,250 / Runner-up = $1,250 / Best Use of Technology = $750 / Most Innovative = $750. May winners announced 2026-06-10 via email + winners webinar (Lucas-BMA Discord verbatim 2026-05-25 11:35 PM).
-- PitWall threat downgrade D+ MEDIUM -> D LOW on Best Use of Technology tech-depth axis: Ashish (PitWall maintainer) Discord 2026-05-26 confirms Llama 3.3 70B via Groq + only IBM Docling for compliance = 1 tool. APEX 15-tool stack outpaces 15:1. Audience-overlap threat unchanged D+ MEDIUM.
-- GitHub org clarification (Zenix Discord): IBM SkillsBuild GitHub org is for learning resources, NOT submission-repo requirement. StephenSook/apex personal repo stays canonical.
+- Prize structure correctly understood: $5K May pool + $5K June pool + $5K cross-month grand prize = $15K total. May 1st = $2,250 / Runner-up = $1,250 / Best Use of Technology = $750 / Most Innovative = $750. May winners announced 2026-06-10 via email + winners webinar (a BeMyApp organizer-side Discord moderator verbatim 2026-05-25 11:35 PM).
+- PitWall threat downgrade D+ MEDIUM -> D LOW on Best Use of Technology tech-depth axis: upstream PitWall maintainer Discord 2026-05-26 confirms Llama 3.3 70B via Groq + only IBM Docling for compliance = 1 tool. APEX 15-tool stack outpaces 15:1. Audience-overlap threat unchanged D+ MEDIUM.
+- GitHub org clarification (a Discord community member): IBM SkillsBuild GitHub org is for learning resources, NOT submission-repo requirement. StephenSook/apex personal repo stays canonical.
 - IBM Bob trial sign-up SKIPPED: APEX satisfies "at least one of IBM Granite + Docling + Langflow + Context Forge + IBM Bob" 4x over via the other four; Bob is dev-tool not runtime model.
 - June challenge separate from APEX per Stephen explicit ("different challenge prompt + different problem").
 
@@ -542,7 +542,7 @@ Both yield a `*.vercel.app` URL at $0 cost.
 
 **Decision.** Wave-43 G2.6 Vercel apex.race smoke test surfaced a SUBMISSION-CRITICAL blocker: `dig apex.race +short` returns empty + `nslookup apex.race` returns NXDOMAIN. The domain is either unregistered OR registered without DNS pointing at the Vercel deployment. README + paper + 3-min script + 30s storyboard + deck + BeMyApp payload all reference `https://apex.race` as the live demo URL.
 
-**Cautionary precedent.** Per Discord 2026-05-23/24 intel, the PitWall competitor (Ashish; F1 Race Strategy Copilot; HuggingFace Spaces deployment) is publicly hitting OpenRouter rate-limits with screenshots showing "site unavailable" errors. Judges seeing a similar NXDOMAIN on apex.race would be instant credibility loss + DQ-grade for a "live demo" submission category.
+**Cautionary precedent.** Per Discord 2026-05-23/24 intel, the PitWall competitor (a fellow May Challenge participant shipping an F1 Race Strategy Copilot on a HuggingFace Spaces deployment) is publicly hitting OpenRouter rate-limits with screenshots showing "site unavailable" errors. Judges seeing a similar NXDOMAIN on apex.race would be instant credibility loss + DQ-grade for a "live demo" submission category.
 
 **Operator-action items (Stephen, BEFORE 2026-05-30 EOD):**
 
