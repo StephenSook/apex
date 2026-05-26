@@ -335,6 +335,47 @@ function ConnectionIndicator({
   );
 }
 
+type ChannelTone = "neutral" | "caution" | "warning";
+
+function classifyChannel(label: string, channels: TelemetryRow): ChannelTone {
+  switch (label) {
+    case "Throttle":
+      return channels.throttle_pct > 80 ? "caution" : "neutral";
+    case "Brake":
+      if (channels.brake_pa > 3e6) return "warning";
+      if (channels.brake_pa > 1.5e6) return "caution";
+      return "neutral";
+    case "Steering":
+      return Math.abs(channels.steering_rad) > 0.7 ? "caution" : "neutral";
+    case "Lat G":
+      if (Math.abs(channels.lat_g) > 0.9) return "warning";
+      if (Math.abs(channels.lat_g) > 0.6) return "caution";
+      return "neutral";
+    case "Long G":
+      if (Math.abs(channels.long_g) > 0.9) return "warning";
+      if (Math.abs(channels.long_g) > 0.6) return "caution";
+      return "neutral";
+    case "RPM":
+      if (channels.rpm > 7500) return "warning";
+      if (channels.rpm > 6500) return "caution";
+      return "neutral";
+    default:
+      return "neutral";
+  }
+}
+
+const TONE_CLASSNAME: Readonly<Record<ChannelTone, string>> = {
+  neutral: "text-ink",
+  caution: "text-amber",
+  warning: "text-accent",
+};
+
+const TONE_ARIA_LABEL: Readonly<Record<ChannelTone, string>> = {
+  neutral: "",
+  caution: " (caution)",
+  warning: " (warning)",
+};
+
 function ChannelGrid({
   channels,
   elapsed,
@@ -355,12 +396,21 @@ function ChannelGrid({
   ];
   return (
     <dl className="grid grid-cols-3 gap-2 font-mono text-xs leading-relaxed tabular-nums">
-      {rows.map(([label, value]) => (
-        <div key={label} className="flex flex-col gap-1">
-          <dt className="uppercase tracking-wider text-muted">{label}</dt>
-          <dd className="text-base text-ink tabular-nums">{value}</dd>
-        </div>
-      ))}
+      {rows.map(([label, value]) => {
+        const tone = classifyChannel(label, channels);
+        return (
+          <div key={label} className="flex flex-col gap-1">
+            <dt className="uppercase tracking-wider text-muted">{label}</dt>
+            <dd className={`text-base tabular-nums ${TONE_CLASSNAME[tone]}`}>
+              <span aria-hidden="true">{value}</span>
+              <span className="sr-only">
+                {label} {value}
+                {TONE_ARIA_LABEL[tone]}
+              </span>
+            </dd>
+          </div>
+        );
+      })}
     </dl>
   );
 }
