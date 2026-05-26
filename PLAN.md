@@ -9,6 +9,59 @@
 
 ---
 
+## Wave-46 Vinh task table (NEW 2026-05-26 morning, session A close-out)
+
+**Wave-46 mega-arc plan** at `~/.claude/plans/all-right-i-want-rippling-moon.md` (Claude-side; Vinh references this table for backend lane scope). 10 phases; ~98 atomic commits Vinh + Stephen combined. Session A shipped Stephen-side Phase 1+2+3+4 (15 commits). Vinh tasks below; each is independently shippable + each frontend stub is wire-flip-ready behind `NEXT_PUBLIC_USE_REAL_*` env flags (default false / canned-fallback at HEAD).
+
+| Phase | Module | Vinh path | Status | Frontend wire-flip flag | Stephen-side stub |
+|-------|--------|-----------|--------|--------------------------|--------------------|
+| 2.1 V12 | Stage A 8-tier Pacejka linearization | `app/backend/apex/physics/projection_pacejka.py` satisfying DifferentiableProjector Protocol | NOT STARTED | `NEXT_PUBLIC_USE_REAL_BACKEND_V12` | `/api/projector-stage-a` shipped wave-46 `f642b35` |
+| 2.2 V13 | Stage B 3-iteration SCP outer loop | `app/backend/apex/physics/projection_scp.py` wrapping Stage A | NOT STARTED | `NEXT_PUBLIC_USE_REAL_BACKEND_V13` | `/api/projector-stage-b` shipped wave-46 `f642b35` |
+| 3.1 V14 | LangGraph + MCP + ContextForge runtime | `app/backend/apex/orchestration/langgraph_runtime.py` | NOT STARTED | `NEXT_PUBLIC_USE_REAL_BACKEND_V14` | `/api/orchestration` shipped wave-46 `63db753`; also feeds `/api/judges/coa-diff` |
+| 3.2 V15 | LIPS 4-axis evaluation harness + APEX-Bench release | `eval/Dockerfile` + `apex-bench/` | NOT STARTED | `NEXT_PUBLIC_USE_REAL_BACKEND_V15` | `/api/lips-harness` shipped wave-46 `63db753` |
+| 4.1+4.2 V1 | Granite Vision 4.1 4B real timing-sheet PDF + Granite-Docling 258M | `app/backend/apex/instruct/timing_sheet_parser.py` `_parse_with_granite_vision` | NOT STARTED | `NEXT_PUBLIC_USE_REAL_TIMING_SHEET` | `/api/timing-sheet-parse` wave-46 `cdc8906` multipart POST forward |
+| 4.3 V10 | Granite FlowState r1.1 18.5M Track 2 wire | `app/backend/apex/ttm/flowstate.py` (or integrated into existing TTM pipeline) | NOT STARTED | `NEXT_PUBLIC_USE_REAL_FLOWSTATE` (env flag exists; no route stub needed; ThreeTrackForecastChart consumes /api/forecast) | Vinh extends `/api/forecast` to surface flowstate track when wired |
+| 4.4 V7 | IBM TSPulse 1M polyphase anomaly detector | `app/backend/apex/tspulse/anomaly.py` | NOT STARTED | `NEXT_PUBLIC_USE_REAL_TSPULSE` | `/api/tspulse/anomaly` shipped wave-46 `0181fc4` |
+| 4.5 V8 | Granite Embedding R2 RAG cosine-similarity backend | `app/backend/apex/embedding/rag_retrieve.py` | NOT STARTED | `NEXT_PUBLIC_USE_REAL_RAG` | `/api/rag-retrieve` shipped wave-46 `5bfa215` |
+| 4.6 | Granite Guardian 4.1 custom-rule expansion (TIER ladder for new Stage A/B violations) | `app/backend/apex/guardian/audit.py` | partial (BYOC live; new rules pending) | n/a (Guardian already WIRED via /api/openrouter-stream) | already shipped |
+| 4.7 | Granite TTM r2.1 D-010 Track 1 channel-mix decoder fine-tune EXECUTION | run fine-tune on RTX 3060 Ti per `logs/day-04-g4.md` pivot trigger | NOT STARTED | n/a (TTM consumes via /api/forecast) | already shipped |
+| 5.1 | Mellea install | `pyproject.toml` add `mellea>=0.5.0` | NOT STARTED | n/a (server-only) | n/a |
+| 5.2 | Mellea Instruct-Validate-Repair tri-agent on narrator | `app/backend/apex/instruct/narrator.py` Mellea-orchestrated + `app/backend/apex/instruct/requirements.py` validators (FIA Article registry + COA section + citation + conditional phrasing) | NOT STARTED | `MELLEA_IVR_ENABLED` (server-only flag) | n/a |
+| 5.3 | Granite 4.1 8B Instruct narrator real wire | `app/backend/apex/instruct/narrator.py` via WatsonX or OpenRouter | partial (OpenRouter Granite 4.1 8B via /api/openrouter-stream) | n/a | already shipped |
+| 5.4 V9 | Watson STT backend proxy via Granite Speech 4.1 2B-Plus | `app/backend/apex/speech/stt_proxy.py` via vLLM serve `ibm-granite/granite-speech-4.1-2b-plus` | NOT STARTED | `NEXT_PUBLIC_USE_GRANITE_SPEECH` | Stephen ships `/api/stt` stub + VoiceDebriefInput env-flag flip in Phase 5 (next session) |
+| 5.5 | Watson TTS polish (streaming chunking + per-driver voice profile placeholder) | `app/backend/apex/speech/tts.py` (existing Vercel TTS wire) | partial (production path operational per wave-43 close-out) | n/a (Watson TTS already WIRED) | already shipped |
+| 6.1 | Granite 4.1 3B Instruct fast-path AICopilotChat routing | `app/backend/apex/instruct/chat_router.py` (intent classifier 3B-vs-8B) | NOT STARTED | `NEXT_PUBLIC_USE_GRANITE_3B_ROUTING` | Stephen ships AICopilotChat env-flag flip in Phase 6 (next session) |
+| 6.2 | Granite 4.1 8B Instruct for /coach-code feature | `app/backend/apex/coach_code/handler.py` (text-only feedback; HARD-COMPLIANCE scrubber server-side) | NOT STARTED | n/a (server-side LLM route) | Stephen ships NEW `/coach-code` page + `/api/coach-code` route in Phase 6 |
+| 6.4 | DocTags pass-through (D-023 timing-sheet metadata through orchestration) | `app/backend/apex/instruct/timing_sheet_parser.py` extend to pipe DocTags forward | NOT STARTED | n/a (server-side internal) | n/a |
+| 7.2 | Tire degradation predictor (TTM-based) | `app/backend/apex/tire_degradation/predictor.py` consuming TTM r2.1 forecast | NOT STARTED | n/a (server-side internal; consumed via /api/tire-degradation) | Stephen ships NEW `/api/tire-degradation` + `TireDegradationPanel` in Phase 7 |
+| 7.3 | Pre-race weather brief NOAA / Met Office API | `app/backend/apex/weather/brief.py` consuming free public APIs | NOT STARTED | n/a (server-side internal; consumed via /api/weather-brief) | Stephen ships NEW `/api/weather-brief` + `WeatherBriefCard` in Phase 7 |
+| 9 | Per-agent fix-wave (deep-review batch findings; cascade-#41+) | per-finding | TBD | n/a | concurrent with Phase 9 |
+| 10 | Final close-out coordination + Vinh smoke tests on all V1-V15 swap-points | per-route | TBD | n/a | Phase 10 hackathon-pre-deploy gate |
+
+**Vinh action items priority order (highest judges-impact first):**
+1. V14 LangGraph runtime (`apex/orchestration/langgraph_runtime.py`) — unlocks RealtimeCOADiffPanel + LangGraphRuntimePanel real verdicts on /judges + flips Langflow FACADE -> LangGraph INTEGRATION-LANGGRAPH per D-054
+2. V12 Pacejka + V13 SCP (Phase 2 physics layer ascent per D-031 staged ladder) — unlocks PacejkaStageAPanel + SCPStageBPanel real residuals
+3. V1 Granite Vision real timing-sheet PDF inference — Granite-Docling 258M cascade for judge-uploadable COA
+4. V7 TSPulse polyphase anomaly endpoint — flips MOCK_TSPULSE_ACTIVE -> real-time band detections
+5. V8 Granite Embedding R2 cosine-similarity RAG — flips AICopilotChat from lexical TF-IDF to real Granite embeddings
+6. V10 FlowState Track 2 wire — flips ThreeTrackForecastChart MOCK badge to real continuous-time SSM
+7. Mellea IVR loop on narrator (Phase 5.2) — flips coaching report from single-pass to validated-and-repaired
+8. V9 Watson STT via Granite Speech 4.1 2B-Plus — replaces Web Speech API HEAD on VoiceDebriefInput
+9. D-010 Track 1 channel-mix decoder fine-tune execution + Stage A/B real linearization
+10. V15 LIPS harness + APEX-Bench public release (Day 11 ship)
+
+**Vinh deploy convention:** every backend module ships with the SAME response shape the corresponding frontend stub returns. The frontend wire-flip is then a single `NEXT_PUBLIC_USE_REAL_<KEY>=1` flag in Vercel (plus `NEXT_PUBLIC_VINH_BACKEND_BASE_URL=https://<vinh-deploy>`). All routes fall back to canned-fallback on any fetch failure (network + 5xx + parse error), so a partial Vinh deploy never cascades 502s across /judges + /lips-harness panels.
+
+---
+
+## Status snapshot (last sync 2026-05-26 Day 8 wave-46 session A close-out)
+
+Wave-46 session A shipped 15 atomic commits Phase 1+2+3+4 frontend scope. HEAD CI green at `3ece1d0`. Production smoke 6/6 wave-46 routes 200 (`/api/projector-stage-a` + `/api/projector-stage-b` + `/api/orchestration` + `/api/lips-harness` + `/api/judges/coa-diff` + `/api/tspulse/anomaly`; RAG POST verified). 2 cascades closed (#39 vinh-swap-points test 4-keys -> 6-keys + #40 RAG route corpus-matching query).
+
+**Wave-46 Stephen-side phase status (session A):** Phase 1 ✅ + Phase 2 ✅ + Phase 3 ✅ + Phase 4 ✅ (partial: 4.1/4.2/4.4/4.5/4.8 shipped; 4.3/4.6/4.7 Vinh-side deferred). Phase 5-10 queued for subsequent sessions.
+
+---
+
 ## Status snapshot (last sync 2026-05-24 Day 6 wave-43 close-out)
 
 This snapshot is the at-a-glance reality check for anyone reading PLAN.md fresh.
