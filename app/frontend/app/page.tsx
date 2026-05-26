@@ -443,9 +443,9 @@ function Differentiators() {
     {
       n: "05",
       lead:
-        "Twelve IBM Granite tools, every one load-bearing, IBM Bob in the build loop.",
+        "Fifteen IBM Granite tools across a per-tool honesty ladder.",
       body:
-        "Per the IBM × Scuderia Ferrari case-study precedent. We commit Bob session logs to the repo.",
+        "Two WIRED at HEAD, ten at INTEGRATION with canonical type contracts + backend swap-points, three build-time accelerators (Docling library + Mellea IVR slot + IBM Bob; Bob is architectural inspiration only per D-060, not a runtime dependency). Per the IBM × Scuderia Ferrari case-study precedent.",
     },
   ];
 
@@ -579,8 +579,8 @@ function BuildStatus() {
               <p className="apex-eyebrow">Team</p>
               <p className="mt-3 text-sm text-ink-soft leading-relaxed">
                 Stephen Sookra (frontend, pitch, project architect) and Vinh Le
-                (backend, ML pipeline, infra). Built with IBM Bob, per the
-                Scuderia Ferrari case-study precedent.
+                (backend, ML pipeline, infra). Built on IBM Granite, per the
+                IBM × Scuderia Ferrari case-study precedent.
               </p>
             </div>
           </aside>
@@ -609,11 +609,11 @@ function StackBadges() {
         <div className="mb-12 flex flex-col gap-3 max-w-3xl">
           <p className="apex-eyebrow">IBM stack</p>
           <h2 id="stack-title" className="font-display text-4xl leading-tight text-ink sm:text-5xl">
-            Twelve tools.
+            Fifteen tools.
             <em className="italic text-racing-green"> Per-tool wire-up status, honest.</em>
           </h2>
           <p className="text-base text-ink-soft leading-relaxed">
-            Two tools wired end-to-end at HEAD (Granite Instruct 4.1 8B coaching narration + Granite 4.0 Nano 350M WebGPU edge model). Seven tools at frontend-integration phase with canonical type contracts + backend swap-points documented (per Stream M.3 spec handoff in Vinh-coord backend roadmap; render path stays identical across mock and real). One demo-facade (Langflow per D-017). Two build-time accelerators (Docling library + IBM Bob). No tool listed without a runtime role in the pipeline.
+            Two tools wired end-to-end at HEAD (Granite Instruct 4.1 8B coaching narration + Granite 4.0 Nano 350M WebGPU edge model). Ten tools at frontend-integration phase with canonical type contracts + backend swap-points documented (per Stream M.3 spec handoff + wave-46 D-058 expansion adding Granite Instruct 4.1 3B chat-routing + Granite Speech 4.1 2B-Plus Watson STT proxy preview; LangGraph + Granite MCP Gateway + ContextForge as the orchestration runtime per D-017 G7 + D-054; render path stays identical across mock and real; Langflow retained as the export-graph artifact). Three build-time accelerators (Docling library + Mellea v0.5.0 IVR-loop slot + IBM Bob; Bob and Mellea are build-time architectural inspiration only per D-060, not runtime dependencies). No runtime tool listed without a runtime role in the pipeline.
           </p>
         </div>
         <ul className="grid gap-px bg-rule sm:grid-cols-2 lg:grid-cols-4">
