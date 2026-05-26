@@ -14,6 +14,7 @@ import Link from "next/link";
 import ApexCamPanel from "../../components/ApexCamPanel";
 import COAGateToggle from "../../components/COAGateToggle";
 import EngineAgnosticByteEqualityDemo from "../../components/EngineAgnosticByteEqualityDemo";
+import NotebookLMHoverAudio from "../../components/NotebookLMHoverAudio";
 import RealtimeCOADiffPanel from "../../components/RealtimeCOADiffPanel";
 import JudgeTrackTighteningCallout from "../../components/JudgeTrackTighteningCallout";
 import JudgesGalaxyMovesShell from "../../components/JudgesGalaxyMovesShell";
@@ -546,6 +547,12 @@ export default function JudgesPage() {
           </p>
           <div className="mt-8">
             <COAGateToggle />
+          </div>
+          <div className="mt-4">
+            <NotebookLMHoverAudio
+              panelId="coa-gate"
+              panelLabel="COA-parameterized simultaneity gate"
+            />
           </div>
           <div className="mt-8">
             <RealtimeCOADiffPanel />
