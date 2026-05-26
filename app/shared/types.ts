@@ -1838,3 +1838,57 @@ export interface UploadTelemetryResponse {
   readonly channels: ReadonlyArray<TelemetryChannelSummary>;
   readonly head_preview: ReadonlyArray<Record<string, number>>;
 }
+
+// ============================================================================
+// Wave-46 Phase 7.2: NEW /api/tire-degradation route + (Vinh-side) tire-
+// degradation predictor consuming TTM r2.1 forecast. Predicts per-axle
+// remaining-life percentage over a forward stint horizon based on the
+// current telemetry pattern + recent lap pace. Canned-fallback at HEAD;
+// Vinh ships real predictor wired into the TTM forecast pipeline.
+// ============================================================================
+
+export type TireCompound = "soft" | "medium" | "hard" | "intermediate" | "wet";
+
+export interface TireDegradationStep {
+  readonly stint_lap: number;
+  readonly front_left_pct: number;
+  readonly front_right_pct: number;
+  readonly rear_left_pct: number;
+  readonly rear_right_pct: number;
+}
+
+export interface TireDegradationResponse {
+  readonly engine: "tire-degradation-canned-fallback" | "tire-degradation-real";
+  readonly compute_ms: number;
+  readonly compound: TireCompound;
+  readonly current_stint_lap: number;
+  readonly horizon_laps: number;
+  readonly steps: ReadonlyArray<TireDegradationStep>;
+  readonly verdict: string;
+}
+
+// ============================================================================
+// Wave-46 Phase 7.3: NEW /api/weather-brief route + (Vinh-side) NOAA / Met
+// Office API consumer. Returns pre-race weather + track-temp + tire-temp
+// envelope predictions for the current session. Canned-fallback at HEAD;
+// Vinh ships real API consumer with free public NOAA / Met Office endpoints.
+// ============================================================================
+
+export interface WeatherBriefHour {
+  readonly hour_offset: number;
+  readonly air_temp_c: number;
+  readonly track_temp_c: number;
+  readonly precipitation_mm: number;
+  readonly wind_kph: number;
+  readonly humidity_pct: number;
+}
+
+export interface WeatherBriefResponse {
+  readonly engine: "weather-brief-canned-fallback" | "weather-brief-real";
+  readonly compute_ms: number;
+  readonly source: string;
+  readonly venue: string;
+  readonly session_start_iso: string;
+  readonly hours: ReadonlyArray<WeatherBriefHour>;
+  readonly headline: string;
+}
