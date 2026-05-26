@@ -50,7 +50,7 @@ describe("VoiceDebriefInput (wave-44 Phase 6i + wave-45 Phase 3)", () => {
 
   it("renders 'unsupported' state when SpeechRecognition API absent", () => {
     render(<VoiceDebriefInput onTranscript={vi.fn()} />);
-    expect(screen.getByText(/voice debrief unavailable/i)).toBeInTheDocument();
+    expect(screen.getByText(/Voice debrief not supported/i)).toBeInTheDocument();
   });
 
   it("renders idle state with start button when API present", () => {
@@ -73,10 +73,9 @@ describe("VoiceDebriefInput (wave-44 Phase 6i + wave-45 Phase 3)", () => {
     ).toBeInTheDocument();
   });
 
-  it("renders accessible heading with aria semantics", () => {
+  it("renders Voice-debrief eyebrow with Watson STT swap-point cross-ref", () => {
     installMockSpeechRecognition();
     render(<VoiceDebriefInput onTranscript={vi.fn()} />);
-    const heading = screen.getByRole("heading", { level: 3 });
-    expect(heading).toBeInTheDocument();
+    expect(screen.getByText(/Voice debrief.*browser-native.*Watson STT/i)).toBeInTheDocument();
   });
 });

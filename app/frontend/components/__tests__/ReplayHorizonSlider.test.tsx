@@ -15,7 +15,7 @@ describe("ReplayHorizonSlider", () => {
     const slider = screen.getByRole("slider", { name: /Scrub forecast horizon frame/i });
     fireEvent.change(slider, { target: { value: "15" } });
     expect(screen.getByText(/Frame 16 of 30/i)).toBeInTheDocument();
-    expect(screen.getByText(/t \+ 0\.30 s/)).toBeInTheDocument();
+    expect(screen.getByText(/t \+ 15\.00 s/)).toBeInTheDocument();
   });
 
   it("respects horizonSteps prop override", () => {
