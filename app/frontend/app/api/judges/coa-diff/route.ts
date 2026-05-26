@@ -53,8 +53,13 @@ const CANNED_BLOCKED: COADiffVerdict = {
   ],
 };
 
+// Persona-decoupled per feedback_persona_not_hardcoded_in_ui.md (Stephen
+// explicit 2026-05-24). Default GET response describes the telemetry
+// micro-window in generic adaptive-controls vocabulary; persona-named
+// fixtures live ONLY in the storytelling layer (demo video + storyboard +
+// persona doc), never as a default API response or default UI state.
 const CANNED_SCENARIO =
-  "Sarah Reynolds Donington 2026 qualifying lap 17 of 19, slowest-corner brake-release-to-throttle-on micro-window: brake 0.42 MPa residual on hand-control lever + throttle 12 percent via secondary hand-control.";
+  "Slowest-corner brake-release-to-throttle-on micro-window on adaptive hand-controls: brake 0.42 MPa residual on the lever + throttle 12 percent via secondary hand-control. Same physical event, different verdicts on different COA simultaneity-gate flags.";
 
 function cannedPayload(t0: number): COADiffResponse {
   return {

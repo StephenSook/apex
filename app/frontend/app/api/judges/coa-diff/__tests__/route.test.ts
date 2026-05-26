@@ -30,7 +30,8 @@ describe("/api/judges/coa-diff wave-46 Phase 3.5 COA diff swap-point", () => {
     expect(data.permitted.verdict).toBe("feasible");
     expect(data.blocked.coa_overlap_flag).toBe(0);
     expect(data.blocked.verdict).toBe("violation");
-    expect(data.scenario).toMatch(/Sarah Reynolds/);
+    expect(data.scenario).toMatch(/adaptive hand-controls/i);
+    expect(data.scenario).not.toMatch(/Sarah/i);
     expect(data.swap_point).toMatch(/Vinh M3-V14/);
   });
 
@@ -101,6 +102,7 @@ describe("/api/judges/coa-diff wave-46 Phase 3.5 COA diff swap-point", () => {
     expect(res.status).toBe(200);
     const data = (await res.json()) as { engine: string; scenario: string };
     expect(data.engine).toBe("coa-diff-canned-fallback");
-    expect(data.scenario).toMatch(/Sarah Reynolds/);
+    expect(data.scenario).toMatch(/adaptive hand-controls/i);
+    expect(data.scenario).not.toMatch(/Sarah/i);
   });
 });
