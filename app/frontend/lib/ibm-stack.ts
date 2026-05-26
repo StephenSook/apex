@@ -189,6 +189,37 @@ export const IBM_GRANITE_STACK: ReadonlyArray<GraniteStackTool> = [
     role: "Build accelerator per IBM Granite Ferrari case-study precedent",
     status: "ACCELERATOR",
   },
+  {
+    name: "Granite Instruct 3B",
+    version: "4.1 3B",
+    role: "Fast-path AICopilotChat routing for simple queries (D-058 wave-46 add)",
+    status: "INTEGRATION",
+    // Wave-46 Phase 6.1: 3B fast-path routing on AICopilotChat. Intent
+    // classifier routes simple queries to 3B, complex to 8B Instruct.
+    // Frontend ships behind NEXT_PUBLIC_USE_GRANITE_3B_ROUTING env flag
+    // default false. Status flips to "WIRED" once Vinh wires the
+    // chat_router.py 3B fast-path in backend.
+  },
+  {
+    name: "Granite Speech",
+    version: "4.1 2B-Plus",
+    role: "Speaker-attributed ASR + word-level timestamps replacing Web Speech (D-058 wave-46 add)",
+    status: "INTEGRATION",
+    // Wave-46 Phase 5: Granite Speech 4.1 2B-Plus replaces the Web Speech
+    // API HEAD path on VoiceDebriefInput. Vinh wires Watson STT backend
+    // proxy via vLLM serve at /api/stt. Multilingual EN/FR/DE/ES/PT/JA.
+    // Status flips to "WIRED" once Vinh ships stt_proxy.py.
+  },
+  {
+    name: "Mellea",
+    version: ">=0.5.0",
+    role: "Instruct-Validate-Repair tri-agent critic loop on narrator (IBM Research open source library, Apache 2.0)",
+    status: "ACCELERATOR",
+    // Wave-46 Phase 5: real IBM Research library generative-computing/mellea
+    // wires Instruct-Validate-Repair loop on narrator. Pydantic schemas +
+    // req() validators on FIA Article + COA section + citation + conditional
+    // phrasing per HARD-COMPLIANCE. Multi-backend including WatsonX.
+  },
 ];
 
 /**

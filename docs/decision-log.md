@@ -4,6 +4,25 @@ Every locked decision with rationale + date + scope. Newest first.
 
 ---
 
+## 2026-05-25 D-058: Wave-46 mega-arc plan-entry (galaxy-tier 10-phase scope-lock + Plan-agent DEFER discipline + Stephen-explicit answers Q1+Q2+Q3)
+
+**Decision.** Wave-46 ships per `~/.claude/plans/all-right-i-want-rippling-moon.md` (overwriting the prior wave-45 plan). 10 phases, ~98 atomic commits Vinh + Stephen combined. Galaxy ambition per Stephen explicit 2026-05-25 night-2 verbatim: "We need to have the best project that we can possibly have. No limitations." Plan-agent DEFER list explicitly skipped per Q1 = Option 1 (judges' grading; not page decoration): Three.js / Vercel Queues swap / Watson Assistant duplicate chat / Watson Discovery duplicate RAG / IBM Cloud second deploy / Apple Watch stub / voice cloning / HRV / multi-language / pit-stop simulator / scroll progress indicator / live race-day mode. Skipped because each is either decoration with no judge-impact lift, OR breaks-working-system risk, OR requires API keys we cannot provision in the window. Skip reasons explicitly NOT time-pressure per `feedback_no_time_pressure_restraint.md`.
+
+**Q2 = Pause for tier-1 research first** (Stephen explicit: "We want the best quality possible, so if that's slower, that's ok"). Tier-1 Context7 + EXA + firecrawl + WebSearch dispatch executed pre-plan-write 2026-05-25 night-2. Findings absorbed into the plan:
+
+1. Granite 4.1 3B Instruct is the actual model name (NOT branded "Switch"). Released 2026-04-29 on HF + watsonx + OpenRouter + Ollama. Use for AICopilotChat fast-routing preview wire.
+2. Granite Speech 4.1 2B-Plus confirmed on HF since 2026-04-28 with speaker-attributed ASR + word-level timestamps. Multilingual EN/FR/DE/ES/PT/JA. Self-host via HF transformers v5.8+ or vLLM or watsonx. NOT yet on Inference Providers, backend proxy path required for /api/stt.
+3. Mellea confirmed real IBM Research library (`generative-computing/mellea` v0.5.0 PyPI, Apache 2.0, Python 3.11+). `instruct() + requirements + IVR loop` exactly as wave-46 scope needs. Multi-backend including WatsonX. MCP compatible.
+4. NotebookLM API only accepts empty requests, no per-panel control. Path: pre-generate audio offline via NotebookLM web UI, host as static MP3 in /public/audio/, lazy-load on hover.
+5. IBM Bob real (bob.ibm.com, launched 2026-04-28) but "customMode" terminology does not exist in Bob docs. **Phase 1.2 D-020 re-read finding: D-020 is "Gradient bridge two-regime seam at SCP projector output" (Mellea IVR below seam + TTM fine-tune above seam), NOT IBM Bob customMode appendix.** Original wave-46 item F was misframed; dropped from wave-46 scope entirely. D-023 is MLPerf tolerance-banded reproducibility, NOT DocTags pass-through; also dropped. D-024 is Physics-confidence Mahalanobis detector, NOT Granite Code 8B; the /coach-code feature still ships under wave-46 Phase 6.2 without D-024 D-### link. D-025 is NeurIPS central claim locked, NOT Granite Switch routing; the Granite 4.1 3B routing feature still ships under Phase 6.1 without D-025 link.
+6. Granite Code 8B deprecated with explicit warning; Granite 4.1 8B mainline supersedes (HumanEval 87.2% pass@1). Use Granite 4.1 8B for /coach-code (item N reframed).
+
+**Q3 = Ship wire-flips wave-46 with feature flag.** Each V12-V15 swap-point ships behind `NEXT_PUBLIC_USE_REAL_BACKEND_V12` etc env flag, default false (canned). Vinh flips when backend lands. Atomic + reversible + both branches tested + production demo shows canned-or-real depending on backend availability at submission moment.
+
+**Affected.** Wave-46 plan file. Phase 6 narrowed from 7-9 commits to 4-5 commits (Granite 4.1 3B routing + /coach-code only; D-020 IBM Bob clarification + D-023 DocTags + D-024 + D-025 housekeeping all dropped per Phase 1.2 re-read finding). All other 9 phases unchanged. Project memory `feedback_quality_over_speed.md` amended Phase 1.5 to cover research escalation cycles (Stephen 2026-05-25 night-2 verbatim explicit).
+
+---
+
 ## 2026-05-25 D-057: Vercel BotID explicit defer per wave-45.5 plan-gap-scanner BLOCKER #2
 
 **Decision.** Wave-45 plan §6.3 specified `pnpm add @vercel/botid` + middleware setup for bot-detection on production. Per plan R3 risk-mitigation: "monitor mode for 24h to verify no false-positives before flipping to block mode; drop entirely if false-positive rate is >0.5%". Implementation never landed; wave-45.5 plan-gap-scanner flagged as BLOCKER. This entry explicitly defers BotID install to wave-46+.
