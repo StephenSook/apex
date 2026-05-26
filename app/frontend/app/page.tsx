@@ -11,7 +11,6 @@ export default function Home() {
         <DriverContext />
         <Architecture />
         <Differentiators />
-        <BuildStatus />
         <StackBadges />
       </main>
       <SiteFooter />
@@ -484,118 +483,6 @@ function Differentiators() {
         </ol>
       </div>
     </section>
-  );
-}
-
-/* -------------------------------------------------------------- */
-/* Build status                                                     */
-/* -------------------------------------------------------------- */
-function BuildStatus() {
-  const phases = [
-    { n: "0", label: "Bootstrap", day: "Day 1", state: "done" as const },
-    { n: "1", label: "Document parsing", day: "Day 2", state: "done" as const },
-    { n: "2", label: "Physics layer + wave-30 lock", day: "Days 3-5", state: "done" as const },
-    { n: "3", label: "Narrator + COA gate", day: "Day 6", state: "pending" as const },
-    { n: "4", label: "Orchestration + polish", day: "Days 7-8", state: "pending" as const },
-    { n: "5", label: "Demo + deploy (WebGPU edge ✅ wave-38)", day: "Days 9-10", state: "pending" as const },
-    { n: "6", label: "Submission package + NeurIPS draft", day: "Day 11", state: "pending" as const },
-    { n: "7", label: "Submit + multi-track", day: "Day 12 (2026-05-31)", state: "pending" as const },
-  ];
-
-  return (
-    <section
-      id="status"
-      className="border-b border-rule"
-      aria-labelledby="status-title"
-    >
-      <div className="mx-auto max-w-6xl px-6 py-20 lg:px-10 lg:py-24">
-        <div className="mb-12 flex flex-col gap-3 max-w-3xl">
-          <p className="apex-eyebrow">Build status</p>
-          <h2
-            id="status-title"
-            className="font-display text-4xl leading-tight text-ink sm:text-5xl"
-          >
-            Day 7 of 12, in public.
-          </h2>
-          <p className="text-base text-ink-soft leading-relaxed pt-2">
-            Every commit lands on{" "}
-            <Link
-              href="https://github.com/StephenSook/apex"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-racing-green underline underline-offset-4 hover:text-accent"
-            >
-              the main branch
-            </Link>{" "}
-            atomic. No git hooks. No CLI wrappers. Coordination is manual, per the
-            convention that worked on Trace and Hometown.
-          </p>
-        </div>
-
-        <div className="grid gap-10 lg:grid-cols-12 lg:gap-16">
-          <ul className="lg:col-span-7 flex flex-col divide-y divide-rule border-y border-rule">
-            {phases.map((p) => (
-              <li
-                key={p.n}
-                className="grid grid-cols-[auto_1fr_auto] items-baseline gap-4 py-4"
-              >
-                <span className="font-display text-2xl italic text-accent w-8">
-                  {p.n}
-                </span>
-                <div className="flex flex-col">
-                  <span className="font-sans text-base text-ink">{p.label}</span>
-                  <span className="font-mono text-xs text-muted">{p.day}</span>
-                </div>
-                <span
-                  className={`font-mono text-xs uppercase tracking-wider ${
-                    p.state === "done"
-                      ? "text-racing-green"
-                      : "text-muted"
-                  }`}
-                >
-                  {p.state}
-                </span>
-              </li>
-            ))}
-          </ul>
-
-          <aside className="lg:col-span-5 flex flex-col gap-6">
-            <div className="rounded-sm border border-rule bg-paper-warm p-6">
-              <p className="apex-eyebrow">Calibration ceiling</p>
-              <p className="mt-3 text-sm text-ink-soft leading-relaxed">
-                From the Phase 5 NotebookLM verification pass against the
-                seven-voice synthesis.
-              </p>
-              <dl className="mt-5 grid gap-3 font-mono text-sm">
-                <Stat label="Top-3 placement" value="90%" />
-                <Stat label="Best Use of Technology" value="96%" />
-                <Stat label="Most Innovative" value="88%" />
-              </dl>
-              <p className="mt-5 font-mono text-[11px] uppercase tracking-wider text-muted">
-                Working planning numbers: 75 / 85 / 75
-              </p>
-            </div>
-            <div className="rounded-sm border border-rule p-6">
-              <p className="apex-eyebrow">Team</p>
-              <p className="mt-3 text-sm text-ink-soft leading-relaxed">
-                Stephen Sookra (frontend, pitch, project architect) and Vinh Le
-                (backend, ML pipeline, infra). Built on IBM Granite, per the
-                IBM × Scuderia Ferrari case-study precedent.
-              </p>
-            </div>
-          </aside>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function Stat({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex items-baseline justify-between gap-4 border-b border-rule pb-2 last:border-b-0">
-      <dt className="text-xs uppercase tracking-wider text-muted">{label}</dt>
-      <dd className="text-lg text-ink font-mono tabular-nums">{value}</dd>
-    </div>
   );
 }
 
