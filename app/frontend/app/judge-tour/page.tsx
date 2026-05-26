@@ -1,7 +1,17 @@
 import type { Metadata } from "next";
 
+import JudgeTourKeyboardNav from "../../components/JudgeTourKeyboardNav";
 import JudgeWalkthroughProgressBar from "../../components/JudgeWalkthroughProgressBar";
 import JudgeWalkthroughStep from "../../components/JudgeWalkthroughStep";
+
+const STEP_LABELS: ReadonlyArray<string> = [
+  "Problem (adaptive racers do not have a race engineer)",
+  "IBM stack (fifteen tools per honesty tier)",
+  "Engine-agnostic byte-equality lock (D-050)",
+  "COA-parameterized simultaneity gate (Differentiator 2)",
+  "Galaxy-tier shouldn't-be-possible moves (seven of them)",
+  "BeMyApp submission package + call-to-action",
+];
 
 /**
  * /judge-tour page. Wave-45 Phase 4 Block C.1 close-out. 6-step
@@ -34,9 +44,14 @@ export default async function JudgeTourPage({ searchParams }: JudgeTourPageProps
 
   return (
     <main id="main" className="flex flex-col">
+      <JudgeTourKeyboardNav
+        currentStep={currentStep}
+        totalSteps={TOTAL_STEPS}
+        stepLabel={STEP_LABELS[currentStep - 1] ?? "unknown"}
+      />
       <header className="border-b border-rule bg-paper">
         <div className="mx-auto flex max-w-4xl flex-col gap-6 px-6 py-10 lg:px-10 lg:py-14">
-          <p className="apex-eyebrow">Judge tour · 6-step narrative walkthrough</p>
+          <p className="apex-eyebrow">Judge tour · 6-step narrative walkthrough (← / → arrow keys navigate)</p>
           <h1 className="font-display text-4xl tracking-tight text-ink sm:text-5xl">
             APEX, paced for two minutes.
           </h1>
@@ -72,14 +87,15 @@ export default async function JudgeTourPage({ searchParams }: JudgeTourPageProps
             stepNumber={2}
             totalSteps={TOTAL_STEPS}
             eyebrow="Step 2 · IBM stack"
-            headline="Twelve IBM tools. Per-tool honesty tier."
+            headline="Fifteen IBM tools. Per-tool honesty tier."
             body={
               <>
                 <p>
                   Two tools wired at HEAD (Granite Instruct 4.1 8B coaching narration + Granite 4.0 Nano 350M
                   WebGPU edge model). Seven at integration with canonical type contracts and backend swap-
-                  points per Vinh M3-V1 through M3-V11. One demo-facade (Langflow per D-017). Two build-time
-                  accelerators.
+                  points per Vinh M3-V1 through M3-V15. One demo-facade (Langflow per D-017). Two build-time
+                  accelerators. Wave-46 D-058 expansion adds Granite 4.1 3B Instruct fast-path routing + Granite
+                  Speech 4.1 2B-Plus speaker-attributed ASR + Mellea Instruct-Validate-Repair critic loop.
                 </p>
                 <p>
                   Honesty tier rendered as a per-tool status pill on the / page StackBadges grid and the
