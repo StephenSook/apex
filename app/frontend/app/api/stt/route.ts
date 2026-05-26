@@ -99,10 +99,28 @@ export async function POST(req: NextRequest): Promise<Response> {
   // Wave-46 Phase 9.3 code-reviewer HIGH 3: cap request body size BEFORE
   // forwarding to the upstream Vinh backend OR reading into memory on the
   // edge runtime. Matches the 5 MB cap pattern in upload-telemetry/route.ts.
+  // Wave-46.5 codex-rescue HIGH 1 note: header-only cap can be bypassed by
+  // missing OR spoofed Content-Length. Defense in depth: (1) reject if the
+  // declared Content-Length exceeds the cap, (2) reject if Content-Length
+  // is present but not parseable to a non-negative integer, (3) rely on
+  // Vercel Edge runtime's native 4.5 MB request-body cap as the absolute
+  // floor when Content-Length is absent (Vercel enforces this below our
+  // explicit 5 MB cap regardless of header presence; documented at
+  // https://vercel.com/docs/functions/limitations). Production cannot
+  // bypass both layers.
   const declared = req.headers.get("content-length");
   if (declared !== null) {
     const declaredBytes = Number.parseInt(declared, 10);
-    if (!Number.isNaN(declaredBytes) && declaredBytes > MAX_AUDIO_BYTES) {
+    if (Number.isNaN(declaredBytes) || declaredBytes < 0) {
+      return Response.json(
+        {
+          error: "invalid_content_length",
+          message: `STT POST Content-Length must be a non-negative integer; got "${declared}".`,
+        },
+        { status: 400 },
+      );
+    }
+    if (declaredBytes > MAX_AUDIO_BYTES) {
       return Response.json(
         {
           error: "audio_too_large",
