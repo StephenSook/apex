@@ -223,7 +223,8 @@ export async function POST(request: Request): Promise<Response> {
     } catch {
       body = { prompt: "" } as OpenRouterStreamRequestBody;
     }
-    const stubText = stubResponseFor(body.prompt ?? "");
+    const promptSafe = typeof body.prompt === "string" ? body.prompt : "";
+    const stubText = stubResponseFor(promptSafe);
     const stubStream = streamStubResponse(stubText, request.signal);
     return new Response(stubStream, {
       status: 200,
