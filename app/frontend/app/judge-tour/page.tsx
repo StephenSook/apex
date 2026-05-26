@@ -205,8 +205,7 @@ export default async function JudgeTourPage({ searchParams }: JudgeTourPageProps
                 <p>
                   Repository: github.com/StephenSook/apex (Apache 2.0). NeurIPS Workshop paper draft at
                   paper/apex-neurips-workshop-2026.md. Three-minute submission video + 30-second highlight
-                  clip + pitch deck PDF (Day 10 record). Multi-track entry (4 BeMyApp categories: 1st +
-                  Runner-up + Best Use of Technology + Most Innovative).
+                  clip + pitch deck PDF.
                 </p>
               </>
             }

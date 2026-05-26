@@ -54,9 +54,9 @@ const PILLARS: ReadonlyArray<Pillar> = [
   {
     number: 5,
     name: "Business case",
-    headline: "Max payout surface area via multi-track entry.",
-    body: "ONE submission auto-enters all 4 BeMyApp prize categories ($2,250 1st + $1,250 Runner-up + $750 Best Use of Technology + $750 Most Innovative + $5K Grand Prize ladder). Each technical decision maps explicitly to which tracks it unlocks. Building toward a single track is leaving money on the table. Enumerated at brainstorming time, NOT at submission time.",
-    artifact: "Global hackathon-strategy memory + reference_ibm_skillsbuild_org + JudgeTrackTighteningCallout component on /judges.",
+    headline: "Real downstream value, not just a hackathon submission.",
+    body: "Every technical decision maps explicitly to a deployable product surface that adaptive racers, veteran-transition drivers, and grassroots competitors can use today, free at point of use under Apache 2.0. The submission package is a stepping stone toward a sustainable open-source race-engineer artifact, not the end-state of the work.",
+    artifact: "Sookra Methodology Pillar 5 + Apache 2.0 license + production deploy + paper §5 future-work outline.",
   },
 ];
 

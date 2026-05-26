@@ -16,7 +16,6 @@ import COAGateToggle from "../../components/COAGateToggle";
 import EngineAgnosticByteEqualityDemo from "../../components/EngineAgnosticByteEqualityDemo";
 import NotebookLMHoverAudio from "../../components/NotebookLMHoverAudio";
 import RealtimeCOADiffPanel from "../../components/RealtimeCOADiffPanel";
-import JudgeTrackTighteningCallout from "../../components/JudgeTrackTighteningCallout";
 import JudgesGalaxyMovesShell from "../../components/JudgesGalaxyMovesShell";
 import JudgesEdgePlaneShell from "../../components/JudgesEdgePlaneShell";
 import LangGraphRuntimePanel from "../../components/LangGraphRuntimePanel";
@@ -388,26 +387,6 @@ export default function JudgesPage() {
             with file paths at <span className="not-italic">app/backend/apex/physics/tier_{`{1..8}`}.py</span>
             and <span className="not-italic">app/backend/apex/physics/scp_outer.py</span>.
           </p>
-        </div>
-      </section>
-
-      <section
-        id="track-tightening"
-        aria-labelledby="track-tightening-section-title"
-        className="border-b border-rule bg-paper-warm"
-      >
-        <div className="mx-auto max-w-6xl px-6 py-16 lg:px-10 lg:py-20">
-          <h2 id="track-tightening-section-title" className="font-display text-3xl tracking-tight text-ink">
-            Four prize tracks. Four explicit claims.
-          </h2>
-          <p className="mt-3 max-w-3xl text-base leading-relaxed text-ink-soft">
-            One BeMyApp submission auto-enters all 4 prize categories. Wave-45 Phase 6 Block C.3
-            close-out adds per-track tightening copy with explicit &quot;Wins X because Y&quot; claim +
-            evidence + deep-link CTA per card.
-          </p>
-          <div className="mt-8">
-            <JudgeTrackTighteningCallout />
-          </div>
         </div>
       </section>
 
