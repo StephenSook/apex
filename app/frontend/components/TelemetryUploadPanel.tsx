@@ -32,6 +32,7 @@ const ACCEPTED_TYPES = ".csv,text/csv,application/vnd.ms-excel";
 
 export default function TelemetryUploadPanel() {
   const [state, setState] = useState<PanelState>({ status: "idle" });
+  const [dragOver, setDragOver] = useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFile = async (file: File) => {
@@ -67,12 +68,47 @@ export default function TelemetryUploadPanel() {
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
+  const handleDragOver = (event: React.DragEvent<HTMLElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    if (event.dataTransfer.types.includes("Files")) {
+      event.dataTransfer.dropEffect = "copy";
+      if (!dragOver) setDragOver(true);
+    }
+  };
+
+  const handleDragLeave = (event: React.DragEvent<HTMLElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    if (
+      event.currentTarget instanceof HTMLElement &&
+      event.relatedTarget instanceof Node &&
+      event.currentTarget.contains(event.relatedTarget)
+    ) {
+      return;
+    }
+    setDragOver(false);
+  };
+
+  const handleDrop = (event: React.DragEvent<HTMLElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setDragOver(false);
+    const file = event.dataTransfer.files?.[0];
+    if (file !== undefined) void handleFile(file);
+  };
+
   const isUploading = state.status === "uploading";
 
   return (
     <section
       aria-labelledby="telemetry-upload-panel-title"
-      className="flex flex-col gap-4 rounded-sm border-2 border-rule bg-paper p-5"
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+      className={`flex flex-col gap-4 rounded-sm border-2 bg-paper p-5 transition-colors duration-200 ${
+        dragOver ? "border-racing-green bg-paper-warm" : "border-rule"
+      }`}
     >
       <header>
         <p className="apex-eyebrow">Strict-parser upload (max 5 MB, 10 000 rows, canonical APEX-Bench header)</p>
@@ -82,7 +118,20 @@ export default function TelemetryUploadPanel() {
         >
           Bring your own CSV.
         </h2>
+        <p className="mt-1 font-mono text-[11px] uppercase tracking-wider text-muted">
+          Drag + drop a CSV onto this panel, or use the file picker below.
+        </p>
       </header>
+
+      {dragOver && (
+        <p
+          role="status"
+          aria-live="polite"
+          className="rounded-sm border-2 border-dashed border-racing-green bg-paper p-4 text-center font-mono text-xs uppercase tracking-wider text-racing-green"
+        >
+          Drop the CSV to upload
+        </p>
+      )}
 
       <label className="flex flex-col gap-2">
         <span className="font-mono text-[11px] uppercase tracking-wider text-muted">
