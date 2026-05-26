@@ -4,6 +4,72 @@ Every locked decision with rationale + date + scope. Newest first.
 
 ---
 
+## 2026-05-26 D-060: Wave-46 session A close-out (Phase 1-9 partial; 33 atomic commits; HEAD CI green at 4af9bb6)
+
+**Decision.** Wave-46 session A closes at 33 atomic commits `8d88607` through `4af9bb6` with all CI green per push. Phase 1, 2, 3, 5, 6 fully shipped + Phase 4 partial (4.1 + 4.2 + 4.4 + 4.5 + 4.8 shipped; 4.3 + 4.6 + 4.7 Vinh-side defer) + Phase 7 partial (7.1 + 7.2 + 7.3 + 7.5 + 7.6 shipped; 7.4 PWA offline defer) + Phase 8 partial (8.3 mono numerics + 8.6 a11y + 8.8 status pulse shipped; 8.1 + 8.2 + 8.4 + 8.5 + 8.7 defer) + Phase 9 sweeps (9.4 em-dash + AI-tone + operator-attribution + 9.5 LLM-output scrubber audit shipped; 9.1 7-agent deep-review defer). Phase 10 final close-out + BeMyApp form submission queued (operator-action).
+
+**Major ships this session arc:**
+
+1. Wave-46 wire-flip family (Phase 2 + 3): V12 Pacejka + V13 SCP + V14 LangGraph + V15 LIPS all shipped behind `NEXT_PUBLIC_USE_REAL_BACKEND_V*` env flags with misconfig safety + 20 integration tests covering canned-fallback + real-backend branches.
+2. IBM Granite stack ladder ascent partial (Phase 4): timing-sheet multipart wire-flip (V1 Granite Vision + Granite-Docling cascade) + new /api/tspulse/anomaly route (V7) + new /api/rag-retrieve route (V8) + lib/env.ts FLAG_NAMES expansion to 11 entries + ibm-stack.ts honesty-tier annotations + IBM Bob honest reframe.
+3. Phase 5 Watson Speech scaffold: new /api/stt route (V9 Granite Speech 4.1 2B-Plus swap-point) + VoiceDebriefInput Granite Speech preview panel env-flag refactor.
+4. Phase 6 Granite 4.1 routing + /coach-code: AICopilotChat 3B routing pill + scrubber extraction to lib/scrub-regulatory-anchors.ts + new /api/coach-code route + new /coach-code page + CoachCodePanel + opengraph.
+5. Phase 7 galaxy-stretches partial: TwinDriverNarrativePanel on /compare (Mission 44 storytelling killshot) + new /upload page + /api/upload-telemetry strict CSV parser + TelemetryUploadPanel + new NotebookLMHoverAudio component + /api/tire-degradation + /api/weather-brief route stubs + new shared types (TireCompound + TireDegradationResponse + WeatherBriefResponse).
+6. Phase 8 UI polish partial: tabular-nums mono numerics sweep on SimRigStream + StatusLiveIndicator + StatusLiveIndicator amber animate-pulse on in-progress CI + JudgeTourKeyboardNav arrow-key navigation + aria-live step-change announcements + /judge-tour 12 -> 15 IBM tools propagation.
+7. Phase 9 sweeps: em-dash sweep close (1 fix in D-057 entry; wave-46 active code surfaces ZERO em-dash hits) + AI-tone blocklist sweep close (ZERO hits across wave-46 prose) + operator-attribution sweep close (ZERO named operators in public surfaces) + LLM-output scrubber audit verifying canonical regex set imported across /api/openrouter-stream + /api/coach-code.
+8. PLAN.md Vinh task table: 17-row backend coordination doc + 15-item priority order; deep-dive grep sweep across entire repo surfaced 4 missing items (V2 sim-rig WebSocket + V11 Chronos-2 + Mellea tri-agent critic orchestrator + GEPA evolution prompts) corrected in second pass.
+
+**Discord intel locked 2026-05-26:**
+
+- Prize structure correctly understood: $5K May pool + $5K June pool + $5K cross-month grand prize = $15K total. May 1st = $2,250 / Runner-up = $1,250 / Best Use of Technology = $750 / Most Innovative = $750. May winners announced 2026-06-10 via email + winners webinar (Lucas-BMA Discord verbatim 2026-05-25 11:35 PM).
+- PitWall threat downgrade D+ MEDIUM -> D LOW on Best Use of Technology tech-depth axis: Ashish (PitWall maintainer) Discord 2026-05-26 confirms Llama 3.3 70B via Groq + only IBM Docling for compliance = 1 tool. APEX 15-tool stack outpaces 15:1. Audience-overlap threat unchanged D+ MEDIUM.
+- GitHub org clarification (Zenix Discord): IBM SkillsBuild GitHub org is for learning resources, NOT submission-repo requirement. StephenSook/apex personal repo stays canonical.
+- IBM Bob trial sign-up SKIPPED: APEX satisfies "at least one of IBM Granite + Docling + Langflow + Context Forge + IBM Bob" 4x over via the other four; Bob is dev-tool not runtime model.
+- June challenge separate from APEX per Stephen explicit ("different challenge prompt + different problem").
+
+**Stephen-explicit decisions locked this session (in addition to wave-46 plan Q1+Q2+Q3 from D-058):**
+
+- Session extension after initial 15-commit close-out per "finish out the wave" directive; total session A = 33 atomic commits.
+- "make sure everything we added for Vinh is updated in plan.md so he can see it" -> PLAN.md sweep deep-dive close 2026-05-26 morning.
+- "for IBM Bob, be brutally honest will it help the project?" -> SKIP the trial; documented in ibm-stack.ts inline comment.
+
+**New memory rules this session:**
+
+- `feedback_quality_over_speed.md` research-cycles extension (Stephen verbatim 2026-05-25 night-2: "We want the best quality possible, so if that's slower, that's ok").
+- `reference_discord_intel_2026-05-25_lucas_bma_prize_clarification.md` (prize structure + PitWall + GitHub org + IBM Bob skip).
+- `project_apex_competitor_field_may_challenge.md` PitWall threat-axis recalibration appendix.
+
+**Production smoke 2026-05-26 day 8 EOD:**
+
+- /api/projector-stage-a + stage-b + orchestration + lips-harness + judges/coa-diff + tspulse/anomaly + tire-degradation + weather-brief all GET 200
+- /api/rag-retrieve + stt + coach-code + upload-telemetry POST-only (405 on GET = correct method-not-allowed)
+- /coach-code + /upload + /compare + /judge-tour + /judges pages 200
+- HEAD CI green at 4af9bb6
+- Vercel deploy auto-triggered per push; production-path Granite Instruct + Watson TTS + canned fallbacks all healthy
+
+**What's deferred for next session (Phase 8 + 9 + 10 close-out):**
+
+Phase 8 (partial; queued):
+- 8.1 Dark mode /sim-rig paddock-night variant
+- 8.2 Color-coded telemetry states on SimRigStream channels
+- 8.4 Motion micro-interactions /judges scroll-reveal stagger + COAGateToggle flip
+- 8.5 Motion fade-transitions /judge-tour step navigation
+- 8.7 Drag-drop /analyze upload zone
+
+Phase 9 (partial; queued):
+- 9.1 7-agent parallel deep-review dispatch (codex + gemini + plan-gap + 4 pr-review-toolkit)
+- 9.2 Findings tier + 9.3 cascade fix-forward batch
+- 9.6 MED + NIT queue documentation
+
+Phase 10 (queued; mostly operator-action):
+- 10.1 hackathon-pre-deploy skill chain
+- 10.5 BeMyApp form submission (Stephen operator-action; SUBMISSION.md payload draft ready)
+- 10.6 post-submission session note
+
+**Affected.** Wave-46 session A close. HEAD CI green 4af9bb6. Production smoke clean. Memory + Obsidian session note + APEX MOC + PLAN.md Vinh task table all updated. Stephen operator-action queue documented at `~/.claude/projects/-Users-stephensookra-Desktop-IBM-May/memory/project_apex_wave_45_close_out.md` session A extension + this entry.
+
+---
+
 ## 2026-05-25 D-058: Wave-46 mega-arc plan-entry (galaxy-tier 10-phase scope-lock + Plan-agent DEFER discipline + Stephen-explicit answers Q1+Q2+Q3)
 
 **Decision.** Wave-46 ships per `~/.claude/plans/all-right-i-want-rippling-moon.md` (overwriting the prior wave-45 plan). 10 phases, ~98 atomic commits Vinh + Stephen combined. Galaxy ambition per Stephen explicit 2026-05-25 night-2 verbatim: "We need to have the best project that we can possibly have. No limitations." Plan-agent DEFER list explicitly skipped per Q1 = Option 1 (judges' grading; not page decoration): Three.js / Vercel Queues swap / Watson Assistant duplicate chat / Watson Discovery duplicate RAG / IBM Cloud second deploy / Apple Watch stub / voice cloning / HRV / multi-language / pit-stop simulator / scroll progress indicator / live race-day mode. Skipped because each is either decoration with no judge-impact lift, OR breaks-working-system risk, OR requires API keys we cannot provision in the window. Skip reasons explicitly NOT time-pressure per `feedback_no_time_pressure_restraint.md`.
