@@ -92,10 +92,12 @@ export default async function JudgeTourPage({ searchParams }: JudgeTourPageProps
               <>
                 <p>
                   Two tools wired at HEAD (Granite Instruct 4.1 8B coaching narration + Granite 4.0 Nano 350M
-                  WebGPU edge model). Seven at integration with canonical type contracts and backend swap-
-                  points per Vinh M3-V1 through M3-V15. One demo-facade (Langflow per D-017). Two build-time
-                  accelerators. Wave-46 D-058 expansion adds Granite 4.1 3B Instruct fast-path routing + Granite
-                  Speech 4.1 2B-Plus speaker-attributed ASR + Mellea Instruct-Validate-Repair critic loop.
+                  WebGPU edge model). Ten at integration with canonical type contracts and backend swap-points
+                  per Vinh M3-V1 through M3-V15 (Granite-Docling + Vision + TTM + FlowState + TSPulse + Embedding +
+                  Guardian + LangGraph + 3B routing + Granite Speech; Langflow retained as the export-graph
+                  artifact per D-017 G7 + D-054). Three build-time accelerators (Docling library + IBM Bob +
+                  Mellea IVR-loop architectural slot per D-060). Wave-46 D-058 expansion brought Granite 4.1 3B
+                  Instruct fast-path routing + Granite Speech 4.1 2B-Plus speaker-attributed ASR.
                 </p>
                 <p>
                   Honesty tier rendered as a per-tool status pill on the / page StackBadges grid and the

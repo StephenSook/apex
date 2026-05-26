@@ -46,7 +46,7 @@ The pipeline: Granite-Docling parses the COA into structured JSON. Granite Visio
 
 ### How we built it
 
-IBM Granite stack (15 tools tracked in `app/frontend/lib/ibm-stack.ts` with per-tool honesty tiers): Granite Instruct 4.1 8B + 3B (chat-routing) + Granite 4.0 Nano 350M (WebGPU edge) + Granite Speech 4.1 2B-Plus (Watson STT proxy preview) + Granite-Docling 258M + Granite Vision 4.1 4B + Granite TimeSeries TTM r2.1 + Granite FlowState r1.1 + IBM TSPulse 1M + Granite Embedding R2 + Granite Guardian 4.1 8B + LangGraph + Granite MCP Gateway + ContextForge orchestration runtime (Langflow demoted to export-graph artifact per D-017 G7 + D-054) + Docling library (build-time accelerator) + IBM Bob (build-time architectural inspiration only per D-060; not a runtime dependency).
+IBM Granite stack (15 tools tracked in `app/frontend/lib/ibm-stack.ts` with per-tool honesty tiers; 2 WIRED + 10 INTEGRATION + 3 ACCELERATOR): Granite Instruct 4.1 8B + Granite 4.0 Nano 350M WebGPU edge model are the 2 WIRED. Granite-Docling 258M + Granite Vision 4.1 4B + Granite TimeSeries TTM r2.1 + Granite FlowState r1.1 + IBM TSPulse 1M + Granite Embedding R2 + Granite Guardian 4.1 8B + Granite Instruct 4.1 3B chat-routing + Granite Speech 4.1 2B-Plus Watson STT proxy preview + LangGraph + Granite MCP Gateway + ContextForge orchestration runtime are the 10 INTEGRATION (Langflow retained as export-graph artifact per D-017 G7 + D-054). Docling library + IBM Bob + Mellea v0.5.0 IVR-loop architectural slot are the 3 ACCELERATOR (Bob and Mellea are build-time architectural inspiration only per D-060, not runtime dependencies).
 
 Frontend: Next.js 16 + React 19 + Tailwind CSS v4 + TypeScript strict, deployed to Vercel.
 
