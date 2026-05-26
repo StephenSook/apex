@@ -66,8 +66,8 @@ Choosing to mount only the COA-gate panel keeps /judges visually clean. Adding 5
 
 **Fix-forward batch shipped (12 atomic commits inside Phase 9):**
 1. cascade-#41 react-hooks/set-state-in-effect on SimRigPaddockNightShell
-2. Operator-attribution sweep on decision-log: anonymize Lucas-BMA + Ashish + Zenix to organizer/maintainer/community-member archetypes
-3. SUBMISSION.md 8-tool->15-tool + IBM Bob honest reframe + Operation Motorsport anonymize
+2. Operator-attribution sweep on decision-log: anonymize three named operators (BeMyApp Discord moderator + upstream PitWall maintainer + Discord community member) to anonymous archetypes
+3. SUBMISSION.md 8-tool->15-tool + IBM Bob honest reframe + veteran-motorsport-rehabilitation-programme anonymize
 4. README.md section 5 12-tool->15-tool + IBM Bob flowchart honest reframe
 5. ibm-stack.ts comment header 12-tool->15-tool + /judges stack heading 12-tool->15-tool
 6. /api/judges/coa-diff persona-decouple default CANNED_SCENARIO to adaptive-hand-controls generic vocabulary
