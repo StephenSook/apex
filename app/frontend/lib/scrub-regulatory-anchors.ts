@@ -23,25 +23,63 @@
  *
  * Verification fixture in tests/lib/openrouter-stream-scrub.test.ts.
  */
+// Wave-46 Phase 9.3 suffix-handling: cover both `18.3a` (letter abutting
+// the last decimal) AND `18.3.a` (dot-letter, FIA hierarchical form)
+// across every Article + Section + Sec. variant below.
+const SUFFIX = "(\\.[a-z]|[a-z])?";
+
 export function scrubInventedRegulatoryAnchors(text: string): string {
   return text
-    .replace(/FIA Appendix L Article \d+(\.\d+)*[a-z]?/gi, "FIA Appendix L per the published revision")
     .replace(
-      /FIA Articles \d+(\.\d+)*[a-z]?(\s+and\s+\d+(\.\d+)*[a-z]?)?/gi,
+      new RegExp(`FIA Appendix L Article \\d+(\\.\\d+)*${SUFFIX}`, "gi"),
       "FIA Appendix L per the published revision",
     )
     .replace(
-      /Articles \d+(\.\d+)*[a-z]?(\s+and\s+\d+(\.\d+)*[a-z]?)?/gi,
+      new RegExp(
+        `FIA Articles \\d+(\\.\\d+)*${SUFFIX}(\\s+and\\s+\\d+(\\.\\d+)*${SUFFIX})?`,
+        "gi",
+      ),
+      "FIA Appendix L per the published revision",
+    )
+    .replace(
+      new RegExp(
+        `Articles \\d+(\\.\\d+)*${SUFFIX}(\\s+and\\s+\\d+(\\.\\d+)*${SUFFIX})?`,
+        "gi",
+      ),
       "Appendix L per the published revision",
     )
-    .replace(/FIA Article \d+(\.\d+)*[a-z]?/gi, "FIA Appendix L per the published revision")
-    .replace(/Article \d+(\.\d+)*[a-z]?/gi, "Appendix L per the published revision")
-    .replace(/\bArt\.?\s+\d+(\.\d+)*[a-z]?/gi, "Appendix L per the published revision")
-    .replace(/Appendix L\s*[§]\s*\d+(\.\d+)*[a-z]?/gi, "Appendix L per the published revision")
+    .replace(
+      new RegExp(`FIA Article \\d+(\\.\\d+)*${SUFFIX}`, "gi"),
+      "FIA Appendix L per the published revision",
+    )
+    .replace(
+      new RegExp(`Article \\d+(\\.\\d+)*${SUFFIX}`, "gi"),
+      "Appendix L per the published revision",
+    )
+    .replace(
+      new RegExp(`\\bArt\\.?\\s+\\d+(\\.\\d+)*${SUFFIX}`, "gi"),
+      "Appendix L per the published revision",
+    )
+    .replace(
+      new RegExp(`Appendix L\\s*[§]\\s*\\d+(\\.\\d+)*${SUFFIX}`, "gi"),
+      "Appendix L per the published revision",
+    )
     .replace(/§\s*\d+(\.\d+)*(\([a-z]\))?/gi, "the published revision section")
-    .replace(/COA Section \d+(\.\d+)*[a-z]?/gi, "the COA simultaneity gate")
-    .replace(/COA\s+Sec\.?\s+\d+(\.\d+)*[a-z]?/gi, "the COA simultaneity gate")
+    .replace(
+      new RegExp(`COA Section \\d+(\\.\\d+)*${SUFFIX}`, "gi"),
+      "the COA simultaneity gate",
+    )
+    .replace(
+      new RegExp(`COA\\s+Sec\\.?\\s+\\d+(\\.\\d+)*${SUFFIX}`, "gi"),
+      "the COA simultaneity gate",
+    )
     .replace(/\bSection \d+\.\d+(\.\d+)*\([a-z]\)/g, "the COA simultaneity gate")
-    .replace(/\bSection \d+\.\d+(\.\d+)*[a-z]?/g, "the COA simultaneity gate")
-    .replace(/\bSec\.?\s+\d+(\.\d+)*[a-z]?/gi, "the COA simultaneity gate");
+    .replace(
+      new RegExp(`\\bSection \\d+\\.\\d+(\\.\\d+)*${SUFFIX}`, "g"),
+      "the COA simultaneity gate",
+    )
+    .replace(
+      new RegExp(`\\bSec\\.?\\s+\\d+(\\.\\d+)*${SUFFIX}`, "gi"),
+      "the COA simultaneity gate",
+    );
 }
