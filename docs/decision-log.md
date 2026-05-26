@@ -31,7 +31,7 @@ Every locked decision with rationale + date + scope. Newest first.
 
 1. **Judge eval false-positive risk.** Vercel BotID flags non-human traffic patterns. Judges visiting from corporate IP ranges, automated link-unfurl bots (Slack + Discord + LinkedIn previews), and headless-browser tooling (codespace previews + Devpost embed iframes) may register as bots. A false-positive on a judge during eval window is a submission-killing risk that cannot be retroactively excused.
 
-2. **Monitor-mode false security.** Plan R3 mitigation calls for "monitor mode for 24h" — but the 24h window straddles the submission-eval window. A judge hitting a false-positive during the monitor period has no recourse; "we were going to flip to block mode based on monitor data" doesn't help a real human who got blocked.
+2. **Monitor-mode false security.** Plan R3 mitigation calls for "monitor mode for 24h", but the 24h window straddles the submission-eval window. A judge hitting a false-positive during the monitor period has no recourse; "we were going to flip to block mode based on monitor data" doesn't help a real human who got blocked.
 
 **What's deferred.** `@vercel/botid` npm install + middleware.ts BotID configuration + dashboard env var setup. The defensive value (spam scrapers + automated content lifting) is real but not pre-deadline-critical given the submission is open-source on GitHub anyway.
 
