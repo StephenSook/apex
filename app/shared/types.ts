@@ -1787,3 +1787,23 @@ export interface STTResponse {
   readonly word_timestamps: ReadonlyArray<STTWordTimestamp>;
   readonly swap_point: string;
 }
+
+// ============================================================================
+// Wave-46 Phase 6.2: NEW /coach-code surface uses Granite 4.1 8B Instruct
+// via OpenRouter for code-feedback to engineers building telemetry tools.
+// Demonstrates breadth of the IBM Granite stack beyond the race-engineer
+// narrator path. HARD-COMPLIANCE scrubber applied server-side per
+// `feedback_llm_output_compliance_scrubber.md`. Note: Granite Code 8B is
+// DEPRECATED per HF model card (D-058 wave-46 tier-1 research finding);
+// /coach-code uses the mainline Granite 4.1 8B Instruct supersede
+// (HumanEval 87.2% pass@1 per benchmark).
+// ============================================================================
+
+export interface CoachCodeResponse {
+  readonly engine: "coach-code-canned-fallback" | "coach-code-real";
+  readonly compute_ms: number;
+  readonly model: string;
+  readonly feedback: string;
+  readonly prompt_tokens: number;
+  readonly completion_tokens: number;
+}
