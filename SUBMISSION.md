@@ -46,7 +46,7 @@ The pipeline: Granite-Docling parses the COA into structured JSON. Granite Visio
 
 ### How we built it
 
-IBM Granite stack: Granite-Docling 258M, Granite Vision 4.1 4B, Granite TimeSeries TTM r2.1, Granite 4.1 8B Instruct, Granite Guardian 4.1 8B. Plus Langflow for visible orchestration. Plus Docling library. Plus IBM Bob as the build accelerator, per the IBM × Scuderia Ferrari case-study precedent (we commit Bob session logs to `bob-sessions/`).
+IBM Granite stack (15 tools tracked in `app/frontend/lib/ibm-stack.ts` with per-tool honesty tiers): Granite Instruct 4.1 8B + 3B (chat-routing) + Granite 4.0 Nano 350M (WebGPU edge) + Granite Speech 4.1 2B-Plus (Watson STT proxy preview) + Granite-Docling 258M + Granite Vision 4.1 4B + Granite TimeSeries TTM r2.1 + Granite FlowState r1.1 + IBM TSPulse 1M + Granite Embedding R2 + Granite Guardian 4.1 8B + LangGraph + Granite MCP Gateway + ContextForge orchestration runtime (Langflow demoted to export-graph artifact per D-017 G7 + D-054) + Docling library (build-time accelerator) + IBM Bob (build-time architectural inspiration only per D-060; not a runtime dependency).
 
 Frontend: Next.js 16 + React 19 + Tailwind CSS v4 + TypeScript strict, deployed to Vercel.
 
@@ -76,11 +76,11 @@ Methodology: Sookra Methodology v3.3 with seven phases of competitive recon (six
 
 - The FIA Certificate of Adaptations is a structured document anchored to FIA Appendix L (the regulation governing adaptive-driver equipment homologation). APEX parses the COA at onboarding, derives the c_overlap flag from the approved hand-control hardware specifications recorded inside it, and feeds that flag to the model at the tensor level. Treating the COA as regulatory background instead of a tensor-level input is the mistake every existing motorsport AI tool makes for adaptive drivers.
 
-- IBM Granite's full stack (Docling + Vision + TTM + Instruct + Guardian + Langflow) is genuinely complementary when each tool does one thing in one place. Bob in the build loop, per the Ferrari precedent, is the cleanest dev story.
+- IBM Granite's full stack (Docling + Vision + TTM + FlowState + TSPulse + Embedding + Instruct + Guardian + LangGraph + MCP + ContextForge) is genuinely complementary when each tool does one thing in one place. Per D-060, IBM Bob is documented as a build-time architectural inspiration only, not a runtime dependency.
 
 ### What's next for APEX
 
-A NeurIPS Workshop paper draft is in `paper/apex-neurips-workshop-2026.md` (drafted Day 11, polish post-submission). A formal data-partnership conversation with a UK adaptive racing programme, a veteran motorsport rehabilitation programme, or Operation Motorsport is the next post-submission move.
+A NeurIPS Workshop paper draft is in `paper/apex-neurips-workshop-2026.md` (drafted Day 11, polish post-submission). A formal data-partnership conversation with a UK adaptive racing programme or a veteran motorsport rehabilitation programme is the next post-submission move.
 
 ---
 
