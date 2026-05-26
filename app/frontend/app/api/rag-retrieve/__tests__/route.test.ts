@@ -35,8 +35,8 @@ describe("/api/rag-retrieve wave-46 Phase 4.5 Granite Embedding R2 swap-point", 
     expect(data.error).toBe("missing_query");
   });
 
-  it("returns 200 with canned-fallback engine + 3 retrievals on valid query (default no env flag)", async () => {
-    const res = await POST(mockRequest({ query: "what is APEX" }) as unknown as Parameters<typeof POST>[0]);
+  it("returns 200 with canned-fallback engine + retrievals on corpus-matching query (default no env flag)", async () => {
+    const res = await POST(mockRequest({ query: "what is APEX physics" }) as unknown as Parameters<typeof POST>[0]);
     expect(res.status).toBe(200);
     const data = (await res.json()) as {
       engine: string;
@@ -46,7 +46,7 @@ describe("/api/rag-retrieve wave-46 Phase 4.5 Granite Embedding R2 swap-point", 
       swap_point: string;
     };
     expect(data.engine).toBe("rag-v8-canned-fallback");
-    expect(data.query).toBe("what is APEX");
+    expect(data.query).toBe("what is APEX physics");
     expect(data.retrievals.length).toBeGreaterThan(0);
     expect(data.retrievals.length).toBeLessThanOrEqual(3);
     expect(data.retriever_label).toMatch(/lexical/);
@@ -54,14 +54,14 @@ describe("/api/rag-retrieve wave-46 Phase 4.5 Granite Embedding R2 swap-point", 
   });
 
   it("ships X-Apex-Rag-Swap-Point + X-Apex-Rag-Engine headers", async () => {
-    const res = await POST(mockRequest({ query: "test" }) as unknown as Parameters<typeof POST>[0]);
+    const res = await POST(mockRequest({ query: "physics projection projector tier" }) as unknown as Parameters<typeof POST>[0]);
     expect(res.headers.get("X-Apex-Rag-Swap-Point")).toBe("vinh-m3-v8-embedding-r2-rag");
     expect(res.headers.get("X-Apex-Rag-Engine")).toBe("rag-v8-canned-fallback");
   });
 
   it("stays canned when env flag on but base URL unset (misconfig safety)", async () => {
     vi.stubEnv("NEXT_PUBLIC_USE_REAL_RAG", "1");
-    const res = await POST(mockRequest({ query: "test" }) as unknown as Parameters<typeof POST>[0]);
+    const res = await POST(mockRequest({ query: "physics projection projector tier" }) as unknown as Parameters<typeof POST>[0]);
     const data = (await res.json()) as { engine: string };
     expect(data.engine).toBe("rag-v8-canned-fallback");
   });
@@ -87,7 +87,7 @@ describe("/api/rag-retrieve wave-46 Phase 4.5 Granite Embedding R2 swap-point", 
         { status: 200 },
       ),
     );
-    const res = await POST(mockRequest({ query: "test" }) as unknown as Parameters<typeof POST>[0]);
+    const res = await POST(mockRequest({ query: "physics projection projector tier" }) as unknown as Parameters<typeof POST>[0]);
     const data = (await res.json()) as {
       engine: string;
       retrievals: ReadonlyArray<{ chunk: { id: string } }>;
@@ -104,7 +104,7 @@ describe("/api/rag-retrieve wave-46 Phase 4.5 Granite Embedding R2 swap-point", 
     vi.stubEnv("NEXT_PUBLIC_USE_REAL_RAG", "1");
     vi.stubEnv("NEXT_PUBLIC_VINH_BACKEND_BASE_URL", "https://vinh.example/api-root");
     vi.spyOn(globalThis, "fetch").mockResolvedValue(new Response("upstream down", { status: 503 }));
-    const res = await POST(mockRequest({ query: "test" }) as unknown as Parameters<typeof POST>[0]);
+    const res = await POST(mockRequest({ query: "physics projection projector tier" }) as unknown as Parameters<typeof POST>[0]);
     expect(res.status).toBe(200);
     const data = (await res.json()) as { engine: string; retrievals: ReadonlyArray<unknown> };
     expect(data.engine).toBe("rag-v8-canned-fallback");
