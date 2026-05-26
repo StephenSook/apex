@@ -1755,3 +1755,35 @@ export interface RAGResponse {
   readonly retriever_label: string;
   readonly swap_point: string;
 }
+
+// ============================================================================
+// Wave-46 Phase 5.6: STT response shape for /api/stt route + (Vinh M3-V9
+// Granite Speech 4.1 2B-Plus backend) speaker-attributed ASR + word-level
+// timestamps. Canned-fallback returns a mock transcript so VoiceDebriefInput
+// can wire-flip without an actual MediaRecorder + audio capture; full audio
+// flow lands once Vinh ships V9 + Stephen tests in wave-46.5.
+// ============================================================================
+
+export interface STTWordTimestamp {
+  readonly word: string;
+  readonly start_s: number;
+  readonly end_s: number;
+}
+
+export interface STTSpeakerSegment {
+  readonly speaker: string;
+  readonly start_s: number;
+  readonly end_s: number;
+  readonly text: string;
+}
+
+export interface STTResponse {
+  readonly engine: "stt-v9-canned-fallback" | "stt-v9-real";
+  readonly compute_ms: number;
+  readonly transcript: string;
+  readonly confidence: number;
+  readonly language: string;
+  readonly speakers: ReadonlyArray<STTSpeakerSegment>;
+  readonly word_timestamps: ReadonlyArray<STTWordTimestamp>;
+  readonly swap_point: string;
+}

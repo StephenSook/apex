@@ -41,6 +41,11 @@ export const VINH_SWAP_POINTS = {
       "Vinh M3-V8 -> app/backend/apex/embedding/rag_retrieve.py (Granite Embedding R2 cosine-similarity over precomputed corpus)",
     header: "vinh-m3-v8-embedding-r2-rag",
   },
+  V9_WATSON_STT: {
+    swap_point:
+      "Vinh M3-V9 -> app/backend/apex/speech/stt_proxy.py (Watson STT proxy via Granite Speech 4.1 2B-Plus on vLLM serve; speaker-attributed ASR + word-level timestamps)",
+    header: "vinh-m3-v9-watson-stt-granite-speech-4-1-2b-plus",
+  },
 } as const;
 
 export type VinhSwapPoint = keyof typeof VINH_SWAP_POINTS;
