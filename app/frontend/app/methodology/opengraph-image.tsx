@@ -8,7 +8,7 @@ export const alt =
   "APEX methodology | Sookra Methodology Five Pillars landing (Product credibility + Technical depth + Storytelling + Operator empathy + Business case)";
 export const size = OG_CARD_SIZE;
 export const contentType = OG_CARD_CONTENT_TYPE;
-export const runtime = "nodejs";
+export const runtime = "edge";
 
 export default function OpenGraphImage() {
   return renderOgCard({

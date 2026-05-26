@@ -8,7 +8,7 @@ export const alt =
   "APEX compare | Multi-driver baseline-vs-improved coaching report comparison with delta visualization";
 export const size = OG_CARD_SIZE;
 export const contentType = OG_CARD_CONTENT_TYPE;
-export const runtime = "nodejs";
+export const runtime = "edge";
 
 export default function OpenGraphImage() {
   return renderOgCard({

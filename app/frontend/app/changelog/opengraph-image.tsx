@@ -8,7 +8,7 @@ export const alt =
   "APEX changelog | Auto-rendered commit timeline from git log with conventional-commit color pills";
 export const size = OG_CARD_SIZE;
 export const contentType = OG_CARD_CONTENT_TYPE;
-export const runtime = "nodejs";
+export const runtime = "edge";
 
 export default function OpenGraphImage() {
   return renderOgCard({

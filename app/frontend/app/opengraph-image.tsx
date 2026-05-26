@@ -8,7 +8,7 @@ export const alt =
   "APEX | AI race engineer for adaptive racers - built on IBM Granite";
 export const size = OG_CARD_SIZE;
 export const contentType = OG_CARD_CONTENT_TYPE;
-export const runtime = "nodejs";
+export const runtime = "edge";
 
 export default function OpenGraphImage() {
   return renderOgCard({

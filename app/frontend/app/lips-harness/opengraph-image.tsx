@@ -8,7 +8,7 @@ export const alt =
   "APEX LIPS harness | 4-axis evaluation ablation table (Latency + Integrity + Physics + Skill) per D-026 + G10 reproducibility statement";
 export const size = OG_CARD_SIZE;
 export const contentType = OG_CARD_CONTENT_TYPE;
-export const runtime = "nodejs";
+export const runtime = "edge";
 
 export default function OpenGraphImage() {
   return renderOgCard({

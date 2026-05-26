@@ -8,7 +8,7 @@ export const alt =
   "APEX judge-tour | 6-step narrative walkthrough for evaluators (problem -> IBM stack -> byte-equality -> COA gate -> galaxy moves -> submission)";
 export const size = OG_CARD_SIZE;
 export const contentType = OG_CARD_CONTENT_TYPE;
-export const runtime = "nodejs";
+export const runtime = "edge";
 
 export default function OpenGraphImage() {
   return renderOgCard({
