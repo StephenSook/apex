@@ -33,8 +33,12 @@ test.describe("/analyze fidelity", () => {
     await expect(page.getByRole("textbox", { name: /Driver identifier/i })).toBeVisible();
     await expect(page.getByRole("textbox", { name: /Your debrief/i })).toBeVisible();
     await expect(page.getByRole("button", { name: /Generate coaching report/i })).toBeVisible();
+    // Wave-46 Phase 8.7 mounted TelemetryUploadPanel on /analyze with its
+    // own CSV file picker, so /analyze now has 3 file inputs total:
+    // (1) telemetry CSV in AnalyzeFlow, (2) COA PDF in AnalyzeFlow,
+    // (3) bring-your-own CSV in TelemetryUploadPanel below the canned flow.
     const fileInputs = page.locator('input[type="file"]');
-    await expect(fileInputs).toHaveCount(2);
+    await expect(fileInputs).toHaveCount(3);
   });
 
   test("Persona-decoupling Lane K rule: Sarah NOT in default landing DOM", async ({ page }) => {
