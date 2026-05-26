@@ -3,12 +3,14 @@ import { describe, expect, it } from "vitest";
 import { VINH_SWAP_POINTS } from "../vinh-swap-points";
 
 describe("VINH_SWAP_POINTS single source of truth (wave-45 deep-review NIT N-2)", () => {
-  it("has all 4 wave-45 swap-point keys (V12 + V13 + V14 + V15)", () => {
+  it("has all 6 swap-point keys (V12 + V13 + V14 + V15 wave-45 + V7 + V8 wave-46 Phase 4)", () => {
     expect(Object.keys(VINH_SWAP_POINTS).sort()).toEqual([
       "V12_PACEJKA",
       "V13_SCP",
       "V14_LANGGRAPH",
       "V15_LIPS",
+      "V7_TSPULSE",
+      "V8_EMBEDDING",
     ]);
   });
 
