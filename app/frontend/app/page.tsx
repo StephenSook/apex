@@ -565,12 +565,6 @@ function SiteFooter() {
             <Link href="https://github.com/StephenSook/apex" target="_blank" rel="noopener noreferrer" className="hover:text-amber underline-offset-4 hover:underline">
               GitHub
             </Link>
-            <Link href="https://github.com/StephenSook/apex/blob/main/PLAN.md" target="_blank" rel="noopener noreferrer" className="hover:text-amber underline-offset-4 hover:underline">
-              PLAN.md
-            </Link>
-            <Link href="https://github.com/StephenSook/apex/blob/main/README.md" target="_blank" rel="noopener noreferrer" className="hover:text-amber underline-offset-4 hover:underline">
-              README
-            </Link>
             <Link href="https://github.com/StephenSook/apex/blob/main/LICENSE" target="_blank" rel="noopener noreferrer" className="hover:text-amber underline-offset-4 hover:underline">
               License
             </Link>
@@ -587,8 +581,7 @@ function SiteFooter() {
             </p>
           </div>
         </div>
-        <div className="mt-12 border-t border-paper/10 pt-6 flex flex-wrap items-center justify-between gap-3 font-mono text-[11px] uppercase tracking-wider text-paper/45">
-          <span>Day 7 of 12 · 2026-05-26</span>
+        <div className="mt-12 border-t border-paper/10 pt-6 flex flex-wrap items-center justify-end gap-3 font-mono text-[11px] uppercase tracking-wider text-paper/45">
           <span>The race engineer beyond the finish line.</span>
         </div>
       </div>
