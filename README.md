@@ -67,9 +67,9 @@ The COA-parameterized simultaneity gate is, to the best of our literature review
 
 Every physics-corrected forecast and recommendation passes through Granite Guardian 4.1 with custom Bring-Your-Own-Classifier rules. The audit log is serialized to plain English with a unit-test suite covering every kinematic violation type (Convergence 14, the load-bearing safety contract). Reasoning trace surfaces in the UI in think-mode. The textual layer is a deliberate design choice with deliberate test coverage.
 
-### 5. Twelve IBM tools, per-tool honesty tier
+### 5. Fifteen IBM tools, per-tool honesty tier
 
-The 12-tool inventory carries a wire-up tier per tool surfaced as a status pill on the /judges page and the / page StackBadges grid (wave-44 Phase 4 BLOCKER 4 honesty audit). Two wired at HEAD (Granite Instruct 4.1 8B coaching narration + Granite 4.0 Nano 350M WebGPU edge model). Eight at integration with canonical type contracts + backend swap-points (Granite-Docling 258M + Granite Vision 4.1 4B + Granite TimeSeries TTM r2.1 + Granite FlowState r1.1 18.5M + IBM TSPulse 1M + Granite Embedding R2 149M + 47M + Granite Guardian 4.1 8B + LangGraph + Granite MCP Gateway + ContextForge as the orchestration runtime per D-017 G7 + D-054; Langflow retained as the export-graph artifact). Two build-time accelerators (Docling library + IBM Bob). No tool listed without a runtime role.
+The 15-tool inventory (per D-058 expansion 2026-05-25) carries a wire-up tier per tool surfaced as a status pill on the /judges page and the / page StackBadges grid (wave-44 Phase 4 BLOCKER 4 honesty audit). Two wired at HEAD (Granite Instruct 4.1 8B coaching narration + Granite 4.0 Nano 350M WebGPU edge model). Eleven at integration with canonical type contracts + backend swap-points (Granite-Docling 258M + Granite Vision 4.1 4B + Granite TimeSeries TTM r2.1 + Granite FlowState r1.1 18.5M + IBM TSPulse 1M + Granite Embedding R2 149M + 47M + Granite Guardian 4.1 8B + Granite Instruct 4.1 3B chat-routing + Granite Speech 4.1 2B-Plus Watson STT proxy preview + LangGraph + Granite MCP Gateway + ContextForge as the orchestration runtime per D-017 G7 + D-054; Langflow retained as the export-graph artifact). Two build-time accelerators (Docling library + IBM Bob; Bob is documented as build-time architectural inspiration only per D-060, not a runtime dependency).
 
 Wave-44 Phase 6 expanded the wired-or-integrated footprint: Phase 6a brought the IBM TSPulse polyphase time-frequency anomaly detector to the /judges visualisation surface (5-state discriminated union + sub-30 ms detection budget per pre-mortem row 71), Phase 6b wired RAG retrieval into the AICopilotChat path with per-question source-chunk citations across the architecture-spec + decision-log + methodology + paper §3 corpus (Granite Embedding R2 swap-point per Vinh M3-V8), Phase 6c shipped the Granite Vision timing-sheet parser end-to-end (PDF upload + parsed lap-time table; Vinh M3-V1 swap-point), Phase 6d added the per-track wire-up tier badge to the ThreeTrackForecastChart so judges see Granite TTM r2.1 as integration vs FlowState + Chronos-2 as mock, Phase 6e shipped the PWA manifest + install-as-app affordance on /judges (shouldn't-be-possible move #6), Phase 6h activated PLAN.md Stretch S1 via /api/sim-rig/stream NDJSON 20 Hz HTTP-stream (Vinh M3-V2 WebSocket swap-point), Phase 6i added the voice-debrief input via browser-native Web Speech Recognition (Watson STT swap-point per Vinh M3-V9).
 
@@ -145,8 +145,8 @@ flowchart TB
     LF["LangGraph + MCP + ContextForge<br/>orchestration runtime"]
     LL -. visualizes .- LF
 
-    BOB["IBM Bob<br/>build accelerator"]
-    BOB -.->|drives code dev<br/>per Ferrari case study| LL
+    BOB["IBM Bob<br/>build-time inspiration"]
+    BOB -.->|architectural inspiration only<br/>not a runtime dependency per D-060| LL
 
     classDef ibm fill:#0A2818,stroke:#0A2818,stroke-width:2px,color:#F4EBD8
     classDef physics fill:#C1492C,stroke:#9C3A23,stroke-width:3px,color:#F4EBD8
