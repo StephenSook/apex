@@ -74,8 +74,12 @@ async function fetchRealBackend(req: NextRequest, t0: number): Promise<STTRespon
       },
       body: await req.clone().text(),
       cache: "no-store",
+      signal: AbortSignal.timeout(3000),
     });
-    if (!upstream.ok) return null;
+    if (!upstream.ok) {
+      console.warn(`[apex/stt] upstream ${upstream.status} ${upstream.statusText}`);
+      return null;
+    }
     const body = (await upstream.json()) as STTResponse;
     return {
       ...body,

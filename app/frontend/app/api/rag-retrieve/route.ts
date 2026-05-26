@@ -59,8 +59,12 @@ async function fetchRealBackend(query: string, t0: number): Promise<RAGResponse 
       headers: { "Content-Type": "application/json", Accept: "application/json" },
       body: JSON.stringify({ query }),
       cache: "no-store",
+      signal: AbortSignal.timeout(3000),
     });
-    if (!upstream.ok) return null;
+    if (!upstream.ok) {
+      console.warn(`[apex/rag-retrieve] upstream ${upstream.status} ${upstream.statusText}`);
+      return null;
+    }
     const body = (await upstream.json()) as RAGResponse;
     return {
       ...body,

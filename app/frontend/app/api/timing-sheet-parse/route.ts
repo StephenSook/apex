@@ -57,8 +57,12 @@ async function fetchRealBackend(file: File, t0: number): Promise<TimingSheetPars
       method: "POST",
       body: forwardForm,
       cache: "no-store",
+      signal: AbortSignal.timeout(3000),
     });
-    if (!upstream.ok) return null;
+    if (!upstream.ok) {
+      console.warn(`[apex/timing-sheet-parse] upstream ${upstream.status} ${upstream.statusText}`);
+      return null;
+    }
     const body = (await upstream.json()) as TimingSheetParsedLaps;
     return {
       ...body,

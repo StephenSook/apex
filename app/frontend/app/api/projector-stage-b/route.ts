@@ -48,8 +48,12 @@ async function fetchRealBackend(t0: number): Promise<SCPResponse | null> {
       method: "GET",
       headers: { Accept: "application/json" },
       cache: "no-store",
+      signal: AbortSignal.timeout(3000),
     });
-    if (!upstream.ok) return null;
+    if (!upstream.ok) {
+      console.warn(`[apex/projector-stage-b] upstream ${upstream.status} ${upstream.statusText}`);
+      return null;
+    }
     const body = (await upstream.json()) as SCPResponse;
     return {
       ...body,
