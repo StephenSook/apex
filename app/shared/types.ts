@@ -1725,3 +1725,33 @@ export interface TSPulseResponse {
   readonly state: TSPulseAnomalyState;
   readonly swap_point: string;
 }
+
+// ============================================================================
+// Wave-46 Phase 4.5: promote RAGChunk + RAGRetrieval from
+// lib/rag-retrieve.ts to shared so the new /api/rag-retrieve route +
+// (Vinh M3-V8 Granite Embedding R2 cosine-similarity backend) return
+// the same shape the RAGCitationBadge consumes today via lexical
+// TF-IDF retrieval. The wire-flip migrates the retriever
+// implementation without changing the badge render path.
+// ============================================================================
+
+export interface RAGChunk {
+  readonly id: string;
+  readonly source: string;
+  readonly title: string;
+  readonly text: string;
+}
+
+export interface RAGRetrieval {
+  readonly chunk: RAGChunk;
+  readonly score: number;
+}
+
+export interface RAGResponse {
+  readonly engine: "rag-v8-canned-fallback" | "rag-v8-real";
+  readonly compute_ms: number;
+  readonly query: string;
+  readonly retrievals: ReadonlyArray<RAGRetrieval>;
+  readonly retriever_label: string;
+  readonly swap_point: string;
+}

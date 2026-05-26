@@ -20,17 +20,14 @@
  * question set + remains debuggable from the network panel.
  */
 
-export interface RAGChunk {
-  readonly id: string;
-  readonly source: string;
-  readonly title: string;
-  readonly text: string;
-}
+// Wave-46 Phase 4.5 type-design promotion: RAGChunk + RAGRetrieval hoisted
+// to `app/shared/types.ts` so the new /api/rag-retrieve route returns the
+// same shape Vinh M3-V8 Granite Embedding R2 backend will produce. Re-
+// exported here for backwards compatibility with existing AICopilotChat +
+// RAGCitationBadge + tests/lib/rag-retrieve.test.ts consumers.
+export type { RAGChunk, RAGRetrieval } from "../../shared/types";
 
-export interface RAGRetrieval {
-  readonly chunk: RAGChunk;
-  readonly score: number;
-}
+import type { RAGChunk, RAGRetrieval } from "../../shared/types";
 
 const STOP_WORDS = new Set([
   "the", "a", "an", "is", "are", "was", "were", "be", "been", "being",
