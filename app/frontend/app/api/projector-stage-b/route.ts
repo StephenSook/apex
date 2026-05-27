@@ -13,13 +13,15 @@
  * Vinh backend at `${base}/api/projector-stage-b` + return the upstream
  * `SCPResponse` payload with engine = "scp-v13-real". Falls back to
  * canned on fetch failure.
+ *
+ * Wave-46 Phase C4 R10 migrated to runWireFlipGET helper at lib/wire-flip.ts.
  */
 
 import type { NextRequest } from "next/server";
 
 import type { SCPIterate, SCPResponse } from "../../../../shared/types";
-import { getVinhBackendBaseUrl, shouldUseRealBackend } from "../../../lib/env";
 import { VINH_SWAP_POINTS } from "../../../lib/vinh-swap-points";
+import { runWireFlipGET } from "../../../lib/wire-flip";
 
 export const runtime = "edge";
 export const dynamic = "force-dynamic";
@@ -30,50 +32,24 @@ const CANNED_ITERATES: ReadonlyArray<SCPIterate> = [
   { iterate: 3, residual_norm: 0.0011, trust_region_radius: 1.0, powell_rho: 0.97, status: "converged" },
 ];
 
-function cannedPayload(t0: number): SCPResponse {
-  return {
+export async function GET(_req: NextRequest): Promise<Response> {
+  const t0 = performance.now();
+  const cannedPayload: SCPResponse = {
     engine: "scp-v13-canned-fallback",
     compute_ms: Math.round(performance.now() - t0),
     iterates: CANNED_ITERATES,
     final_residual: 0.0011,
     swap_point: VINH_SWAP_POINTS.V13_SCP.swap_point,
   };
-}
-
-async function fetchRealBackend(t0: number): Promise<SCPResponse | null> {
-  const base = getVinhBackendBaseUrl();
-  if (base === null) return null;
   try {
-    const upstream = await fetch(`${base}/api/projector-stage-b`, {
-      method: "GET",
-      headers: { Accept: "application/json" },
-      cache: "no-store",
-      signal: AbortSignal.timeout(3000),
+    const payload = await runWireFlipGET<SCPResponse>({
+      flag: "USE_REAL_BACKEND_V13",
+      upstreamPath: "/api/projector-stage-b",
+      routeId: "projector-stage-b",
+      t0,
+      cannedPayload,
+      realEngineLabel: "scp-v13-real",
     });
-    if (!upstream.ok) {
-      console.warn(`[apex/projector-stage-b] upstream ${upstream.status} ${upstream.statusText}`);
-      return null;
-    }
-    const body = (await upstream.json()) as SCPResponse;
-    return {
-      ...body,
-      engine: "scp-v13-real",
-      compute_ms: Math.round(performance.now() - t0),
-    };
-  } catch (err) {
-    console.error("[apex/projector-stage-b] real-backend fetch failed", err);
-    return null;
-  }
-}
-
-export async function GET(_req: NextRequest): Promise<Response> {
-  const t0 = performance.now();
-  try {
-    let payload = cannedPayload(t0);
-    if (shouldUseRealBackend("USE_REAL_BACKEND_V13")) {
-      const real = await fetchRealBackend(t0);
-      if (real !== null) payload = real;
-    }
     return Response.json(payload, {
       status: 200,
       headers: {
@@ -83,7 +59,7 @@ export async function GET(_req: NextRequest): Promise<Response> {
       },
     });
   } catch (err) {
-    console.error("[apex/projector-stage-b]", err);
+    console.warn("[apex/projector-stage-b]", err);
     const fallback: SCPResponse = {
       engine: "scp-v13-canned-fallback",
       compute_ms: Math.round(performance.now() - t0),
