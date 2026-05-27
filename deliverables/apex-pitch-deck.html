@@ -1,0 +1,612 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>APEX. The race engineer for the drivers who don't have one.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,400..900,0..100,0..1;1,9..144,400..900,0..100,0..1&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    :root {
+      --cream: #F4EBD8;
+      --paper-warm: #ECE0C6;
+      --racing-green: #0A2818;
+      --racing-green-deep: #04150C;
+      --clay: #C1492C;
+      --amber: #D9A441;
+      --ink: #0F1410;
+      --ink-soft: #2F3A33;
+      --muted: #5A6660;
+      --rule: rgba(15, 20, 16, 0.18);
+      --display: "Fraunces", ui-serif, Georgia, serif;
+      --sans: "IBM Plex Sans", -apple-system, sans-serif;
+      --mono: "IBM Plex Mono", "SF Mono", Menlo, monospace;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: var(--cream); color: var(--ink); font-family: var(--sans); }
+    .slide {
+      width: 1920px;
+      height: 1080px;
+      page-break-after: always;
+      page-break-inside: avoid;
+      position: relative;
+      overflow: hidden;
+      padding: 96px 128px;
+      display: flex;
+      flex-direction: column;
+      background: var(--cream);
+    }
+    .slide:last-child { page-break-after: auto; }
+    .slide.dark { background: var(--racing-green); color: var(--cream); }
+    .slide.dark .eyebrow { color: var(--amber); }
+    .slide.dark .body { color: rgba(244, 235, 216, 0.86); }
+    .eyebrow {
+      font-family: var(--mono);
+      font-size: 18px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--racing-green);
+      margin-bottom: 24px;
+    }
+    .h1 {
+      font-family: var(--display);
+      font-size: 132px;
+      font-weight: 400;
+      line-height: 0.96;
+      letter-spacing: -0.025em;
+      color: var(--ink);
+    }
+    .h1 em { font-style: italic; color: var(--clay); }
+    .h2 {
+      font-family: var(--display);
+      font-size: 96px;
+      font-weight: 400;
+      line-height: 1.0;
+      letter-spacing: -0.02em;
+    }
+    .h2 em { font-style: italic; color: var(--clay); }
+    .h3 {
+      font-family: var(--display);
+      font-size: 64px;
+      font-weight: 400;
+      line-height: 1.05;
+      letter-spacing: -0.015em;
+    }
+    .h4 {
+      font-family: var(--display);
+      font-size: 44px;
+      font-weight: 500;
+      line-height: 1.15;
+    }
+    .body {
+      font-family: var(--sans);
+      font-size: 28px;
+      line-height: 1.4;
+      color: var(--ink-soft);
+      max-width: 1480px;
+    }
+    .body.lg { font-size: 32px; }
+    .callout {
+      font-family: var(--mono);
+      font-size: 22px;
+      line-height: 1.5;
+      color: var(--ink);
+      background: var(--paper-warm);
+      border-left: 6px solid var(--racing-green);
+      padding: 24px 32px;
+    }
+    .stat {
+      font-family: var(--mono);
+      font-size: 84px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: var(--clay);
+    }
+    .label {
+      font-family: var(--mono);
+      font-size: 18px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--muted);
+    }
+    .row { display: flex; gap: 48px; }
+    .col { flex: 1; }
+    .chevron {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 24px;
+      background: var(--racing-green);
+    }
+    .chevron-amber { background: var(--amber); }
+    .chevron-clay { background: var(--clay); }
+    .footer {
+      position: absolute;
+      bottom: 56px; left: 128px; right: 128px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--mono);
+      font-size: 16px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .slide.dark .footer { color: rgba(244, 235, 216, 0.55); }
+    .slide-no {
+      font-family: var(--mono);
+      font-size: 16px;
+      color: var(--muted);
+    }
+    .slide.dark .slide-no { color: rgba(244, 235, 216, 0.55); }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 48px; }
+    .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 32px; }
+    .tile {
+      background: var(--paper-warm);
+      border: 2px solid var(--rule);
+      padding: 32px;
+      border-radius: 4px;
+    }
+    .tile h4 {
+      font-family: var(--display);
+      font-size: 32px;
+      font-weight: 500;
+      margin-bottom: 12px;
+      color: var(--ink);
+    }
+    .tile p {
+      font-size: 22px;
+      line-height: 1.4;
+      color: var(--ink-soft);
+    }
+    .pill {
+      display: inline-block;
+      padding: 8px 16px;
+      font-family: var(--mono);
+      font-size: 16px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      border-radius: 2px;
+      border: 1.5px solid currentColor;
+    }
+    .pill-wired { color: var(--racing-green); }
+    .pill-integration { color: var(--amber); }
+    .pill-accelerator { color: var(--muted); }
+    .arch-row { display: flex; gap: 32px; margin-top: 48px; }
+    .arch-card {
+      flex: 1;
+      padding: 48px;
+      border-radius: 4px;
+      background: var(--paper-warm);
+      border-top: 8px solid var(--clay);
+    }
+    .arch-card.layer-2 { border-top-color: var(--racing-green); }
+    .arch-card.layer-3 { border-top-color: var(--amber); }
+    .arch-card .layer-num {
+      font-family: var(--mono);
+      font-size: 14px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .arch-card h4 {
+      font-family: var(--display);
+      font-size: 40px;
+      font-weight: 500;
+      line-height: 1.1;
+      margin-top: 12px;
+      margin-bottom: 20px;
+      color: var(--ink);
+    }
+    .arch-card p {
+      font-size: 22px;
+      line-height: 1.45;
+      color: var(--ink-soft);
+    }
+    .moats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 40px; margin-top: 56px; }
+    .moat {
+      padding: 36px;
+      background: var(--paper-warm);
+      border-left: 6px solid var(--clay);
+    }
+    .moat.b { border-left-color: var(--racing-green); }
+    .moat.c { border-left-color: var(--amber); }
+    .moat .moat-num {
+      font-family: var(--mono);
+      font-size: 14px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .moat h4 {
+      font-family: var(--display);
+      font-size: 36px;
+      font-weight: 500;
+      line-height: 1.1;
+      margin: 10px 0 16px;
+      color: var(--ink);
+    }
+    .moat p { font-size: 21px; line-height: 1.45; color: var(--ink-soft); }
+    .rubric-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 48px; }
+    .rubric {
+      padding: 36px;
+      background: var(--paper-warm);
+      border-top: 6px solid var(--racing-green);
+    }
+    .rubric h4 {
+      font-family: var(--display);
+      font-size: 36px;
+      margin-bottom: 16px;
+      color: var(--ink);
+    }
+    .rubric .grade {
+      font-family: var(--mono);
+      font-size: 56px;
+      font-weight: 600;
+      color: var(--clay);
+      margin-bottom: 16px;
+    }
+    .rubric p { font-size: 21px; line-height: 1.45; color: var(--ink-soft); }
+    .url-bar {
+      font-family: var(--mono);
+      font-size: 26px;
+      letter-spacing: 0.04em;
+      color: var(--amber);
+      margin-top: 64px;
+    }
+    .url-bar.light { color: var(--clay); }
+    .stack-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-top: 32px;
+    }
+    .tool {
+      padding: 16px 20px;
+      background: var(--paper-warm);
+      border: 1.5px solid var(--rule);
+      font-family: var(--mono);
+      font-size: 16px;
+    }
+    .tool .name { color: var(--ink); font-weight: 600; display: block; margin-bottom: 6px; }
+    .tool .tier { font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; }
+    .tool .tier.wired { color: var(--racing-green); }
+    .tool .tier.integration { color: var(--amber); }
+    .tool .tier.accelerator { color: var(--muted); }
+    @page { size: 1920px 1080px; margin: 0; }
+  </style>
+</head>
+<body>
+
+<!-- Slide 1: Cover -->
+<section class="slide">
+  <p class="eyebrow">APEX · IBM SkillsBuild AI Builders Challenge May 2026</p>
+  <h1 class="h1">
+    The race engineer for the drivers who <em>don't have one</em>.
+  </h1>
+  <p class="body lg" style="margin-top: 56px; max-width: 1320px;">
+    AI race engineer purpose-built for adaptive racers, veteran-team drivers, and grassroots competitors. Built on the IBM Granite stack.
+  </p>
+  <div class="url-bar light">apex-one-black.vercel.app · github.com/StephenSook/apex · Apache 2.0</div>
+  <div class="footer">
+    <span>Stephen Sookra + Vinh Le · Kennesaw State University</span>
+    <span class="slide-no">01 / 10</span>
+  </div>
+  <div class="chevron chevron-clay"></div>
+</section>
+
+<!-- Slide 2: Problem -->
+<section class="slide">
+  <p class="eyebrow">The problem</p>
+  <h2 class="h2">A race engineer is a <em>luxury good</em>.</h2>
+  <div class="row" style="margin-top: 64px; gap: 96px;">
+    <div class="col">
+      <p class="stat">£400-500</p>
+      <p class="label" style="margin-top: 12px;">PER DAY · PROFESSIONAL RACE ENGINEER</p>
+      <p class="body" style="margin-top: 32px;">
+        Every Formula One driver has one. Most adaptive racers, veteran-team drivers, and grassroots competitors do not. The FIA lifted its single-seater ban on disabled drivers in December 2017. The barrier stopped being regulatory. It became economic.
+      </p>
+    </div>
+    <div class="col">
+      <div class="callout" style="margin-top: 16px;">
+        Standard AI race-engineer tools assume able-bodied physics. They encode throttle times brake equals zero. Penalizing simultaneity misdiagnoses every adaptive driver whose Certificate of Adaptations permits it through approved hand-control hardware.
+      </div>
+      <p class="body" style="margin-top: 32px;">
+        APEX changes that. The Certificate of Adaptations is read at tensor level + routes the constraint per-driver. Same coaching pipeline says different things for different drivers based on what their COA says they are allowed to do.
+      </p>
+    </div>
+  </div>
+  <div class="footer">
+    <span>The problem</span>
+    <span class="slide-no">02 / 10</span>
+  </div>
+  <div class="chevron"></div>
+</section>
+
+<!-- Slide 3: Hero use case (Sarah persona) -->
+<section class="slide">
+  <p class="eyebrow">Hero use case</p>
+  <h2 class="h2">
+    Sarah Reynolds. Lap 17 of 19. <em>Two tenths off her PB.</em>
+  </h2>
+  <div class="row" style="margin-top: 56px; gap: 64px;">
+    <div class="col">
+      <p class="label">DRIVER · CIRCUIT · LAP</p>
+      <p class="body lg" style="margin-top: 16px;">
+        Britcar Trophy 2026. Donington Park GP. Lap 17 of 19 of qualifying. Time bleeding out in Sector 2 at Old Hairpin.
+      </p>
+      <p class="label" style="margin-top: 40px;">DEBRIEF</p>
+      <p style="font-family: var(--display); font-style: italic; font-size: 32px; line-height: 1.35; color: var(--ink); margin-top: 16px;">
+        &ldquo;lost the rears mid Old Hairpin again, can't trail-brake on the lever the way she did at Croft last month.&rdquo;
+      </p>
+    </div>
+    <div class="col">
+      <div class="callout">
+        <strong style="color: var(--racing-green); font-weight: 600;">FICTIONAL PERSONA by design.</strong> No real adaptive-driver identity. The hand-control hardware spec, the COA structure, and the lap-and-symptom debrief are derived from publicly documented Britcar regulations + the MME Motorsport electronic hand-control system (consent receipt 2026-05-22 from MME Motorsport d.o.o.).
+      </div>
+      <p class="label" style="margin-top: 48px;">HARDWARE</p>
+      <p class="body" style="margin-top: 16px;">
+        BMW M240i, MME Motorsport electronic hand-controls, COA section 3(c) approves dual-stage trigger permitting simultaneous brake-throttle actuation through corner entry.
+      </p>
+    </div>
+  </div>
+  <div class="footer">
+    <span>Hero use case</span>
+    <span class="slide-no">03 / 10</span>
+  </div>
+  <div class="chevron chevron-clay"></div>
+</section>
+
+<!-- Slide 4: Architecture -->
+<section class="slide">
+  <p class="eyebrow">The architecture</p>
+  <h2 class="h2">PhysicsTTM. Three layers, composed.</h2>
+  <div class="arch-row">
+    <div class="arch-card">
+      <p class="layer-num">Layer 1 · Forecaster</p>
+      <h4>Granite TimeSeries TTM r2.1</h4>
+      <p>
+        Channel-mix decoder fine-tune per D-010 Track 1 (G4 zero-shot bake-off triggered the fine-tune-first pivot). NeurIPS 2024 release. Sub-1M parameters. Aggregate raw 50 Hz telemetry to 1 Hz mini-sector tensors before forecast.
+      </p>
+    </div>
+    <div class="arch-card layer-2">
+      <p class="layer-num">Layer 2 · Projector</p>
+      <h4>Differentiable Cvxpylayers physics</h4>
+      <p>
+        Constant-mu friction-ellipse projection at HEAD. 8-tier Pacejka linearization + 3-iteration SCP outer-loop + jerk-bound enforcement are named swap-points per D-031 staged ladder. V1 NumPy validator reads coa_overlap_flag + routes the constraint per-driver.
+      </p>
+    </div>
+    <div class="arch-card layer-3">
+      <p class="layer-num">Layer 3 · Auditor</p>
+      <h4>Granite Guardian 4.1 8B</h4>
+      <p>
+        BYOC custom-rule registry audits every projection log + every coaching narration. Server-side regex scrubber pre-pass + bounded retry-loop on the narrator path emitting retry directives on detected violations.
+      </p>
+    </div>
+  </div>
+  <p class="body" style="margin-top: 48px;">
+    Two jobs split between two models. TTM forecasts the next-session pace envelope. Granite 4.1 8B Instruct turns the envelope plus the COA plus the debrief into a precision tuning recommendation. Aggregation done honestly.
+  </p>
+  <div class="footer">
+    <span>The architecture</span>
+    <span class="slide-no">04 / 10</span>
+  </div>
+  <div class="chevron"></div>
+</section>
+
+<!-- Slide 5: COA killshot -->
+<section class="slide dark">
+  <p class="eyebrow">The killshot</p>
+  <h2 class="h2" style="color: var(--cream);">
+    COA-parameterized <em>simultaneity gate</em>.
+  </h2>
+  <div class="moats">
+    <div class="moat">
+      <p class="moat-num">Moat 01</p>
+      <h4>First on adaptive telemetry</h4>
+      <p>First application of a pretrained time-series foundation model to adaptive motorsport telemetry.</p>
+    </div>
+    <div class="moat b">
+      <p class="moat-num">Moat 02</p>
+      <h4>First COA as tensor input</h4>
+      <p>First public AI race-engineer workflow we found that reads the FIA Certificate of Adaptations as a binding regulatory input.</p>
+    </div>
+    <div class="moat c">
+      <p class="moat-num">Moat 03</p>
+      <h4>First simultaneity gate</h4>
+      <p>First COA-parameterized brake-throttle simultaneity gate. coa_overlap_flag = 1 returns feasible. coa_overlap_flag = 0 returns violation. Same physical event, different verdict.</p>
+    </div>
+  </div>
+  <p class="body lg" style="margin-top: 56px; color: rgba(244, 235, 216, 0.92);">
+    Standard tools assume able-bodied physics. They encode throttle &times; brake = 0. Sarah's electronic hand-control system has approved hardware that permits simultaneous brake and throttle inputs mid-corner. Her COA permits it. APEX recognises the input. <em style="color: var(--amber); font-style: normal;">We coach disabled drivers with the model that matches their car.</em>
+  </p>
+  <div class="footer">
+    <span>The killshot</span>
+    <span class="slide-no">05 / 10</span>
+  </div>
+  <div class="chevron chevron-amber"></div>
+</section>
+
+<!-- Slide 6: Demo + outputs -->
+<section class="slide">
+  <p class="eyebrow">What APEX returns</p>
+  <h2 class="h2">Sixty seconds. <em>Provenance on every line.</em></h2>
+  <div class="grid-4" style="margin-top: 56px;">
+    <div class="tile">
+      <h4>Coaching report</h4>
+      <p>Corner-by-corner cause + consequences + recommendation + evidence. 4-block CornerCard per D-058 reasoning_chain.</p>
+    </div>
+    <div class="tile">
+      <h4>Tuning delta</h4>
+      <p>Reduce hand-lever brake travel by 4 mm citing the exact COA section. From 38 mm to 34 mm. Section 3(c) hardware spec.</p>
+    </div>
+    <div class="tile">
+      <h4>Forecast envelope</h4>
+      <p>Next-session pace envelope across 30 mini-sectors. Mean line + confidence band. Granite TimeSeries TTM r2.1 channel-mix decoder.</p>
+    </div>
+    <div class="tile">
+      <h4>Guardian verdict</h4>
+      <p>BYOC custom-rule registry verdict + reasoning trace + reproducibility footer with model versions + input file SHA-256 hashes + audit-id.</p>
+    </div>
+  </div>
+  <div class="callout" style="margin-top: 56px; font-size: 24px;">
+    Every claim cites a specific Certificate of Adaptations section and a specific FIA Appendix L provision. HARD-COMPLIANCE server-side scrubber strips invented regulatory anchors. Self-Correcting Retry Loop emits retry directives on detected violations.
+  </div>
+  <div class="footer">
+    <span>Demo + outputs</span>
+    <span class="slide-no">06 / 10</span>
+  </div>
+  <div class="chevron"></div>
+</section>
+
+<!-- Slide 7: IBM Granite stack -->
+<section class="slide">
+  <p class="eyebrow">The IBM Granite stack</p>
+  <h2 class="h2">Fourteen tools. <em>Per-tool honesty tier.</em></h2>
+  <p class="body" style="margin-top: 32px;">
+    2 WIRED at HEAD + 10 INTEGRATION with named swap-points + 2 ACCELERATOR build-time. Per <code style="font-family: var(--mono); background: var(--paper-warm); padding: 4px 8px;">app/frontend/lib/ibm-stack.ts</code>.
+  </p>
+  <div class="stack-grid">
+    <div class="tool"><span class="name">Granite Instruct 4.1 8B</span><span class="tier wired">WIRED</span></div>
+    <div class="tool"><span class="name">Granite 4.0 Nano 350M</span><span class="tier wired">WIRED · WebGPU edge</span></div>
+    <div class="tool"><span class="name">Granite-Docling 258M</span><span class="tier integration">INTEGRATION</span></div>
+    <div class="tool"><span class="name">Granite Vision 4.1 4B</span><span class="tier integration">INTEGRATION</span></div>
+    <div class="tool"><span class="name">Granite TimeSeries TTM r2.1</span><span class="tier integration">INTEGRATION</span></div>
+    <div class="tool"><span class="name">Granite FlowState r1.1</span><span class="tier integration">INTEGRATION</span></div>
+    <div class="tool"><span class="name">IBM TSPulse 1M</span><span class="tier integration">INTEGRATION</span></div>
+    <div class="tool"><span class="name">Granite Embedding R2</span><span class="tier integration">INTEGRATION</span></div>
+    <div class="tool"><span class="name">Granite Guardian 4.1 8B</span><span class="tier integration">INTEGRATION · BYOC</span></div>
+    <div class="tool"><span class="name">Granite Instruct 4.1 3B</span><span class="tier integration">INTEGRATION · chat-routing</span></div>
+    <div class="tool"><span class="name">Granite Speech 4.1 2B-Plus</span><span class="tier integration">INTEGRATION · STT</span></div>
+    <div class="tool"><span class="name">LangGraph + MCP Gateway + ContextForge</span><span class="tier integration">INTEGRATION · orchestration</span></div>
+    <div class="tool"><span class="name">Docling library</span><span class="tier accelerator">ACCELERATOR · build-time</span></div>
+    <div class="tool"><span class="name">Mellea v0.5.0</span><span class="tier accelerator">ACCELERATOR · IVR-loop slot</span></div>
+  </div>
+  <p class="body" style="margin-top: 48px; font-size: 22px; color: var(--muted);">
+    Each Granite tool does one thing in one place. Inspired by IBM's publicly documented Ferrari watsonx case study, redeployed on a safety-critical sensor-data domain.
+  </p>
+  <div class="footer">
+    <span>The IBM Granite stack</span>
+    <span class="slide-no">07 / 10</span>
+  </div>
+  <div class="chevron chevron-clay"></div>
+</section>
+
+<!-- Slide 8: Galaxy-tier moves -->
+<section class="slide dark">
+  <p class="eyebrow">Galaxy-tier moves</p>
+  <h2 class="h2" style="color: var(--cream);">
+    Seven moves. <em>Three shipped, four scaffolded.</em>
+  </h2>
+  <div class="grid-3" style="margin-top: 56px;">
+    <div class="tile" style="background: var(--racing-green-deep); border: 1.5px solid rgba(217, 164, 65, 0.32); color: var(--cream);">
+      <h4 style="color: var(--amber);">01 · Constant-mu friction-ellipse projection</h4>
+      <p style="color: rgba(244, 235, 216, 0.78);">V2 Cvxpylayers ceiling at HEAD. Differentiable. Single-iterate.</p>
+    </div>
+    <div class="tile" style="background: var(--racing-green-deep); border: 1.5px solid rgba(217, 164, 65, 0.32); color: var(--cream);">
+      <h4 style="color: var(--amber);">02 · COA-parameterized gate</h4>
+      <p style="color: rgba(244, 235, 216, 0.78);">V1 NumPy validator reads coa_overlap_flag. Routes constraint per-driver.</p>
+    </div>
+    <div class="tile" style="background: var(--racing-green-deep); border: 1.5px solid rgba(217, 164, 65, 0.32); color: var(--cream);">
+      <h4 style="color: var(--amber);">03 · Byte-equality serializer</h4>
+      <p style="color: rgba(244, 235, 216, 0.78);">D-050 contract. V1 NumPy + V2 Cvxpylayers emit byte-identical violation strings modulo engine header.</p>
+    </div>
+    <div class="tile" style="background: var(--racing-green-deep); border: 1.5px solid rgba(193, 73, 44, 0.42); color: var(--cream);">
+      <h4 style="color: var(--clay);">04 · Pacejka linearization · Scaffold</h4>
+      <p style="color: rgba(244, 235, 216, 0.72);">8-tier projector swap-point V12 per D-031.</p>
+    </div>
+    <div class="tile" style="background: var(--racing-green-deep); border: 1.5px solid rgba(193, 73, 44, 0.42); color: var(--cream);">
+      <h4 style="color: var(--clay);">05 · SCP outer-loop · Scaffold</h4>
+      <p style="color: rgba(244, 235, 216, 0.72);">3-iteration unrolled SCP wrapper V13. ||grad L|| = 24.12 + FCVR = 0 on D-027 Stage C PASS.</p>
+    </div>
+    <div class="tile" style="background: var(--racing-green-deep); border: 1.5px solid rgba(193, 73, 44, 0.42); color: var(--cream);">
+      <h4 style="color: var(--clay);">06 · Mellea tri-agent critic · Scaffold</h4>
+      <p style="color: rgba(244, 235, 216, 0.72);">Physics + Pedagogy + Guardian-Safety critics. ACCELERATOR tier; flips when M3-V5.2 lands.</p>
+    </div>
+  </div>
+  <p class="body lg" style="margin-top: 48px; color: rgba(244, 235, 216, 0.86);">
+    Plus IBM TSPulse polyphase anomaly endpoint + Granite TimeSeries TTM in-browser scaffold. All scaffolded with named swap-points. Three-layer pipeline above stands on the three shipped.
+  </p>
+  <div class="footer">
+    <span>Galaxy-tier moves</span>
+    <span class="slide-no">08 / 10</span>
+  </div>
+  <div class="chevron chevron-amber"></div>
+</section>
+
+<!-- Slide 9: Rubric self-assessment -->
+<section class="slide">
+  <p class="eyebrow">BeMyApp 4-axis rubric · self-assessment</p>
+  <h2 class="h2">Composite <em>A</em>.</h2>
+  <div class="rubric-grid">
+    <div class="rubric">
+      <p class="label">AXIS 01</p>
+      <h4>Technical Execution</h4>
+      <p class="grade">A</p>
+      <p>14 IBM Granite tools · 196 backend tests · 65+ frontend vitest · Playwright fidelity walks · Vercel production deploy · Apache 2.0 public from inception.</p>
+    </div>
+    <div class="rubric">
+      <p class="label">AXIS 02</p>
+      <h4>Innovation</h4>
+      <p class="grade">A</p>
+      <p>COA-parameterized simultaneity gate killshot · frozen-TSFM + differentiable-physics-projection composition · byte-equality serializer regression contract · APEX-Bench v0.1.0 public LIPS leaderboard · NeurIPS Workshop paper draft in repo.</p>
+    </div>
+    <div class="rubric">
+      <p class="label">AXIS 03</p>
+      <h4>Challenge Fit</h4>
+      <p class="grade">A+</p>
+      <p>Adaptive-racer + veteran-team-driver + grassroots-competitor tri-persona ladder · MME Motorsport per-surface consent · Mission 44 outreach · Team BRIT engineering correspondence · ISO 26262 vocabulary alignment per paper section 3.8.</p>
+    </div>
+    <div class="rubric">
+      <p class="label">AXIS 04</p>
+      <h4>Implementation &amp; Feasibility</h4>
+      <p class="grade">A</p>
+      <p>19/19 production routes respond 200 · APEX-Bench public leaderboard reproducible from clone · named swap-points for every INTEGRATION tier tool · Vinh-side Phase 6 backend gates G6 G7 G8 G9 G10 all PASS.</p>
+    </div>
+  </div>
+  <div class="footer">
+    <span>4-axis rubric self-assessment</span>
+    <span class="slide-no">09 / 10</span>
+  </div>
+  <div class="chevron"></div>
+</section>
+
+<!-- Slide 10: Close -->
+<section class="slide dark">
+  <p class="eyebrow">Close</p>
+  <h1 class="h1" style="color: var(--cream); margin-top: 80px;">
+    The race engineer for the drivers who <em>do not have one</em>.
+  </h1>
+  <p class="body lg" style="margin-top: 64px; color: rgba(244, 235, 216, 0.86); max-width: 1320px;">
+    APEX is a reference architecture for governed foundation-model deployment on safety-critical sensor data. Adaptive racers, veteran-team drivers, grassroots competitors. Public from Day 1.
+  </p>
+  <div class="row" style="margin-top: 96px; gap: 96px;">
+    <div class="col">
+      <p class="label" style="color: var(--amber);">DEMO</p>
+      <p style="font-family: var(--mono); font-size: 28px; color: var(--cream); margin-top: 8px;">apex-one-black.vercel.app</p>
+    </div>
+    <div class="col">
+      <p class="label" style="color: var(--amber);">SOURCE</p>
+      <p style="font-family: var(--mono); font-size: 28px; color: var(--cream); margin-top: 8px;">github.com/StephenSook/apex</p>
+    </div>
+    <div class="col">
+      <p class="label" style="color: var(--amber);">LICENSE</p>
+      <p style="font-family: var(--mono); font-size: 28px; color: var(--cream); margin-top: 8px;">Apache 2.0</p>
+    </div>
+  </div>
+  <p style="font-family: var(--display); font-size: 36px; font-style: italic; color: var(--amber); margin-top: 96px;">
+    Stephen Sookra &amp; Vinh Le · Kennesaw State University · 12 days
+  </p>
+  <div class="footer">
+    <span>IBM SkillsBuild AI Builders Challenge May 2026</span>
+    <span class="slide-no">10 / 10</span>
+  </div>
+  <div class="chevron chevron-clay"></div>
+</section>
+
+</body>
+</html>
