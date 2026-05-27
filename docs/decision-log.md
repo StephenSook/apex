@@ -4,6 +4,35 @@ Every locked decision with rationale + date + scope. Newest first.
 
 ---
 
+## 2026-05-27 D-066: Wave-47 5-agent /review batch close + 8 atomic fix commits + honesty restoration
+
+**Decision.** Stephen invoked `/review` on wave-47 ship. Dispatched 5 parallel sub-agents (Gemini 1M cross-surface drift + Codex adversarial + silent-failure-hunter + code-reviewer + type-design-analyzer). 32 findings surfaced total: 6 BLOCKER (5 Codex overclaim + 1 type-design drift) + 14 HIGH (silent-failure-hunter 7 + Codex 6 + Gemini 1 + code-reviewer 2 + type-design 3) + 13 MED + ~12 NIT. Brutal-honest synthesis ran: shipped 8 atomic commits closing 5 BLOCKER + 7 HIGH + 3 MED on the load-bearing items.
+
+**Commit ledger (newest first):**
+
+- `df2c329` SUBMISSION.md prose: Langflow → LangGraph + HF Space → Vercel + Built-with tags (Gemini MED 10+11+12)
+- `0aa39a2` paper §3.8 narrow to constant-mu friction-ellipse (Codex BLOCKER 2) + Guardian verdict refs redirect to test_guardian_audit.py (Codex BLOCKER 3) + drop publicly-cited overclaim (Gemini HIGH 1)
+- `e33f1ac` SafetyAlignmentPanel: "publicly cite" → "cite in engineering correspondence" + "range bounds" → "shape contract" (Codex BLOCKER 1 + Gemini HIGH 1) + UploadTelemetryPanel rename (Gemini MED 6 + code-reviewer MED 3)
+- `388cd16` OrchestrationResponse add compute_ms field (type-design BLOCKER) + canned payload include
+- `d94fa54` APEXBenchLeaderboard 9-field localStorage validation (silent-failure-hunter HIGH 5 + Codex HIGH 5 + type-design H2) + concurrent-submit top-of-handler guard (silent-failure-hunter HIGH 5) + reset confirm dialog (Codex MED 3) + honesty docstring drop "server-side" wording (code-reviewer MED 5)
+- `129e915` what-if-replay allowlist baseline_fixture_id + mutation_key (Codex HIGH 2)
+- `328372d` audit-log Content-Length + post-parse 413 size cap (silent-failure-hunter HIGH 4 + Codex HIGH 1)
+- `c4d20aa` openrouter-stream retry-exhausted header + AbortError catch-path log-level downgrade + consumer-side fallback prefix chunk + Codex empty-completion guard (silent-failure-hunter HIGH 1+2+3 + Codex HIGH 3)
+
+**Honesty checkpoint.** This review batch caught the conceptual-stack-vs-shipped-stack memory rule violation I myself was supposed to enforce: paper §3.8 + SafetyAlignmentPanel + 5 NotebookLM audio scripts originally shipped overclaim relative to actual HEAD code. The prose surfaces are now fixed at commits `0aa39a2` + `e33f1ac` + `df2c329`. The audio MP3s are immutable per their NotebookLM generation; 3 of 6 panels (architecture-figure + galaxy-moves + lips-harness) need re-record by Stephen with corrected prompts. coa-gate + byte-equality + judge-tour-cta panels stay (acceptable framing).
+
+**Outstanding (acceptable post-submission OR lower priority):**
+
+- 3 NotebookLM panel re-records (operator-action; corrected prompts prepared at deliverables/audio-raw/prompts/ + verified against shipped code via grep)
+- Wire-flip helper runtime validation (code-reviewer HIGH 1+2 latent today; fires only when Vinh deploys real backend + Stephen flips USE_REAL_* flags)
+- MED + NIT items (VS Code extension webview validation, NotebookLMHoverAudio play() error.name distinction, wire-flip TimeoutError → console.warn, APEXBenchLeaderboard useMemo on sort, openrouter-stream comment cleanup, README build-status table refresh)
+
+**Memory writes.** `feedback_git_lock_recurrence_root_cause.md` (process diagnosis: Bash tool `run_in_background=true` + `TaskStop` on long-running commits left orphaned git processes holding `.git/index.lock`; recovery requires Stephen manual `rm` per session; root-cause is task-kill pattern not the path or Vinh collisions). `project_apex_competitor_vigil_ai_drowsiness.md` (8-step deep-dive on May Challenge competitor #9; F+; zero threat). `feedback_verify_fixture_paths_before_python_ref.md` (Vinh-caught silent-failure on my GET /api/orchestration filename drift; verify paths via ls before referencing in Python).
+
+**Cross-references.** `project_apex_wave_47_close_out.md` cumulative wave-47 state (sessions 1 + 2 + 3 review batch) + Gemini-agent transcript a78e764cc0fed01ea + Codex transcript a02a36ed4e14de79e + silent-failure-hunter transcript a141b248efe955cfd + code-reviewer transcript a9dcab47318bb56d9 + type-design transcript abafc432977cf56ce.
+
+---
+
 ## 2026-05-27 D-065: Wave-47 final close-out post-Vinh-backend merge + 4 deferred items shipped + Team BRIT email integration
 
 **Decision.** Wave-47 closes its second session arc with ~12 atomic commits closing the 4 wave-46 deferred items (#208 streaming retry-loop port + #210 APEX-Bench v0.1.0 leaderboard + #211 C5 wire-flip helper extension via 3 NEW Vinh routes + #217 G6 VS Code extension stub) plus Vinh backend integration (3 NEW frontend wire-flip wrappers for Vinh Phase 4 M.3 endpoints + GET /api/orchestration endpoint added to Vinh server.py + 4 em-dash sweeps in Vinh Phase-0 modules) plus Team BRIT Al Locke engineering-director email integration (paper section 3.8 + SafetyAlignmentPanel component on /judges) plus CI red-wall close (cascade-#52 FACADE union-narrowing consumer sweep + ESLint react-hooks/set-state-in-effect fixes on CoachVoicePlayback + one-hand-mode + vitest mock race fixes).
