@@ -97,19 +97,33 @@ This Space hosts the **APEX** race-engineer backend for the IBM SkillsBuild AI B
 Apache 2.0. Repo: <https://github.com/StephenSook/apex>.
 EOF
 
-# Push via huggingface_hub
+# Auto-install huggingface_hub if missing. Quiet on success.
+if ! python3 -c "import huggingface_hub" 2>/dev/null; then
+  echo "[deploy] huggingface_hub not installed; running pip3 install ..."
+  pip3 install --quiet huggingface_hub
+fi
+
+# Push via huggingface_hub. Quote the heredoc delimiter ('PYEOF') so
+# nothing in the Python source interpolates from the surrounding shell;
+# token + paths come in via env vars at runtime. Prevents the token
+# from landing in `ps -ef` output or any shell-trace log.
 echo "[deploy] uploading to https://huggingface.co/spaces/$SPACE_REPO ..."
-HF_TOKEN="$HF_TOKEN" python3 - <<PYEOF
+export _APEX_HF_TOKEN="$HF_TOKEN"
+export _APEX_BUILD_DIR="$BUILD_DIR"
+export _APEX_SPACE_REPO="$SPACE_REPO"
+python3 - <<'PYEOF'
+import os
 from huggingface_hub import HfApi
-api = HfApi(token="$HF_TOKEN")
+api = HfApi(token=os.environ["_APEX_HF_TOKEN"])
 api.upload_folder(
-    folder_path="$BUILD_DIR",
-    repo_id="$SPACE_REPO",
+    folder_path=os.environ["_APEX_BUILD_DIR"],
+    repo_id=os.environ["_APEX_SPACE_REPO"],
     repo_type="space",
     commit_message="wave-48 backend deploy",
 )
-print("[deploy] OK: pushed to space $SPACE_REPO")
+print(f"[deploy] OK: pushed to space {os.environ['_APEX_SPACE_REPO']}")
 PYEOF
+unset _APEX_HF_TOKEN _APEX_BUILD_DIR _APEX_SPACE_REPO
 
 echo ""
 echo "[deploy] Done."
