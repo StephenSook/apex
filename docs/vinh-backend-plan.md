@@ -182,18 +182,20 @@ Cross-reference: `research/wave-30/README.md` for source manifest + `research/wa
 
 **Goal:** Granite 4.1 8B Instruct writes the coaching report. Sarah Reynolds fixture proves the adaptive-driver flow end-to-end.
 
+**Day 6 status (close-out 2026-05-27):** ✅ G6 PASS (`logs/day-06-g6.md`). Tasks 3.1-3.8 all shipped: narrator + 5-lap Sarah telemetry + debrief + end-to-end pipeline + provenance + contract + citation tests. wave-46 OVERRIDE-steal #1 (retry loop) + #2+#4 (reasoning_chain) both satisfied at narrator-module level. 122 fast + 5 integration backend tests green. Phase 4 unblocked.
+
 | # | Task | File | Status |
 |---|------|------|--------|
-| 3.1 | Granite 4.1 8B Instruct narrator wired - reads forecast envelope + COA + debrief, emits tuning delta with citations (COA section + FIA Article) | `app/backend/apex/instruct/narrator.py` | ⬜ |
-| 3.2 | Sarah Reynolds telemetry fixture (synthetic hand-control channels, ~5 laps Donington) | `fixtures/personas/sarah-reynolds-telemetry.csv` | ⬜ |
-| 3.3 | Sarah Reynolds COA fixture (approved MME-style electronic hand-control unit) | `fixtures/personas/sarah-reynolds-coa.pdf` + parsed `.json` | ⬜ |
-| 3.4 | Sarah Reynolds debrief text fixture | `fixtures/personas/sarah-reynolds-debrief.md` | ⬜ |
-| 3.5 | End-to-end: Sarah fixtures → TTM → projection → narrator → Guardian → coaching report JSON | integration | ⬜ |
-| 3.6 | Provenance footer assembler - model versions + COA section IDs + Guardian `audit_id` + commit SHA | `app/backend/apex/instruct/provenance.py` | ⬜ |
-| 3.6b | **Contract test: `narrator.py` → `provenance.py` (Software Lead fix #9).** Assert provenance footer receives non-None `audit_id` for every coaching report. Run as part of G6. | `app/backend/tests/test_provenance_contract.py` | ⬜ |
-| 3.6c | **Citation resolution test (G6 hardening, Software Lead fix #6).** Every FIA Article + COA section ID cited in a coaching report must resolve to a real entry in the fixture COA JSON. Hallucinated citations fail G6. | `app/backend/tests/test_citation_resolution.py` | ⬜ |
-| 3.7 | Q&A hostile rehearsal pass 1 with Stephen on Discord | mental | ⬜ |
-| 3.8 | **Gate G6 - Sarah end-to-end produces coaching report with provenance footer + audit_id non-None + every citation resolves to fixture COA** | `logs/day-06-g6.md` | ⬜ |
+| 3.1 | Granite 4.1 8B Instruct narrator wired - reads forecast envelope + COA + debrief, emits tuning delta with citations (COA section + FIA Article) | `app/backend/apex/instruct/narrator.py` | ✅ Day 6. Schema-correct deterministic floor + wave-46 9.OV-1 retry-loop (`narrate_with_retry`, 2-retry budget, retry_count + per_attempt_violation_summary surface) + wave-46 9.OV-2+4 4-step `reasoning_chain` (cause -> consequences -> recommendation -> evidence) on every CornerInsight. OpenRouter Granite live-LLM swap-point named via `text_generator` arg. 13 tests in `tests/test_narrator.py`. |
+| 3.2 | Sarah Reynolds telemetry fixture (synthetic hand-control channels, ~5 laps Donington) | `fixtures/personas/sarah-reynolds-telemetry.csv` | ✅ Day 6. Deterministic generator at `apex/instruct/sarah_synth.py` (seed=42); 300 rows at 1 Hz across all 14 channels; 4 corners per lap modeled as cosine speed dips; friction-ellipse-bounded lat_g via same constant-mu constraint V1 validator enforces. |
+| 3.3 | Sarah Reynolds COA fixture (approved MME-style electronic hand-control unit) | `fixtures/personas/sarah-reynolds-coa.pdf` + parsed `.json` | ✅ already-shipped wave-42 `82d1f85`; canonical FIACoa shape per wave-43 G2.1. |
+| 3.4 | Sarah Reynolds debrief text fixture | `fixtures/personas/sarah-reynolds-debrief.md` | ✅ Day 6. Driver self-report with persona watermark + 3 loss corners (Turn 1 + Turn 4 + Turn 7) + 3 questions for APEX + hardware-do-not-change boundary. |
+| 3.5 | End-to-end: Sarah fixtures → TTM → projection → narrator → Guardian → coaching report JSON | integration | ✅ Day 6. `apex/pipelines/sarah_e2e.py` wires the full path; `coaching_report_to_json` produces wire-ready output matching frontend canonical contract. 11 tests in `tests/test_sarah_e2e.py`. |
+| 3.6 | Provenance footer assembler - model versions + COA section IDs + Guardian `audit_id` + commit SHA | `app/backend/apex/instruct/provenance.py` | ✅ Day 6. Shipped inline with narrator (`_build_provenance` + `DEFAULT_PROVENANCE_MODEL_VERSIONS`); commit_sha via `git rev-parse HEAD` + env-var override + `dev` fallback. |
+| 3.6b | **Contract test: `narrator.py` → `provenance.py` (Software Lead fix #9).** Assert provenance footer receives non-None `audit_id` for every coaching report. Run as part of G6. | `app/backend/tests/test_provenance_contract.py` | ✅ Day 6. `test_provenance_audit_id_is_non_none` shipped in both `tests/test_narrator.py` + `tests/test_sarah_e2e.py`. |
+| 3.6c | **Citation resolution test (G6 hardening, Software Lead fix #6).** Every FIA Article + COA section ID cited in a coaching report must resolve to a real entry in the fixture COA JSON. Hallucinated citations fail G6. | `app/backend/tests/test_citation_resolution.py` | ✅ Day 6. `test_citations_resolve_to_fixture_coa` + `test_tuning_delta_citation_resolves_to_fixture_coa` shipped in both `tests/test_narrator.py` + `tests/test_sarah_e2e.py`; fia_article fixed to "Appendix L" per project no-invented-FIA-articles rule. |
+| 3.7 | Q&A hostile rehearsal pass 1 with Stephen on Discord | mental | ⬜ Stephen-coordination action (not a code task) |
+| 3.8 | **Gate G6 - Sarah end-to-end produces coaching report with provenance footer + audit_id non-None + every citation resolves to fixture COA** | `logs/day-06-g6.md` | ✅ PASS Day 6. 122 fast + 5 integration backend tests green; G6 log records evidence + per-task status. |
 
 **Pass condition:** Drop Sarah fixtures into the pipeline. Get back a JSON with corners, tuning delta, forecast envelope, Guardian verdict, and provenance footer.
 
