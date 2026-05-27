@@ -28,6 +28,24 @@
 // across every Article + Section + Sec. variant below.
 const SUFFIX = "(\\.[a-z]|[a-z])?";
 
+// Wave-47 cascade-C #221 close per Codex HIGH: pre-normalize the input
+// to collapse Unicode fullwidth digits (１-９) -> ASCII (1-9) + collapse
+// spaces around dots ("18 . 3" -> "18.3") + collapse Unicode fullwidth
+// dot (．) -> ASCII (.). Without this normalization, brutal-judge LLM
+// outputs that contain "Article 18 . 3" or "Article １８.３" pass the
+// HARD-COMPLIANCE gate untouched. The normalization is idempotent + safe
+// to apply unconditionally before every regex pass below.
+function normalizeForScrubber(text: string): string {
+  return text
+    .replace(/[０-９]/g, (ch) =>
+      String.fromCharCode(ch.charCodeAt(0) - 0xff10 + 0x30),
+    )
+    .replace(/．/g, ".")
+    .replace(/(\d)\s+\.\s+(\d)/g, "$1.$2")
+    .replace(/(\d)\s+\.(\d)/g, "$1.$2")
+    .replace(/(\d)\.\s+(\d)/g, "$1.$2");
+}
+
 /**
  * Cascade-#47 wave-46 OVERRIDE-steal: detector counterpart for the
  * scrubber. Returns the list of forbidden-anchor patterns that fired on
@@ -95,9 +113,10 @@ const VIOLATION_PROBES: ReadonlyArray<{ readonly label: string; readonly regex: 
 export function detectInventedRegulatoryAnchors(
   text: string,
 ): ReadonlyArray<RegulatoryAnchorViolation> {
+  const normalized = normalizeForScrubber(text);
   const violations: RegulatoryAnchorViolation[] = [];
   for (const probe of VIOLATION_PROBES) {
-    const matches = text.match(probe.regex);
+    const matches = normalized.match(probe.regex);
     if (matches !== null && matches.length > 0) {
       violations.push({ pattern: probe.label, matches: matches.slice(0, 5) });
     }
@@ -110,7 +129,7 @@ export function hasInventedRegulatoryAnchors(text: string): boolean {
 }
 
 export function scrubInventedRegulatoryAnchors(text: string): string {
-  return text
+  return normalizeForScrubber(text)
     .replace(
       new RegExp(`FIA Appendix L Article \\d+(\\.\\d+)*${SUFFIX}`, "gi"),
       "FIA Appendix L per the published revision",
