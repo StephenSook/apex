@@ -39,7 +39,14 @@ import type {
   UploadTelemetryResponse,
 } from "../../../../shared/types";
 
-export const runtime = "nodejs";
+// Wave-47 cascade-C close per Codex BLOCKER (upload-telemetry runtime
+// Undici File-subclass mismatch). Switched runtime to "edge" so the
+// native Web Platform multipart parser preserves File subclass natively
+// on FormData entries; Node 22 + Undici Vitest test-env strips the
+// subclass during Request body re-parse but production Vercel Edge
+// preserves it. Edge native body cap is 4.5 MB which is BELOW our 5 MB
+// soft cap so the Content-Length check still has merit as fast-fail.
+export const runtime = "edge";
 export const dynamic = "force-dynamic";
 
 const MAX_CSV_BYTES = 5 * 1024 * 1024;
@@ -104,12 +111,20 @@ export async function POST(req: NextRequest): Promise<Response> {
     );
   }
   const file = formData.get("csv");
-  if (file === null || !(file instanceof File)) {
+  // Wave-47 cascade-C: accept Blob OR File (File extends Blob). Edge
+  // runtime preserves File subclass natively in production but a
+  // defensive check against bare Blob keeps the route resilient if a
+  // future runtime change loses the subclass.
+  if (file === null || !(file instanceof Blob)) {
     return Response.json(
-      { error: "missing_csv", message: "Expected multipart/form-data field 'csv' of type File." },
+      { error: "missing_csv", message: "Expected multipart/form-data field 'csv' of type File or Blob." },
       { status: 400 },
     );
   }
+  const fileName =
+    file instanceof File && typeof file.name === "string" && file.name.length > 0
+      ? file.name
+      : "uploaded.csv";
   if (file.size === 0) {
     return Response.json({ error: "empty_csv", message: "Uploaded CSV is empty." }, { status: 400 });
   }
@@ -211,7 +226,7 @@ export async function POST(req: NextRequest): Promise<Response> {
   const payload: UploadTelemetryResponse = {
     engine: "upload-telemetry-strict-parser",
     compute_ms: Math.round(performance.now() - t0),
-    source_filename: file.name,
+    source_filename: fileName,
     row_count: rows.length,
     first_row_t_session_s: firstRow.t_session_s,
     last_row_t_session_s: lastRow.t_session_s,
