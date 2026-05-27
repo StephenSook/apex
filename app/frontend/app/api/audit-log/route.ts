@@ -21,6 +21,14 @@ import { runWireFlipPOST } from "../../../lib/wire-flip";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
+// Wave-47 review HIGH #4 close (silent-failure-hunter + Codex HIGH #1):
+// mirror Vinh's backend 8 KiB-per-line cap at the frontend boundary so
+// oversize payloads return a typed 413 from this route instead of a
+// generic Vercel 502 after exhausting Next.js body limit. Pre-route
+// validation is the right place: Vercel runtime memory + log size + the
+// helper's fetch body are all bounded at this stage.
+const MAX_AUDIT_LOG_BYTES = 8 * 1024;
+
 interface AuditLogResponse {
   readonly engine: string;
   readonly compute_ms: number;
@@ -35,6 +43,21 @@ const AUDIT_LOG_SWAP_POINT =
 
 export async function POST(req: NextRequest): Promise<Response> {
   const t0 = performance.now();
+  // Wave-47 review HIGH #4 close: Content-Length pre-check before json
+  // parse so a 50 MB nested object cannot exhaust route memory.
+  const contentLength = req.headers.get("content-length");
+  if (contentLength !== null) {
+    const declared = Number(contentLength);
+    if (Number.isFinite(declared) && declared > MAX_AUDIT_LOG_BYTES) {
+      return Response.json(
+        {
+          error: "payload_too_large",
+          message: `Audit-log entry exceeds ${MAX_AUDIT_LOG_BYTES} byte cap (declared ${declared}). Matches Vinh backend 8 KiB-per-line cap.`,
+        },
+        { status: 413 },
+      );
+    }
+  }
   let body: unknown;
   try {
     body = await req.json();
@@ -48,6 +71,18 @@ export async function POST(req: NextRequest): Promise<Response> {
     return Response.json(
       { error: "invalid_body", message: "Expected JSON object (not array, not null)." },
       { status: 400 },
+    );
+  }
+  // Wave-47 review HIGH #4 close (continued): post-parse byte cap for
+  // clients that omit Content-Length header (some chunked uploaders).
+  const serializedBytes = new TextEncoder().encode(JSON.stringify(body)).length;
+  if (serializedBytes > MAX_AUDIT_LOG_BYTES) {
+    return Response.json(
+      {
+        error: "payload_too_large",
+        message: `Audit-log entry serialized to ${serializedBytes} bytes; cap is ${MAX_AUDIT_LOG_BYTES}.`,
+      },
+      { status: 413 },
     );
   }
 
