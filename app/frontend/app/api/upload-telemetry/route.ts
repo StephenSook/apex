@@ -104,22 +104,12 @@ export async function POST(req: NextRequest): Promise<Response> {
     );
   }
   const file = formData.get("csv");
-  // Cascade-#47 wave-46 relaxed `instanceof File` to `instanceof Blob` (File
-  // extends Blob; production Vercel Edge formData returns File natively but
-  // Node 22 + undici test-env returns bare Blob after Request body re-parse,
-  // and the route only needs .size + .type + .text() + .name, all of which
-  // Blob supports modulo .name falling back to the static "uploaded.csv"
-  // sentinel below).
-  if (file === null || !(file instanceof Blob)) {
+  if (file === null || !(file instanceof File)) {
     return Response.json(
-      { error: "missing_csv", message: "Expected multipart/form-data field 'csv' of type Blob/File." },
+      { error: "missing_csv", message: "Expected multipart/form-data field 'csv' of type File." },
       { status: 400 },
     );
   }
-  const fileName =
-    file instanceof File && typeof file.name === "string" && file.name.length > 0
-      ? file.name
-      : "uploaded.csv";
   if (file.size === 0) {
     return Response.json({ error: "empty_csv", message: "Uploaded CSV is empty." }, { status: 400 });
   }
@@ -221,7 +211,7 @@ export async function POST(req: NextRequest): Promise<Response> {
   const payload: UploadTelemetryResponse = {
     engine: "upload-telemetry-strict-parser",
     compute_ms: Math.round(performance.now() - t0),
-    source_filename: fileName,
+    source_filename: file.name,
     row_count: rows.length,
     first_row_t_session_s: firstRow.t_session_s,
     last_row_t_session_s: lastRow.t_session_s,
