@@ -42,9 +42,6 @@ function SiteHeader() {
           <a href="#architecture" className="hover:text-racing-green underline-offset-4 hover:underline">
             Architecture
           </a>
-          <a href="#status" className="hover:text-racing-green underline-offset-4 hover:underline">
-            Build status
-          </a>
           <Link
             href="/analyze"
             className="rounded-sm bg-accent px-3 py-1.5 font-mono text-xs uppercase tracking-wider text-paper hover:bg-racing-green transition-colors"
@@ -75,8 +72,8 @@ function Hero() {
       className="relative overflow-hidden border-b border-rule"
       aria-labelledby="hero-title"
     >
-      <div className="mx-auto grid max-w-6xl gap-12 px-6 py-20 lg:grid-cols-12 lg:gap-16 lg:px-10 lg:py-28">
-        <div className="lg:col-span-7 flex flex-col gap-6">
+      <div className="mx-auto grid max-w-7xl gap-12 px-6 py-20 lg:grid-cols-12 lg:gap-12 lg:px-10 lg:py-28">
+        <div className="lg:col-span-6 flex flex-col gap-6">
           <p className="apex-eyebrow apex-rise" style={{ "--apex-delay": "0ms" } as React.CSSProperties}>
             IBM SkillsBuild · May Challenge 2026 · Day 7 of 12
           </p>
@@ -134,7 +131,7 @@ function Hero() {
         </div>
 
         <figure
-          className="lg:col-span-5 self-center apex-rise"
+          className="lg:col-span-6 flex w-full items-start apex-rise"
           style={{ "--apex-delay": "600ms" } as React.CSSProperties}
           aria-label="A racing line through a corner with the apex point marked"
         >
