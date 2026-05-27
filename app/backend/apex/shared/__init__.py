@@ -1,1 +1,1 @@
-"""APEX shared package — inter-layer contracts, logging, observability."""
+"""APEX shared package. Inter-layer contracts, logging, observability."""

@@ -4,6 +4,7 @@ Exposes:
   - POST /api/audit-log           (task 4.M3a)
   - POST /api/what-if-replay      (task 4.M3b)
   - GET  /api/session-context     (task 4.M3c)
+  - GET  /api/orchestration       (wave-47 cascade-#53; frontend V14 wire-flip)
   - POST /api/analyze             (Sarah end-to-end pipeline)
   - GET  /healthz                 (container readiness probe)
 
@@ -134,6 +135,60 @@ def get_session_context():
             for t in resp.tiles
         ],
         "fetched_at_iso": resp.fetched_at_iso,
+    }
+
+
+# ---- GET /api/orchestration -------------------------------------------
+#
+# Wave-47 cascade-#53 close (Stephen-side audit R1): frontend
+# `/api/orchestration` proxies via the wave-46 wire-flip helper and
+# expects a typed `OrchestrationResponse` with nodes[].id + label +
+# status + elapsed_ms. This endpoint executes the canonical Sarah
+# Reynolds 5-lap fixture through the LangGraph 6-node runtime + returns
+# the per-node trace in the FRONTEND shape (not the analyze-trace
+# shape). Bound to the canonical fixtures shipped with the repo at
+# fixtures/personas/sarah-reynolds-{telemetry.csv,coa.json}; if either
+# is missing, returns 503 so the frontend wire-flip helper falls back
+# to canned without retrying.
+
+
+def _sarah_fixtures_or_503() -> tuple[Path, Path]:
+    base = Path(__file__).resolve().parent.parent / "fixtures" / "personas"
+    telemetry = base / "sarah-reynolds-telemetry.csv"
+    coa = base / "sarah-reynolds-coa.json"
+    if not telemetry.exists() or not coa.exists():
+        raise HTTPException(
+            status_code=503,
+            detail="sarah-reynolds canonical fixtures missing on backend",
+        )
+    return telemetry, coa
+
+
+@app.get("/api/orchestration")
+def get_orchestration() -> dict[str, Any]:
+    telemetry, coa = _sarah_fixtures_or_503()
+    trace = run_langgraph(
+        telemetry_csv=str(telemetry),
+        coa_json=str(coa),
+        debrief_path=None,
+    )
+    nodes = [
+        {
+            "id": s.node,
+            "label": s.node.replace("_", " ").title(),
+            "status": s.status,
+            "elapsed_ms": s.duration_ms,
+        }
+        for s in trace.steps
+    ]
+    total_ms = sum(int(s.duration_ms) for s in trace.steps)
+    return {
+        "engine": "langgraph-v14-real",
+        "trace_id": f"sarah-langgraph-{int(total_ms)}ms",
+        "nodes": nodes,
+        "total_ms": total_ms,
+        "swap_point": trace.swap_point,
+        "compute_ms": total_ms,
     }
 
 

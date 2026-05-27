@@ -1,4 +1,4 @@
-"""G1 — TTM zero-shot smoke on a real FastF1 5-lap export (Phase 0 task 0.7).
+"""G1. TTM zero-shot smoke on a real FastF1 5-lap export (Phase 0 task 0.7).
 
 G-0.5 already proved TTM-r2 loads on RTX 3060 Ti + emits (B, 30, 14) on a
 random tensor. G1 strengthens that proof by running the same forward pass

@@ -42,6 +42,13 @@ const FLAG_NAMES = {
   USE_GRANITE_3B_ROUTING: "NEXT_PUBLIC_USE_GRANITE_3B_ROUTING",
   USE_GRANITE_SPEECH: "NEXT_PUBLIC_USE_GRANITE_SPEECH",
   MELLEA_IVR_ENABLED: "MELLEA_IVR_ENABLED",
+  // Wave-47 cascade-#53: 3 NEW Vinh-shipped Phase 4 M.3 routes per
+  // `docs/vinh-backend-verify-wave-47.md` audit. server.py exposes
+  // POST /api/audit-log + GET /api/session-context + POST /api/what-if-replay
+  // today. Frontend wire-flip wrappers added wave-47.
+  USE_REAL_AUDIT_LOG: "NEXT_PUBLIC_USE_REAL_AUDIT_LOG",
+  USE_REAL_SESSION_CONTEXT: "NEXT_PUBLIC_USE_REAL_SESSION_CONTEXT",
+  USE_REAL_WHAT_IF_REPLAY: "NEXT_PUBLIC_USE_REAL_WHAT_IF_REPLAY",
 } as const;
 
 export type FeatureFlag = keyof typeof FLAG_NAMES;

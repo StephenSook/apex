@@ -1,9 +1,9 @@
-"""DifferentiableProjector Protocol — exit ramp for the cvxpylayers lock.
+"""DifferentiableProjector Protocol. Exit ramp for the cvxpylayers lock.
 
 Per council v2 chairman synthesis + Long-Term Architect (transcript v2):
 D-013 hard-locks cvxpylayers as the differentiable optimization layer, but
 the only fallback baked into the plan was "ship V1 NumPy as floor + paper
-cites canonical QP" — that's paper-survival, not code-survival. If
+cites canonical QP" (paper-survival, not code-survival). If
 cvxpylayers' latency turns out unacceptable on heterogeneous hardware in
 6 months, or if a future contributor wants to evaluate qpth / theseus,
 there's no swap seam.
