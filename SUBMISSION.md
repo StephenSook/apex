@@ -39,7 +39,7 @@ Inputs: telemetry CSV, FIA Certificate of Adaptations PDF, written debrief.
 
 Outputs: corner-by-corner coaching report, tuning recommendation with COA section citation, next-session lap-pace envelope forecast, Granite Guardian safety stamp.
 
-The pipeline: Granite-Docling parses the COA into structured JSON. Granite Vision parses the timing sheet. A 1-Hz mini-sector aggregator preps a tensor for Granite TimeSeries TTM r2.1, a frozen pretrained time-series foundation model. The forecast passes through a differentiable physics-projection layer (CvxpyLayers QP) that enforces the friction ellipse, the bicycle model, a forward-Euler kinematic step, a jerk bound, and the COA-flagged brake-throttle simultaneity envelope. Granite Guardian 4.1 audits the projection's text log with custom BYOC rules. Granite 4.1 8B Instruct writes the coaching report in a race-engineer voice. Langflow renders the orchestration graph for the demo.
+The pipeline: Granite-Docling parses the COA into structured JSON. Granite Vision parses the timing sheet. A 1-Hz mini-sector aggregator preps a tensor for Granite TimeSeries TTM r2.1, a frozen pretrained time-series foundation model. The forecast passes through a differentiable physics-projection layer (CvxpyLayers QP) that enforces the constant-mu friction ellipse at HEAD (8-tier Pacejka linearization + jerk bound + SCP outer-loop deferred swap-points per D-031 staged ladder) along with the COA-flagged brake-throttle simultaneity envelope read by the V1 NumPy validator. Granite Guardian 4.1 audits the projection's text log with custom BYOC rules. Granite 4.1 8B Instruct writes the coaching report in a race-engineer voice. LangGraph + Granite MCP Gateway + ContextForge render the orchestration runtime (Langflow retained as the export-graph artifact per D-017 G7 + D-054).
 
 ### How we built it
 
@@ -47,7 +47,7 @@ IBM Granite stack (14 tools tracked in `app/frontend/lib/ibm-stack.ts` with per-
 
 Frontend: Next.js 16 + React 19 + Tailwind CSS v4 + TypeScript strict, deployed to Vercel.
 
-Backend: Python 3.12 + FastAPI + cvxpylayers + transformers + granite-tsfm, deployed to a Hugging Face Space.
+Backend: Python 3.12 + FastAPI + cvxpylayers + transformers + granite-tsfm, deployed via Vercel Fluid Compute (Node.js runtime) for /api/openrouter-stream + /api/watson-tts with a FastAPI backend container alongside per the Stream M.3 spec handoff.
 
 Methodology: Sookra Methodology v3.3 with seven phases of competitive recon (six-model murder-board + judge-sim), NotebookLM gap analysis on the seven-voice synthesis, PhysicsTTM physics-constrained foundation-model architecture (the load-bearing innovation that closes the kinetic-hallucination objection), Convergence-14 serializer unit-test suite, twelve atomic-commit days with the green-squares discipline, manual coordination via PLAN.md (no git hooks, mirrors the Trace + Hometown convention).
 
@@ -89,8 +89,8 @@ A NeurIPS Workshop paper draft is in `paper/apex-neurips-workshop-2026.md` (draf
 - Granite TimeSeries TTM
 - Granite Guardian
 - Granite Instruct
-- Langflow
-- Hugging Face
+- LangGraph
+- Vercel
 - Next.js
 - React
 - TypeScript
