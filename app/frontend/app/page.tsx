@@ -9,6 +9,7 @@ export default function Home() {
       <SiteHeader />
       <main id="main" className="flex flex-col flex-1">
         <Hero />
+        <AdaptiveCommunity />
         <DriverContext />
         <Architecture />
         <Differentiators />
@@ -137,6 +138,121 @@ function Hero() {
         >
           <RacingLineHeroShell />
         </figure>
+      </div>
+    </section>
+  );
+}
+
+/* -------------------------------------------------------------- */
+/* Adaptive community (counter-position vs OVERRIDE's no-human-story  */
+/* gap per project_apex_override_competitor.md; aggregate-only        */
+/* community framing, no un-consented operator names; MME Motorsport   */
+/* named per the 2026-05-22 consent grant per                          */
+/* project_apex_consent_mme_motorsport.md; Sarah Reynolds NOT named    */
+/* per feedback_persona_not_hardcoded_in_ui.md storytelling-layer-only */
+/* rule)                                                               */
+/* -------------------------------------------------------------- */
+function AdaptiveCommunity() {
+  return (
+    <section
+      id="who-we-race-for"
+      className="border-b border-rule bg-paper"
+      aria-labelledby="adaptive-community-title"
+    >
+      <div className="mx-auto grid max-w-7xl gap-12 px-6 py-20 lg:grid-cols-12 lg:gap-16 lg:px-10 lg:py-24">
+        <div className="lg:col-span-5 flex flex-col gap-5">
+          <p className="apex-eyebrow apex-rise" style={{ "--apex-delay": "0ms" } as React.CSSProperties}>
+            Who APEX races for
+          </p>
+          <h2
+            id="adaptive-community-title"
+            className="font-display text-4xl leading-[1.05] tracking-tight text-ink sm:text-5xl apex-rise"
+            style={{ "--apex-delay": "120ms" } as React.CSSProperties}
+          >
+            Adaptive racers, veteran-team drivers, grassroots competitors.{" "}
+            <em className="font-display italic text-accent">The people who need a race engineer the most.</em>
+          </h2>
+          <p
+            className="max-w-xl text-base leading-relaxed text-ink-soft apex-rise"
+            style={{ "--apex-delay": "240ms" } as React.CSSProperties}
+          >
+            APEX is built first for drivers competing under FIA Appendix L hand-control
+            certification: differential thumb-trigger paddles, modified pedal assemblies,
+            and brake-throttle simultaneity envelopes that pro-grade coaching software
+            silently treats as data corruption. Then the same coaching surface generalizes
+            to any racer who cannot afford a pro engineer at <span className="font-mono text-sm text-ink">£400 to £500</span> a day.
+          </p>
+        </div>
+
+        <div className="lg:col-span-7 flex flex-col gap-6">
+          <ul
+            className="grid gap-4 sm:grid-cols-2 apex-rise"
+            style={{ "--apex-delay": "300ms" } as React.CSSProperties}
+            aria-label="What APEX recognizes about adaptive driving"
+          >
+            <li className="rounded-sm border-l-2 border-racing-green bg-paper-warm p-5">
+              <p className="font-mono text-[10px] uppercase tracking-wider text-racing-green">
+                Control input
+              </p>
+              <p className="mt-2 font-display text-xl leading-tight text-ink">
+                Hand-controls preserve continuous-action capability.
+              </p>
+              <p className="mt-2 text-sm leading-relaxed text-ink-soft">
+                Most pro tools assume brake + throttle never overlap. For adaptive
+                drivers using thumb-triggers, simultaneous activation IS the technique.
+                APEX&rsquo;s COA-gate inverts the assumption.
+              </p>
+            </li>
+            <li className="rounded-sm border-l-2 border-accent bg-paper-warm p-5">
+              <p className="font-mono text-[10px] uppercase tracking-wider text-accent">
+                Regulation
+              </p>
+              <p className="mt-2 font-display text-xl leading-tight text-ink">
+                FIA Appendix L grounds every coaching claim.
+              </p>
+              <p className="mt-2 text-sm leading-relaxed text-ink-soft">
+                Granite Guardian audits each recommendation against Appendix L
+                provisions. No invented Article numbers. Citations point at the
+                published revision, never at a hallucinated reference.
+              </p>
+            </li>
+            <li className="rounded-sm border-l-2 border-amber bg-paper-warm p-5">
+              <p className="font-mono text-[10px] uppercase tracking-wider text-amber">
+                Community
+              </p>
+              <p className="mt-2 font-display text-xl leading-tight text-ink">
+                Co-developed with operators who actually field these cars.
+              </p>
+              <p className="mt-2 text-sm leading-relaxed text-ink-soft">
+                MME Motorsport (per consent 2026-05-22) reviews the COA-parameterized
+                gate behavior against live setup data. Additional operator partners
+                anonymized per per-surface consent discipline.
+              </p>
+            </li>
+            <li className="rounded-sm border-l-2 border-ink/40 bg-paper-warm p-5">
+              <p className="font-mono text-[10px] uppercase tracking-wider text-muted">
+                Open source
+              </p>
+              <p className="mt-2 font-display text-xl leading-tight text-ink">
+                Apache 2.0 from Day 1. Public repo, public methodology.
+              </p>
+              <p className="mt-2 text-sm leading-relaxed text-ink-soft">
+                The race engineering canon should not be locked behind a paid SaaS
+                login. APEX ships every layer (forecaster + projector + Guardian) as
+                inspectable open code under a permissive license.
+              </p>
+            </li>
+          </ul>
+
+          <p
+            className="font-display text-lg italic leading-relaxed text-ink-soft max-w-2xl apex-rise"
+            style={{ "--apex-delay": "420ms" } as React.CSSProperties}
+          >
+            &ldquo;The race engineer is the unsung half of a Sunday result. Every
+            paddock has one in the truck. Almost nobody outside that paddock
+            does.&rdquo;
+          </p>
+        </div>
       </div>
     </section>
   );
