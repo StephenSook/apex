@@ -14,6 +14,7 @@
 import type { Metadata } from "next";
 
 import APEXBenchLeaderboard from "../../components/APEXBenchLeaderboard";
+import NotebookLMHoverAudio from "../../components/NotebookLMHoverAudio";
 import type { LIPSResponse } from "../../../shared/types";
 
 export const metadata: Metadata = {
@@ -78,6 +79,12 @@ export default async function LIPSHarnessPage() {
           published as honest disclosure per D-052 G4 pivot rather than as the production
           forecaster path.
         </p>
+        <div className="mt-2">
+          <NotebookLMHoverAudio
+            panelId="lips-harness"
+            panelLabel="LIPS harness + APEX-Bench v0.1.0 public release"
+          />
+        </div>
       </header>
 
       {!result.ok && (

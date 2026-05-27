@@ -324,6 +324,12 @@ export default function JudgesPage() {
               {" "}for reuse.
             </figcaption>
           </figure>
+          <div className="mt-6">
+            <NotebookLMHoverAudio
+              panelId="architecture-figure"
+              panelLabel="Three-layer PhysicsTTM architecture"
+            />
+          </div>
         </div>
       </section>
 
@@ -480,6 +486,12 @@ export default function JudgesPage() {
           <div className="mt-8">
             <EngineAgnosticByteEqualityDemo />
           </div>
+          <div className="mt-6">
+            <NotebookLMHoverAudio
+              panelId="byte-equality"
+              panelLabel="D-050 byte-equality serializer regression contract"
+            />
+          </div>
         </div>
       </section>
 
@@ -572,6 +584,12 @@ export default function JudgesPage() {
             Panels are mock for /judges visualisation. Real fetch swaps land per
             <span className="not-italic"> docs/decision-log.md D-019 + D-032 + wave-44 Vinh M3-V7</span>.
           </p>
+          <div className="mt-6">
+            <NotebookLMHoverAudio
+              panelId="galaxy-moves"
+              panelLabel="Seven galaxy-tier inference and adaptation moves"
+            />
+          </div>
         </div>
       </section>
 
@@ -696,6 +714,12 @@ export default function JudgesPage() {
               </li>
             ))}
           </ol>
+          <div className="mt-8">
+            <NotebookLMHoverAudio
+              panelId="judge-tour-cta"
+              panelLabel="Judge tour final CTA + 90-second demo path"
+            />
+          </div>
         </div>
       </section>
 
