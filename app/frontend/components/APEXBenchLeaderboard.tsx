@@ -15,9 +15,12 @@
  * `/api/lips-harness/submit` (named in `swap-point` field).
  *
  * Granite Guardian honesty gate: every text field is passed through the
- * `scrubInventedRegulatoryAnchors` server-side scrubber before being
- * persisted. This catches accidental FIA Article / COA Section number
- * injection in the configuration label or dataset slug.
+ * `scrubInventedRegulatoryAnchors` canonical regulatory-anchor scrubber
+ * before being persisted. The scrubber is pure regex shipped at
+ * `app/frontend/lib/scrub-regulatory-anchors.ts` per
+ * `feedback_llm_output_compliance_scrubber.md`. Runs client-side in this
+ * Client Component because submissions persist to localStorage; the same
+ * scrubber fires server-side on every LLM-output route.
  *
  * Honesty tier: every submission carries an `engine` field declaring
  * which forecaster + projector composition was used. Submissions with
@@ -88,11 +91,27 @@ function loadEntries(): ReadonlyArray<LeaderboardEntry> {
     return parsed.filter((e): e is LeaderboardEntry => {
       if (e === null || typeof e !== "object") return false;
       const obj = e as Record<string, unknown>;
+      // Wave-47 review HIGH #5 close (silent-failure-hunter + Codex):
+      // validate ALL 9 fields. Earlier 4-field shape allowed entries
+      // missing numeric fields to slip through; .toFixed() on undefined
+      // would crash the leaderboard render at first paint.
+      const tierValid =
+        obj.tier === "canonical" || obj.tier === "community" || obj.tier === "experimental";
       return (
         typeof obj.id === "string" &&
+        typeof obj.created_at_iso === "string" &&
         typeof obj.contributor_label === "string" &&
         typeof obj.engine === "string" &&
-        typeof obj.lap_time_mae_s === "number"
+        typeof obj.dataset === "string" &&
+        tierValid &&
+        typeof obj.lap_time_mae_s === "number" &&
+        Number.isFinite(obj.lap_time_mae_s) &&
+        typeof obj.physics_violation_rate === "number" &&
+        Number.isFinite(obj.physics_violation_rate) &&
+        typeof obj.guardian_approve_pct === "number" &&
+        Number.isFinite(obj.guardian_approve_pct) &&
+        typeof obj.inference_latency_ms === "number" &&
+        Number.isFinite(obj.inference_latency_ms)
       );
     });
   } catch {
@@ -194,6 +213,14 @@ export default function APEXBenchLeaderboard() {
   const handleSubmit = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
+      // Wave-47 review HIGH #5 close (silent-failure-hunter): top-of-handler
+      // guard against concurrent submits. Today the work is synchronous so
+      // React batches renders + the disabled-button attribute reads false
+      // until the tick completes; pressing Enter twice in any input field
+      // fires handleSubmit twice on the same tick. Guarding via the
+      // discriminated-union state survives the wave-48 backend-async swap
+      // when POST /api/lips-harness/submit lands.
+      if (submitState.status === "submitting") return;
       setSubmitState({ status: "submitting" });
       try {
         const entry = buildEntryFromForm(form);
@@ -209,15 +236,22 @@ export default function APEXBenchLeaderboard() {
         });
       }
     },
-    [form, entries],
+    [form, entries, submitState.status],
   );
 
   const handleReset = useCallback(() => {
     if (typeof window === "undefined") return;
+    // Wave-47 review Codex MED #3 close: confirm before nuking leaderboard.
+    // Single misclick on the reset button would silently destroy every
+    // localStorage entry; window.confirm makes the destructive op explicit.
+    const confirmed = window.confirm(
+      "Reset the local APEX-Bench leaderboard? All localStorage submissions will be cleared. This cannot be undone.",
+    );
+    if (!confirmed) return;
     try {
       window.localStorage.removeItem(STORAGE_KEY);
-    } catch {
-      // Ignore quota / private-mode.
+    } catch (err) {
+      console.warn("apex-bench-leaderboard: localStorage clear failed", err);
     }
     setEntries([]);
   }, []);
