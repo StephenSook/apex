@@ -154,7 +154,12 @@ const QA_CARDS: ReadonlyArray<QaCard> = [
   {
     title: "Latency budget",
     question: "60 seconds on RTX 4060. Will it run on the judge's machine?",
-    answer: "The 60-second budget is the post-race coaching loop on RTX 4060: TTM forecast + projection + Guardian audit + Instruct narration. Granite-Docling + Granite Vision (the document parsers) run once at onboarding and cache to disk. The judge runs the Hugging Face Space deploy or the Colab notebook for a zero-install demo. Both keep the same 60-second loop. The Colab notebook removes the local GPU requirement entirely.",
+    answer: "The 60-second budget is the post-race coaching loop on RTX 4060: TTM forecast + projection + Guardian audit + Instruct narration. Granite-Docling + Granite Vision (the document parsers) run once at onboarding and cache to disk. The judge runs the production Vercel deploy at apex-one-black.vercel.app or the Colab notebook for a zero-install demo. Both keep the same 60-second loop. The Colab notebook removes the local GPU requirement entirely.",
+  },
+  {
+    title: "Amateur-driver AI coaches",
+    question: "Other May Challenge submissions (PitWall + RaceLens XAI + AI Race Strategist) also pitch AI race-engineer coaching for amateur drivers. What separates APEX?",
+    answer: "Three structural moats. First, the COA-parameterized simultaneity gate. APEX reads the FIA Certificate of Adaptations at tensor level + routes the brake-throttle constraint per-driver. Amateur-coaching tools assume able-bodied physics, which silently penalizes every adaptive driver. Second, the IBM Granite stack depth: APEX ships 14 tracked tools (2 WIRED + 10 INTEGRATION + 2 ACCELERATOR per app/frontend/lib/ibm-stack.ts) versus 2-3 tools across the amateur-coaching competitors. Each Granite tool does one thing in one place. Third, the tri-persona ladder: adaptive racers + veteran-team drivers + grassroots competitors, with named stakeholder grounding (MME Motorsport per-surface consent, Mission 44 outreach, Team BRIT correspondence). Amateur-driver coaching is a subset, not the load-bearing pillar. APEX moves the field for the racers who do not have a race engineer at all.",
   },
 ];
 
