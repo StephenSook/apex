@@ -51,14 +51,14 @@ type VoiceState =
   | { readonly status: "unsupported" };
 
 export default function CoachVoicePlayback({ narration }: CoachVoicePlaybackProps) {
-  const [state, setState] = useState<VoiceState>({ status: "idle" });
+  const [state, setState] = useState<VoiceState>(() => {
+    if (typeof window === "undefined") return { status: "idle" };
+    if (typeof window.speechSynthesis === "undefined") return { status: "unsupported" };
+    return { status: "idle" };
+  });
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    if (typeof window.speechSynthesis === "undefined") {
-      setState({ status: "unsupported" });
-    }
     return () => {
       if (typeof window !== "undefined" && typeof window.speechSynthesis !== "undefined") {
         window.speechSynthesis.cancel();

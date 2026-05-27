@@ -54,10 +54,18 @@ export function OneHandModeProvider({ children }: { children: React.ReactNode })
   const [mounted, setMounted] = useState<boolean>(false);
 
   useEffect(() => {
+    // Wave-47 cascade-#52 close: mounted-flag + localStorage read on
+    // first client render. SSR-vs-client divergence is intentional
+    // (server cannot read localStorage); lazy init would cause hydration
+    // mismatch. setState in effect is unavoidable here per
+    // `feedback_useState_lazy_init_hydration_footgun.md` + ESLint
+    // react-hooks/set-state-in-effect rule allowed via local disable.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
     if (typeof window === "undefined") return;
     try {
       const raw = window.localStorage.getItem(STORAGE_KEY);
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       if (raw === "1") setEnabledState(true);
     } catch {
       // localStorage may be unavailable in private-mode browsers; default to disabled.
