@@ -5,9 +5,9 @@ import { POST } from "../route";
 const CANONICAL_HEADER =
   "t_session_s,throttle_pct,brake_pa,steering_rad,rpm,lat_g,long_g,speed_mps,gear";
 
-function csvRequest(body: string, contentType = "multipart/form-data"): Request {
+function csvRequest(body: string): Request {
   const formData = new FormData();
-  formData.append("csv", new Blob([body], { type: "text/csv" }), "session.csv");
+  formData.append("csv", new File([body], "session.csv", { type: "text/csv" }));
   return new Request("https://apex-one-black.vercel.app/api/upload-telemetry", {
     method: "POST",
     body: formData,
@@ -82,7 +82,7 @@ describe("/api/upload-telemetry wave-46 Phase 7.5 strict CSV parser route", () =
 
   it("rejects 400 when csv field is missing from the multipart body", async () => {
     const formData = new FormData();
-    formData.append("not_csv", new Blob(["x"], { type: "text/csv" }), "x.csv");
+    formData.append("not_csv", new File(["x"], "x.csv", { type: "text/csv" }));
     const req = new Request("https://apex-one-black.vercel.app/api/upload-telemetry", {
       method: "POST",
       body: formData,
@@ -95,7 +95,7 @@ describe("/api/upload-telemetry wave-46 Phase 7.5 strict CSV parser route", () =
 
   it("rejects 400 when CSV is empty", async () => {
     const formData = new FormData();
-    formData.append("csv", new Blob([""], { type: "text/csv" }), "empty.csv");
+    formData.append("csv", new File([""], "empty.csv", { type: "text/csv" }));
     const req = new Request("https://apex-one-black.vercel.app/api/upload-telemetry", {
       method: "POST",
       body: formData,
@@ -133,7 +133,7 @@ describe("/api/upload-telemetry wave-46 Phase 7.5 strict CSV parser route", () =
 
   it("rejects 413 when Content-Length declares >5MB", async () => {
     const formData = new FormData();
-    formData.append("csv", new Blob(["x"], { type: "text/csv" }), "x.csv");
+    formData.append("csv", new File(["x"], "x.csv", { type: "text/csv" }));
     const req = new Request("https://apex-one-black.vercel.app/api/upload-telemetry", {
       method: "POST",
       headers: { "Content-Length": String(10 * 1024 * 1024 + 17 * 1024) },
