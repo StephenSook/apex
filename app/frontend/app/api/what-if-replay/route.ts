@@ -29,11 +29,14 @@ interface WhatIfReplayResponse {
   readonly engine: string;
   readonly compute_ms: number;
   readonly mutated_fixture: Record<string, unknown>;
-  readonly replayed_violation_log: {
-    readonly engine: "v2_cvxpylayers";
-    readonly schema_version: string;
-    readonly entries: ReadonlyArray<unknown>;
-  };
+  // Wave-47 review code-reviewer HIGH #2 close: Vinh backend at
+  // app/backend/apex/server.py:115 returns result.replayed_violation_log.to_text()
+  // (STRING), not an object. Frontend type reconciled to text-string variant
+  // matching the canonical serializer output per D-050 byte-equality contract
+  // (V1 NumPy + V2 cvxpylayers emit byte-identical violation strings modulo
+  // engine header line; the to_text() output IS the canonical boundary the
+  // Guardian audit consumes).
+  readonly replayed_violation_log: string;
   readonly schema_version: string;
   readonly protocol_version: string;
   readonly swap_point: string;
@@ -55,11 +58,7 @@ function buildCannedPayload(
       mutation_key: mutationKey,
       synthesised: "canned-mutation-stub for wave-47 frontend wire-flip",
     },
-    replayed_violation_log: {
-      engine: "v2_cvxpylayers",
-      schema_version: "1.0.0",
-      entries: [],
-    },
+    replayed_violation_log: "ENGINE v2_cvxpylayers\nschema_version 1.0.0\n(empty canned-fallback; no violation entries replayed)",
     schema_version: "1.0.0",
     protocol_version: "what-if-replay-2026-05",
     swap_point: WHAT_IF_SWAP_POINT,

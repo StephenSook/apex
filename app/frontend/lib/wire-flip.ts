@@ -84,8 +84,17 @@ export async function runWireFlipGET<TResponse extends EnginePayload>(
       );
       return cannedPayload;
     }
-    const body = (await upstream.json()) as TResponse;
+    const body = (await upstream.json()) as Partial<TResponse>;
+    // Wave-47 review code-reviewer HIGH #1 close: backend may omit fields
+    // the frontend type declares required (e.g. swap_point + engine when
+    // Vinh server.py:75-88 returns only {persisted, line_index, file_path}
+    // for /api/audit-log). Merge canned defaults UNDER backend body so
+    // missing fields inherit the canned values instead of being undefined
+    // cast as required. Backend fields still override canned where they
+    // overlap. engine + compute_ms hardcoded at the end so realEngineLabel
+    // + per-request t0 always win.
     return {
+      ...cannedPayload,
       ...body,
       engine: realEngineLabel,
       compute_ms: Math.round(performance.now() - t0),
@@ -134,8 +143,11 @@ export async function runWireFlipPOST<TBody, TResponse extends EnginePayload>(
       );
       return cannedPayload;
     }
-    const responseBody = (await upstream.json()) as TResponse;
+    const responseBody = (await upstream.json()) as Partial<TResponse>;
+    // Wave-47 review code-reviewer HIGH #1 close (POST mirror of GET fix):
+    // canned defaults merged under backend body so missing fields inherit.
     return {
+      ...cannedPayload,
       ...responseBody,
       engine: realEngineLabel,
       compute_ms: Math.round(performance.now() - t0),
