@@ -1811,8 +1811,18 @@ export interface RAGRetrieval {
   readonly score: number;
 }
 
+/**
+ * Wave-48: extended engine union to cover the live HF Inference
+ * Providers wire for Granite Embedding R2 (when HF_TOKEN env is set,
+ * the route hybrid-reranks lexical pre-filter via cosine similarity).
+ * Preserves the legacy "rag-v8-real" string for the Vinh-side backend
+ * wire-flip when his deployment lands.
+ */
 export interface RAGResponse {
-  readonly engine: "rag-v8-canned-fallback" | "rag-v8-real";
+  readonly engine:
+    | "rag-v8-canned-fallback"
+    | "rag-v8-real"
+    | "granite-embedding-r2-hf-inference";
   readonly compute_ms: number;
   readonly query: string;
   readonly retrievals: ReadonlyArray<RAGRetrieval>;
@@ -2010,8 +2020,20 @@ export interface WeatherBriefHour {
   readonly humidity_pct: number;
 }
 
+/**
+ * Wave-48: extended engine union to cover the OpenWeather wire (when
+ * OPENWEATHER_API_KEY is set on the deploy) + the demo-fixture path
+ * (retired the misleading "canned-fallback" naming since this route
+ * never had a real Vinh-side backend; the OpenWeather wire IS the
+ * real wire). Preserves the legacy two strings for backwards-compat
+ * with any prior consumer that asserted on them.
+ */
 export interface WeatherBriefResponse {
-  readonly engine: "weather-brief-canned-fallback" | "weather-brief-real";
+  readonly engine:
+    | "weather-brief-canned-fallback"
+    | "weather-brief-real"
+    | "openweather-3h-forecast"
+    | "demo-fixture-donington-park";
   readonly compute_ms: number;
   readonly source: string;
   readonly venue: string;
