@@ -13,6 +13,7 @@
 
 import type { Metadata } from "next";
 
+import APEXBenchLeaderboard from "../../components/APEXBenchLeaderboard";
 import type { LIPSResponse } from "../../../shared/types";
 
 export const metadata: Metadata = {
@@ -178,6 +179,8 @@ export default async function LIPSHarnessPage() {
           cvxpylayers projectors (.to_text() output byte-identical modulo ENGINE line).
         </p>
       </section>
+
+      <APEXBenchLeaderboard />
     </main>
   );
 }
