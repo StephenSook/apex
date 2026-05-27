@@ -172,7 +172,7 @@ The diagram is generated from `docs/architecture-diagram.mmd` in the source repo
 
 5. *Agent-as-Judge tri-agent critic loop (Layer 7).* Per D-019 item 5 the draft coaching report is read by three specialist Granite-Critic instances in parallel (Physics-Critic + Pedagogy-Critic + Guardian-Safety) before reaching the Layer 8 final Guardian audit. The TriAgentCriticPanel React surface at `app/frontend/components/TriAgentCriticPanel.tsx` renders the discriminated-union verdict tuple with positional binding (Physics at position 0; Pedagogy at position 1; Guardian-Safety at position 2). IBM Mellea Instruct-Validate-Repair fires with loop_budget = 3 if any critic flags.
 
-These five moves are independently cuttable per the APEX Lite contingency at `docs/apex-lite-contingency.md`; the three-layer pipeline above stands without any of them. The composition is the contribution.
+These seven moves are independently cuttable per the APEX Lite contingency at `docs/apex-lite-contingency.md`; the three-layer pipeline above stands without any of them. The composition is the contribution. (Moves #6 IBM TSPulse polyphase anomaly detector + #7 Granite TimeSeries TTM r2.1 in-browser scaffold are documented above L163-176 as wave-44 D-049 + wave-45 D-053 additions to the original D-019 baseline of five.)
 
 ### 3.6 Pipeline integration with IBM Granite stack
 
