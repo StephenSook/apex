@@ -61,7 +61,7 @@ async function fetchRealBackend(): Promise<OrchestrationResponse | null> {
     const body = (await upstream.json()) as OrchestrationResponse;
     return { ...body, engine: "langgraph-v14-real" };
   } catch (err) {
-    console.error("[apex/orchestration] real-backend fetch failed", err);
+    console.warn("[apex/orchestration] real-backend fetch failed; serving canned-fallback", err);
     return null;
   }
 }
