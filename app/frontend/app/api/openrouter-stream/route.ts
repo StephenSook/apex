@@ -252,6 +252,7 @@ export async function POST(request: Request): Promise<Response> {
     let rawText = "";
     let retryCount = 0;
     const violationSummary: string[][] = [];
+    let retryExhausted = false;
     for (let attempt = 0; attempt <= STREAM_MAX_RETRIES; attempt++) {
       // Wave-43 cascade-#13 F2 HIGH#4 close-out per codex adversarial:
       // pass request.signal so OpenRouter call aborts when the client
@@ -264,6 +265,16 @@ export async function POST(request: Request): Promise<Response> {
         { signal: request.signal },
       );
       rawText = response.choices[0]?.message.content ?? "";
+      // Wave-47 review HIGH #3 close (Codex): empty completion guard.
+      // If OpenRouter returns no choices OR an empty content string, the
+      // retry loop would have nothing to detect violations on + would
+      // stream an empty 200 to the client. Fail the request loudly via
+      // the catch path so consumers see the fallback indicator.
+      if (rawText.trim().length === 0) {
+        throw new Error(
+          `apex.openrouter-stream: empty completion on attempt ${attempt} (choices=${response.choices?.length ?? 0})`,
+        );
+      }
       const violations = detectInventedRegulatoryAnchors(rawText);
       const attemptLabels = violations.map((v) => v.pattern);
       violationSummary.push(attemptLabels);
@@ -275,6 +286,19 @@ export async function POST(request: Request): Promise<Response> {
           role: "system",
           content: buildStreamRetryDirective(attemptLabels),
         });
+      } else {
+        // Wave-47 review HIGH #1 close: retry budget exhausted AND final
+        // attempt still emitted violations. The scrubber at line 280 will
+        // sanitize the response, but operators need to distinguish this
+        // path from the in-budget success path (where the model self-
+        // corrected). Emit retryExhausted=1 header + console.error so
+        // Vercel log filters at error level surface persistent prompt-
+        // injection or model drift defeating the system prompt.
+        retryExhausted = true;
+        console.error(
+          "apex.openrouter-stream: retry budget exhausted; scrubber-of-last-resort fired",
+          { violationSummary },
+        );
       }
     }
     const text = scrubInventedRegulatoryAnchors(rawText);
@@ -286,12 +310,22 @@ export async function POST(request: Request): Promise<Response> {
         "Cache-Control": "no-store",
         "X-Apex-Openrouter-Phase": "real",
         "X-Apex-Openrouter-Retry-Count": String(retryCount),
+        "X-Apex-Openrouter-Retry-Exhausted": retryExhausted ? "1" : "0",
         "X-Apex-Openrouter-Violation-Summary": JSON.stringify(violationSummary),
       },
     });
   } catch (err) {
+    // Wave-47 review HIGH #2 close: distinguish AbortError (consumer
+    // disconnect, operator-known) from real OpenRouter outage (5xx /
+    // network / billing). AbortError logs at warn level so it does not
+    // pollute the Vercel runtime error feed during normal demo navigation.
+    const isAbort = err instanceof Error && err.name === "AbortError";
     const message = err instanceof Error ? err.message : String(err);
-    console.error("apex.openrouter-stream: production-phase backend failure", { message });
+    const logger = isAbort ? console.warn : console.error;
+    logger("apex.openrouter-stream: production-phase backend failure", {
+      message,
+      errorName: err instanceof Error ? err.name : typeof err,
+    });
     // Wave-45 deep-review vercel:ai-architect HIGH H-2 close: fall through
     // to stub instead of returning 502 so a single OpenRouter outage during
     // judge demo doesn't visibly break the coaching path. Stub is honest
@@ -308,8 +342,18 @@ export async function POST(request: Request): Promise<Response> {
     // Wave-47 silent-failure-hunter B1 close: pipe error-fallback stub
     // through the HARD-COMPLIANCE scrubber unconditionally (defense in
     // depth; matches the !productionReady stub path treatment above).
+    // Wave-47 review HIGH #3 close: consumer-side fallback indicator.
+    // The useOpenRouterStream client hook reads chunks not headers, so
+    // under sustained OpenRouter outage during judge demo the consumer
+    // cannot tell real Granite output from stub output. Prefix the body
+    // with a chunk marker the hook can strip + render as a visible pill.
+    // Non-abort failures only (AbortError = consumer disconnect; they
+    // already left the page so the indicator is wasted bandwidth).
+    const fallbackPrefix = isAbort
+      ? ""
+      : "[apex:fallback-stub-on-upstream-error]\n";
     const stubText = scrubInventedRegulatoryAnchors(stubResponseFor(body.prompt));
-    const stubStream = streamStubResponse(stubText, request.signal);
+    const stubStream = streamStubResponse(fallbackPrefix + stubText, request.signal);
     return new Response(stubStream, {
       status: 200,
       headers: {
@@ -317,6 +361,7 @@ export async function POST(request: Request): Promise<Response> {
         "Cache-Control": "no-store",
         "X-Apex-Openrouter-Fallback": "stub-on-upstream-error",
         "X-Apex-Openrouter-Phase": "stub-on-upstream-error",
+        "X-Apex-Openrouter-Error-Name": err instanceof Error ? err.name : typeof err,
       },
     });
   }
