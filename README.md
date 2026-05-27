@@ -176,13 +176,21 @@ Full architecture spec: [`docs/architecture-spec.md`](./docs/architecture-spec.m
 - pytest + ruff + mypy strict
 - Vercel Fluid Compute (Node.js runtime) for /api/openrouter-stream + /api/watson-tts; backend FastAPI service runs alongside per Stream M.3 spec handoff in `docs/wave-41-backend-spec-handoff.md`
 
-**AI (IBM Granite stack)**
-- Granite-Docling 258M (COA structured-document extraction)
-- Granite Vision 4.1 4B (timing-sheet chart and table extraction)
-- Granite TimeSeries TTM r2.1 (NeurIPS 2024 Tiny Time Mixers, fine-tune-first multivariate forecasting per D-010 Track 1 channel-mix decoder + D-050 engine-agnostic byte-equality lock)
-- Granite 4.1 8B Instruct (race-engineer narrative)
-- Granite Guardian 4.1 8B (BYOC custom-rules safety classifier)
-- LangGraph + Granite MCP Gateway + ContextForge (orchestration runtime per D-017 G7 + D-054; Langflow retained as export-graph artifact)
+**AI (IBM Granite stack — full 14-tool honesty-tier inventory; see §5 above for per-tool wire-up status)**
+- Granite Instruct 4.1 8B (race-engineer narrative; WIRED at HEAD via OpenRouter)
+- Granite 4.0 Nano 350M (in-browser WebGPU edge model; WIRED at HEAD via Transformers.js)
+- Granite-Docling 258M (COA structured-document extraction; INTEGRATION + Vinh M3-V1 swap-point)
+- Granite Vision 4.1 4B (timing-sheet chart + table extraction; INTEGRATION)
+- Granite TimeSeries TTM r2.1 (NeurIPS 2024 Tiny Time Mixers, fine-tune-first multivariate forecasting per D-010 Track 1 channel-mix decoder + D-050 engine-agnostic byte-equality lock; INTEGRATION)
+- Granite FlowState r1.1 18.5M (continuous-time SSM Track 2; INTEGRATION)
+- IBM TSPulse 1M (polyphase time-frequency anomaly detector per D-016 Layer 2; INTEGRATION)
+- Granite Embedding R2 (149M + 47M hybrid dense + sparse RAG retrieval; INTEGRATION)
+- Granite Guardian 4.1 8B (BYOC custom-rules safety classifier on Stage 1 + Stage 2 projection text log; INTEGRATION)
+- Granite Instruct 4.1 3B (AICopilotChat fast-path routing scaffold per D-058 wave-46; INTEGRATION)
+- Granite Speech 4.1 2B-Plus (speaker-attributed ASR + word-level timestamps + multilingual EN/FR/DE/ES/PT/JA per HF 2026-04-28 release; INTEGRATION)
+- LangGraph + Granite MCP Gateway + ContextForge (orchestration runtime per D-017 G7 + D-054; Langflow retained as export-graph artifact; INTEGRATION)
+- Docling library (open-source IBM Docling conversion + table-extraction Python library; ACCELERATOR)
+- Mellea v0.5.0 (IBM Research Instruct-Validate-Repair architectural slot per D-058 wave-46 Phase 5; ACCELERATOR)
 
 **Data**
 - FastF1 telemetry slices (public)
