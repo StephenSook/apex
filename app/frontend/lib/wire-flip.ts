@@ -39,20 +39,9 @@
  *    + X-Apex-*-Engine header always reflect which path served)
  */
 
-import { getVinhBackendBaseUrl, shouldUseRealBackend } from "./env";
+import { type FeatureFlag, getVinhBackendBaseUrl, shouldUseRealBackend } from "./env";
 
-export type WireFlipFlag =
-  | "USE_REAL_BACKEND_V12"
-  | "USE_REAL_BACKEND_V13"
-  | "USE_REAL_BACKEND_V14"
-  | "USE_REAL_BACKEND_V15"
-  | "USE_REAL_TSPULSE"
-  | "USE_REAL_RAG_RETRIEVE"
-  | "USE_REAL_STT"
-  | "USE_REAL_COA_DIFF"
-  | "USE_REAL_TIRE_DEGRADATION"
-  | "USE_REAL_WEATHER_BRIEF"
-  | "USE_REAL_COACH_CODE";
+export type WireFlipFlag = FeatureFlag;
 
 export type EnginePayload = {
   readonly engine: string;
