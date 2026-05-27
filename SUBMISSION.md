@@ -67,6 +67,8 @@ Methodology: Sookra Methodology v3.3 with seven phases of competitive recon (six
 
 - The galaxy-tier discipline. Nothing was deferred to "post-hackathon." We shipped: live sim-rig demo with iRacing telemetry, public Colab notebook, judges' tour landing page, status dashboard, methodology trace, NeurIPS Workshop paper draft, 30-second highlight clip, reproducibility metadata footer, all by 2026-05-31.
 
+- Mapping cleanly to the 4-axis BeMyApp judging rubric reaffirmed 2026-05-27 (Technical Execution + Innovation + Challenge Fit + Implementation & Feasibility). Technical Execution: 14 IBM Granite tools with per-tool honesty tiers + 196 backend tests + Vercel production deploy + Apache 2.0 public from inception. Innovation: COA-parameterized simultaneity gate killshot + frozen-TSFM-plus-differentiable-physics-projection composition + byte-equality serializer regression contract. Challenge Fit: adaptive-racer + veteran-team-driver + grassroots-competitor tri-persona ladder with named stakeholder grounding. Implementation + Feasibility: 19/19 production routes respond 200 + APEX-Bench v0.1.0 public LIPS leaderboard + named swap-points for every INTEGRATION-tier tool.
+
 ### What we learned
 
 - A frozen pretrained TSFM + a differentiable physics-projection layer at inference is a viable architectural pattern that adjacent published work (Deep Dynamics, Chronos-on-car-following) has not yet explored for vehicle dynamics. The contribution is the wrapper, not the model.
