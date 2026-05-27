@@ -1,316 +1,458 @@
 "use client";
 
 /**
- * RacingLineHero (wave-46 Phase B revision-2):
+ * RacingLineHero (wave-46 Phase B revision-3):
  *
- * Replaces the wave-46 Phase B1 R3F implementation that shipped a black-tunnel
- * silhouette with overlapping labels per Stephen visual review 2026-05-26.
- * That implementation hit three pitfalls simultaneously: (1) R3F PerspectiveCamera
- * positioned under the TubeGeometry rendering the unlit dark face; (2) drei <Text>
- * + <Html> labels Z-fought the canvas projection producing text-on-mesh overlap;
- * (3) the TubeGeometry control points produced a hood-like extrusion rather than
- * a recognizable corner racing line.
+ * Editorial-publication rebuild per parallel Gemini design agent
+ * (DIRECTION A "Velocity, Annotated") + feature-dev:code-architect
+ * (full from-scratch rewrite with 960x600 widescreen viewBox, vertical
+ * telemetry sidebar, COA-GATE amber annotation as adaptive-driver cue,
+ * paper-grain feTurbulence atmospheric depth). Both agents converged
+ * on: 2D SVG is the right substrate (R3F not needed; magazine-cover
+ * quality lives in composition + typography + restraint); the rev-2
+ * problem was not technology but discipline (square viewBox, centered
+ * symmetry, infinite-loop animation, evenly-weighted telemetry ribbon
+ * at the bottom read as Bloomberg Terminal).
  *
- * Wave-46 Phase B revision-2 ships a pure 2D SVG implementation with SMIL
- * animateMotion for the car traveling the racing line, CSS keyframe pulse for
- * the apex marker, and stroke-dasharray reveal for the line itself. Labels live
- * OUTSIDE the visualization grid so the racing line is never occluded. Editorial
- * paddock palette preserved verbatim: cream paper #F4EBD8 background, racing-
- * green #0A2818 track surface, clay-red #C1492C racing line + car, amber #D9A441
- * apex pulse, ink #0F1410 labels, IBM Plex Mono numerics.
+ * Key design moves:
+ *  - 960x600 widescreen viewBox replaces 1000x1000 square (diagram -> spread)
+ *  - Apex point sits at right-third intersection (rule of thirds, not center)
+ *  - Single-shot racing-line draw (stroke-dashoffset 0; animation-fill-mode
+ *    forwards) replaces infinite loop; final frame holds confidently
+ *  - Telemetry repositioned as vertical sidebar upper-left (editorial inset)
+ *    replacing the bottom ribbon (Bloomberg Terminal pattern)
+ *  - feTurbulence paper-grain filter overlay on the cream rect (printed-on-
+ *    paper register)
+ *  - COA-GATE amber annotation adjacent to APEX label = the adaptive-driver
+ *    cue, technical-engineering register NOT medical/wheelchair imagery
+ *    (per project_apex_override_competitor.md counter-position)
+ *  - Pure CSS + SMIL (no framer-motion dependency added; existing animation
+ *    primitives sufficient)
+ *  - prefers-reduced-motion: car snaps to apex t-position via static
+ *    transform, racing line renders complete, all keyframes off
  *
- * Trade-off: drops ~120 KB gzip of three.js + @react-three/fiber + @react-three/
- * drei dependency footprint; the bundle is now zero-cost beyond the inline SVG.
- * SMIL is supported in every evergreen browser + Safari + iOS. prefers-reduced-
- * motion preserved: car snaps to apex + telemetry ribbon goes static.
- *
- * See `docs/decision-log.md` D-063 for the original Phase B ship-decision and
- * D-064 (forthcoming) for the revision-2 visual-review rollback context.
+ * Editorial paddock palette preserved: cream paper #F4EBD8 + racing-green
+ * #0A2818 + clay-red #C1492C + amber #D9A441 + ink #0F1410. Fraunces
+ * variable display font (--font-display CSS var) + IBM Plex Sans + IBM
+ * Plex Mono for numerics. No invented FIA Article numbers (HARD-COMPLIANCE).
  */
 
-const TRACK_PATH =
-  "M 80 200 C 220 200, 360 200, 480 320 S 720 720, 880 800";
+const TRACK_PATH = "M 60 220 C 280 220, 460 220, 600 320 S 820 500, 920 540";
+const LINE_PATH = "M 60 240 C 280 240, 480 240, 620 340 S 820 480, 920 520";
 
-const LINE_PATH =
-  "M 80 240 C 240 240, 360 240, 500 360 S 720 700, 880 760";
-
-const APEX_X = 620;
-const APEX_Y = 520;
+const APEX_X = 720;
+const APEX_Y = 410;
+const LINE_LENGTH = 1100;
 
 export default function RacingLineHero() {
   return (
     <div className="relative w-full">
       <style>{`
-        @keyframes apex-pulse {
-          0%, 100% { transform: scale(1); opacity: 0.85; }
-          50% { transform: scale(1.55); opacity: 0.25; }
+        @keyframes line-draw {
+          from { stroke-dashoffset: ${LINE_LENGTH}; opacity: 0; }
+          12% { opacity: 1; }
+          to { stroke-dashoffset: 0; opacity: 1; }
         }
-        @keyframes line-reveal {
-          0% { stroke-dashoffset: 1600; opacity: 0; }
-          15% { opacity: 1; }
-          100% { stroke-dashoffset: 0; opacity: 1; }
+        @keyframes apex-spring {
+          0% { transform: scale(0); opacity: 0; }
+          60% { transform: scale(1.18); opacity: 1; }
+          80% { transform: scale(0.94); }
+          100% { transform: scale(1); opacity: 1; }
         }
-        @keyframes telemetry-throttle {
-          0%, 30% { transform: scaleX(0.95); }
-          45%, 55% { transform: scaleX(0.20); }
-          70%, 100% { transform: scaleX(0.85); }
+        @keyframes apex-breathe {
+          0%, 100% { opacity: 0.85; }
+          50% { opacity: 0.32; }
         }
-        @keyframes telemetry-brake {
-          0%, 30% { transform: scaleX(0.05); }
-          45%, 55% { transform: scaleX(0.78); }
-          70%, 100% { transform: scaleX(0.10); }
+        @keyframes telemetry-bar-fill {
+          from { transform: scaleX(0); }
+          to { transform: scaleX(var(--bar-value)); }
         }
-        @keyframes telemetry-steering {
-          0% { transform: scaleX(0.05); }
-          50% { transform: scaleX(0.85); }
-          100% { transform: scaleX(0.20); }
+        .hero-line {
+          stroke-dasharray: ${LINE_LENGTH};
+          stroke-dashoffset: ${LINE_LENGTH};
+          animation: line-draw 2.4s cubic-bezier(0.22, 1, 0.36, 1) 0.1s forwards;
         }
-        .apex-pulse-ring {
+        .hero-apex-outer {
           transform-origin: ${APEX_X}px ${APEX_Y}px;
-          animation: apex-pulse 2.2s ease-in-out infinite;
+          transform: scale(0);
+          animation:
+            apex-spring 0.65s cubic-bezier(0.34, 1.56, 0.64, 1) 0.9s forwards,
+            apex-breathe 3.2s ease-in-out 1.6s infinite;
         }
-        .racing-line-reveal {
-          stroke-dasharray: 1600;
-          animation: line-reveal 3.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        .hero-apex-core {
+          transform-origin: ${APEX_X}px ${APEX_Y}px;
+          transform: scale(0);
+          animation: apex-spring 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) 1.05s forwards;
         }
-        .telemetry-bar { transform-origin: left center; }
-        .telemetry-throttle-bar { animation: telemetry-throttle 6s ease-in-out infinite; }
-        .telemetry-brake-bar { animation: telemetry-brake 6s ease-in-out infinite; }
-        .telemetry-steering-bar { animation: telemetry-steering 6s linear infinite; }
+        .hero-telemetry-bar {
+          transform-origin: left center;
+          transform: scaleX(0);
+          animation: telemetry-bar-fill 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+        .hero-telemetry-throttle { --bar-value: 0.78; animation-delay: 1.2s; }
+        .hero-telemetry-brake { --bar-value: 0.45; animation-delay: 1.4s; }
+        .hero-telemetry-steering { --bar-value: 0.62; animation-delay: 1.6s; }
         @media (prefers-reduced-motion: reduce) {
-          .apex-pulse-ring,
-          .racing-line-reveal,
-          .telemetry-throttle-bar,
-          .telemetry-brake-bar,
-          .telemetry-steering-bar,
-          .racing-car-motion {
-            animation: none !important;
-          }
-          .racing-line-reveal {
+          .hero-line {
             stroke-dasharray: none !important;
+            stroke-dashoffset: 0 !important;
+            animation: none !important;
+            opacity: 1 !important;
+          }
+          .hero-apex-outer,
+          .hero-apex-core {
+            transform: scale(1) !important;
+            animation: none !important;
+            opacity: 1 !important;
+          }
+          .hero-telemetry-bar {
+            animation: none !important;
+            transform: scaleX(var(--bar-value)) !important;
+          }
+          .racing-car-motion {
+            display: none !important;
+          }
+          .racing-car-static {
+            display: block !important;
           }
         }
+        .racing-car-static { display: none; }
       `}</style>
 
       <svg
-        viewBox="0 0 1000 1000"
+        viewBox="0 0 960 600"
         role="img"
-        aria-label="A racing line through a corner with the apex point marked, animated stylized telemetry visualization. Editorial paddock palette: warm cream paper backdrop, deep racing-green track surface, signal clay-red racing line, amber apex marker."
-        className="w-full h-auto block"
+        aria-label="A corner racing line with the apex point marked at the upper-right third. Editorial illustration: warm cream paper backdrop with paper-grain texture, deep racing-green track surface running diagonally from upper-left to lower-right, signal clay-red racing line traced through the apex, amber apex marker, vertical telemetry sidebar in the upper-left showing throttle, brake, and steering percentages. COA-GATE adaptive-control simultaneity annotation visible next to the apex label."
+        className="block h-auto w-full"
       >
         <defs>
-          <linearGradient id="line-fade" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#C1492C" stopOpacity={0.35} />
-            <stop offset="40%" stopColor="#C1492C" stopOpacity={0.85} />
-            <stop offset="100%" stopColor="#C1492C" stopOpacity={1} />
-          </linearGradient>
+          <filter id="paper-grain" x="0%" y="0%" width="100%" height="100%">
+            <feTurbulence
+              type="fractalNoise"
+              baseFrequency="0.85"
+              numOctaves="2"
+              stitchTiles="stitch"
+              seed="7"
+            />
+            <feColorMatrix
+              type="matrix"
+              values="0 0 0 0 0.06
+                      0 0 0 0 0.08
+                      0 0 0 0 0.06
+                      0 0 0 0.07 0"
+            />
+            <feComposite in2="SourceGraphic" operator="in" />
+          </filter>
+          <radialGradient id="paper-vignette" cx="50%" cy="50%" r="80%">
+            <stop offset="0%" stopColor="#F4EBD8" stopOpacity="0" />
+            <stop offset="65%" stopColor="#F4EBD8" stopOpacity="0" />
+            <stop offset="100%" stopColor="#D9CEB8" stopOpacity="0.55" />
+          </radialGradient>
           <linearGradient id="track-shade" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" stopColor="#0A2818" />
             <stop offset="100%" stopColor="#06190E" />
           </linearGradient>
+          <linearGradient id="line-fade" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#C1492C" stopOpacity="0.4" />
+            <stop offset="50%" stopColor="#C1492C" stopOpacity="0.95" />
+            <stop offset="100%" stopColor="#C1492C" stopOpacity="1" />
+          </linearGradient>
         </defs>
 
-        <rect x={0} y={0} width={1000} height={1000} fill="#F4EBD8" />
-
         <g aria-hidden="true">
-          {Array.from({ length: 16 }).map((_, i) => (
-            <line
-              key={`v-${i}`}
-              x1={i * 62.5}
-              y1={0}
-              x2={i * 62.5}
-              y2={1000}
-              stroke="#0F1410"
-              strokeWidth={0.5}
-              opacity={0.06}
-            />
-          ))}
-          {Array.from({ length: 16 }).map((_, i) => (
-            <line
-              key={`h-${i}`}
-              x1={0}
-              y1={i * 62.5}
-              x2={1000}
-              y2={i * 62.5}
-              stroke="#0F1410"
-              strokeWidth={0.5}
-              opacity={0.06}
-            />
-          ))}
+          <rect x={0} y={0} width={960} height={600} fill="#F4EBD8" />
+          <rect x={0} y={0} width={960} height={600} filter="url(#paper-grain)" />
         </g>
 
-        <path
-          d={TRACK_PATH}
-          stroke="url(#track-shade)"
-          strokeWidth={108}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          fill="none"
-        />
-        <path
-          d={TRACK_PATH}
-          stroke="#F4EBD8"
-          strokeWidth={2}
-          strokeDasharray="6 14"
-          strokeLinecap="round"
-          fill="none"
-          opacity={0.65}
-        />
+        <g aria-hidden="true">
+          <path
+            d={TRACK_PATH}
+            stroke="url(#track-shade)"
+            strokeWidth={132}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            fill="none"
+          />
+          <path
+            d={TRACK_PATH}
+            stroke="#F4EBD8"
+            strokeWidth={2}
+            strokeDasharray="6 18"
+            strokeLinecap="round"
+            fill="none"
+            opacity={0.55}
+          />
+          <path
+            d={TRACK_PATH}
+            stroke="#D9CEB8"
+            strokeWidth={1}
+            strokeLinecap="round"
+            fill="none"
+            opacity={0.4}
+            transform="translate(0, -68)"
+          />
+          <path
+            d={TRACK_PATH}
+            stroke="#D9CEB8"
+            strokeWidth={1}
+            strokeLinecap="round"
+            fill="none"
+            opacity={0.4}
+            transform="translate(0, 68)"
+          />
+        </g>
 
         <path
           d={LINE_PATH}
           stroke="url(#line-fade)"
-          strokeWidth={6}
+          strokeWidth={5}
           strokeLinecap="round"
           fill="none"
-          className="racing-line-reveal"
+          className="hero-line"
+          aria-hidden="true"
         />
 
-        <circle
-          cx={APEX_X}
-          cy={APEX_Y}
-          r={32}
-          fill="#D9A441"
-          opacity={0.35}
-          className="apex-pulse-ring"
-        />
-        <circle cx={APEX_X} cy={APEX_Y} r={16} fill="#D9A441" />
-        <circle cx={APEX_X} cy={APEX_Y} r={6} fill="#0F1410" />
+        <g aria-hidden="true">
+          <circle
+            cx={APEX_X}
+            cy={APEX_Y}
+            r={26}
+            fill="#D9A441"
+            opacity={0.4}
+            className="hero-apex-outer"
+          />
+          <circle
+            cx={APEX_X}
+            cy={APEX_Y}
+            r={11}
+            fill="#D9A441"
+            className="hero-apex-core"
+          />
+          <circle
+            cx={APEX_X}
+            cy={APEX_Y}
+            r={4}
+            fill="#0F1410"
+            className="hero-apex-core"
+          />
+        </g>
 
-        <g className="racing-car-motion">
+        <g className="racing-car-motion" aria-hidden="true">
           <polygon
-            points="-14,-9 14,0 -14,9"
+            points="-12,-7 14,0 -12,7 -7,0"
             fill="#C1492C"
             stroke="#0F1410"
-            strokeWidth={1.5}
+            strokeWidth={1.2}
             strokeLinejoin="round"
           >
             <animateMotion
-              dur="6s"
+              dur="7s"
               repeatCount="indefinite"
               rotate="auto"
               path={LINE_PATH}
+              begin="0.6s"
+            />
+          </polygon>
+          <polygon
+            points="-6,-3 4,0 -6,3"
+            fill="#F4EBD8"
+            opacity={0.5}
+            strokeLinejoin="round"
+          >
+            <animateMotion
+              dur="7s"
+              repeatCount="indefinite"
+              rotate="auto"
+              path={LINE_PATH}
+              begin="0.6s"
             />
           </polygon>
         </g>
 
-        <g fontFamily="'IBM Plex Mono', ui-monospace, monospace" fill="#0F1410">
+        <g className="racing-car-static" aria-hidden="true">
+          <polygon
+            points={`${APEX_X - 12},${APEX_Y - 7} ${APEX_X + 14},${APEX_Y} ${APEX_X - 12},${APEX_Y + 7} ${APEX_X - 7},${APEX_Y}`}
+            fill="#C1492C"
+            stroke="#0F1410"
+            strokeWidth={1.2}
+            strokeLinejoin="round"
+          />
+        </g>
+
+        <g aria-hidden="true" transform="translate(60, 60)">
           <text
-            x={140}
-            y={150}
-            fontSize={22}
-            letterSpacing={4}
+            x={0}
+            y={0}
+            fontFamily="var(--font-display, Fraunces, Georgia, serif)"
+            fontSize={13}
+            fontStyle="italic"
+            fill="#0F1410"
+            opacity={0.55}
+          >
+            APEX no.07
+          </text>
+          <text
+            x={0}
+            y={28}
+            fontFamily="'IBM Plex Mono', ui-monospace, monospace"
+            fontSize={9}
+            letterSpacing={2.4}
+            fill="#0F1410"
+            opacity={0.75}
+          >
+            TELEMETRY · T7
+          </text>
+
+          <g transform="translate(0, 56)">
+            <text
+              x={0}
+              y={0}
+              fontFamily="'IBM Plex Mono', ui-monospace, monospace"
+              fontSize={9}
+              letterSpacing={2}
+              fill="#0F1410"
+              opacity={0.6}
+            >
+              THROTTLE
+            </text>
+            <rect x={0} y={8} width={140} height={6} fill="#0F1410" opacity={0.08} />
+            <rect
+              x={0}
+              y={8}
+              width={140}
+              height={6}
+              fill="#0A2818"
+              className="hero-telemetry-bar hero-telemetry-throttle"
+            />
+          </g>
+
+          <g transform="translate(0, 92)">
+            <text
+              x={0}
+              y={0}
+              fontFamily="'IBM Plex Mono', ui-monospace, monospace"
+              fontSize={9}
+              letterSpacing={2}
+              fill="#0F1410"
+              opacity={0.6}
+            >
+              BRAKE
+            </text>
+            <rect x={0} y={8} width={140} height={6} fill="#0F1410" opacity={0.08} />
+            <rect
+              x={0}
+              y={8}
+              width={140}
+              height={6}
+              fill="#C1492C"
+              className="hero-telemetry-bar hero-telemetry-brake"
+            />
+          </g>
+
+          <g transform="translate(0, 128)">
+            <text
+              x={0}
+              y={0}
+              fontFamily="'IBM Plex Mono', ui-monospace, monospace"
+              fontSize={9}
+              letterSpacing={2}
+              fill="#0F1410"
+              opacity={0.6}
+            >
+              STEER
+            </text>
+            <rect x={0} y={8} width={140} height={6} fill="#0F1410" opacity={0.08} />
+            <rect
+              x={0}
+              y={8}
+              width={140}
+              height={6}
+              fill="#D9A441"
+              className="hero-telemetry-bar hero-telemetry-steering"
+            />
+          </g>
+        </g>
+
+        <g aria-hidden="true" fontFamily="'IBM Plex Mono', ui-monospace, monospace" fill="#0F1410">
+          <text
+            x={260}
+            y={155}
+            fontSize={11}
+            letterSpacing={3.2}
             textAnchor="start"
           >
             BRAKING
           </text>
-          <line x1={140} y1={162} x2={250} y2={162} stroke="#0F1410" strokeWidth={1.5} />
+          <line x1={260} y1={163} x2={328} y2={163} stroke="#0F1410" strokeWidth={1.2} />
 
           <text
-            x={APEX_X + 50}
-            y={APEX_Y - 35}
-            fontSize={22}
-            letterSpacing={4}
+            x={APEX_X + 44}
+            y={APEX_Y - 32}
+            fontSize={11}
+            letterSpacing={3.2}
             textAnchor="start"
           >
             APEX
           </text>
           <line
-            x1={APEX_X + 25}
-            y1={APEX_Y - 25}
-            x2={APEX_X + 45}
-            y2={APEX_Y - 30}
+            x1={APEX_X + 28}
+            y1={APEX_Y - 22}
+            x2={APEX_X + 42}
+            y2={APEX_Y - 28}
             stroke="#0F1410"
-            strokeWidth={1.5}
+            strokeWidth={1.2}
           />
 
+          <g transform={`translate(${APEX_X + 44}, ${APEX_Y - 12})`}>
+            <circle cx={4} cy={-4} r={3} fill="#D9A441" />
+            <text
+              x={12}
+              y={0}
+              fontSize={9}
+              letterSpacing={2.2}
+              fill="#D9A441"
+              opacity={0.9}
+            >
+              COA-GATE
+            </text>
+          </g>
+
           <text
-            x={920}
-            y={870}
-            fontSize={22}
-            letterSpacing={4}
+            x={910}
+            y={555}
+            fontSize={11}
+            letterSpacing={3.2}
             textAnchor="end"
           >
             EXIT
           </text>
-          <line x1={810} y1={862} x2={920} y2={862} stroke="#0F1410" strokeWidth={1.5} />
+          <line x1={830} y1={547} x2={910} y2={547} stroke="#0F1410" strokeWidth={1.2} />
+        </g>
 
+        <g aria-hidden="true">
           <text
-            x={920}
-            y={95}
-            fontSize={14}
-            letterSpacing={2.5}
+            x={910}
+            y={55}
+            fontFamily="var(--font-display, Fraunces, Georgia, serif)"
+            fontSize={22}
+            fontStyle="italic"
+            fill="#0F1410"
             textAnchor="end"
-            opacity={0.6}
+            opacity={0.85}
           >
-            T7 ENTRY, LAP 17
+            Lap 17, T7 entry +0.08s
           </text>
+          <line x1={620} y1={68} x2={910} y2={68} stroke="#0F1410" strokeWidth={0.5} opacity={0.35} />
         </g>
 
-        <g transform="translate(80, 920)">
-          <text
-            x={0}
-            y={-10}
-            fontFamily="'IBM Plex Mono', ui-monospace, monospace"
-            fontSize={11}
-            letterSpacing={2.5}
-            fill="#0F1410"
-            opacity={0.7}
-          >
-            THROTTLE
-          </text>
-          <rect x={120} y={-20} width={260} height={10} fill="#0F1410" opacity={0.08} />
-          <rect
-            x={120}
-            y={-20}
-            width={260}
-            height={10}
-            fill="#0A2818"
-            className="telemetry-bar telemetry-throttle-bar"
-          />
-
-          <text
-            x={420}
-            y={-10}
-            fontFamily="'IBM Plex Mono', ui-monospace, monospace"
-            fontSize={11}
-            letterSpacing={2.5}
-            fill="#0F1410"
-            opacity={0.7}
-          >
-            BRAKE
-          </text>
-          <rect x={520} y={-20} width={180} height={10} fill="#0F1410" opacity={0.08} />
-          <rect
-            x={520}
-            y={-20}
-            width={180}
-            height={10}
-            fill="#C1492C"
-            className="telemetry-bar telemetry-brake-bar"
-          />
-
-          <text
-            x={740}
-            y={-10}
-            fontFamily="'IBM Plex Mono', ui-monospace, monospace"
-            fontSize={11}
-            letterSpacing={2.5}
-            fill="#0F1410"
-            opacity={0.7}
-          >
-            STEER
-          </text>
-          <rect x={840} y={-20} width={80} height={10} fill="#0F1410" opacity={0.08} />
-          <rect
-            x={840}
-            y={-20}
-            width={80}
-            height={10}
-            fill="#D9A441"
-            className="telemetry-bar telemetry-steering-bar"
-          />
-        </g>
+        <rect
+          x={0}
+          y={0}
+          width={960}
+          height={600}
+          fill="url(#paper-vignette)"
+          aria-hidden="true"
+        />
       </svg>
     </div>
   );

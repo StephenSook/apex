@@ -6,11 +6,13 @@
  * restriction per feedback_nextjs16_dynamic_ssr_false_client_only.md).
  *
  * Server Components cannot directly use next/dynamic with ssr:false. The
- * fix is a Client Component shell that owns the dynamic import. This
- * preserves the ~120KB R3F + three lazy-chunk benefit without blocking the
- * initial bundle on Three.js.
+ * fix is a Client Component shell that owns the dynamic import.
  *
- * Wave-46 Phase B2 ship.
+ * Wave-46 Phase B revision-3 update: the hero is now a 960x600 widescreen
+ * 2D SVG editorial illustration (no R3F dependency). The dynamic-import
+ * pattern is retained because the SVG uses CSS keyframes + SMIL
+ * animateMotion that initialize on first DOM-mount; isolating that
+ * behind ssr:false keeps SSR clean.
  */
 
 import dynamic from "next/dynamic";
@@ -19,9 +21,9 @@ const RacingLineHero = dynamic(() => import("./RacingLineHero"), {
   ssr: false,
   loading: () => (
     <div
-      className="w-full aspect-square bg-paper-warm rounded-sm border border-rule animate-pulse"
+      className="aspect-[16/10] w-full animate-pulse rounded-sm border border-rule bg-paper-warm"
       role="status"
-      aria-label="Loading 3D racing-line visualization"
+      aria-label="Loading racing line visualization"
     />
   ),
 });
