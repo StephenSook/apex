@@ -126,15 +126,18 @@ describe("/api/coach-code wave-46 Phase 6.2 Granite 4.1 8B code-feedback", () =>
     vi.spyOn(openrouterMod, "openRouterChatCompletion").mockResolvedValue({
       id: "test",
       model: "ibm-granite/granite-4.1-8b-instruct",
+      created: Math.floor(Date.now() / 1000),
       choices: [
         {
+          index: 0,
           message: {
             role: "assistant",
             content: "Aggregate the telemetry at 1 Hz per Stage 1. Cite FIA Appendix L per the published revision.",
           },
+          finish_reason: "stop",
         },
       ],
-      usage: { prompt_tokens: 142, completion_tokens: 67 },
+      usage: { prompt_tokens: 142, completion_tokens: 67, total_tokens: 209 },
     });
 
     const res = await POST(
