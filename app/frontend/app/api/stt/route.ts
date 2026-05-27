@@ -88,7 +88,7 @@ async function fetchRealBackend(req: NextRequest, t0: number): Promise<STTRespon
       compute_ms: Math.round(performance.now() - t0),
     };
   } catch (err) {
-    console.error("[apex/stt] real-backend forward failed", err);
+    console.warn("[apex/stt] real-backend forward failed; serving canned-fallback", err);
     return null;
   }
 }

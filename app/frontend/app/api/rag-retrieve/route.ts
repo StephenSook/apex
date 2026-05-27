@@ -73,7 +73,7 @@ async function fetchRealBackend(query: string, t0: number): Promise<RAGResponse 
       retriever_label: "Granite Embedding R2 149M + 47M (cosine similarity)",
     };
   } catch (err) {
-    console.error("[apex/rag-retrieve] real-backend fetch failed", err);
+    console.warn("[apex/rag-retrieve] real-backend fetch failed; serving canned-fallback", err);
     return null;
   }
 }
