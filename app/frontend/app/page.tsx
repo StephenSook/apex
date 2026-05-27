@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import RacingLineHeroShell from "../components/RacingLineHeroShell";
 import { IBM_GRANITE_STACK } from "../lib/ibm-stack";
 
 export default function Home() {
@@ -132,119 +133,12 @@ function Hero() {
           </p>
         </div>
 
-        {/* Hero visual: hand-coded SVG racing line on a corner, with annotated
-            apex point. Editorial paddock note, not a generic AI illustration. */}
         <figure
           className="lg:col-span-5 self-center apex-rise"
           style={{ "--apex-delay": "600ms" } as React.CSSProperties}
           aria-label="A racing line through a corner with the apex point marked"
         >
-          <svg
-            viewBox="0 0 480 540"
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-full h-auto"
-            role="img"
-          >
-            <defs>
-              <linearGradient id="track" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="var(--racing-green)" stopOpacity="0.85" />
-                <stop offset="100%" stopColor="var(--racing-green)" stopOpacity="0.35" />
-              </linearGradient>
-              <pattern id="grain" x="0" y="0" width="3" height="3" patternUnits="userSpaceOnUse">
-                <circle cx="1" cy="1" r="0.4" fill="var(--ink)" opacity="0.05" />
-              </pattern>
-            </defs>
-
-            {/* Background grain panel */}
-            <rect x="0" y="0" width="480" height="540" fill="var(--paper-warm)" />
-            <rect x="0" y="0" width="480" height="540" fill="url(#grain)" />
-
-            {/* Track silhouette: a stylised right-hander */}
-            <path
-              d="M 60 60 Q 60 280 200 320 Q 360 360 400 480"
-              stroke="url(#track)"
-              strokeWidth="42"
-              fill="none"
-              strokeLinecap="round"
-            />
-            <path
-              d="M 60 60 Q 60 280 200 320 Q 360 360 400 480"
-              stroke="var(--paper)"
-              strokeWidth="2"
-              strokeDasharray="6 8"
-              fill="none"
-              strokeLinecap="round"
-            />
-
-            {/* The racing line: tighter radius, kissing the apex */}
-            <path
-              d="M 110 60 Q 110 250 240 270 Q 360 290 380 480"
-              stroke="var(--accent)"
-              strokeWidth="3"
-              fill="none"
-              strokeLinecap="round"
-              strokeDasharray="3 4"
-            />
-
-            {/* Apex point */}
-            <circle cx="240" cy="270" r="6" fill="var(--accent)" />
-            <circle cx="240" cy="270" r="14" fill="none" stroke="var(--accent)" strokeWidth="1" opacity="0.4" />
-
-            {/* Labels */}
-            <text
-              x="270"
-              y="266"
-              fontFamily="var(--font-mono)"
-              fontSize="13"
-              fill="var(--ink)"
-              letterSpacing="0.12em"
-            >
-              APEX
-            </text>
-            <text
-              x="270"
-              y="282"
-              fontFamily="var(--font-mono)"
-              fontSize="10"
-              fill="var(--muted)"
-            >
-              T7 entry, Lap 17
-            </text>
-
-            <text
-              x="60"
-              y="44"
-              fontFamily="var(--font-mono)"
-              fontSize="10"
-              fill="var(--muted)"
-              letterSpacing="0.18em"
-            >
-              BRAKING
-            </text>
-            <text
-              x="400"
-              y="500"
-              fontFamily="var(--font-mono)"
-              fontSize="10"
-              fill="var(--muted)"
-              letterSpacing="0.18em"
-              textAnchor="end"
-            >
-              EXIT
-            </text>
-
-            {/* Margin note */}
-            <text
-              x="60"
-              y="510"
-              fontFamily="var(--font-fraunces)"
-              fontStyle="italic"
-              fontSize="14"
-              fill="var(--ink-soft)"
-            >
-              The line is where lap time lives.
-            </text>
-          </svg>
+          <RacingLineHeroShell />
         </figure>
       </div>
     </section>
