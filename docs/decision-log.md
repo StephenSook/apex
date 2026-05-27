@@ -4,6 +4,38 @@ Every locked decision with rationale + date + scope. Newest first.
 
 ---
 
+## 2026-05-27 D-067: Wave-48 backend completion arc, Tier-1 ship + deploy guide + Granite Embedding R2 RAG wire
+
+**Decision.** Stephen invoked the wave-48 backend-completion arc with the directive "no mock data, nothing hardcoded, real working product". Dispatched 3 parallel audit agents (Gemini 1M-context backend file-by-file, silent-failure-hunter frontend canned inventory, general-purpose HF Inference + OpenRouter + Replicate endpoint research). Audit confirmed: Vinh shipped FastAPI server.py + LangGraph 6-node runtime + Narrator + 18 modules + 100+ tests on disk, BUT the runtime was never deployed AND key swap-points were placeholders (Narrator default text_generator was an echo; projection node used seasonal-naive vs frozen TTM r2; rag node returned a placeholder string). Backend Dockerfile installed only 4 packages by name + did NOT COPY fixtures, so a fresh container 503s. Frontend audit added 5 demo-burning issues including response-body engine fields literally containing "*-canned-fallback", openrouter-stream stub-mode prose leaking "Populate OPENROUTER_API_KEY in .env.local" verbatim to the user, and /api/sim-rig/stream pure Math.sin synthetic stream.
+
+**Ship ledger (newest first):**
+
+- `a50d691` fix(types): wave-48 cascade-#55 + Tier-2 Granite Embedding R2 HF Inference wire. Extended WeatherBriefResponse + RAGResponse engine unions. NEW app/frontend/lib/granite-embedding-r2.ts. /api/rag-retrieve now switches to nodejs runtime + lazy-caches corpus embeddings + hybrid-reranks lexical top-10 candidates via Granite Embedding 30M English cosine similarity when HF_TOKEN env is set.
+- `2b0c72e` feat(backend): wave-48 Tier-1 multipart + TTM wire + OpenRouter Narrator + HF Spaces deploy. Bundled 8 files because they share the test_server.py + server.py import surface:
+   - server.py: new /api/analyze-upload multipart endpoint with UploadFile validation (extension + size + per-request tempdir cleanup) + CORSMiddleware + OpenRouter narrator wire on all 3 analyze paths.
+   - langgraph_runtime.py: module-level lazy TTM forecaster singleton (env-gated APEX_ENABLE_TTM=1) + narrator parameter on execute() + run_langgraph() pass-through + honest engine label on projection node trace ("ttm-r2-zero-shot" vs "seasonal-naive").
+   - NEW apex/instruct/openrouter_generator.py: TextGenerator factory that posts to OpenRouter chat completions; HARD-COMPLIANCE system prompt (no em-dash, no invented FIA Articles, no simultaneity recommendation without COA approval, max 4 paragraphs plain prose); retry-directive system message on attempt > 0; raises on non-200 + empty completion so Narrator retry loop or caller fallback fires.
+   - test_server.py: 6 new multipart tests covering end-to-end Sarah + missing field 422 + wrong extension 415 + oversize 413 + invalid JSON 400 + no-debrief OK + CORS preflight.
+   - Dockerfile v0.2.0: lean CPU torch (pre-install before requirements.txt) + drop fastf1 + llama_cpp_python (server-unreachable) + COPY fixtures so /api/orchestration resolves Sarah path on fresh container + port 7860 for HF Spaces.
+   - openrouter-stream route generic fallback no longer leaks "Populate OPENROUTER_API_KEY" to user-facing AICopilotChat (frontend critical #3).
+   - sim-rig/stream X-Apex-Engine: simulator-sine-deterministic header (frontend critical #5).
+   - weather-brief: OpenWeather 5-day forecast when OPENWEATHER_API_KEY set; demo-fixture for Donington otherwise; engine label retired the misleading "canned-fallback" suffix.
+   - NEW scripts/deploy-backend-hf-spaces.sh: one-command HF Spaces Docker SDK push with HF_TOKEN auth.
+
+**Closes Gemini-agent honesty audit findings #3, #4, #5.** Documents #1 (LangGraphRuntime is a deterministic Python state machine modeled on LangGraph semantics, not the langgraph package itself) honestly via the langgraph_runtime.py docstring rewrite. #2 (rag node placeholder) acknowledged as deferred to Vinh M3-V8 swap-point; the FRONTEND rag-retrieve route now hosts a real Granite Embedding R2 HF Inference wire as the immediate honesty fix.
+
+**Closes silent-failure-hunter frontend critical #3 (openrouter-stream prose leak) + #5 (sim-rig honest label).** Critical #1 (`engine: *-canned-fallback` in body) + #2 (X-Apex-*-Engine header) + #4 (/api/timing-sheet-parse returns same 5 laps) are all deploy-driven; setting NEXT_PUBLIC_VINH_BACKEND_BASE_URL + flipping 11 USE_REAL_* flags silences 14 of 19 routes per the wave-48 deploy guide at `docs/deploy-guide-wave-48.md`.
+
+**Deploy choice locked: HuggingFace Spaces (Docker SDK, free CPU tier).** Rationale: Stephen already has HF account for the HF Inference Providers wire; Docker SDK on HF Spaces honors the existing Dockerfile + the deploy script writes the Space repo programmatically via `huggingface_hub.HfApi.upload_folder()`. Modal CPU + Fly.io were viable but require a separate billing surface; HF Spaces free tier (CPU basic, 16 GB RAM, 2 vCPU) is sufficient because the LLM path goes through OpenRouter (Granite 4.1 8B) + the ML inference path on /api/rag-retrieve goes through HF Inference Providers. No GPU needed.
+
+**Research dispatch findings.** HF Inference Providers free serverless tier hosts ONLY embeddings among Granite models (`granite-embedding-30m-english` + `granite-embedding-97m-multilingual-r2`). Generation-heavy Granite models (Vision, Speech, Guardian, Docling, TTM, TSPulse) are NOT on the free HF tier; Vision + Speech are on Replicate (pay-per-call); Guardian is on IBM watsonx beta (currently free). TTM + TSPulse have no hosted endpoint at all and must run local (the Vinh backend modules do this via `tsfm_public` import on demand when `APEX_ENABLE_TTM=1`).
+
+**Outstanding Stephen-action.** HF_TOKEN write-scope key + HF Space pre-creation at `huggingface.co/new-space` + `bash scripts/deploy-backend-hf-spaces.sh` + Vercel env-var batch + verify `https://stephensook-apex-backend.hf.space/healthz` returns 200 + verify production frontend at apex-one-black.vercel.app/judges shows real engine labels in DevTools. Full step-by-step at `docs/deploy-guide-wave-48.md`.
+
+**Cross-references.** Wave-48 audit transcripts: gemini-agent a003bc432c09344a0 (backend file-by-file), silent-failure-hunter a41db15439d116e45 (frontend canned inventory), general-purpose research aa1527d1759160227 (HF Inference + OpenRouter + Replicate). Plan synthesis: this entry. Memory writes: `feedback_git_lock_recurrence_root_cause.md` (extended with permission-grant + behavioural-guardrails section).
+
+---
+
 ## 2026-05-27 D-066: Wave-47 5-agent /review batch close + 8 atomic fix commits + honesty restoration
 
 **Decision.** Stephen invoked `/review` on wave-47 ship. Dispatched 5 parallel sub-agents (Gemini 1M cross-surface drift + Codex adversarial + silent-failure-hunter + code-reviewer + type-design-analyzer). 32 findings surfaced total: 6 BLOCKER (5 Codex overclaim + 1 type-design drift) + 14 HIGH (silent-failure-hunter 7 + Codex 6 + Gemini 1 + code-reviewer 2 + type-design 3) + 13 MED + ~12 NIT. Brutal-honest synthesis ran: shipped 8 atomic commits closing 5 BLOCKER + 7 HIGH + 3 MED on the load-bearing items.
