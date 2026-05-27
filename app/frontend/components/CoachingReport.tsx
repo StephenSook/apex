@@ -147,14 +147,30 @@ function CornerList({ corners }: { corners: ReadonlyArray<CornerInsight> }) {
   );
 }
 
-const REASONING_STEP_DOT_TONE: Record<
+const REASONING_STEP_TONE: Record<
   "cause" | "consequences" | "recommendation" | "evidence",
-  string
+  { readonly border: string; readonly label: string; readonly dot: string }
 > = {
-  cause: "bg-accent",
-  consequences: "bg-amber",
-  recommendation: "bg-racing-green",
-  evidence: "bg-ink",
+  cause: {
+    border: "border-accent",
+    label: "text-accent",
+    dot: "bg-accent",
+  },
+  consequences: {
+    border: "border-amber",
+    label: "text-amber",
+    dot: "bg-amber",
+  },
+  recommendation: {
+    border: "border-racing-green",
+    label: "text-racing-green",
+    dot: "bg-racing-green",
+  },
+  evidence: {
+    border: "border-ink/40",
+    label: "text-ink-soft",
+    dot: "bg-ink",
+  },
 };
 
 function CornerCard({ corner }: { corner: CornerInsight }) {
@@ -162,6 +178,7 @@ function CornerCard({ corner }: { corner: CornerInsight }) {
   const deltaLabel = `${slower ? "+" : ""}${corner.current_delta_s.toFixed(2)} s`;
   const deltaTone = slower ? "text-accent" : "text-racing-green";
   const chain = corner.reasoning_chain ?? [];
+  const hasChain = chain.length > 0;
 
   return (
     <article className="rounded-sm border border-rule bg-paper-warm p-5">
@@ -172,7 +189,33 @@ function CornerCard({ corner }: { corner: CornerInsight }) {
         </span>
       </header>
       <p className={`font-mono text-base ${deltaTone}`}>{deltaLabel} vs reference</p>
-      <p className="pt-2 text-sm leading-relaxed text-ink-soft">{corner.recommendation}</p>
+      {!hasChain && (
+        <p className="pt-2 text-sm leading-relaxed text-ink-soft">{corner.recommendation}</p>
+      )}
+      {hasChain && (
+        <ol
+          className="mt-4 flex flex-col gap-3"
+          aria-label="Cause / consequences / recommendation / evidence chain for this corner"
+        >
+          {chain.map((step, idx) => {
+            const tone = REASONING_STEP_TONE[step.step];
+            return (
+              <li
+                key={`${step.step}-${idx}`}
+                className={`rounded-sm border-l-4 bg-paper p-3 ${tone.border}`}
+              >
+                <div className="flex items-center gap-2">
+                  <span aria-hidden="true" className={`h-2 w-2 rounded-full ${tone.dot}`} />
+                  <span className={`font-mono text-[10px] uppercase tracking-wider ${tone.label}`}>
+                    {step.label}
+                  </span>
+                </div>
+                <p className="mt-1.5 text-sm leading-relaxed text-ink">{step.content}</p>
+              </li>
+            );
+          })}
+        </ol>
+      )}
       {corner.citations.length > 0 && (
         <ul className="flex flex-wrap gap-2 pt-3" aria-label="Citations for this recommendation">
           {corner.citations.map((citation, idx) => (
@@ -181,30 +224,6 @@ function CornerCard({ corner }: { corner: CornerInsight }) {
             </li>
           ))}
         </ul>
-      )}
-      {chain.length > 0 && (
-        <details className="group mt-4 border-t border-rule pt-3">
-          <summary className="cursor-pointer list-none font-mono text-[11px] uppercase tracking-wider text-racing-green hover:text-ink focus-visible:text-ink">
-            <span aria-hidden="true" className="inline-block group-open:rotate-90 transition-transform">&rsaquo;</span>{" "}
-            Reasoning chain ({chain.length} {chain.length === 1 ? "step" : "steps"})
-          </summary>
-          <ol className="mt-3 flex flex-col gap-3" aria-label="Reasoning chain steps">
-            {chain.map((step, idx) => (
-              <li key={`${step.step}-${idx}`} className="flex gap-3">
-                <span
-                  aria-hidden="true"
-                  className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${REASONING_STEP_DOT_TONE[step.step]}`}
-                />
-                <div className="flex flex-col gap-1">
-                  <span className="font-mono text-[10px] uppercase tracking-wider text-muted">
-                    {step.label}
-                  </span>
-                  <p className="text-sm leading-relaxed text-ink-soft">{step.content}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
-        </details>
       )}
     </article>
   );
