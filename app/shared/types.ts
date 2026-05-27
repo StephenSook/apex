@@ -1627,6 +1627,12 @@ export interface OrchestrationResponse {
   readonly trace_id: string;
   readonly nodes: ReadonlyArray<OrchestrationNode>;
   readonly total_ms: number;
+  // Wave-47 review type-design BLOCKER close (agent abafc43): backend
+  // ships compute_ms at app/backend/apex/server.py:195; frontend type
+  // was missing it. Now matches backend shape + enables migrating the
+  // orchestration route onto runWireFlipGET helper (helper requires
+  // TResponse extends EnginePayload = {engine, compute_ms}).
+  readonly compute_ms: number;
   readonly swap_point: string;
 }
 

@@ -40,6 +40,7 @@ function cannedPayload(): OrchestrationResponse {
     trace_id: `canned-${Date.now().toString(36)}`,
     nodes: CANNED_NODES,
     total_ms,
+    compute_ms: total_ms,
     swap_point: VINH_SWAP_POINTS.V14_LANGGRAPH.swap_point,
   };
 }
