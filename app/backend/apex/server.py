@@ -7,6 +7,7 @@ Exposes:
   - GET  /api/orchestration       (wave-47 cascade-#53; frontend V14 wire-flip)
   - POST /api/analyze             (Sarah end-to-end pipeline; JSON file paths)
   - POST /api/analyze-upload      (wave-48 multipart fix; driver-supplied files)
+  - GET  /api/tspulse/anomaly     (wave-48 Tier-2; IBM TSPulse r1 polyphase anomaly head)
   - GET  /healthz                 (container readiness probe)
 
 Deploy target: any Docker host (Modal / Fly.io / Vercel functions /
@@ -26,7 +27,7 @@ import os
 import shutil
 import tempfile
 from pathlib import Path
-from typing import Any
+from typing import Any, Final
 
 from fastapi import FastAPI, File, HTTPException, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
@@ -45,6 +46,8 @@ from apex.orchestration.what_if_replay import (
     run_what_if_replay,
 )
 from apex.pipelines.sarah_e2e import coaching_report_to_dict
+from apex.pipelines.telemetry_to_log import load_telemetry_csv
+from apex.tspulse import detect_anomaly
 
 # ---- Upload constraints ------------------------------------------------
 # wave-48 multipart fix: /api/analyze-upload accepts driver-supplied
@@ -422,6 +425,78 @@ async def post_analyze_upload(
         }
     finally:
         shutil.rmtree(tmpdir, ignore_errors=True)
+
+
+# ---- GET /api/tspulse/anomaly (wave-48 Tier-2 ship; Vinh M3-V7) ------
+#
+# IBM TSPulse r1 polyphase anomaly detector against the canonical Sarah
+# Reynolds telemetry fixture. When env `APEX_ENABLE_TSPULSE=1` is set
+# the route invokes the real model via `tsfm_public`; otherwise the
+# deterministic brake-pressure heuristic stub runs + the honest engine
+# label "tspulse-stub" appears in the response.
+#
+# Response shape matches the frontend `TSPulseResponse` discriminated-
+# union per `app/shared/types.ts` so the wire-flip helper drops the
+# upstream body straight onto the panel state.
+
+
+import time as _time
+
+# Map TSPulse-scanned telemetry channels to frequency-band labels per
+# the polyphase decomposition the frontend `TSPulseBand` union encodes.
+# Adaptive-driver telemetry exhibits anomalies preferentially in these
+# bands: speed = low (smooth dynamics), brake = mid (pulse-like driver
+# input), steering = high (fast control response). Channels not in this
+# map default to "low".
+_CHANNEL_TO_BAND: Final[dict[str, str]] = {
+    "speed_mps": "low",
+    "brake_pa": "mid",
+    "steering_rad": "high",
+    "gear": "dc",
+    "coa_overlap_flag": "dc",
+}
+
+
+@app.get("/api/tspulse/anomaly")
+def get_tspulse_anomaly() -> dict[str, Any]:
+    t_start = _time.time()
+    telemetry_path, _ = _sarah_fixtures_or_503()
+    telemetry = load_telemetry_csv(telemetry_path)
+    result = detect_anomaly(telemetry)
+    detection_ms = int((_time.time() - t_start) * 1000)
+    bands_set: list[str] = []
+    seen: set[str] = set()
+    for ch in result.channels_scanned:
+        band = _CHANNEL_TO_BAND.get(ch, "low")
+        if band not in seen:
+            seen.add(band)
+            bands_set.append(band)
+    if result.has_anomaly:
+        state = {
+            "status": "anomaly",
+            "window_index": result.window_index,
+            "score": result.score,
+            "threshold_p95": result.threshold,
+            "affected_bands": bands_set if bands_set else ["mid"],
+            "detection_ms": detection_ms,
+        }
+    else:
+        state = {
+            "status": "clean",
+            "window_index": result.window_index,
+            "score": result.score,
+            "threshold_p95": result.threshold,
+            "detection_ms": detection_ms,
+        }
+    return {
+        "engine": result.engine,
+        "compute_ms": detection_ms,
+        "state": state,
+        "swap_point": (
+            "Vinh M3-V7 -> app/backend/apex/tspulse/anomaly.py "
+            "(IBM Granite TimeSeries TSPulse r1 polyphase anomaly head)"
+        ),
+    }
 
 
 __all__ = ["app"]

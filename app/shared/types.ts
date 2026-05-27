@@ -1783,8 +1783,19 @@ export type TSPulseAnomalyState =
     }
   | { readonly status: "error"; readonly message: string };
 
+/**
+ * Wave-48: extended engine union to cover the real TSPulse r1
+ * polyphase anomaly head (`apex.tspulse.anomaly.TSPulseAnomalyDetector`
+ * when APEX_ENABLE_TSPULSE=1) + the deterministic brake-pressure
+ * heuristic stub (when env-flag off OR model load failed). Honest
+ * label distinguishes which path served the response.
+ */
 export interface TSPulseResponse {
-  readonly engine: "tspulse-v7-canned-fallback" | "tspulse-v7-real";
+  readonly engine:
+    | "tspulse-v7-canned-fallback"
+    | "tspulse-v7-real"
+    | "tspulse-r1-anomaly"
+    | "tspulse-stub";
   readonly compute_ms: number;
   readonly state: TSPulseAnomalyState;
   readonly swap_point: string;
