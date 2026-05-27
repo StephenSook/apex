@@ -59,7 +59,13 @@ RUN pip install --no-cache-dir torch==2.5.1 --index-url https://download.pytorch
 # out the torch line + install the rest. Anything we don't need at
 # runtime (llama_cpp_python is heavy + only used by the offline G1b
 # bench script, never by the FastAPI server) is dropped via the grep.
-RUN grep -vE "^(torch==|llama_cpp_python==|fastf1==)" requirements.txt > requirements.lean.txt \
+# OpenTelemetry packages excluded from the lean install because
+# opentelemetry-instrumentation 0.60b0 pins wrapt<2.0.0 which conflicts
+# with Vinh's wrapt==2.2.1 pin. observability.py lazy-imports OTel +
+# logs a no-op warning when the packages are absent, so the server
+# still boots cleanly without them. Reinstate when an OTel release
+# accepts wrapt 2.x.
+RUN grep -vE "^(torch==|llama_cpp_python==|fastf1==|opentelemetry-)" requirements.txt > requirements.lean.txt \
  && pip install --no-cache-dir -r requirements.lean.txt \
  && pip install --no-cache-dir \
       "uvicorn[standard]" \
