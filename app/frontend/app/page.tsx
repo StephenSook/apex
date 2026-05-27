@@ -534,13 +534,11 @@ function StackBadges() {
                       ? "border-racing-green bg-paper text-racing-green"
                       : t.status === "INTEGRATION"
                       ? "border-amber bg-paper text-amber"
-                      : t.status === "FACADE"
-                      ? "border-rule bg-paper text-ink-soft"
                       : "border-rule bg-paper text-muted"
                   }`}
                   aria-label={`Status: ${t.status}`}
                 >
-                  {t.status === "WIRED" ? "Wired" : t.status === "INTEGRATION" ? "Integration" : t.status === "FACADE" ? "Facade" : "Accelerator"}
+                  {t.status === "WIRED" ? "Wired" : t.status === "INTEGRATION" ? "Integration" : "Accelerator"}
                 </span>
               </div>
               <span className="font-mono text-xs uppercase tracking-wider text-accent">

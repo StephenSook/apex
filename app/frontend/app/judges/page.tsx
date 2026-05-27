@@ -258,13 +258,11 @@ export default function JudgesPage() {
                         ? "border-racing-green bg-paper text-racing-green"
                         : status === "INTEGRATION"
                         ? "border-amber bg-paper text-amber"
-                        : status === "FACADE"
-                        ? "border-rule bg-paper text-ink-soft"
                         : "border-rule bg-paper text-muted"
                     }`}
                     aria-label={`Status: ${status}`}
                   >
-                    {status === "WIRED" ? "Wired" : status === "INTEGRATION" ? "Integration" : status === "FACADE" ? "Facade" : "Accelerator"}
+                    {status === "WIRED" ? "Wired" : status === "INTEGRATION" ? "Integration" : "Accelerator"}
                   </span>
                 </div>
                 <dd className="text-sm leading-relaxed text-ink-soft">{role}</dd>
