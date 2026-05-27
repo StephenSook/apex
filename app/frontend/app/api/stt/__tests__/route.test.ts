@@ -118,4 +118,65 @@ describe("/api/stt wave-46 Phase 5.6 Granite Speech 4.1 2B-Plus swap-point", () 
     const data = (await res.json()) as { engine: string };
     expect(data.engine).toBe("stt-v9-canned-fallback");
   });
+
+  // Wave-46 C12 R3 audio-body cap tests per project memory
+  // feedback_llm_output_compliance_scrubber.md spirit applied to file
+  // uploads + the 5 MB cap rationale in route.ts wave-46 Phase 9.3
+  // code-reviewer HIGH 3 ship comment.
+
+  it("rejects 413 audio_too_large when Content-Length declares > 5 MB", async () => {
+    const req = new Request("https://apex-one-black.vercel.app/api/stt", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Content-Length": String(6 * 1024 * 1024),
+      },
+      body: JSON.stringify({ audio: "x" }),
+    });
+    const res = await POST(req as unknown as Parameters<typeof POST>[0]);
+    expect(res.status).toBe(413);
+    const body = (await res.json()) as { error: string; message: string };
+    expect(body.error).toBe("audio_too_large");
+    expect(body.message).toMatch(/5 MB|5242880|5\s*MB/);
+  });
+
+  it("rejects 400 invalid_content_length when Content-Length is not parseable", async () => {
+    const req = new Request("https://apex-one-black.vercel.app/api/stt", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Content-Length": "not-a-number",
+      },
+      body: JSON.stringify({ audio: "x" }),
+    });
+    const res = await POST(req as unknown as Parameters<typeof POST>[0]);
+    expect(res.status).toBe(400);
+    const body = (await res.json()) as { error: string };
+    expect(body.error).toBe("invalid_content_length");
+  });
+
+  it("accepts request when Content-Length is exactly at 5 MB cap (boundary)", async () => {
+    const req = new Request("https://apex-one-black.vercel.app/api/stt", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Content-Length": String(5 * 1024 * 1024),
+      },
+      body: JSON.stringify({ audio: "x" }),
+    });
+    const res = await POST(req as unknown as Parameters<typeof POST>[0]);
+    expect(res.status).toBe(200);
+    const data = (await res.json()) as { engine: string };
+    expect(data.engine).toBe("stt-v9-canned-fallback");
+  });
+
+  it("accepts request when Content-Length header is absent (Vercel Edge native cap is the floor)", async () => {
+    const req = new Request("https://apex-one-black.vercel.app/api/stt", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ audio: "x" }),
+    });
+    const res = await POST(req as unknown as Parameters<typeof POST>[0]);
+    expect(res.status).toBe(200);
+  });
 });
