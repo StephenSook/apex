@@ -35,7 +35,12 @@
  *   Langflow facade per wave-30); does not represent runtime wiring
  * - ACCELERATOR: build-time / development tooling, not runtime routing
  */
-export type GraniteStackToolStatus = "WIRED" | "INTEGRATION" | "FACADE" | "ACCELERATOR";
+// Wave-47 cascade-D #231 close per Gemini drift: FACADE removed from
+// the union; no tool actually carries this status (LangGraph entry's
+// JSDoc references the historical wave-30 'Langflow facade' narrative
+// but the data field stays INTEGRATION). Clearing the unused tier
+// removes the type-vs-data contradiction.
+export type GraniteStackToolStatus = "WIRED" | "INTEGRATION" | "ACCELERATOR";
 
 export interface GraniteStackTool {
   /**
@@ -72,10 +77,12 @@ export interface GraniteStackTool {
 }
 
 /**
- * The 15-tool IBM Granite stack catalog (per D-058 wave-46 expansion:
- * prior 12-tool catalog plus Granite Instruct 4.1 3B chat-routing,
- * Granite Speech 4.1 2B-Plus Watson STT proxy preview, and Mellea v0.5.0
- * IVR-loop ACCELERATOR slot per D-060 reframe). Order is load-bearing:
+ * The 14-tool IBM Granite stack catalog (per D-058 wave-46 expansion +
+ * Phase A5 IBM Bob removal: prior 12-tool catalog plus Granite Instruct
+ * 4.1 3B chat-routing, Granite Speech 4.1 2B-Plus Watson STT proxy
+ * preview, and Mellea v0.5.0 IVR-loop ACCELERATOR slot per D-060
+ * reframe; IBM Bob removed Phase A1 dropping count 15 -> 14). Order is
+ * load-bearing:
  * the StackBadges grid renders tools in this order top-to-bottom + left-
  * to-right + the IBM_STACK panel mirrors the same sequence. Order
  * tracks pipeline data-flow: ingest (Docling, Vision) -> forecast
@@ -221,12 +228,15 @@ export const IBM_GRANITE_STACK: ReadonlyArray<GraniteStackTool> = [
   {
     name: "Mellea",
     version: ">=0.5.0",
-    role: "Instruct-Validate-Repair tri-agent critic loop on narrator (IBM Research open source library, Apache 2.0)",
+    role: "Instruct-Validate-Repair tri-agent critic loop scaffold on narrator (IBM Research open source library, Apache 2.0); flips to WIRED when Vinh M3-V5.2 ships Mellea-orchestrated narrator path",
     status: "ACCELERATOR",
-    // Wave-46 Phase 5: real IBM Research library generative-computing/mellea
-    // wires Instruct-Validate-Repair loop on narrator. Pydantic schemas +
-    // req() validators on FIA Article + COA section + citation + conditional
-    // phrasing per HARD-COMPLIANCE. Multi-backend including WatsonX.
+    // Wave-47 cascade-D #232 close per Gemini drift: status=ACCELERATOR
+    // is correct at HEAD because the live narrator code path is the
+    // OpenRouter-direct single-shot at /api/openrouter-stream + the
+    // canned-fallback at /api/coach-code; Mellea IVR-loop wraps the
+    // narrator only after Vinh ships M3-V5.2. Role text updated to
+    // explicitly tag "scaffold + flips to WIRED on Vinh ship" so the
+    // tier matches the role rather than asserting an active wire today.
   },
 ];
 

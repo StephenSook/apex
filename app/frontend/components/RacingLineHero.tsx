@@ -227,7 +227,7 @@ export default function RacingLineHero() {
       <svg
         viewBox="0 0 1000 900"
         role="img"
-        aria-label="A corner racing line with the apex point marked at the upper-right third. Editorial illustration: warm cream paper backdrop with paper-grain texture, deep racing-green track surface running diagonally from upper-left to lower-right, signal clay-red racing line traced through the apex, amber apex marker with breathing pulse, bottom telemetry strip showing throttle (racing-green) at 82 percent, brake (clay-red) at 46 percent, and steering (amber) at 68 percent. COA-GATE adaptive-control simultaneity annotation visible next to the apex label."
+        aria-label="A corner racing line with the apex point marked at the upper-right third. Editorial illustration: warm cream paper backdrop with paper-grain texture, deep racing-green track surface running diagonally from upper-left to lower-right, signal clay-red racing line traced through the apex, amber apex marker with breathing pulse, bottom telemetry strip with three bars (throttle racing-green, brake clay-red, steering amber) cycling live values on a 7-second corner-cadence loop synced to the animated car traversal. COA-GATE adaptive-control simultaneity annotation visible next to the apex label."
         className="block h-auto w-full"
         preserveAspectRatio="xMidYMid meet"
       >
