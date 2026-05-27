@@ -216,3 +216,68 @@ body::before {
 body:has([data-paddock-night="true"])::before {
   background-image: none;
 }
+
+/*
+ * Wave-47 G4 one-hand accessibility mode. Activated via
+ * `html.apex-one-hand` class set by `OneHandModeProvider`. Raises tap-
+ * target sizing across interactive elements + tightens line-height for
+ * single-handed thumb-reach scanning + enlarges the focus-ring for
+ * easier keyboard-tab recovery. Editorial-paddock palette preserved.
+ *
+ * WCAG 2.5.5 Target Size (Enhanced, AAA) requires 44x44 CSS px minimum.
+ * One-hand mode raises to ~56px (or 80px on the primary CTA surfaces)
+ * per Apple HIG + Microsoft Surface adaptive-controller single-handed
+ * touch research. The dimension trades horizontal density for thumb-
+ * reach reliability under adaptive-driver hand-control conditions.
+ *
+ * Persona-decoupled per `feedback_persona_not_hardcoded_in_ui.md`:
+ * activating one-hand mode does NOT bind any persona name; it only
+ * adjusts layout density + tap-target sizing + focus affordances.
+ */
+html.apex-one-hand button,
+html.apex-one-hand [role="button"],
+html.apex-one-hand a.inline-flex,
+html.apex-one-hand input[type="submit"],
+html.apex-one-hand input[type="button"],
+html.apex-one-hand input[type="reset"] {
+  min-height: 56px;
+  min-width: 56px;
+  padding-inline: 1.25rem;
+  padding-block: 0.875rem;
+}
+
+html.apex-one-hand input[type="text"],
+html.apex-one-hand input[type="email"],
+html.apex-one-hand input[type="search"],
+html.apex-one-hand input[type="number"],
+html.apex-one-hand input[type="file"],
+html.apex-one-hand textarea,
+html.apex-one-hand select {
+  min-height: 56px;
+  font-size: 1rem;
+  padding-block: 0.875rem;
+  padding-inline: 1rem;
+}
+
+html.apex-one-hand label {
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+html.apex-one-hand :focus-visible {
+  outline: 3px solid var(--racing-green);
+  outline-offset: 3px;
+  border-radius: 0.25rem;
+}
+
+html.apex-one-hand summary,
+html.apex-one-hand details > summary {
+  min-height: 48px;
+  padding-block: 0.5rem;
+  cursor: pointer;
+}
+
+html.apex-one-hand nav a {
+  padding-block: 0.625rem;
+  padding-inline: 0.875rem;
+}
