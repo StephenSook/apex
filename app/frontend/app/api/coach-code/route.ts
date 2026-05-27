@@ -10,7 +10,7 @@
  *
  * Hook contract:
  *   - Request body: `{ "code": string, "question": string }`
- *   - Response: JSON `CoachCodeResponse` with engine + model + feedback + tokens
+ *   - Response: JSON `CoachCodeResponse` with engine + model + feedback + tokens + retry_count + violation_summary
  *   - Status: 200 on success; 4xx on validation; 5xx on backend failure
  *
  * HARD-COMPLIANCE scrubber applied server-side per
@@ -19,10 +19,21 @@
  * normalized to "FIA Appendix L per the published revision" /
  * "the COA simultaneity gate" before the client receives them.
  *
+ * Cascade-#47 wave-46 OVERRIDE-steal Self-Correcting Retry Loop (per
+ * project_apex_override_competitor.md steal #1, lifted from OVERRIDE
+ * core/pipeline.py:118-132). On detection of forbidden-anchor patterns
+ * in the LLM output, append a `# Retry directive` system message listing
+ * the violated patterns and regenerate. Bounded budget of 2 retries =
+ * 3 LLM calls worst case. After the budget exhausts the scrubber still
+ * fires as defense in depth; the retry_count + violation_summary
+ * surface the self-correction history to consumers so violations are
+ * not silently hidden.
+ *
  * Security guards:
  *   - Hard cap on code body length (32 KB) prevents adversarial gigantic prompts
  *   - Question + code both required non-empty (400 missing_field otherwise)
  *   - NO code execution. Returns text feedback only.
+ *   - Retry budget bounds runaway token cost (max 3 LLM calls per request)
  *
  * Canned-fallback: when OPENROUTER_API_KEY env var is unset, returns a
  * canned coach-code response so /coach-code page renders end-to-end on
@@ -34,7 +45,10 @@ import type { NextRequest } from "next/server";
 
 import type { CoachCodeResponse } from "../../../../shared/types";
 import { openRouterChatCompletion, type ChatMessage } from "../../../lib/openrouter-client";
-import { scrubInventedRegulatoryAnchors } from "../../../lib/scrub-regulatory-anchors";
+import {
+  detectInventedRegulatoryAnchors,
+  scrubInventedRegulatoryAnchors,
+} from "../../../lib/scrub-regulatory-anchors";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -42,6 +56,7 @@ export const dynamic = "force-dynamic";
 const MAX_CODE_BYTES = 32 * 1024;
 const MAX_QUESTION_BYTES = 4 * 1024;
 const DEFAULT_MODEL = "ibm-granite/granite-4.1-8b-instruct";
+const MAX_RETRIES = 2;
 
 interface CoachCodeRequestBody {
   readonly code?: unknown;
@@ -94,7 +109,22 @@ function cannedPayload(t0: number): CoachCodeResponse {
     prompt_tokens: 0,
     completion_tokens: 0,
     swap_point: COACH_CODE_SWAP_POINT,
+    retry_count: 0,
+    violation_summary: [[]],
   };
+}
+
+function buildRetryDirective(violations: ReadonlyArray<string>): string {
+  return [
+    "# Retry directive",
+    "",
+    "Your previous response contained forbidden regulatory-anchor patterns:",
+    ...violations.map((label) => `  - ${label}`),
+    "",
+    "Regenerate the response WITHOUT inventing any FIA Article numbers, COA Section numbers, Appendix § references, or numeric regulation citations.",
+    "Reference only 'FIA Appendix L per the published revision' for FIA anchors and 'the COA simultaneity gate' for COA anchors.",
+    "All technical analysis content from your previous response should remain; only the forbidden regulatory anchors must be replaced.",
+  ].join("\n");
 }
 
 export async function POST(req: NextRequest): Promise<Response> {
@@ -141,7 +171,7 @@ export async function POST(req: NextRequest): Promise<Response> {
     });
   }
 
-  const messages: ReadonlyArray<ChatMessage> = [
+  const messages: ChatMessage[] = [
     { role: "system", content: SYSTEM_PROMPT },
     {
       role: "user",
@@ -149,32 +179,63 @@ export async function POST(req: NextRequest): Promise<Response> {
     },
   ];
 
+  let rawFeedback = "";
+  let promptTokens = 0;
+  let completionTokens = 0;
+  let model = DEFAULT_MODEL;
+  const violationSummary: string[][] = [];
+  let retryCount = 0;
+
   try {
-    const completion = await openRouterChatCompletion({
-      messages,
-      max_tokens: 800,
-      temperature: 0.3,
-    });
-    const rawFeedback = completion.choices[0]?.message?.content ?? "";
+    for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+      const completion = await openRouterChatCompletion({
+        messages,
+        max_tokens: 800,
+        temperature: 0.3,
+      });
+      rawFeedback = completion.choices[0]?.message?.content ?? "";
+      promptTokens += completion.usage?.prompt_tokens ?? 0;
+      completionTokens += completion.usage?.completion_tokens ?? 0;
+      model = completion.model ?? DEFAULT_MODEL;
+
+      const violations = detectInventedRegulatoryAnchors(rawFeedback);
+      const attemptLabels = violations.map((v) => v.pattern);
+      violationSummary.push(attemptLabels);
+
+      if (violations.length === 0) break;
+
+      if (attempt < MAX_RETRIES) {
+        retryCount += 1;
+        messages.push({ role: "assistant", content: rawFeedback });
+        messages.push({
+          role: "system",
+          content: buildRetryDirective(attemptLabels),
+        });
+      }
+    }
+
     const scrubbed = scrubInventedRegulatoryAnchors(rawFeedback);
     const payload: CoachCodeResponse = {
       engine: "coach-code-real",
       compute_ms: Math.round(performance.now() - t0),
-      model: completion.model ?? DEFAULT_MODEL,
+      model,
       feedback: scrubbed,
-      prompt_tokens: completion.usage?.prompt_tokens ?? 0,
-      completion_tokens: completion.usage?.completion_tokens ?? 0,
+      prompt_tokens: promptTokens,
+      completion_tokens: completionTokens,
       swap_point: COACH_CODE_SWAP_POINT,
+      retry_count: retryCount,
+      violation_summary: violationSummary,
     };
     return Response.json(payload, {
       status: 200,
       headers: {
         "Cache-Control": "no-store",
         "X-Apex-Coach-Code-Engine": payload.engine,
+        "X-Apex-Coach-Code-Retry-Count": String(retryCount),
       },
     });
   } catch (err) {
-    console.error("[apex/coach-code] OpenRouter call failed; falling back to canned", err);
+    console.warn("[apex/coach-code] OpenRouter call failed; falling back to canned", err);
     const payload = cannedPayload(t0);
     return Response.json(payload, {
       status: 200,

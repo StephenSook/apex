@@ -28,6 +28,87 @@
 // across every Article + Section + Sec. variant below.
 const SUFFIX = "(\\.[a-z]|[a-z])?";
 
+/**
+ * Cascade-#47 wave-46 OVERRIDE-steal: detector counterpart for the
+ * scrubber. Returns the list of forbidden-anchor patterns that fired on
+ * the input text, in human-readable form, for use in the
+ * Self-Correcting Retry Loop on `/api/coach-code` (per
+ * `project_apex_override_competitor.md` steal #1, lifted from OVERRIDE
+ * `core/pipeline.py:118-132` retry-directive pattern). When this
+ * function returns a non-empty array, the LLM has violated the
+ * HARD-COMPLIANCE no-invented-FIA-articles rule and the route should
+ * issue a retry-directive system message + regenerate.
+ *
+ * Probes for the SAME pattern families as `scrubInventedRegulatoryAnchors`
+ * but does NOT mutate the text. The retry-loop calls this BEFORE deciding
+ * whether to regenerate; the scrubber still runs as the final safety
+ * net (defense in depth) even after the retry-loop terminates.
+ */
+export interface RegulatoryAnchorViolation {
+  readonly pattern: string;
+  readonly matches: ReadonlyArray<string>;
+}
+
+const VIOLATION_PROBES: ReadonlyArray<{ readonly label: string; readonly regex: RegExp }> = [
+  {
+    label: "FIA Appendix L Article N",
+    regex: new RegExp(`FIA Appendix L Article \\d+(\\.\\d+)*${SUFFIX}`, "gi"),
+  },
+  {
+    label: "FIA Article N (singular or plural)",
+    regex: new RegExp(`FIA Articles? \\d+(\\.\\d+)*${SUFFIX}`, "gi"),
+  },
+  {
+    label: "Article N (bare)",
+    regex: new RegExp(`\\bArticles? \\d+(\\.\\d+)*${SUFFIX}`, "gi"),
+  },
+  {
+    label: "Art. N abbrev",
+    regex: new RegExp(`\\bArt\\.?\\s+\\d+(\\.\\d+)*${SUFFIX}`, "gi"),
+  },
+  {
+    label: "Appendix L § N",
+    regex: new RegExp(`Appendix L\\s*[§]\\s*\\d+(\\.\\d+)*${SUFFIX}`, "gi"),
+  },
+  {
+    label: "§ N section reference",
+    regex: /§\s*\d+(\.\d+)*(\([a-z]\))?/gi,
+  },
+  {
+    label: "COA Section N",
+    regex: new RegExp(`COA Section \\d+(\\.\\d+)*${SUFFIX}`, "gi"),
+  },
+  {
+    label: "COA Sec N abbrev",
+    regex: new RegExp(`COA\\s+Sec\\.?\\s+\\d+(\\.\\d+)*${SUFFIX}`, "gi"),
+  },
+  {
+    label: "Section N.N (bare)",
+    regex: new RegExp(`\\bSection \\d+\\.\\d+(\\.\\d+)*${SUFFIX}`, "g"),
+  },
+  {
+    label: "Sec. N abbrev",
+    regex: new RegExp(`\\bSec\\.?\\s+\\d+(\\.\\d+)*${SUFFIX}`, "gi"),
+  },
+];
+
+export function detectInventedRegulatoryAnchors(
+  text: string,
+): ReadonlyArray<RegulatoryAnchorViolation> {
+  const violations: RegulatoryAnchorViolation[] = [];
+  for (const probe of VIOLATION_PROBES) {
+    const matches = text.match(probe.regex);
+    if (matches !== null && matches.length > 0) {
+      violations.push({ pattern: probe.label, matches: matches.slice(0, 5) });
+    }
+  }
+  return violations;
+}
+
+export function hasInventedRegulatoryAnchors(text: string): boolean {
+  return detectInventedRegulatoryAnchors(text).length > 0;
+}
+
 export function scrubInventedRegulatoryAnchors(text: string): string {
   return text
     .replace(

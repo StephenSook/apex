@@ -1856,6 +1856,18 @@ export interface CoachCodeResponse {
   // via OpenRouter direct (no Vinh-side proxy), so the swap_point
   // documents the live wiring path rather than a future deferred handler.
   readonly swap_point: string;
+  // Cascade-#47 wave-46 OVERRIDE-steal Self-Correcting Retry Loop telemetry
+  // (per project_apex_override_competitor.md steal #1, lifted from
+  // OVERRIDE core/pipeline.py:118-132). Surfaces the retry count + the
+  // per-attempt violation summary so consumers (judges, dev tools, the
+  // /coach-code page) can see the HARD-COMPLIANCE self-correction
+  // working honestly rather than hiding violations behind a silent
+  // post-scrub rewrite. retry_count of 0 means the LLM produced clean
+  // output on first attempt; >= 1 means the retry-directive loop fired.
+  // violation_summary[i] is the list of forbidden-anchor pattern labels
+  // detected on attempt i; empty arrays mean that attempt was clean.
+  readonly retry_count: number;
+  readonly violation_summary: ReadonlyArray<ReadonlyArray<string>>;
 }
 
 // ============================================================================
