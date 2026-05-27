@@ -1663,8 +1663,32 @@ export interface SCPResponse {
 // are set per wave-46 D-058.
 // ============================================================================
 
+/**
+ * Wave-46.5 type-design REWORK R8: stage now narrowed from open string to
+ * a discriminated string-literal union matching the projection-pipeline
+ * stage IDs the V14 LangGraph backend emits. Mirrors the
+ * ConvergenceDetectionStage pattern (`stage_1_qp` | `stage_2_feasibility`
+ * | `stage_3_guardian`) but extended with per-tier physics-stack stage
+ * IDs so the COADiff projector trace can label each step. Accepts a
+ * free-form `string` fallback only when an upstream Vinh backend emits a
+ * stage label outside the curated set; in that case the value flows
+ * through as-is and surfaces in the UI as raw text per the existing
+ * RealtimeCOADiffPanel render.
+ */
+export type COADiffProjectionStage =
+  | "friction_ellipse"
+  | "forward_euler"
+  | "bicycle_model"
+  | "coa_simultaneity"
+  | "stage_1_qp"
+  | "stage_2_feasibility"
+  | "stage_3_guardian";
+
 export interface COADiffProjectionTraceEntry {
-  readonly stage: string;
+  // `(string & {})` preserves literal-union autocomplete while accepting
+  // unknown upstream stage labels per the TypeScript open-literal-union
+  // pattern.
+  readonly stage: COADiffProjectionStage | (string & {});
   readonly residual_norm: number;
   readonly status: "converged" | "violation" | "linearized";
 }
@@ -1853,6 +1877,19 @@ export interface TelemetryChannelSummary {
   readonly samples: number;
 }
 
+/**
+ * Wave-46.5 type-design REWORK R9: UploadTelemetryResponse cleaned up.
+ * Previously the response carried `first_row_t_session_s` + `last_row_t_session_s`
+ * + `duration_s` as 3 fields where `duration_s` is the derivation
+ * `last - first`. That violated the single-source-of-truth pattern + let
+ * inconsistent wire payloads typecheck. `duration_s` is now removed at
+ * the type level; consumers (frontend panels) compute it inline. Plus
+ * `head_preview` previously held free-form `Record<string, number>` which
+ * defeated channel-name type safety. Now narrowed to
+ * `ReadonlyArray<Partial<TelemetryRow>>` so each preview row is shape-
+ * compatible with the canonical TelemetryRow definition (channels declared
+ * in shapes.py).
+ */
 export interface UploadTelemetryResponse {
   readonly engine: "upload-telemetry-strict-parser";
   readonly compute_ms: number;
@@ -1860,9 +1897,8 @@ export interface UploadTelemetryResponse {
   readonly row_count: number;
   readonly first_row_t_session_s: number;
   readonly last_row_t_session_s: number;
-  readonly duration_s: number;
   readonly channels: ReadonlyArray<TelemetryChannelSummary>;
-  readonly head_preview: ReadonlyArray<Record<string, number>>;
+  readonly head_preview: ReadonlyArray<Partial<TelemetryRow>>;
 }
 
 // ============================================================================
@@ -1883,6 +1919,20 @@ export interface TireDegradationStep {
   readonly rear_right_pct: number;
 }
 
+/**
+ * Wave-46.5 type-design REWORK R7: TireDegradationResponse.verdict
+ * narrowed from open string to a literal union enumerating the 4 verdict
+ * states the predictor emits. Renderers can switch on the literal value
+ * + pick the appropriate display color (racing-green for safe-to-continue,
+ * amber for monitor, accent for pit-recommended, accent + bold for
+ * critical) without parsing free-form strings.
+ */
+export type TireDegradationVerdict =
+  | "safe-to-continue"
+  | "monitor"
+  | "pit-recommended"
+  | "critical";
+
 export interface TireDegradationResponse {
   readonly engine: "tire-degradation-canned-fallback" | "tire-degradation-real";
   readonly compute_ms: number;
@@ -1890,7 +1940,7 @@ export interface TireDegradationResponse {
   readonly current_stint_lap: number;
   readonly horizon_laps: number;
   readonly steps: ReadonlyArray<TireDegradationStep>;
-  readonly verdict: string;
+  readonly verdict: TireDegradationVerdict;
 }
 
 // ============================================================================

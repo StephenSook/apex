@@ -48,8 +48,7 @@ export async function GET(_req: NextRequest): Promise<Response> {
     current_stint_lap: 1,
     horizon_laps: 10,
     steps: CANNED_STEPS,
-    verdict:
-      "Soft compound projects load-asymmetric rear-right cliff by stint lap 9. Recommend pit stop before lap 8 + medium compound for stint 2 if track temp stays below 32 C.",
+    verdict: "pit-recommended" as const,
   };
   return Response.json(payload, {
     status: 200,

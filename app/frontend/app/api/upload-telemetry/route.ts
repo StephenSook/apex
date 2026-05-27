@@ -215,7 +215,9 @@ export async function POST(req: NextRequest): Promise<Response> {
     row_count: rows.length,
     first_row_t_session_s: firstRow.t_session_s,
     last_row_t_session_s: lastRow.t_session_s,
-    duration_s: lastRow.t_session_s - firstRow.t_session_s,
+    // duration_s dropped wave-46.5 type-design REWORK R9: consumers
+    // compute it inline as `last_row_t_session_s - first_row_t_session_s`
+    // to remove the single-source-of-truth violation.
     channels,
     head_preview: headPreview,
   };

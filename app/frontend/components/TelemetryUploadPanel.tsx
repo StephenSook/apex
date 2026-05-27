@@ -156,7 +156,7 @@ export default function TelemetryUploadPanel() {
       {state.status === "ready" && (
         <article className="flex flex-col gap-3 rounded-sm border-l-2 border-racing-green bg-paper-warm p-4">
           <p className="font-mono text-[10px] uppercase tracking-wider text-racing-green">
-            {state.payload.source_filename} · {state.payload.row_count.toLocaleString()} rows · {state.payload.duration_s.toFixed(2)} s duration · {state.payload.compute_ms} ms parse
+            {state.payload.source_filename} · {state.payload.row_count.toLocaleString()} rows · {(state.payload.last_row_t_session_s - state.payload.first_row_t_session_s).toFixed(2)} s duration · {state.payload.compute_ms} ms parse
           </p>
           <div className="grid gap-2 sm:grid-cols-3">
             {state.payload.channels.map((channel) => (
@@ -186,7 +186,8 @@ export default function TelemetryUploadPanel() {
                 {state.payload.head_preview
                   .map((row) =>
                     Object.entries(row)
-                      .map(([k, v]) => `${k}=${v.toFixed(2)}`)
+                      .filter(([, v]) => typeof v === "number")
+                      .map(([k, v]) => `${k}=${(v as number).toFixed(2)}`)
                       .join(" "),
                   )
                   .join("\n")}
