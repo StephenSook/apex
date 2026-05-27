@@ -1,0 +1,62 @@
+{
+  "name": "apex-coach-code",
+  "displayName": "APEX Coach Code",
+  "description": "Right-click any code selection to get APEX coaching feedback via Granite 4.1 8B Instruct + the canonical regulatory-anchor scrubber. Powered by the public APEX deployment.",
+  "version": "0.1.0",
+  "publisher": "apex-race-engineer",
+  "license": "Apache-2.0",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": ["AI", "Education", "Other"],
+  "keywords": ["apex", "race-engineer", "granite", "coach-code", "ibm", "motorsport"],
+  "activationEvents": [
+    "onCommand:apex-coach-code.openPanel",
+    "onCommand:apex-coach-code.coachSelection"
+  ],
+  "main": "./src/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "apex-coach-code.openPanel",
+        "title": "APEX: Open coach-code panel"
+      },
+      {
+        "command": "apex-coach-code.coachSelection",
+        "title": "APEX: Get coach feedback on selection"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "apex-coach-code.coachSelection",
+          "when": "editorHasSelection",
+          "group": "apex@1"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "APEX Coach Code",
+      "properties": {
+        "apexCoachCode.deploymentUrl": {
+          "type": "string",
+          "default": "https://apex-one-black.vercel.app",
+          "description": "Base URL of the public APEX deployment (override only if running a local mirror)."
+        },
+        "apexCoachCode.defaultQuestion": {
+          "type": "string",
+          "default": "Review this snippet against the APEX three-layer architecture + flag any HARD-COMPLIANCE risks.",
+          "description": "Default question sent alongside the selected code if no per-call question is provided."
+        }
+      }
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/StephenSook/apex"
+  },
+  "homepage": "https://apex-one-black.vercel.app/coach-code",
+  "scripts": {
+    "package": "vsce package --no-dependencies --out apex-coach-code-0.1.0.vsix"
+  }
+}
