@@ -26,6 +26,7 @@ import type { AuditId } from "../../shared/brands";
 
 import dynamic from "next/dynamic";
 
+import CoachVoicePlayback from "./CoachVoicePlayback";
 import GraniteCitationFooter from "./GraniteCitationFooter";
 import GuardianAudit from "./GuardianAudit";
 import TuningCard from "./TuningCard";
@@ -81,6 +82,7 @@ export default function CoachingReport({ report }: CoachingReportProps) {
           <aside className="flex flex-col gap-6">
             <TuningCard tuning={report.tuning_delta} />
             <GuardianAudit audit={report.audit} />
+            <CoachVoicePlayback narration={buildCoachingNarration(report)} />
             <WatsonTtsRadio
               auditId={safeParseAuditId(report.audit.audit_id)}
               text={buildCoachingNarration(report)}
