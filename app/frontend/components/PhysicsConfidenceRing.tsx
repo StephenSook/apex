@@ -70,19 +70,54 @@ export default function PhysicsConfidenceRing({ confidence }: PhysicsConfidenceR
   const trackColor = "var(--color-rule)";
 
   // Conic gradient: filled arc + remaining track. CSS variable consumed
-  // by the animated background.
+  // by the animated background. Wave-47 G2 ship: layered 3D effect via
+  // inset highlight + drop shadow + hover rotation transform.
   const ringStyle: React.CSSProperties = {
     background: `conic-gradient(${fillColor} 0deg ${fillDegrees}deg, ${trackColor} ${fillDegrees}deg 360deg)`,
+    boxShadow:
+      "inset 0 2px 4px rgba(15, 20, 16, 0.16), inset 0 -2px 4px rgba(255, 255, 255, 0.35), 0 6px 14px rgba(15, 20, 16, 0.12)",
+    transition: "transform 600ms cubic-bezier(0.22, 1, 0.36, 1)",
   };
+
+  // Tick marks at 0, 25, 50, 75 percent positions around the ring +
+  // p95 threshold marker at the fill boundary. SVG overlay layered
+  // above the conic-gradient ring.
+  const tickMarks = [0, 0.25, 0.5, 0.75].map((pct) => ({ pct, degrees: pct * 240 }));
 
   return (
     <div className="flex flex-col items-center gap-3">
       <div
         aria-hidden="true"
-        className="apex-confidence-ring relative flex h-32 w-32 items-center justify-center rounded-full"
+        className="apex-confidence-ring group relative flex h-32 w-32 items-center justify-center rounded-full hover:rotate-[8deg]"
         style={ringStyle}
       >
-        <div className="flex h-24 w-24 flex-col items-center justify-center rounded-full bg-paper">
+        <svg
+          viewBox="-72 -72 144 144"
+          className="absolute inset-0 h-full w-full pointer-events-none"
+          aria-hidden="true"
+        >
+          {tickMarks.map(({ pct, degrees }) => {
+            const angle = (degrees * Math.PI) / 180 - Math.PI / 2;
+            const x1 = Math.cos(angle) * 60;
+            const y1 = Math.sin(angle) * 60;
+            const x2 = Math.cos(angle) * 64;
+            const y2 = Math.sin(angle) * 64;
+            return (
+              <line
+                key={pct}
+                x1={x1}
+                y1={y1}
+                x2={x2}
+                y2={y2}
+                stroke="var(--color-ink)"
+                strokeWidth={1.5}
+                strokeOpacity={0.55}
+                strokeLinecap="round"
+              />
+            );
+          })}
+        </svg>
+        <div className="relative flex h-24 w-24 flex-col items-center justify-center rounded-full bg-paper" style={{ boxShadow: "inset 0 1px 2px rgba(15, 20, 16, 0.1)" }}>
           <span className="font-mono text-[10px] uppercase tracking-wider text-muted">
             Mahalanobis
           </span>
