@@ -26,7 +26,7 @@ Honest position: the frontend route engine field flips from `*-canned-fallback` 
     - SDK: **Docker** (NOT Gradio / Streamlit / Static)
     - Hardware: `CPU basic` (free; 16 GB RAM, 2 vCPU; sufficient since OpenRouter handles LLM)
     - Visibility: `Public`
-    - Click `Create Space`. The Space URL becomes `https://huggingface.co/spaces/StephenSook/apex-backend`. Live URL becomes `https://stephensook-apex-backend.hf.space`.
+    - Click `Create Space`. The Space URL becomes `https://huggingface.co/spaces/ssookra/apex-backend`. Live URL becomes `https://ssookra-apex-backend.hf.space`.
 
 3. **OpenRouter token (already set on Vercel prod per wave-43 D-046)**. Verify the production Vercel project still has `OPENROUTER_API_KEY` populated; if not, regenerate at https://openrouter.ai/keys.
 
@@ -42,7 +42,7 @@ Run from the repo root:
 
 ```bash
 export APEX_HF_TOKEN="hf_..." # from prerequisite 1
-export APEX_HF_SPACE="StephenSook/apex-backend"
+export APEX_HF_SPACE="ssookra/apex-backend"
 bash scripts/deploy-backend-hf-spaces.sh
 ```
 
@@ -51,10 +51,10 @@ The script copies `app/backend/apex/`, `requirements.txt`, `Dockerfile`, `fixtur
 Watch the HF Spaces dashboard for the build to turn green (~10 minutes first build, ~3 minutes subsequent). On green:
 
 ```bash
-curl https://stephensook-apex-backend.hf.space/healthz
+curl https://ssookra-apex-backend.hf.space/healthz
 # {"status":"ok"}
 
-curl https://stephensook-apex-backend.hf.space/api/orchestration | jq .nodes
+curl https://ssookra-apex-backend.hf.space/api/orchestration | jq .nodes
 # 6-node LangGraph trace with real engine labels
 ```
 
@@ -64,7 +64,7 @@ Visit https://vercel.com/stephens-projects/apex/settings/environment-variables. 
 
 | Variable | Value | Purpose |
 |----------|-------|---------|
-| `NEXT_PUBLIC_VINH_BACKEND_BASE_URL` | `https://stephensook-apex-backend.hf.space` | wire-flip target |
+| `NEXT_PUBLIC_VINH_BACKEND_BASE_URL` | `https://ssookra-apex-backend.hf.space` | wire-flip target |
 | `NEXT_PUBLIC_USE_REAL_BACKEND_V14` | `1` | LangGraph orchestration route |
 | `NEXT_PUBLIC_USE_REAL_BACKEND_V12` | `1` | Pacejka projector route |
 | `NEXT_PUBLIC_USE_REAL_BACKEND_V13` | `1` | SCP projector route |
@@ -98,8 +98,8 @@ Open https://apex-one-black.vercel.app/judges in browser DevTools, expand any /a
 
 ## Acceptance criteria
 
-- `https://stephensook-apex-backend.hf.space/healthz` returns 200.
-- `https://stephensook-apex-backend.hf.space/api/orchestration` returns a 6-node trace with `engine: "langgraph-v14-real"`.
+- `https://ssookra-apex-backend.hf.space/healthz` returns 200.
+- `https://ssookra-apex-backend.hf.space/api/orchestration` returns a 6-node trace with `engine: "langgraph-v14-real"`.
 - Production frontend at `https://apex-one-black.vercel.app/judges` shows real LangGraph trace data (not canned-fallback) in DevTools.
 - `/api/rag-retrieve` returns `engine: "granite-embedding-r2-hf-inference"` when HF_TOKEN is set.
 - Voice debrief (when `OPENROUTER_API_KEY` set on the backend Space env) flows through real Granite 4.1 8B Instruct for narration in the LangGraph instruct node.

@@ -12,11 +12,13 @@
 #     with Docker SDK + CPU basic tier
 #
 # Env:
-#   APEX_HF_SPACE=<user/space>   e.g. StephenSook/apex-backend
+#   APEX_HF_SPACE=<user/space>   e.g. ssookra/apex-backend (HF username
+#                                NOT GitHub username; defaults to
+#                                ssookra/apex-backend if unset)
 #   APEX_HF_TOKEN=<token>        write-scope token
 #
 # Usage:
-#   APEX_HF_SPACE=StephenSook/apex-backend bash scripts/deploy-backend-hf-spaces.sh
+#   APEX_HF_SPACE=ssookra/apex-backend bash scripts/deploy-backend-hf-spaces.sh
 #
 # After deploy:
 #   1. Set Vercel env vars: NEXT_PUBLIC_VINH_BACKEND_BASE_URL=https://<user>-<space>.hf.space
@@ -27,7 +29,7 @@ set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 BUILD_DIR="${REPO_ROOT}/.hf-space-build"
-SPACE_REPO="${APEX_HF_SPACE:-StephenSook/apex-backend}"
+SPACE_REPO="${APEX_HF_SPACE:-ssookra/apex-backend}"
 HF_TOKEN="${APEX_HF_TOKEN:-${HF_TOKEN:-}}"
 
 if [[ -z "$HF_TOKEN" ]]; then
