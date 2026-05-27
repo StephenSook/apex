@@ -30,7 +30,36 @@
  */
 
 import { openRouterChatCompletion, type ChatMessage } from "../../../lib/openrouter-client";
-import { scrubInventedRegulatoryAnchors } from "../../../lib/scrub-regulatory-anchors";
+import {
+  detectInventedRegulatoryAnchors,
+  scrubInventedRegulatoryAnchors,
+} from "../../../lib/scrub-regulatory-anchors";
+
+// Wave-47 #208 close: OVERRIDE-steal #1 Self-Correcting Retry Loop ported
+// from /api/coach-code (D-058 Phase 6.2 pattern) to the streaming
+// narrator path. Bounded 2-retry budget = 3 LLM calls worst case.
+// Frontier-model retry directive: append assistant turn + system retry
+// note enumerating the violated regex patterns; re-invoke completion.
+// After budget exhaust, the scrubber still fires as defense in depth.
+// Retry telemetry surfaced via X-Apex-Openrouter-Retry-Count +
+// X-Apex-Openrouter-Violation-Summary headers so judges + observability
+// can see the self-correction work even though the body is streamed
+// plain-text (no payload-shape change to the existing
+// useOpenRouterStream client hook contract).
+const STREAM_MAX_RETRIES = 2;
+
+function buildStreamRetryDirective(violations: ReadonlyArray<string>): string {
+  return [
+    "# Retry directive",
+    "",
+    "Your previous response contained forbidden regulatory-anchor patterns:",
+    ...violations.map((label) => `  - ${label}`),
+    "",
+    "Regenerate the response WITHOUT inventing any FIA Article numbers, COA Section numbers, Appendix § references, or numeric regulation citations.",
+    "Reference only 'FIA Appendix L per the published revision' for FIA anchors and 'the COA simultaneity gate' for COA anchors.",
+    "All technical analysis content from your previous response should remain; only the forbidden regulatory anchors must be replaced.",
+  ].join("\n");
+}
 
 // Wave-42 cold-review #2 silent-failure-hunter B-R2-1 close-out:
 // explicit Node.js runtime declaration. Without this, Next.js 16 may
@@ -203,14 +232,16 @@ export async function POST(request: Request): Promise<Response> {
   }
 
   // Production phase: OPENROUTER_API_KEY is set; proxy to OpenRouter.
-  // Note: this single-shot path uses openRouterChatCompletion + returns
-  // the full text as one chunk. Real SSE-frame parsing for true
-  // chunk-by-chunk streaming lands in a follow-up when the
-  // openRouterChatCompletion helper grows a stream variant + this route
-  // adopts SSE-passthrough semantics. For wave-42 the chunked-response
-  // shape is preserved via the ReadableStream wrapper below.
+  // Wave-47 #208 OVERRIDE-steal #1 close: Self-Correcting Retry Loop now
+  // wraps the single-shot completion. Violations detected post-call -> ;
+  // emit retry directive + re-invoke (bounded 2-retry budget = 3 calls
+  // worst case). Final response chunked via streamStubResponse so the
+  // useOpenRouterStream client hook contract is unchanged. Retry
+  // telemetry surfaced via X-Apex-Openrouter-* headers; violation
+  // summary is JSON-stringified array of arrays (one inner array per
+  // attempt; outer length = attempts).
   try {
-    const messages: ReadonlyArray<ChatMessage> = [
+    const messages: ChatMessage[] = [
       {
         role: "system",
         content:
@@ -218,14 +249,34 @@ export async function POST(request: Request): Promise<Response> {
       },
       { role: "user", content: body.prompt },
     ];
-    // Wave-43 cascade-#13 F2 HIGH#4 close-out per codex adversarial:
-    // pass request.signal so OpenRouter call aborts when the client
-    // disconnects mid-flight. D2.8 wired the signal-threading on the
-    // client lib; this is the route-level consumer site that closes
-    // the loop. Without this pass, server-side OpenRouter invocations
-    // continue billing the API budget after the consumer hangs up.
-    const response = await openRouterChatCompletion({ messages }, { signal: request.signal });
-    const rawText = response.choices[0]?.message.content ?? "";
+    let rawText = "";
+    let retryCount = 0;
+    const violationSummary: string[][] = [];
+    for (let attempt = 0; attempt <= STREAM_MAX_RETRIES; attempt++) {
+      // Wave-43 cascade-#13 F2 HIGH#4 close-out per codex adversarial:
+      // pass request.signal so OpenRouter call aborts when the client
+      // disconnects mid-flight. D2.8 wired the signal-threading on the
+      // client lib; this is the route-level consumer site that closes
+      // the loop. Without this pass, server-side OpenRouter invocations
+      // continue billing the API budget after the consumer hangs up.
+      const response = await openRouterChatCompletion(
+        { messages },
+        { signal: request.signal },
+      );
+      rawText = response.choices[0]?.message.content ?? "";
+      const violations = detectInventedRegulatoryAnchors(rawText);
+      const attemptLabels = violations.map((v) => v.pattern);
+      violationSummary.push(attemptLabels);
+      if (violations.length === 0) break;
+      if (attempt < STREAM_MAX_RETRIES) {
+        retryCount += 1;
+        messages.push({ role: "assistant", content: rawText });
+        messages.push({
+          role: "system",
+          content: buildStreamRetryDirective(attemptLabels),
+        });
+      }
+    }
     const text = scrubInventedRegulatoryAnchors(rawText);
     const stream = streamStubResponse(text, request.signal);
     return new Response(stream, {
@@ -233,6 +284,9 @@ export async function POST(request: Request): Promise<Response> {
       headers: {
         "Content-Type": "text/plain; charset=utf-8",
         "Cache-Control": "no-store",
+        "X-Apex-Openrouter-Phase": "real",
+        "X-Apex-Openrouter-Retry-Count": String(retryCount),
+        "X-Apex-Openrouter-Violation-Summary": JSON.stringify(violationSummary),
       },
     });
   } catch (err) {
