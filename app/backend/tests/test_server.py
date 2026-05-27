@@ -232,3 +232,109 @@ def test_analyze_missing_fixture_returns_404(client):
 def test_analyze_missing_payload_field_returns_400(client):
     r = client.post("/api/analyze", json={"telemetry_csv_path": str(SARAH_CSV)})
     assert r.status_code == 400
+
+
+# ---- POST /api/analyze-upload (wave-48 multipart fix) ----------------
+# Driver-supplied multipart file upload. Same response shape as
+# /api/analyze; same LangGraph pipeline; per-request tempdir cleanup.
+
+
+def test_analyze_upload_end_to_end_on_sarah_multipart(client):
+    """Multipart upload of Sarah fixtures returns the same shape as the
+    JSON-path variant. Validates the wave-48 fix closes the production
+    blocker that /api/analyze could not accept browser-uploaded files.
+    """
+    with SARAH_CSV.open("rb") as t, SARAH_COA.open("rb") as c, SARAH_DEBRIEF.open("rb") as d:
+        files = {
+            "telemetry": (SARAH_CSV.name, t, "text/csv"),
+            "coa": (SARAH_COA.name, c, "application/json"),
+            "debrief": (SARAH_DEBRIEF.name, d, "text/markdown"),
+        }
+        r = client.post("/api/analyze-upload", files=files)
+    assert r.status_code == 200, r.text
+    body = r.json()
+    cr = body["coaching_report"]
+    assert cr["driver_id"] == "sarah-reynolds-britcar-2026"
+    assert len(cr["corners"]) > 0
+    nodes = [s["node"] for s in body["trace"]]
+    assert nodes == ["ingestion", "rag", "projection", "guardian",
+                      "instruct", "provenance"]
+    assert body["swap_point"] == "Vinh M3-V14"
+
+
+def test_analyze_upload_missing_telemetry_returns_400(client):
+    with SARAH_COA.open("rb") as c:
+        r = client.post(
+            "/api/analyze-upload",
+            files={"coa": (SARAH_COA.name, c, "application/json")},
+        )
+    assert r.status_code == 422  # FastAPI's missing-required-field code
+
+
+def test_analyze_upload_wrong_extension_returns_415(client):
+    fake_telemetry = b"not,a,csv"
+    fake_coa = b'{"driver_id": "test"}'
+    files = {
+        "telemetry": ("telemetry.xlsx", fake_telemetry, "application/octet-stream"),
+        "coa": ("coa.json", fake_coa, "application/json"),
+    }
+    r = client.post("/api/analyze-upload", files=files)
+    assert r.status_code == 415
+    assert "telemetry must be" in r.json()["detail"]
+
+
+def test_analyze_upload_oversize_returns_413(client):
+    # 11 MiB telemetry exceeds the 10 MiB cap
+    too_big = b"a" * (11 * 1024 * 1024)
+    small_coa = b'{"driver_id": "test"}'
+    files = {
+        "telemetry": ("telemetry.csv", too_big, "text/csv"),
+        "coa": ("coa.json", small_coa, "application/json"),
+    }
+    r = client.post("/api/analyze-upload", files=files)
+    assert r.status_code == 413
+
+
+def test_analyze_upload_invalid_json_coa_returns_400(client):
+    csv = SARAH_CSV.read_bytes()
+    bad_coa = b"not json at all {{"
+    files = {
+        "telemetry": ("telemetry.csv", csv, "text/csv"),
+        "coa": ("coa.json", bad_coa, "application/json"),
+    }
+    r = client.post("/api/analyze-upload", files=files)
+    assert r.status_code == 400
+    assert "not valid JSON" in r.json()["detail"]
+
+
+def test_analyze_upload_no_debrief_succeeds(client):
+    """Debrief is optional; omit it + the pipeline still runs."""
+    with SARAH_CSV.open("rb") as t, SARAH_COA.open("rb") as c:
+        files = {
+            "telemetry": (SARAH_CSV.name, t, "text/csv"),
+            "coa": (SARAH_COA.name, c, "application/json"),
+        }
+        r = client.post("/api/analyze-upload", files=files)
+    assert r.status_code == 200
+    body = r.json()
+    assert body["coaching_report"]["driver_id"] == "sarah-reynolds-britcar-2026"
+
+
+# ---- CORS preflight ---------------------------------------------------
+# wave-48: production frontend at apex-one-black.vercel.app needs to call
+# the backend cross-origin. CORS middleware allows the production origin
+# + localhost. Verify the preflight returns the required headers.
+
+
+def test_cors_preflight_allows_production_origin(client):
+    r = client.options(
+        "/api/analyze-upload",
+        headers={
+            "Origin": "https://apex-one-black.vercel.app",
+            "Access-Control-Request-Method": "POST",
+            "Access-Control-Request-Headers": "content-type",
+        },
+    )
+    assert r.status_code in (200, 204)
+    assert r.headers.get("access-control-allow-origin") == \
+        "https://apex-one-black.vercel.app"

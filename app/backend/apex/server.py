@@ -5,7 +5,8 @@ Exposes:
   - POST /api/what-if-replay      (task 4.M3b)
   - GET  /api/session-context     (task 4.M3c)
   - GET  /api/orchestration       (wave-47 cascade-#53; frontend V14 wire-flip)
-  - POST /api/analyze             (Sarah end-to-end pipeline)
+  - POST /api/analyze             (Sarah end-to-end pipeline; JSON file paths)
+  - POST /api/analyze-upload      (wave-48 multipart fix; driver-supplied files)
   - GET  /healthz                 (container readiness probe)
 
 Deploy target: any Docker host (Modal / Fly.io / Vercel functions /
@@ -22,11 +23,16 @@ from __future__ import annotations
 
 import json
 import os
+import shutil
+import tempfile
 from pathlib import Path
 from typing import Any
 
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, File, HTTPException, Request, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
 
+from apex.instruct.narrator import Narrator
+from apex.instruct.openrouter_generator import build_openrouter_generator
 from apex.orchestration.audit_log import (
     AuditLogLineTooLarge,
     AuditLogStore,
@@ -40,6 +46,19 @@ from apex.orchestration.what_if_replay import (
 )
 from apex.pipelines.sarah_e2e import coaching_report_to_dict
 
+# ---- Upload constraints ------------------------------------------------
+# wave-48 multipart fix: /api/analyze-upload accepts driver-supplied
+# telemetry + COA + debrief as multipart files. Caps are deliberately
+# tight to keep the CPU-only HF Spaces deploy responsive + within the
+# free-tier RAM budget.
+
+_MAX_TELEMETRY_BYTES: int = 10 * 1024 * 1024   # 10 MiB CSV
+_MAX_COA_BYTES: int = 1 * 1024 * 1024          # 1 MiB JSON
+_MAX_DEBRIEF_BYTES: int = 256 * 1024           # 256 KiB markdown
+_ALLOWED_TELEMETRY_SUFFIX: set[str] = {".csv"}
+_ALLOWED_COA_SUFFIX: set[str] = {".json"}
+_ALLOWED_DEBRIEF_SUFFIX: set[str] = {".md", ".txt"}
+
 # ---- Singletons -------------------------------------------------------
 
 AUDIT_LOG_PATH = Path(
@@ -52,6 +71,21 @@ _audit_store = AuditLogStore(file_path=AUDIT_LOG_PATH)
 _session_provider = SessionContextProvider()
 
 
+def _build_live_narrator() -> Narrator | None:
+    """Construct a Narrator with the OpenRouter generator wired in.
+
+    Returns None when the env is missing prerequisites; callers swap to
+    the deterministic floor in that case. Idempotent: safe to call once
+    per request without paying the cost of repeated env reads in hot
+    paths because the underlying httpx client is reconstructed on each
+    `_generate()` call anyway.
+    """
+    generator = build_openrouter_generator()
+    if generator is None:
+        return None
+    return Narrator(text_generator=generator)
+
+
 # ---- App --------------------------------------------------------------
 
 app = FastAPI(
@@ -59,9 +93,26 @@ app = FastAPI(
     version="0.1.0",
     description=(
         "APEX race-engineer backend. LangGraph 6-node runtime + Stream "
-        "M.3 endpoints + Sarah end-to-end analyze pipeline. Vinh-lane "
-        "service per docs/vinh-backend-plan.md Phase 5 task 5.2."
+        "M.3 endpoints + Sarah end-to-end analyze pipeline + multipart "
+        "driver-upload analyze. Vinh-lane service per docs/vinh-backend-"
+        "plan.md Phase 5 task 5.2."
     ),
+)
+
+# CORS: APEX frontend on Vercel needs to call this from the browser when
+# wave-48 wire-flip is active. Allow all origins in this hackathon scope;
+# narrow to the production Vercel domain once the deploy lands.
+_ALLOWED_ORIGINS = os.environ.get(
+    "APEX_CORS_ORIGINS",
+    "https://apex-one-black.vercel.app,http://localhost:3000",
+).split(",")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=_ALLOWED_ORIGINS,
+    allow_credentials=False,
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["Content-Type", "Authorization", "X-Apex-Client"],
 )
 
 
@@ -175,6 +226,7 @@ def get_orchestration() -> dict[str, Any]:
         telemetry_csv=str(telemetry),
         coa_json=str(coa),
         debrief_path=None,
+        narrator=_build_live_narrator(),
     )
     nodes = [
         {
@@ -226,6 +278,7 @@ async def post_analyze(request: Request):
         telemetry_csv=telemetry_csv,
         coa_json=coa_json,
         debrief_path=debrief_path,
+        narrator=_build_live_narrator(),
     )
     return {
         "coaching_report": coaching_report_to_dict(trace.final_report),
@@ -240,6 +293,135 @@ async def post_analyze(request: Request):
         ],
         "swap_point": trace.swap_point,
     }
+
+
+# ---- POST /api/analyze-upload (wave-48 multipart fix) ----------------
+#
+# Driver-supplied telemetry + COA + debrief via multipart/form-data.
+# Files are written to a per-request tempdir + run through the same
+# LangGraph pipeline as /api/analyze, then cleaned up. Response shape
+# is identical so the frontend can swap routes transparently.
+
+
+def _validate_upload(
+    upload: UploadFile | None,
+    *,
+    field_name: str,
+    required: bool,
+    allowed_suffix: set[str],
+    max_bytes: int,
+) -> bytes | None:
+    """Reject too-large uploads + wrong file extensions before persisting.
+
+    Returns the file bytes on success or None when the field is optional + absent.
+    """
+    if upload is None:
+        if required:
+            raise HTTPException(
+                status_code=400,
+                detail=f"multipart field {field_name!r} is required",
+            )
+        return None
+    suffix = Path(upload.filename or "").suffix.lower()
+    if suffix not in allowed_suffix:
+        raise HTTPException(
+            status_code=415,
+            detail=f"{field_name} must be one of {sorted(allowed_suffix)}; "
+                   f"got {suffix or '(no suffix)'}",
+        )
+    # Read full bytes; FastAPI streams under the hood + the file is
+    # closed by the framework when the request ends.
+    data = upload.file.read()
+    if len(data) > max_bytes:
+        raise HTTPException(
+            status_code=413,
+            detail=f"{field_name} exceeds {max_bytes // 1024} KiB limit",
+        )
+    return data
+
+
+@app.post("/api/analyze-upload")
+async def post_analyze_upload(
+    telemetry: UploadFile = File(..., description="CSV telemetry trace"),
+    coa: UploadFile = File(..., description="JSON Certificate of Adaptations"),
+    debrief: UploadFile | None = File(default=None, description="Markdown debrief"),
+):
+    """End-to-end multipart analyze pipeline.
+
+    wave-48 fix for the JSON-path-only `/api/analyze` endpoint: accepts
+    driver-supplied files directly via multipart/form-data. Frontend
+    `/api/upload-telemetry` + `/upload` page wire to this route when
+    `NEXT_PUBLIC_USE_REAL_BACKEND_V14=1` + the backend base URL is set.
+
+    Validates extensions + size caps BEFORE touching disk so a hostile
+    upload can never fill /tmp on the HF Spaces CPU instance.
+    """
+    telemetry_bytes = _validate_upload(
+        telemetry,
+        field_name="telemetry",
+        required=True,
+        allowed_suffix=_ALLOWED_TELEMETRY_SUFFIX,
+        max_bytes=_MAX_TELEMETRY_BYTES,
+    )
+    coa_bytes = _validate_upload(
+        coa,
+        field_name="coa",
+        required=True,
+        allowed_suffix=_ALLOWED_COA_SUFFIX,
+        max_bytes=_MAX_COA_BYTES,
+    )
+    debrief_bytes = _validate_upload(
+        debrief,
+        field_name="debrief",
+        required=False,
+        allowed_suffix=_ALLOWED_DEBRIEF_SUFFIX,
+        max_bytes=_MAX_DEBRIEF_BYTES,
+    )
+
+    # JSON sanity-check on the COA payload before pipeline execution so
+    # the 400 fires HERE instead of deep inside the parser.
+    try:
+        json.loads(coa_bytes.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise HTTPException(
+            status_code=400,
+            detail=f"coa payload is not valid JSON: {exc}",
+        ) from exc
+
+    # Per-request tempdir; cleanup in finally guarantees no leak even
+    # when run_langgraph() raises.
+    tmpdir = Path(tempfile.mkdtemp(prefix="apex-analyze-"))
+    try:
+        telemetry_path = tmpdir / "telemetry.csv"
+        coa_path = tmpdir / "coa.json"
+        debrief_path = tmpdir / "debrief.md" if debrief_bytes else None
+
+        telemetry_path.write_bytes(telemetry_bytes)
+        coa_path.write_bytes(coa_bytes)
+        if debrief_path:
+            debrief_path.write_bytes(debrief_bytes)
+
+        trace = run_langgraph(
+            telemetry_csv=telemetry_path,
+            coa_json=coa_path,
+            debrief_path=debrief_path,
+            narrator=_build_live_narrator(),
+        )
+        return {
+            "coaching_report": coaching_report_to_dict(trace.final_report),
+            "trace": [
+                {
+                    "node": s.node,
+                    "status": s.status,
+                    "duration_ms": s.duration_ms,
+                    "detail": s.detail,
+                }
+                for s in trace.steps
+            ],
+            "swap_point": trace.swap_point,
+        }
+    finally:
+        shutil.rmtree(tmpdir, ignore_errors=True)
 
 
 __all__ = ["app"]

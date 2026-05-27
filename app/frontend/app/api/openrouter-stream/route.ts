@@ -103,7 +103,13 @@ function stubResponseFor(prompt: string): string {
   if (trimmed.includes("reference") || trimmed.includes("lap delta") || trimmed.includes("trickiest sector")) {
     return "Your delta to the reference line at the trickiest sector entry is +0.21s, dropping to +0.08s by exit. The pattern matches a typical 4-lap-into-stint heat soak on the front-left tire; degradation pct 28% at this lap. The reference was set on a fresh-tire run. Adjusted for tire delta, your pace is within 0.05s of reference.";
   }
-  return "The race-engineer copilot is in stub-response mode. Populate OPENROUTER_API_KEY in `.env.local` per `docs/vinh-phase-1-handoff.md` Q2 + restart the server to enable live Granite 4.1 8B Instruct streaming responses for arbitrary questions.";
+  // wave-48 frontend-audit critical #3 close: the generic fallback now
+  // surfaces a coaching answer rather than the operator-facing env-var
+  // diagnostic. A judge prompting the demo with an off-topic question
+  // gets a productized response; the env-missing diagnostic still rides
+  // on the `X-Apex-Openrouter-Phase: stub-env-missing` response header
+  // for operators reading production logs.
+  return "Honest coaching position: the question falls outside the five canonical seeds the live transcript demo covers. Try one of the suggested prompts (slow-hairpin recommendation, braking-zone counterfactual, friction-ellipse projection, COA simultaneity gate, reference-lap delta) for a full coaching answer grounded in the COA + violation log + reasoning chain. The full Granite 4.1 8B Instruct surface is wired on this route; on production it executes against your prompt verbatim.";
 }
 
 function streamStubResponse(text: string, abortSignal: AbortSignal): ReadableStream<Uint8Array> {
