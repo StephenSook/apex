@@ -88,7 +88,7 @@ This split surfaces the two-person team without forcing the viewer to track whic
 
 ### End-card (2:58 to 3:00, 2 s)
 
-Black frame. APEX wordmark in cream centered. No audio. Hard cap at 3:00.
+Black frame. APEX wordmark in cream centered. Lower-third in IBM Plex Mono, 18px, cream-at-62%-opacity: `Thanks to MME Motorsport d.o.o. for the per-surface attribution permission grant (2026-05-22).` No audio. Hard cap at 3:00. This end-card line is the Q-008 reciprocity commitment per `docs/consent-log.md` section 1.
 
 ---
 

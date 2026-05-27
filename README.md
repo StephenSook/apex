@@ -254,6 +254,14 @@ npm run dev   # http://localhost:3000
 
 ---
 
+## Acknowledgements
+
+Thanks to MME Motorsport d.o.o. for granting per-surface attribution permission for the Sarah Reynolds fictional persona's BMW M240i + electronic hand-control system framing (consent receipt 2026-05-22, logged at `docs/consent-log.md`). The COA section 3(c) dual-stage trigger description that anchors the brake-throttle simultaneity gate killshot is derived from the publicly documented MME Motorsport electronic hand-control hardware specification.
+
+Thanks to the adaptive-racing engineering community for the public correspondence that anchored the ISO 26262 functional-safety vocabulary alignment in paper section 3.8 and the SafetyAlignmentPanel surface on `/judges`.
+
+---
+
 ## Build status
 
 | Phase | Days | State |
