@@ -114,6 +114,24 @@ function Hero() {
               See how it works
               <span aria-hidden="true">↓</span>
             </a>
+            <Link
+              href="/upload"
+              className="inline-flex items-center gap-2 rounded-sm border border-racing-green bg-paper-warm px-5 py-3 font-mono text-xs uppercase tracking-wider text-racing-green transition-colors hover:bg-racing-green hover:text-paper"
+            >
+              Upload telemetry
+            </Link>
+            <Link
+              href="/coach-code"
+              className="inline-flex items-center gap-2 rounded-sm border border-ink/15 bg-paper-warm px-5 py-3 font-mono text-xs uppercase tracking-wider text-ink transition-colors hover:border-ink/40"
+            >
+              Coach my code
+            </Link>
+            <Link
+              href="/compare"
+              className="inline-flex items-center gap-2 rounded-sm border border-ink/15 bg-paper-warm px-5 py-3 font-mono text-xs uppercase tracking-wider text-ink transition-colors hover:border-ink/40"
+            >
+              Twin-driver compare
+            </Link>
           </div>
           <p
             className="pt-4 font-mono text-xs text-muted apex-rise"

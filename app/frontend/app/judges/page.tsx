@@ -63,25 +63,25 @@ const RESOURCES: ReadonlyArray<ResourceLink> = [
   {
     label: "3-minute submission video",
     href: null,
-    detail: "YouTube unlisted URL lands Day 10 (2026-05-29) production take.",
+    detail: "YouTube unlisted URL on the production take.",
     badge: "pending",
   },
   {
     label: "30-second highlight clip",
     href: null,
-    detail: "Cut from the 3-min video for judges who only watch 30s. Lands Day 10.",
+    detail: "Cut from the 3-min video for judges who only watch 30s.",
     badge: "pending",
   },
   {
     label: "Pitch deck PDF",
     href: null,
-    detail: "Playwright HTML→PDF render Day 11. Editorial-paddock palette throughout.",
+    detail: "Playwright HTML→PDF render on the deck. Editorial-paddock palette throughout.",
     badge: "pending",
   },
   {
     label: "Public GitHub repo",
     href: "https://github.com/StephenSook/apex",
-    detail: "Apache 2.0, public Day 1, 220+ atomic commits across the 12-day build window.",
+    detail: "Apache 2.0, public from inception, 220+ atomic commits across the build arc.",
     badge: "live",
   },
   {
@@ -143,7 +143,7 @@ const QA_CARDS: ReadonlyArray<QaCard> = [
   {
     title: "Serialization integrity",
     question: "What stops the projection layer from silently corrupting the forecast it claims to correct?",
-    answer: "Convergence 14: a Python unit-test suite that fires every kinematic violation type (friction-ellipse breach, bicycle-model breach, jerk-bound breach, COA-simultaneity breach) and verifies the serialized text log Guardian receives matches the projection layer's internal record. Day 5-6 ship target. Without this suite, the projection layer is a black box. With it, every claim is testable.",
+    answer: "Convergence 14: a Python unit-test suite that fires every kinematic violation type (friction-ellipse breach, bicycle-model breach, jerk-bound breach, COA-simultaneity breach) and verifies the serialized text log Guardian receives matches the projection layer's internal record. Without this suite, the projection layer is a black box. With it, every claim is testable.",
   },
   {
     title: "COA-parameterized simultaneity",
@@ -153,7 +153,7 @@ const QA_CARDS: ReadonlyArray<QaCard> = [
   {
     title: "Latency budget",
     question: "60 seconds on RTX 4060. Will it run on the judge's machine?",
-    answer: "The 60-second budget is the post-race coaching loop on RTX 4060: TTM forecast + projection + Guardian audit + Instruct narration. Granite-Docling + Granite Vision (the document parsers) run once at onboarding and cache to disk. The judge runs the Hugging Face Space deploy (Day 9) or the Colab notebook (Day 9) for a zero-install demo. Both keep the same 60-second loop. The Colab notebook removes the local GPU requirement entirely.",
+    answer: "The 60-second budget is the post-race coaching loop on RTX 4060: TTM forecast + projection + Guardian audit + Instruct narration. Granite-Docling + Granite Vision (the document parsers) run once at onboarding and cache to disk. The judge runs the Hugging Face Space deploy or the Colab notebook for a zero-install demo. Both keep the same 60-second loop. The Colab notebook removes the local GPU requirement entirely.",
   },
 ];
 
@@ -561,13 +561,13 @@ export default function JudgesPage() {
             inference). Wave-44 Phase 6a adds the IBM TSPulse 1M polyphase time-frequency anomaly
             detector (D-016 Layer 2; per-window detection before the projector QP fires). Move #5
             (Agent-as-Judge tri-agent critic loop, Layer 7) renders one section below. Each panel
-            here uses mock fixtures today; backend wire-up arrives Day 7-8 per <span className="font-mono text-xs text-racing-green">docs/vinh-backend-plan.md</span>
+            here uses mock fixtures today; backend wire-up arrives per <span className="font-mono text-xs text-racing-green">docs/vinh-backend-plan.md</span>
             Phase 4 tasks 4.4 (EAGLE-3) + 4.5 (aLoRA) + 4.6 (GEPA artifact read) + wave-44 plan
             Vinh-scope V7 (TSPulse anomaly endpoint).
           </p>
           <JudgesGalaxyMovesShell />
           <p className="mt-6 font-mono text-xs italic text-muted">
-            Panels are mock for /judges visualisation. Real fetch swaps land Day 7-8 per
+            Panels are mock for /judges visualisation. Real fetch swaps land per
             <span className="not-italic"> docs/decision-log.md D-019 + D-032 + wave-44 Vinh M3-V7</span>.
           </p>
         </div>

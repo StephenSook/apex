@@ -93,7 +93,13 @@ async function fetchRealBackend(req: NextRequest, t0: number): Promise<STTRespon
   }
 }
 
-const MAX_AUDIO_BYTES = 5 * 1024 * 1024;
+// Wave-47 cascade-E #239 close per silent-failure-hunter M5: aligned the
+// declared cap to the Vercel Edge native 4.5 MB body cap so the explicit
+// header check + the runtime native cap agree. Previously we declared
+// 5 MB which sat ABOVE Edge's silent 4.5 MB floor; an audio body in the
+// 4.5-5 MB band would pass the header check then get truncated/rejected
+// silently by Edge. Aligning to 4.5 MB makes the failure mode explicit.
+const MAX_AUDIO_BYTES = Math.floor(4.5 * 1024 * 1024);
 
 export async function POST(req: NextRequest): Promise<Response> {
   const t0 = performance.now();
@@ -125,7 +131,7 @@ export async function POST(req: NextRequest): Promise<Response> {
       return Response.json(
         {
           error: "audio_too_large",
-          message: `Audio body declared ${declaredBytes} bytes; cap is ${MAX_AUDIO_BYTES} bytes (5 MB).`,
+          message: `Audio body declared ${declaredBytes} bytes; cap is ${MAX_AUDIO_BYTES} bytes (4.5 MB Vercel Edge native floor).`,
         },
         { status: 413 },
       );

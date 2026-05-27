@@ -137,7 +137,7 @@ describe("/api/stt wave-46 Phase 5.6 Granite Speech 4.1 2B-Plus swap-point", () 
     expect(res.status).toBe(413);
     const body = (await res.json()) as { error: string; message: string };
     expect(body.error).toBe("audio_too_large");
-    expect(body.message).toMatch(/5 MB|5242880|5\s*MB/);
+    expect(body.message).toMatch(/4\.5 MB|4\.5MB|4718592|cap is/i);
   });
 
   it("rejects 400 invalid_content_length when Content-Length is not parseable", async () => {
@@ -155,12 +155,12 @@ describe("/api/stt wave-46 Phase 5.6 Granite Speech 4.1 2B-Plus swap-point", () 
     expect(body.error).toBe("invalid_content_length");
   });
 
-  it("accepts request when Content-Length is exactly at 5 MB cap (boundary)", async () => {
+  it("accepts request when Content-Length is exactly at 4.5 MB Edge cap (boundary)", async () => {
     const req = new Request("https://apex-one-black.vercel.app/api/stt", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Content-Length": String(5 * 1024 * 1024),
+        "Content-Length": String(Math.floor(4.5 * 1024 * 1024)),
       },
       body: JSON.stringify({ audio: "x" }),
     });
