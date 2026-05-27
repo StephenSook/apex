@@ -4,6 +4,51 @@ Every locked decision with rationale + date + scope. Newest first.
 
 ---
 
+## 2026-05-27 D-063: Wave-46 Phase B R3F RacingLineHero killshot ship + IBM Bob retirement + Stephen-explicit chrome removals
+
+**Decision.** Wave-46 galaxy-final-push delivered the killshot: replaced the wave-1 hand-coded inline-SVG racing-line hero on `/` (lines 137-249 of `app/frontend/app/page.tsx`) with a 3D React-Three-Fiber visualization (`components/RacingLineHero.tsx` + dynamic-import wrapper `components/RacingLineHeroShell.tsx`). Plus Phase A executed Stephen-explicit removals (BuildStatus + footer chrome + multi-track positioning + Day-counter + IBM Bob across 24+ surfaces).
+
+**Phase A commits (6 atomic):**
+- A1 `01b9f79` — BuildStatus + Calibration-ceiling multi-track + Day-counter H2 removed from `/`
+- A2 `3f14aa5` — Footer chrome stripped (kept GitHub + License only); PLAN.md + README.md links + "Day 7 of 12 · 2026-05-26" removed
+- A3 — README.md BuildStatus verified clean (no-op; section never existed)
+- A4 `0e6c426` — Multi-track positioning removed (JudgeTrackTighteningCallout component + test deleted; judges page section + judge-tour Step 6 list + methodology Pillar 5 reframe)
+- A5a `abacf37` — IBM Bob removed from frontend (`lib/ibm-stack.ts:201-220` Bob entry + `page.tsx` 3 refs + `/judges:244` + `/judge-tour:98`); tool count 15 -> 14; ACCELERATOR 3 -> 2 (Docling library + Mellea only)
+- A5b `b9b34de` — IBM Bob removed from docs + paper + SUBMISSION + 4 deliverables + 2 outreach drafts + apex-lite-contingency; tier counts propagated across all surfaces
+
+**Phase B commits (3 atomic so far + B6 = this entry):**
+- B0 `73f0f30` — Installed `three@0.184.0` + `@react-three/fiber@9.6.1` + `@react-three/drei@10.7.7` + `@types/three@0.184.1`
+- B1 `712de0f` — Built `components/RacingLineHero.tsx` Client Component (462 LOC): 3D track via `TubeGeometry` + CatmullRomCurve3 racing line + animated stylized car via `useFrame` + curve.getPointAt(t) interpolation + PerspectiveCamera tracking car with banking-into-corner lerp + drei Text labels (BRAKING + APEX + EXIT + "T7 entry, Lap 17") + apex-pulse sphere via sin-wave scale modulation + drei Html telemetry HUD overlay (throttle/brake/steering ribbons synced to t-parameter) + 12-second loop + prefers-reduced-motion static-SVG fallback + WebGL-unsupported fallback + ARIA labeling
+- B2 `7bbecfb` — Mounted via `RacingLineHeroShell` Client Component dynamic-import wrapper at `app/page.tsx:141` (per JudgesGalaxyMovesShell precedent + Next.js 16 ssr:false-from-Server-Component restriction per `feedback_nextjs16_dynamic_ssr_false_client_only.md`); inline SVG removed; figure wrapper + apex-rise + delay 600ms preserved
+
+**Editorial-paddock palette honored:** track racing-green `#0A2818`, racing-line clay-red `#C1492C`, apex-pulse amber `#D9A441`, paper-cream `#F4EBD8` labels, ink `#0F1410` text.
+
+**Bundle impact:** R3F + drei + three ~120KB gzip; lazy-loaded via `next/dynamic` with `ssr: false` so initial `/` bundle stays clean. Production smoke 200 on `/` post-deploy (Vercel auto-redeploy from main triggered).
+
+**Why.** Stephen explicit 2026-05-26 evening: the static SVG was "very boring with the track and stuff" + had a "T7 entry" label colliding with the orange dashed racing-line + was identified as the highest-leverage visual upgrade for galaxy-tier judging impact. Per the wave-46-galaxy-final-push plan section "S7 is the killshot. Static SVG is genuinely boring for a galaxy-tier submission." R3F 3D track delivers wow-factor at the highest-traffic surface (the landing page).
+
+**Why now.** Plan-mode approved 2026-05-26 evening; Phase A + Phase B B0-B2 shipped same evening (~3 hour session). Phase B remaining: B3 (COA-gate visual coupling on apex pulse), B4 (vitest smoke test), B5 (Lighthouse smoke verify post-deploy) — DEFERRED to next session as polish items because the killshot already lands at B2 mount; B3-B5 are quality-additive not gating.
+
+**Phase B residual:**
+- B3 deferred: extend RacingLineHero with COA-gate visual coupling (apex pulses clay-red on violation vs amber on feasible per cross-page COA-toggle state). Tactile galaxy-stretch; ship in next session.
+- B4 deferred: R3F component vitest smoke test (Canvas + Text + reduced-motion fallback render). Mock-heavy; defer.
+- B5 deferred: Playwright Lighthouse smoke. Production smoke 200 OK at B2 ship time; Vercel auto-deploy from main + monitor.
+
+**Affected.** HEAD `7bbecfb` on `main`. CI green per push verified across A1-A5b + B0 + B1 (B2 in_progress at write time, expected green; binary-equivalent on canned path). Production `/` serves the new 3D hero. Total wave-46 mega-arc commit count: ~70+ across the original arc + this session's 9 Phase A/B commits.
+
+**Cross-refs:**
+- D-058 wave-46 mega-arc plan-entry
+- D-060 wave-46 session A close-out
+- D-061 wave-46 session B Phase 8+9 close-out
+- D-062 wave-46 Phase 7.6 NotebookLM hover-audio shipped
+- D-063 (this) wave-46 Phase A removals + Phase B R3F killshot
+- `feedback_galaxy_ambition_no_deferrals.md` (load-bearing for the no-restraint plan)
+- `feedback_conceptual_stack_vs_shipped_stack.md` (Bob removal honesty-tier consistency)
+- `feedback_propagation_full_repo_sweep.md` (A5 24+ surface Bob sweep)
+- `feedback_nextjs16_dynamic_ssr_false_client_only.md` (Shell wrapper pattern)
+
+---
+
 ## 2026-05-26 D-062: Wave-46 Phase 7.6 NotebookLM hover-audio MP3 shipped on /judges COA-gate panel
 
 **Decision.** First panel hover-audio asset (`coa-gate.mp3`) shipped at commit 378c6db. Generated by Stephen via Google NotebookLM Audio Overview using the canonical prompt locked in the wave-46 plan. Brief format, Default length, narrowly scoped to the COA-parameterized simultaneity gate (Differentiator #2). Two sources fed to NotebookLM: `README.md` + `paper/apex-neurips-workshop-2026.md` per the `github.com/StephenSook/apex/blob/main/...` URLs.
