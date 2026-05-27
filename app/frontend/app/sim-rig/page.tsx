@@ -60,6 +60,53 @@ export default function SimRigPage() {
           <p className="font-mono text-xs text-muted">
             Adaptive hand-controls demo · GT4 sprint-series setup · circuit-agnostic synthetic layout.
           </p>
+          <div className="mt-8 flex flex-col gap-3" aria-labelledby="dataset-selector-title">
+            <p
+              id="dataset-selector-title"
+              className="font-mono text-[11px] uppercase tracking-wider text-muted"
+            >
+              FastF1 dataset selector · wave-47 G5 ship · M3-V11 swap-point
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {[
+                { id: "synthetic-gt4", label: "Synthetic GT4 (default)", live: true },
+                { id: "hamilton-bahrain-2024-q", label: "Hamilton · Bahrain 2024 Q", live: false },
+                { id: "leclerc-monza-2024-q", label: "Leclerc · Monza 2024 Q", live: false },
+                { id: "verstappen-silverstone-2024-r", label: "Verstappen · Silverstone 2024 R", live: false },
+                { id: "sainz-cota-2024-q", label: "Sainz · COTA 2024 Q", live: false },
+                { id: "russell-spa-2024-r", label: "Russell · Spa 2024 R", live: false },
+              ].map((dataset) => (
+                <button
+                  key={dataset.id}
+                  type="button"
+                  disabled={!dataset.live}
+                  aria-pressed={dataset.live}
+                  aria-label={
+                    dataset.live
+                      ? `${dataset.label} dataset is currently active`
+                      : `${dataset.label} dataset pending Vinh M3-V11 .npz fixture deploy`
+                  }
+                  className={`rounded-sm border px-3 py-2 font-mono text-[10px] uppercase tracking-wider transition-colors ${
+                    dataset.live
+                      ? "border-racing-green bg-racing-green text-paper"
+                      : "border-rule bg-paper-warm text-muted cursor-not-allowed"
+                  }`}
+                >
+                  {dataset.label}
+                  {!dataset.live && (
+                    <span aria-hidden="true" className="ml-2 opacity-60">
+                      [pending]
+                    </span>
+                  )}
+                </button>
+              ))}
+            </div>
+            <p className="font-mono text-[10px] text-muted">
+              Selector wired client-side; live FastF1 .npz fixture delivery + per-dataset
+              stream endpoint land via Vinh M3-V11 backend deploy. Synthetic GT4 default
+              ships canned + renders the demo flow end-to-end without backend.
+            </p>
+          </div>
         </div>
       </header>
 
