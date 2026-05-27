@@ -326,6 +326,12 @@ export default function RacingLineHero() {
         </g>
 
         <g className="racing-car-motion" aria-hidden="true">
+          {/* Wave-47 cascade-C #224 close per Codex MED: prefers-reduced-
+            motion CSS sets display:none on the parent group but SMIL
+            animateMotion elements continue firing in the DOM until
+            explicitly removed. The CSS gates motion VISUALLY but burns
+            CPU + battery silently. The static-car group below renders
+            instead under reduced-motion via the same CSS toggle. */}
           <polygon
             points="-18,-11 22,0 -18,11 -10,0"
             fill="#C1492C"
@@ -402,10 +408,10 @@ export default function RacingLineHero() {
             <text
               x={18}
               y={0}
-              fontSize={12}
+              fontSize={14}
               letterSpacing={3}
-              fill="#D9A441"
-              opacity={0.92}
+              fill="#0F1410"
+              opacity={1}
             >
               COA-GATE
             </text>

@@ -17,7 +17,7 @@
  * `feedback_llm_output_compliance_scrubber.md`.
  */
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import type { CoachCodeResponse } from "../../shared/types";
 
@@ -50,24 +50,48 @@ export default function CoachCodePanel() {
   const [code, setCode] = useState(SUGGESTED_CODE);
   const [question, setQuestion] = useState(SUGGESTED_QUESTION);
   const [state, setState] = useState<PanelState>({ status: "idle" });
+  // Wave-47 cascade-C #223 close per Codex HIGH: AbortController guards
+  // the concurrent-submit race where a slower older fetch could set
+  // 'ready' state after a newer submit completes. On resubmit, cancel
+  // any in-flight prior request via abort() before issuing the new one.
+  // The activeRequestIdRef monotonically increments per submit so the
+  // resolved-handler can bail when the request-id no longer matches the
+  // currently-active submission.
+  const abortRef = useRef<AbortController | null>(null);
+  const activeRequestIdRef = useRef<number>(0);
+
+  useEffect(() => {
+    return () => {
+      abortRef.current?.abort();
+    };
+  }, []);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (code.trim().length === 0 || question.trim().length === 0) return;
+    abortRef.current?.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
+    const myRequestId = ++activeRequestIdRef.current;
     setState({ status: "submitting" });
     try {
       const res = await fetch("/api/coach-code", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ code, question }),
+        signal: controller.signal,
       });
+      if (myRequestId !== activeRequestIdRef.current) return;
       if (!res.ok) {
         const errBody = (await res.json().catch(() => ({}))) as { error?: string; message?: string };
         throw new Error(errBody.message ?? `HTTP ${res.status}`);
       }
       const payload = (await res.json()) as CoachCodeResponse;
+      if (myRequestId !== activeRequestIdRef.current) return;
       setState({ status: "ready", payload });
     } catch (err) {
+      if (myRequestId !== activeRequestIdRef.current) return;
+      if (err instanceof Error && err.name === "AbortError") return;
       setState({
         status: "error",
         message: err instanceof Error ? err.message : String(err),

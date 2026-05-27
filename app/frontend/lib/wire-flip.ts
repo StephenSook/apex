@@ -72,7 +72,14 @@ export async function runWireFlipGET<TResponse extends EnginePayload>(
       signal: AbortSignal.timeout(3000),
     });
     if (!upstream.ok) {
-      console.warn(
+      // Wave-47 cascade-C #238 close per silent-failure-hunter H3: when
+      // the operator INTENDED real-backend (env flag set + base URL set)
+      // and upstream is 5xx, treat as a real bug + log at console.error
+      // so Vercel runtime log filters at error level surface it. 4xx is
+      // upstream validation; log at warn.
+      const isUpstreamBug = upstream.status >= 500;
+      const logger = isUpstreamBug ? console.error : console.warn;
+      logger(
         `[apex/${routeId}] upstream ${upstream.status} ${upstream.statusText}; serving canned-fallback`,
       );
       return cannedPayload;
@@ -84,7 +91,12 @@ export async function runWireFlipGET<TResponse extends EnginePayload>(
       compute_ms: Math.round(performance.now() - t0),
     };
   } catch (err) {
-    console.warn(`[apex/${routeId}] real-backend fetch failed; serving canned-fallback`, err);
+    // Wave-47 cascade-C #238 close: operator intent (env flag set + base
+    // URL set) + fetch threw = real backend-unreachable bug. Log error
+    // so Vercel filters at error level surface the outage. The earlier
+    // env-flag-off / base-URL-null branches return cannedPayload before
+    // reaching this catch, so this path only fires under operator intent.
+    console.error(`[apex/${routeId}] real-backend fetch failed; serving canned-fallback`, err);
     return cannedPayload;
   }
 }
@@ -115,7 +127,9 @@ export async function runWireFlipPOST<TBody, TResponse extends EnginePayload>(
       signal: AbortSignal.timeout(3000),
     });
     if (!upstream.ok) {
-      console.warn(
+      const isUpstreamBug = upstream.status >= 500;
+      const logger = isUpstreamBug ? console.error : console.warn;
+      logger(
         `[apex/${routeId}] upstream ${upstream.status} ${upstream.statusText}; serving canned-fallback`,
       );
       return cannedPayload;
@@ -127,7 +141,7 @@ export async function runWireFlipPOST<TBody, TResponse extends EnginePayload>(
       compute_ms: Math.round(performance.now() - t0),
     };
   } catch (err) {
-    console.warn(`[apex/${routeId}] real-backend fetch failed; serving canned-fallback`, err);
+    console.error(`[apex/${routeId}] real-backend fetch failed; serving canned-fallback`, err);
     return cannedPayload;
   }
 }

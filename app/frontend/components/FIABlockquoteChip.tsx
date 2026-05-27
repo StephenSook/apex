@@ -57,9 +57,9 @@ export default function FIABlockquoteChip({
         </p>
 
         <div className="flex flex-wrap items-center gap-2">
-          <span className="apex-eyebrow inline-flex items-center gap-2 rounded-sm bg-accent px-3 py-1.5 text-paper">
+          <span className="inline-flex items-center gap-2 rounded-sm bg-accent px-3.5 py-2 font-mono text-[13px] font-semibold uppercase tracking-[0.16em] text-paper">
             <span aria-hidden="true">FIA Appendix L</span>
-            <span aria-hidden="true" className="opacity-60">·</span>
+            <span aria-hidden="true" className="opacity-70">·</span>
             <span>{revision}</span>
           </span>
 
