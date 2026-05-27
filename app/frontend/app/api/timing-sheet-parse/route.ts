@@ -36,9 +36,59 @@ import type {
   TimingSheetParsedLaps,
 } from "../../../../shared/types";
 import { getVinhBackendBaseUrl, shouldUseRealBackend } from "../../../lib/env";
+import {
+  parseTimingSheetViaReplicate,
+  replicateGraniteVisionAvailable,
+} from "../../../lib/replicate-granite-vision";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+
+// wave-48 Tier-2: extend the route to accept image uploads (PNG / JPG)
+// when REPLICATE_API_TOKEN env is set. Routes the image through
+// IBM Granite Vision 4.1 4B via Replicate + parses the JSON output
+// into the canonical TimingSheetParsedLaps shape. PDF uploads still
+// fall through to the canned-fixture path (Replicate Granite Vision
+// accepts image inputs only; PDF-to-image conversion requires a
+// Node-runtime native dep that does not ship cleanly on Vercel).
+
+const SUPPORTED_IMAGE_TYPES = new Set([
+  "image/png",
+  "image/jpeg",
+  "image/jpg",
+]);
+
+async function parseViaReplicateIfImage(
+  file: File,
+  t0: number,
+): Promise<TimingSheetParsedLaps | null> {
+  if (replicateGraniteVisionAvailable().state === "unavailable") return null;
+  const contentType = file.type.toLowerCase();
+  if (!SUPPORTED_IMAGE_TYPES.has(contentType)) return null;
+  try {
+    const arrayBuffer = await file.arrayBuffer();
+    const bytes = new Uint8Array(arrayBuffer);
+    const replicateType: "image/png" | "image/jpeg" =
+      contentType === "image/png" ? "image/png" : "image/jpeg";
+    const laps = await parseTimingSheetViaReplicate(bytes, replicateType);
+    if (laps.length === 0) {
+      console.warn("[apex/timing-sheet-parse] Replicate returned empty laps");
+      return null;
+    }
+    return {
+      source_filename: file.name,
+      parser: "granite-vision-4.1-4b",
+      parse_ms: Math.round(performance.now() - t0),
+      laps: laps satisfies ReadonlyArray<TimingSheetLap>,
+    };
+  } catch (err) {
+    console.warn(
+      "[apex/timing-sheet-parse] Replicate Granite Vision failed; falling back",
+      err,
+    );
+    return null;
+  }
+}
 
 // Wave-46 D-058 Phase 4.2: when `NEXT_PUBLIC_USE_REAL_TIMING_SHEET` is
 // "1" + `NEXT_PUBLIC_VINH_BACKEND_BASE_URL` is set, forward the
@@ -155,14 +205,18 @@ export async function POST(req: NextRequest): Promise<Response> {
       { status: 413 },
     );
   }
-  // File type sanity check: most browsers tag uploaded PDFs as
-  // application/pdf. Accept missing type for permissive UX but reject
-  // explicit non-PDF types since the parser surface assumes PDF input.
-  if (file.type && file.type !== "application/pdf") {
+  // Wave-48: accept PDF (existing canned-fixture path) OR image
+  // (PNG/JPG, new Replicate Granite Vision path) so a judge can upload
+  // a real timing-sheet screenshot + see actual Granite Vision parsing.
+  // Reject other types as before.
+  const fileTypeLower = (file.type ?? "").toLowerCase();
+  const isPdf = !fileTypeLower || fileTypeLower === "application/pdf";
+  const isImage = SUPPORTED_IMAGE_TYPES.has(fileTypeLower);
+  if (!isPdf && !isImage) {
     return Response.json(
       {
-        error: "invalid_pdf_type",
-        message: `Expected file.type application/pdf; got ${file.type}.`,
+        error: "invalid_file_type",
+        message: `Expected application/pdf or image/png or image/jpeg; got ${file.type}.`,
       },
       { status: 415 },
     );
@@ -174,9 +228,15 @@ export async function POST(req: NextRequest): Promise<Response> {
     parse_ms: Math.round(performance.now() - t0),
     laps: CANNED_LAPS,
   };
+  // Priority order: Vinh hosted backend (USE_REAL_TIMING_SHEET=1) >
+  // Replicate Granite Vision for image uploads when token present >
+  // canned-fixture stub.
   if (shouldUseRealBackend("USE_REAL_TIMING_SHEET")) {
     const real = await fetchRealBackend(file, t0);
     if (real !== null) payload = real;
+  } else if (isImage) {
+    const replicateResult = await parseViaReplicateIfImage(file, t0);
+    if (replicateResult !== null) payload = replicateResult;
   }
   return Response.json(payload, {
     status: 200,
