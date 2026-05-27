@@ -24,7 +24,7 @@ const SAFETY_CHECKS: ReadonlyArray<{
   {
     check: "CAN signal plausibility check",
     apex_invariant:
-      "Telemetry intake validates every channel against the canonical 14-channel shape + range bounds in shapes.py before any forecast call.",
+      "Telemetry intake validates every channel against the canonical 14-channel shape contract in shared/contracts/shapes.py before any forecast call.",
   },
   {
     check: "Sensor disagreement handling",
@@ -49,7 +49,7 @@ const SAFETY_CHECKS: ReadonlyArray<{
   {
     check: "State-machine review for unintended transitions",
     apex_invariant:
-      "Discriminated-union state machines on the client (CoachVoicePlayback, CoachCodePanel, AICopilotChat, UploadTelemetryPanel) make impossible states a TypeScript compile error; no defensive runtime branch needed.",
+      "Discriminated-union state machines on the client (CoachVoicePlayback, CoachCodePanel, AICopilotChat, TelemetryUploadPanel) make impossible states a TypeScript compile error; no defensive runtime branch needed.",
   },
   {
     check: "Failure Mode and Effects Analysis (FMEA) on driver-input paths",
@@ -74,15 +74,15 @@ export default function SafetyAlignmentPanel() {
           ISO 26262 vocabulary set, line by line.
         </h2>
         <p className="mt-3 max-w-3xl text-base leading-relaxed text-ink-soft">
-          Adaptive-control engineering teams in motorsport publicly cite ISO 26262 as the
-          framework they apply when reviewing brake-by-wire interfaces, CAN gateway controllers,
-          and adaptive throttle / brake / clutch logic. APEX maps its coaching-surface
-          invariants against the standard&rsquo;s vocabulary set so the things a functional-
-          safety reviewer flags are the same things APEX&rsquo;s Guardian + scrubber + bounded
-          retry-loop + AbortSignal threading address by construction. We do not certify APEX
-          against ISO 26262; we claim that the vocabulary set of the standard is the right
-          anchor for the coaching-surface invariants we already enforce. Detailed treatment in
-          paper section 3.8.
+          Adaptive-control engineering teams in motorsport cite ISO 26262 in engineering
+          correspondence as the framework they apply when reviewing brake-by-wire interfaces,
+          CAN gateway controllers, and adaptive throttle / brake / clutch logic. APEX maps
+          its coaching-surface invariants against the standard&rsquo;s vocabulary set so the
+          things a functional-safety reviewer flags are the same things APEX&rsquo;s Guardian
+          + scrubber + bounded retry-loop + AbortSignal threading address by construction. We
+          do not certify APEX against ISO 26262; we claim that the vocabulary set of the
+          standard is the right anchor for the coaching-surface invariants we already enforce.
+          Detailed treatment in paper section 3.8.
         </p>
         <dl className="mt-8 grid gap-4 sm:grid-cols-2">
           {SAFETY_CHECKS.map((entry) => (
