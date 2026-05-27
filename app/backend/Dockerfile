@@ -68,6 +68,7 @@ RUN pip install --no-cache-dir torch==2.5.1 --index-url https://download.pytorch
 RUN grep -vE "^(torch==|llama_cpp_python==|fastf1==|opentelemetry-)" requirements.txt > requirements.lean.txt \
  && pip install --no-cache-dir -r requirements.lean.txt \
  && pip install --no-cache-dir \
+      fastapi \
       "uvicorn[standard]" \
       python-multipart \
       structlog
