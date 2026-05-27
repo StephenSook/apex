@@ -80,7 +80,7 @@
 
 | Time | Visual | Audio (VO) | On-screen overlay | Cut |
 |------|--------|-----------|-------------------|-----|
-| 2:30 - 2:38 | Cut to the eight-tool IBM Granite stack grid, 4x2 layout, each cell a badge with the model name + role. | "Eight IBM Granite tools. All load-bearing. Granite-Docling, Granite Vision, Granite TimeSeries TTM, Granite 4.1 8B Instruct, Granite Guardian, Langflow, Docling library, IBM Bob as the build accelerator per the Scuderia Ferrari precedent." | Each tool badge highlights once (200 ms each) as it is named | Stagger highlight |
+| 2:30 - 2:38 | Cut to the fourteen-tool IBM Granite stack grid; each cell a badge with the model name + honesty-tier pill. | "Fourteen IBM Granite tools across a per-tool honesty ladder. Granite-Docling, Granite Vision, Granite TimeSeries TTM, Granite FlowState, IBM TSPulse, Granite Embedding R2, Granite Guardian, Granite 4.1 8B Instruct, Granite 4.1 3B chat-routing, Granite Speech 4.1 2B-Plus, Granite 4.0 Nano WebGPU edge, LangGraph plus MCP plus ContextForge orchestration, Langflow as the exported graph, Docling library plus Mellea as build-time accelerators." | Each tool badge highlights once (100 ms each) as it is named | Stagger highlight |
 | 2:38 - 2:44 | Cut to a two-card team panel (Stephen + Vinh) + a Day-N-of-12 indicator chip in the corner. | "Stephen Sookra and Vinh Le. Kennesaw State University. Twelve days. Public from Day 1." | Day-N chip: `Day 12 of 12` (final-cut day-of-recording) | Hard cut |
 | 2:44 - 2:50 | Audience-aggregate text reveal centered on cream paper. | "The audience: adaptive racers, veteran-team drivers, and grassroots competitors across UK, US, and EU championship programmes." | Three Fraunces italic lines, top-aligned reveal | Soft cross-fade |
 

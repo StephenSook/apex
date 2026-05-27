@@ -51,10 +51,9 @@
 - Granite 4.0 Nano 350M as the in-browser WebGPU edge model per D-019 item 1 + D-021
 - LangGraph + Granite MCP Gateway + ContextForge for the orchestration runtime per D-017 G7 + D-054 (Langflow retained as the export-graph artifact)
 - Mellea Instruct-Validate-Repair critic loop on the narrator per D-058
-- IBM Bob as the build accelerator
 
 **Evidence surfaces:**
-- /judges page Stack tab enumerates all 15 tools with per-tool layer mapping
+- /judges page Stack tab enumerates all 14 tools with per-tool layer mapping
 - README + paper §3.6 cite each tool with D-### decision-log anchor
 - watsonx.ai bonus path lands if Day 10-11 runway permits per `docs/vinh-phase-1-handoff.md` Q2 decision
 

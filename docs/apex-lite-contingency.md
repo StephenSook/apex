@@ -43,7 +43,6 @@ If ANY of the above: Stephen invokes APEX Lite per the rest of this document. Di
 | Guardian text audit | Granite Guardian 4.1 BYOC custom rules | **Pure Python regex + heuristic audit** | Lite audit checks for "throttle * brake > 0 when COA forbids," "lateral G exceeds friction limit," "speed violates kinematic step." Returns same JSON shape as full Guardian. |
 | Narrator | Granite 4.1 8B Instruct via watsonx | **Single watsonx.ai API call (Stephen's API key)** | Stephen invokes Granite Instruct as a hosted endpoint (no local hardware). Lite stays IBM-stack-pure. |
 | Langflow visible orchestration | Live Langflow graph export | **Static Langflow graph screenshot** | Designed once, used as deck slide + landing page diagram. |
-| IBM Bob | Bob session logs in `bob-sessions/` | Same (Stephen uses Bob to write Lite code) | No change |
 
 **Net architectural delta:** TTM → seasonal-naive baseline, cvxpylayers QP → NumPy validator, Granite Guardian local model → hosted-API or rule-based audit. Three substitutions. Pitch claims must be honestly updated.
 
@@ -55,7 +54,7 @@ The 3-min pitch script (`docs/3-min-pitch-script.md`) needs targeted edits if Li
 
 - **Beat 4 (Architecture):** drop "frozen Granite TimeSeries TTM forecaster" claim; replace with "deterministic baseline forecaster wrapped in the same physics-projection layer that would constrain a foundation model when added." Honest about the bait-and-switch.
 - **Beat 5 (COA killshot):** unchanged. COA-parameterized brake-throttle simultaneity is the architectural innovation, independent of TTM.
-- **Beat 7 (Stack count):** "Six IBM tools, all load-bearing" instead of "Eight." Drop Granite TimeSeries TTM + Granite Guardian local-model claims. Keep Granite-Docling (or canned-JSON fallback), Granite Vision (or canned-CSV fallback), Granite 4.1 8B Instruct (hosted API), Langflow (static screenshot), Docling library, IBM Bob.
+- **Beat 7 (Stack count):** "Five IBM tools, all load-bearing" instead of the full fourteen. Drop Granite TimeSeries TTM + Granite Guardian local-model claims. Keep Granite-Docling (or canned-JSON fallback), Granite Vision (or canned-CSV fallback), Granite 4.1 8B Instruct (hosted API), Langflow (static screenshot), Docling library.
 - **NeurIPS paper draft (S10 in Stretch):** cut. No novel TSFM contribution if TTM is not used.
 
 ---

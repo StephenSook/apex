@@ -39,7 +39,6 @@ debrief text    │  │                                  │
                 │  │                                  │
                 │  └─ Langflow (visible orchestration)─┘
                 │
-                └─ IBM Bob (build accelerator, off-loop)
 ```
 
 Live demo runs the bottom four steps in <= 60s on RTX 4060 (post-onboarding loop, document parsing cached).
@@ -223,10 +222,6 @@ Emits:
 ### 7. Langflow visible orchestration (`app/backend/apex/langflow/graph.json`)
 
 Exports the full pipeline as a Langflow graph for the demo. Screenshot in the deck (Day 8). The graph is the demo's visual proof of agentic orchestration.
-
-### 8. IBM Bob (off-loop, build-time)
-
-Drives codebase development per the IBM × Scuderia Ferrari case-study precedent. Bob sessions committed to `bob-sessions/` directory.
 
 ---
 
