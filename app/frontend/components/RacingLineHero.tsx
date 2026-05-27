@@ -63,9 +63,63 @@ export default function RacingLineHero() {
           0%, 100% { opacity: 0.85; }
           50% { opacity: 0.32; }
         }
-        @keyframes telemetry-bar-fill {
-          from { transform: scaleX(0); }
-          to { transform: scaleX(var(--bar-value)); }
+        @keyframes throttle-cycle {
+          0% { transform: scaleX(0.95); }
+          14% { transform: scaleX(0.82); }
+          28% { transform: scaleX(0.18); }
+          42% { transform: scaleX(0.08); }
+          54% { transform: scaleX(0.42); }
+          72% { transform: scaleX(0.78); }
+          88% { transform: scaleX(0.92); }
+          100% { transform: scaleX(0.95); }
+        }
+        @keyframes brake-cycle {
+          0% { transform: scaleX(0.06); }
+          14% { transform: scaleX(0.22); }
+          28% { transform: scaleX(0.88); }
+          42% { transform: scaleX(0.72); }
+          54% { transform: scaleX(0.34); }
+          72% { transform: scaleX(0.08); }
+          100% { transform: scaleX(0.06); }
+        }
+        @keyframes steer-cycle {
+          0% { transform: scaleX(0.10); }
+          22% { transform: scaleX(0.28); }
+          42% { transform: scaleX(0.82); }
+          54% { transform: scaleX(0.88); }
+          72% { transform: scaleX(0.46); }
+          100% { transform: scaleX(0.10); }
+        }
+        @keyframes throttle-spark {
+          0% { transform: translateX(266px); opacity: 0.9; }
+          14% { transform: translateX(230px); }
+          28% { transform: translateX(50px); opacity: 0.4; }
+          42% { transform: translateX(22px); opacity: 0.35; }
+          54% { transform: translateX(118px); opacity: 0.7; }
+          72% { transform: translateX(218px); opacity: 0.9; }
+          88% { transform: translateX(258px); }
+          100% { transform: translateX(266px); opacity: 0.9; }
+        }
+        @keyframes brake-spark {
+          0% { transform: translateX(17px); opacity: 0.4; }
+          14% { transform: translateX(62px); }
+          28% { transform: translateX(246px); opacity: 0.95; }
+          42% { transform: translateX(202px); }
+          54% { transform: translateX(96px); opacity: 0.6; }
+          72% { transform: translateX(22px); opacity: 0.35; }
+          100% { transform: translateX(17px); opacity: 0.4; }
+        }
+        @keyframes steer-spark {
+          0% { transform: translateX(28px); opacity: 0.4; }
+          22% { transform: translateX(78px); }
+          42% { transform: translateX(230px); opacity: 0.9; }
+          54% { transform: translateX(246px); opacity: 1; }
+          72% { transform: translateX(128px); opacity: 0.65; }
+          100% { transform: translateX(28px); opacity: 0.4; }
+        }
+        @keyframes spark-breath {
+          0%, 100% { filter: drop-shadow(0 0 2px currentColor); }
+          50% { filter: drop-shadow(0 0 8px currentColor); }
         }
         .hero-line {
           stroke-dasharray: ${LINE_LENGTH};
@@ -87,11 +141,39 @@ export default function RacingLineHero() {
         .hero-telemetry-bar {
           transform-origin: left center;
           transform: scaleX(0);
-          animation: telemetry-bar-fill 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+          will-change: transform;
         }
-        .hero-telemetry-throttle { --bar-value: 0.82; animation-delay: 1.2s; }
-        .hero-telemetry-brake { --bar-value: 0.46; animation-delay: 1.4s; }
-        .hero-telemetry-steering { --bar-value: 0.68; animation-delay: 1.6s; }
+        .hero-telemetry-throttle {
+          animation: throttle-cycle 7s ease-in-out 1.2s infinite;
+        }
+        .hero-telemetry-brake {
+          animation: brake-cycle 7s ease-in-out 1.2s infinite;
+        }
+        .hero-telemetry-steering {
+          animation: steer-cycle 7s ease-in-out 1.2s infinite;
+        }
+        .hero-telemetry-spark {
+          will-change: transform, opacity;
+          transform-origin: 0 0;
+        }
+        .hero-telemetry-throttle-spark {
+          color: #0A2818;
+          animation:
+            throttle-spark 7s ease-in-out 1.2s infinite,
+            spark-breath 1.6s ease-in-out infinite;
+        }
+        .hero-telemetry-brake-spark {
+          color: #C1492C;
+          animation:
+            brake-spark 7s ease-in-out 1.2s infinite,
+            spark-breath 1.6s ease-in-out infinite;
+        }
+        .hero-telemetry-steering-spark {
+          color: #D9A441;
+          animation:
+            steer-spark 7s ease-in-out 1.2s infinite,
+            spark-breath 1.6s ease-in-out infinite;
+        }
         @media (prefers-reduced-motion: reduce) {
           .hero-line {
             stroke-dasharray: none !important;
@@ -105,9 +187,32 @@ export default function RacingLineHero() {
             animation: none !important;
             opacity: 1 !important;
           }
-          .hero-telemetry-bar {
+          .hero-telemetry-throttle {
             animation: none !important;
-            transform: scaleX(var(--bar-value)) !important;
+            transform: scaleX(0.82) !important;
+          }
+          .hero-telemetry-brake {
+            animation: none !important;
+            transform: scaleX(0.46) !important;
+          }
+          .hero-telemetry-steering {
+            animation: none !important;
+            transform: scaleX(0.68) !important;
+          }
+          .hero-telemetry-throttle-spark {
+            animation: none !important;
+            transform: translateX(229px) !important;
+            opacity: 0.9 !important;
+          }
+          .hero-telemetry-brake-spark {
+            animation: none !important;
+            transform: translateX(128px) !important;
+            opacity: 0.9 !important;
+          }
+          .hero-telemetry-steering-spark {
+            animation: none !important;
+            transform: translateX(190px) !important;
+            opacity: 0.9 !important;
           }
           .racing-car-motion {
             display: none !important;
@@ -347,14 +452,22 @@ export default function RacingLineHero() {
             >
               THROTTLE
             </text>
-            <rect x={130} y={-22} width={280} height={12} fill="#0F1410" opacity={0.08} />
+            <rect x={130} y={-22} width={280} height={12} fill="#0F1410" opacity={0.08} rx={2} />
             <rect
               x={130}
               y={-22}
               width={280}
               height={12}
               fill="#0A2818"
+              rx={2}
               className="hero-telemetry-bar hero-telemetry-throttle"
+            />
+            <circle
+              cx={130}
+              cy={-16}
+              r={5}
+              fill="#0A2818"
+              className="hero-telemetry-spark hero-telemetry-throttle-spark"
             />
             <text
               x={420}
@@ -366,7 +479,7 @@ export default function RacingLineHero() {
               opacity={0.78}
               textAnchor="start"
             >
-              82%
+              live
             </text>
           </g>
 
@@ -382,14 +495,22 @@ export default function RacingLineHero() {
             >
               BRAKE
             </text>
-            <rect x={130} y={-22} width={280} height={12} fill="#0F1410" opacity={0.08} />
+            <rect x={130} y={-22} width={280} height={12} fill="#0F1410" opacity={0.08} rx={2} />
             <rect
               x={130}
               y={-22}
               width={280}
               height={12}
               fill="#C1492C"
+              rx={2}
               className="hero-telemetry-bar hero-telemetry-brake"
+            />
+            <circle
+              cx={130}
+              cy={-16}
+              r={5}
+              fill="#C1492C"
+              className="hero-telemetry-spark hero-telemetry-brake-spark"
             />
             <text
               x={420}
@@ -401,7 +522,7 @@ export default function RacingLineHero() {
               opacity={0.78}
               textAnchor="start"
             >
-              46%
+              live
             </text>
           </g>
 
@@ -417,14 +538,22 @@ export default function RacingLineHero() {
             >
               STEER
             </text>
-            <rect x={130} y={-22} width={280} height={12} fill="#0F1410" opacity={0.08} />
+            <rect x={130} y={-22} width={280} height={12} fill="#0F1410" opacity={0.08} rx={2} />
             <rect
               x={130}
               y={-22}
               width={280}
               height={12}
               fill="#D9A441"
+              rx={2}
               className="hero-telemetry-bar hero-telemetry-steering"
+            />
+            <circle
+              cx={130}
+              cy={-16}
+              r={5}
+              fill="#D9A441"
+              className="hero-telemetry-spark hero-telemetry-steering-spark"
             />
             <text
               x={420}
@@ -436,7 +565,7 @@ export default function RacingLineHero() {
               opacity={0.78}
               textAnchor="start"
             >
-              68%
+              live
             </text>
           </g>
         </g>
