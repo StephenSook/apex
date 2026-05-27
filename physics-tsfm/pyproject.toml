@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "physics-tsfm"
+version = "0.1.0a1"
+description = "Physics-projected forecasts for IBM Granite TimeSeries TTM. APEX-Bench v0.0.1-preview supporting library."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Apache-2.0" }
+authors = [
+    { name = "Vinh Le", email = "vinhhle24@gmail.com" },
+    { name = "Stephen Sookra", email = "stephensookra@gmail.com" },
+]
+keywords = [
+    "time-series",
+    "forecasting",
+    "physics",
+    "differentiable-optimization",
+    "ibm-granite",
+    "cvxpylayers",
+    "apex-bench",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    "numpy>=1.26",
+]
+
+[project.optional-dependencies]
+torch = ["torch>=2.0", "cvxpy>=1.5", "cvxpylayers>=0.1.6"]
+ttm = ["transformers>=4.50", "granite-tsfm>=0.2.16"]
+dev = ["pytest>=8.0"]
+
+[project.urls]
+Homepage = "https://github.com/StephenSook/apex"
+Repository = "https://github.com/StephenSook/apex"
+Issues = "https://github.com/StephenSook/apex/issues"
+"Decision Log" = "https://github.com/StephenSook/apex/blob/main/docs/decision-log.md"
+"NeurIPS Workshop Paper" = "https://github.com/StephenSook/apex/blob/main/paper/apex-neurips-workshop-2026.md"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["physics_tsfm*"]
