@@ -17,6 +17,7 @@ import EngineAgnosticByteEqualityDemo from "../../components/EngineAgnosticByteE
 import FIABlockquoteChip from "../../components/FIABlockquoteChip";
 import NotebookLMHoverAudio from "../../components/NotebookLMHoverAudio";
 import RealtimeCOADiffPanel from "../../components/RealtimeCOADiffPanel";
+import SafetyAlignmentPanel from "../../components/SafetyAlignmentPanel";
 import JudgesGalaxyMovesShell from "../../components/JudgesGalaxyMovesShell";
 import JudgesEdgePlaneShell from "../../components/JudgesEdgePlaneShell";
 import LangGraphRuntimePanel from "../../components/LangGraphRuntimePanel";
@@ -355,6 +356,8 @@ export default function JudgesPage() {
           </p>
         </div>
       </section>
+
+      <SafetyAlignmentPanel />
 
       <section
         id="physics-tiers"
