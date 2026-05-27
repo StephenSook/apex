@@ -351,6 +351,29 @@ export interface Citation {
   readonly coa_section: string;
 }
 
+/**
+ * Cascade-#49 wave-46 OVERRIDE-steal #2 + #4 (per
+ * `project_apex_override_competitor.md` steal-list items #2 + #4,
+ * lifted from OVERRIDE session-debrief surface where each coaching
+ * recommendation carries a 4-step reasoning chain shown as an
+ * expandable beneath the headline insight).
+ *
+ * Optional on `CornerInsight`. When present, the CoachingReport
+ * surface renders the chain as a native `<details>` expandable so
+ * judges can drill from "Sector 2 Apex, +0.31 s vs reference" down
+ * to the cause/consequences/recommendation/evidence chain that
+ * produced the headline number.
+ *
+ * Backwards-compat: existing fixtures + decoders that omit the chain
+ * still type-check + render correctly (the expander collapses to
+ * nothing when chain is undefined or empty).
+ */
+export interface ReasoningChainStep {
+  readonly step: "cause" | "consequences" | "recommendation" | "evidence";
+  readonly label: string;
+  readonly content: string;
+}
+
 export interface CornerInsight {
   readonly name: string;
   readonly sector: 1 | 2 | 3;
@@ -358,6 +381,16 @@ export interface CornerInsight {
   readonly current_delta_s: number;
   readonly recommendation: string;
   readonly citations: ReadonlyArray<Citation>;
+  /**
+   * Cascade-#49 wave-46 OVERRIDE-steal: per-recommendation 4-step
+   * reasoning chain. Optional; renders as `<details>` expander when
+   * present. Each step has a `step` tag (one of "cause" |
+   * "consequences" | "recommendation" | "evidence") + a display
+   * `label` (e.g. "Why this matters") + `content` prose. The four
+   * steps are NOT enforced by type ordering; the consumer renders
+   * them in arrival order so backend can ship 1-4 steps as available.
+   */
+  readonly reasoning_chain?: ReadonlyArray<ReasoningChainStep>;
 }
 
 export interface TuningDelta {

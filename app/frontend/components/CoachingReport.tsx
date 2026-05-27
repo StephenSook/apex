@@ -145,10 +145,21 @@ function CornerList({ corners }: { corners: ReadonlyArray<CornerInsight> }) {
   );
 }
 
+const REASONING_STEP_DOT_TONE: Record<
+  "cause" | "consequences" | "recommendation" | "evidence",
+  string
+> = {
+  cause: "bg-accent",
+  consequences: "bg-amber",
+  recommendation: "bg-racing-green",
+  evidence: "bg-ink",
+};
+
 function CornerCard({ corner }: { corner: CornerInsight }) {
   const slower = corner.current_delta_s > 0;
   const deltaLabel = `${slower ? "+" : ""}${corner.current_delta_s.toFixed(2)} s`;
   const deltaTone = slower ? "text-accent" : "text-racing-green";
+  const chain = corner.reasoning_chain ?? [];
 
   return (
     <article className="rounded-sm border border-rule bg-paper-warm p-5">
@@ -168,6 +179,30 @@ function CornerCard({ corner }: { corner: CornerInsight }) {
             </li>
           ))}
         </ul>
+      )}
+      {chain.length > 0 && (
+        <details className="group mt-4 border-t border-rule pt-3">
+          <summary className="cursor-pointer list-none font-mono text-[11px] uppercase tracking-wider text-racing-green hover:text-ink focus-visible:text-ink">
+            <span aria-hidden="true" className="inline-block group-open:rotate-90 transition-transform">&rsaquo;</span>{" "}
+            Reasoning chain ({chain.length} {chain.length === 1 ? "step" : "steps"})
+          </summary>
+          <ol className="mt-3 flex flex-col gap-3" aria-label="Reasoning chain steps">
+            {chain.map((step, idx) => (
+              <li key={`${step.step}-${idx}`} className="flex gap-3">
+                <span
+                  aria-hidden="true"
+                  className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${REASONING_STEP_DOT_TONE[step.step]}`}
+                />
+                <div className="flex flex-col gap-1">
+                  <span className="font-mono text-[10px] uppercase tracking-wider text-muted">
+                    {step.label}
+                  </span>
+                  <p className="text-sm leading-relaxed text-ink-soft">{step.content}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </details>
       )}
     </article>
   );
