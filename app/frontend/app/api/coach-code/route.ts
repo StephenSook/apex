@@ -188,11 +188,18 @@ export async function POST(req: NextRequest): Promise<Response> {
 
   try {
     for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
-      const completion = await openRouterChatCompletion({
-        messages,
-        max_tokens: 800,
-        temperature: 0.3,
-      });
+      // Wave-47 silent-failure-hunter B3 close: thread req.signal so
+      // OpenRouter call aborts when the client disconnects mid-retry-
+      // loop. Without this, a 3-call worst-case retry budget continues
+      // billing tokens after the consumer hangs up.
+      const completion = await openRouterChatCompletion(
+        {
+          messages,
+          max_tokens: 800,
+          temperature: 0.3,
+        },
+        { signal: req.signal },
+      );
       rawFeedback = completion.choices[0]?.message?.content ?? "";
       promptTokens += completion.usage?.prompt_tokens ?? 0;
       completionTokens += completion.usage?.completion_tokens ?? 0;
@@ -235,14 +242,42 @@ export async function POST(req: NextRequest): Promise<Response> {
       },
     });
   } catch (err) {
-    console.warn("[apex/coach-code] OpenRouter call failed; falling back to canned", err);
-    const payload = cannedPayload(t0);
+    // Wave-47 silent-failure-hunter B2 + Codex HIGH "retry-loop erases
+    // violation telemetry" close: discriminate the abort/HTTP/JSON/
+    // scrubber error class + surface via X-Apex-Coach-Code-Fallback-
+    // Reason header + preserve the retry telemetry accumulated before
+    // the error (retry_count + violation_summary from in-flight cycles).
+    // Without this preservation the consumer sees retry_count=0 +
+    // violation_summary=[[]] regardless of how many cycles ran before
+    // the throw, hiding the self-correction work from judges.
+    const errorClass = err instanceof Error ? err.constructor.name : typeof err;
+    const isAbort = err instanceof Error && err.name === "AbortError";
+    const reason = isAbort
+      ? "client-disconnect"
+      : err instanceof Error && /HTTP \d+/.test(err.message)
+        ? "openrouter-http-error"
+        : err instanceof Error && /JSON|parse/i.test(err.message)
+          ? "openrouter-payload-malformed"
+          : "openrouter-error";
+    console.warn(
+      `[apex/coach-code] ${errorClass} during retry-loop cycle ${retryCount + 1}; falling back to canned (reason=${reason})`,
+      err,
+    );
+    const canned = cannedPayload(t0);
+    const payload: CoachCodeResponse = {
+      ...canned,
+      retry_count: retryCount,
+      violation_summary:
+        violationSummary.length > 0 ? violationSummary : canned.violation_summary,
+    };
     return Response.json(payload, {
       status: 200,
       headers: {
         "Cache-Control": "no-store",
         "X-Apex-Coach-Code-Engine": payload.engine,
         "X-Apex-Coach-Code-Fallback": "openrouter-error",
+        "X-Apex-Coach-Code-Fallback-Reason": reason,
+        "X-Apex-Coach-Code-Retry-Count": String(retryCount),
       },
     });
   }

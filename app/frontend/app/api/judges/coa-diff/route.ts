@@ -1,8 +1,9 @@
 /**
  * Wave-46 Phase 3.5 NEW route. Returns paired COA-parameterized
  * simultaneity-gate verdicts (coa_overlap_flag = 1 vs = 0) on the same
- * physical event (Sarah Reynolds Donington 2026 stub: brake 0.42 MPa
- * residual + throttle 12 percent rising). Replaces COAGateToggle's
+ * physical event (slowest-corner brake-release micro-window on adaptive
+ * hand-controls: brake 0.42 MPa residual + throttle 12 percent rising).
+ * Replaces COAGateToggle's
  * pure-UI toggle decoration with a route-backed verdict-diff that flips
  * to V14 LangGraph runtime live verdicts when wave-46 Phase 3
  * NEXT_PUBLIC_USE_REAL_BACKEND_V14 + NEXT_PUBLIC_VINH_BACKEND_BASE_URL

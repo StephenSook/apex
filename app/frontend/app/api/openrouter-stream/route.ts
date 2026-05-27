@@ -167,13 +167,37 @@ export async function POST(request: Request): Promise<Response> {
     // Stub phase: respond with hard-coded coaching prose chunked over
     // ~1 second so the AICopilotChat hook sees realistic streaming
     // behavior + judges see the surface working without env-var setup.
-    const responseText = stubResponseFor(body.prompt);
+    // Wave-47 silent-failure-hunter B1 close: pipe stub through the
+    // HARD-COMPLIANCE scrubber unconditionally so future copy edits to
+    // stub text that introduce a numeric anchor cannot leak past the
+    // gate. The stubs are hand-authored + currently clean, but the
+    // defense-in-depth invariant is "every LLM-output route applies the
+    // scrubber server-side BEFORE client return"; stub is an LLM-output
+    // route from the consumer's perspective.
+    // Wave-47 silent-failure-hunter H2 close: surface stub-env-missing
+    // diagnostic header + console.warn so operators reading production
+    // logs see when API_KEY OR MODEL is left blank vs intentional stub
+    // phase.
+    const missingApiKey = apiKey === undefined || apiKey.trim() === "";
+    const missingModel = model === undefined || model.trim() === "";
+    const phase = missingApiKey || missingModel ? "stub-env-missing" : "stub-by-design";
+    if (missingApiKey || missingModel) {
+      console.warn(
+        `apex.openrouter-stream: env incomplete; serving stub (missing: ${
+          [missingApiKey ? "OPENROUTER_API_KEY" : "", missingModel ? "OPENROUTER_MODEL" : ""]
+            .filter(Boolean)
+            .join(", ")
+        })`,
+      );
+    }
+    const responseText = scrubInventedRegulatoryAnchors(stubResponseFor(body.prompt));
     const stream = streamStubResponse(responseText, request.signal);
     return new Response(stream, {
       status: 200,
       headers: {
         "Content-Type": "text/plain; charset=utf-8",
         "Cache-Control": "no-store",
+        "X-Apex-Openrouter-Phase": phase,
       },
     });
   }
@@ -227,7 +251,10 @@ export async function POST(request: Request): Promise<Response> {
     // to an empty prompt + a generic "API key not set" stub response that
     // misleads judges into thinking the env var is missing when the actual
     // failure was upstream.
-    const stubText = stubResponseFor(body.prompt);
+    // Wave-47 silent-failure-hunter B1 close: pipe error-fallback stub
+    // through the HARD-COMPLIANCE scrubber unconditionally (defense in
+    // depth; matches the !productionReady stub path treatment above).
+    const stubText = scrubInventedRegulatoryAnchors(stubResponseFor(body.prompt));
     const stubStream = streamStubResponse(stubText, request.signal);
     return new Response(stubStream, {
       status: 200,
@@ -235,6 +262,7 @@ export async function POST(request: Request): Promise<Response> {
         "Content-Type": "text/plain; charset=utf-8",
         "Cache-Control": "no-store",
         "X-Apex-Openrouter-Fallback": "stub-on-upstream-error",
+        "X-Apex-Openrouter-Phase": "stub-on-upstream-error",
       },
     });
   }
