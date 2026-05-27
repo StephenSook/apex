@@ -34,6 +34,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from apex.instruct.narrator import Narrator
 from apex.instruct.openrouter_generator import build_openrouter_generator
+from apex.observability import setup_observability
 from apex.orchestration.audit_log import (
     AuditLogLineTooLarge,
     AuditLogStore,
@@ -47,6 +48,14 @@ from apex.orchestration.what_if_replay import (
 )
 from apex.pipelines.sarah_e2e import coaching_report_to_dict
 from apex.pipelines.telemetry_to_log import load_telemetry_csv
+from apex.schemas import (
+    AuditLogResp,
+    HealthzResp,
+    OrchestrationResp,
+    SessionContextResp,
+    TSPulseResp,
+    WhatIfReplayResp,
+)
 from apex.tspulse import detect_anomaly
 
 # ---- Upload constraints ------------------------------------------------
@@ -118,11 +127,17 @@ app.add_middleware(
     allow_headers=["Content-Type", "Authorization", "X-Apex-Client"],
 )
 
+# wave-48 OVERRIDE-steal #QB: initialize OpenTelemetry tracing +
+# auto-instrument all FastAPI routes. No-op when APEX_OTEL_ENABLED is
+# not "1"; spans export to console (or OTLP collector when
+# OTEL_EXPORTER_OTLP_ENDPOINT is set).
+_tracer = setup_observability(app)
 
-@app.get("/healthz")
-def healthz():
+
+@app.get("/healthz", response_model=HealthzResp)
+def healthz() -> HealthzResp:
     """Container readiness probe. Returns 200 once the singletons load."""
-    return {"status": "ok"}
+    return HealthzResp(status="ok")
 
 
 # ---- POST /api/audit-log ----------------------------------------------
