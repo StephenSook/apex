@@ -1,0 +1,75 @@
+1
+00:00:00,000 --> 00:00:08,000
+There are racing drivers without a paid race engineer.
+APEX is for them.
+
+2
+00:00:08,000 --> 00:00:25,000
+A professional race engineer costs four to five hundred pounds a day.
+Every Formula One driver has one. Most adaptive racers, veteran-team
+drivers, and grassroots competitors do not. After the FIA revision
+in late 2017 lifted the single-seater ban on disabled drivers,
+the barrier stopped being regulatory. It became economic.
+
+3
+00:00:25,000 --> 00:00:42,000
+Britcar Trophy 2026. Lap 17 of 19 at Donington Park.
+Sarah Reynolds is two tenths off her PB. Time bleeding out
+in Sector 2 at Old Hairpin. Her debrief: lost the rears mid
+Old Hairpin again, can't trail-brake on the lever the way
+she did at Croft last month.
+
+4
+00:00:42,000 --> 00:01:30,000
+APEX runs on the same IBM Granite stack that ships to
+Scuderia Ferrari, pointed at the drivers who need a race
+engineer most. Three layers. Granite TimeSeries TTM r2.1
+channel-mix decoder fine-tune per D-010 Track 1. Differentiable
+Cvxpylayers physics projection at constant mu. 8-tier Pacejka
+linearization + SCP outer-loop + jerk-bound enforcement are
+deferred swap-points named in D-031. Granite Guardian 4.1 8B
+BYOC audits every projection log. Granite Instruct writes
+the report. TTM forecasts the envelope. Instruct writes the
+tuning delta. Aggregation done honestly.
+
+5
+00:01:30,000 --> 00:02:00,000
+Three structural moats. First pretrained TSFM on adaptive
+motorsport telemetry. First public AI race-engineer workflow
+we found that reads the FIA Certificate of Adaptations as
+binding regulatory input. First COA-parameterized brake-throttle
+simultaneity gate. Sarah's hand-control hardware permits
+simultaneity. Her COA permits it. The V1 NumPy validator reads
+coa_overlap_flag and routes the constraint per-driver. We coach
+disabled drivers with the model that matches their car.
+
+6
+00:02:00,000 --> 00:02:30,000
+Sixty seconds after Sarah uploads her telemetry, APEX returns:
+a corner-by-corner coaching report, a tuning recommendation
+reduce hand-lever brake travel by four millimetres citing the
+exact COA section, a next-session envelope forecast, and a
+Granite Guardian safety stamp with the reasoning trace visible.
+Every claim cites a specific COA section and a specific FIA
+Appendix L provision. Provenance on every line.
+
+7
+00:02:30,000 --> 00:02:50,000
+Fourteen IBM Granite tools on a per-tool honesty ladder.
+Granite-Docling, Vision, TimeSeries TTM, FlowState, TSPulse,
+Embedding R2, Guardian, Instruct 4.1 8B + 3B, Speech 4.1
+2B-Plus, Nano WebGPU edge, LangGraph + MCP + ContextForge
+orchestration, Docling library + Mellea as accelerators.
+Stephen Sookra and Vinh Le. Kennesaw State University.
+Twelve days. Public from Day 1. Apache 2.0.
+
+8
+00:02:50,000 --> 00:02:58,000
+APEX is a reference architecture for governed foundation-model
+deployment on safety-critical sensor data. The race engineer
+for the drivers who do not have one.
+
+9
+00:02:58,000 --> 00:03:00,000
+Thanks to MME Motorsport d.o.o. for the per-surface attribution
+permission grant (2026-05-22).
