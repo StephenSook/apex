@@ -14,7 +14,10 @@ describe("FIABlockquoteChip wave-46 OVERRIDE-steal #3 component", () => {
     );
     expect(screen.getByText(/requires adaptive control technology/i)).toBeInTheDocument();
     expect(screen.getByText(/Adaptive vehicle modifications/i)).toBeInTheDocument();
-    expect(screen.getByText(/FIA Appendix L/i)).toBeInTheDocument();
+    // Wave-47 cascade-#53 fix: "FIA Appendix L" appears in BOTH the
+    // attribution prop value + the always-rendered chip span; use
+    // getAllByText so the assertion accepts the documented multi-mount.
+    expect(screen.getAllByText(/FIA Appendix L/i).length).toBeGreaterThanOrEqual(1);
     expect(
       screen.getByText(/Per the published revision in effect at session time/i),
     ).toBeInTheDocument();

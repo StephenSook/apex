@@ -16,13 +16,16 @@ describe("CoachVoicePlayback wave-47 G1 component", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
     // Stub the global SpeechSynthesis API for jsdom which doesn't ship it.
+    // Wave-47 cascade-#53 fix: mock speak() does NOT auto-fire onend
+    // so the playing-state Stop button stays mounted long enough for
+    // findByRole to assert aria-pressed=true. The previous 10ms auto-
+    // fire raced against userEvent rendering + caused intermittent
+    // CI failures on this assertion.
     Object.defineProperty(window, "speechSynthesis", {
       configurable: true,
       writable: true,
       value: {
-        speak: vi.fn((utterance: SpeechSynthesisUtterance) => {
-          setTimeout(() => utterance.onend?.(new Event("end") as SpeechSynthesisEvent), 10);
-        }),
+        speak: vi.fn(),
         cancel: vi.fn(),
       },
     });
