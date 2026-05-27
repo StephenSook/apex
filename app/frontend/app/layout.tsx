@@ -3,6 +3,7 @@ import { IBM_Plex_Sans, IBM_Plex_Mono, Fraunces } from "next/font/google";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/next";
 import { OneHandModeProvider } from "../lib/one-hand-mode";
+import OneHandModeToggle from "../components/OneHandModeToggle";
 import "./globals.css";
 
 const plexSans = IBM_Plex_Sans({
@@ -135,6 +136,9 @@ export default function RootLayout({
         </a>
         <OneHandModeProvider>
           {children}
+          <div className="fixed bottom-4 right-4 z-40 shadow-lg">
+            <OneHandModeToggle />
+          </div>
         </OneHandModeProvider>
         <SpeedInsights />
         <Analytics />

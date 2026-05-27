@@ -176,7 +176,7 @@ Full architecture spec: [`docs/architecture-spec.md`](./docs/architecture-spec.m
 - pytest + ruff + mypy strict
 - Vercel Fluid Compute (Node.js runtime) for /api/openrouter-stream + /api/watson-tts; backend FastAPI service runs alongside per Stream M.3 spec handoff in `docs/wave-41-backend-spec-handoff.md`
 
-**AI (IBM Granite stack — full 14-tool honesty-tier inventory; see §5 above for per-tool wire-up status)**
+**AI (IBM Granite stack, full 14-tool honesty-tier inventory; see §5 above for per-tool wire-up status)**
 - Granite Instruct 4.1 8B (race-engineer narrative; WIRED at HEAD via OpenRouter)
 - Granite 4.0 Nano 350M (in-browser WebGPU edge model; WIRED at HEAD via Transformers.js)
 - Granite-Docling 258M (COA structured-document extraction; INTEGRATION + Vinh M3-V1 swap-point)

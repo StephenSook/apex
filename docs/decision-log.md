@@ -9,17 +9,17 @@ Every locked decision with rationale + date + scope. Newest first.
 **Decision.** Wave-46 galaxy-final-push delivered the killshot: replaced the wave-1 hand-coded inline-SVG racing-line hero on `/` (lines 137-249 of `app/frontend/app/page.tsx`) with a 3D React-Three-Fiber visualization (`components/RacingLineHero.tsx` + dynamic-import wrapper `components/RacingLineHeroShell.tsx`). Plus Phase A executed Stephen-explicit removals (BuildStatus + footer chrome + multi-track positioning + Day-counter + IBM Bob across 24+ surfaces).
 
 **Phase A commits (6 atomic):**
-- A1 `01b9f79` — BuildStatus + Calibration-ceiling multi-track + Day-counter H2 removed from `/`
-- A2 `3f14aa5` — Footer chrome stripped (kept GitHub + License only); PLAN.md + README.md links + "Day 7 of 12 · 2026-05-26" removed
-- A3 — README.md BuildStatus verified clean (no-op; section never existed)
-- A4 `0e6c426` — Multi-track positioning removed (JudgeTrackTighteningCallout component + test deleted; judges page section + judge-tour Step 6 list + methodology Pillar 5 reframe)
-- A5a `abacf37` — IBM Bob removed from frontend (`lib/ibm-stack.ts:201-220` Bob entry + `page.tsx` 3 refs + `/judges:244` + `/judge-tour:98`); tool count 15 -> 14; ACCELERATOR 3 -> 2 (Docling library + Mellea only)
-- A5b `b9b34de` — IBM Bob removed from docs + paper + SUBMISSION + 4 deliverables + 2 outreach drafts + apex-lite-contingency; tier counts propagated across all surfaces
+- A1 `01b9f79` -- BuildStatus + Calibration-ceiling multi-track + Day-counter H2 removed from `/`
+- A2 `3f14aa5` -- Footer chrome stripped (kept GitHub + License only); PLAN.md + README.md links + "Day 7 of 12 · 2026-05-26" removed
+- A3 -- README.md BuildStatus verified clean (no-op; section never existed)
+- A4 `0e6c426` -- Multi-track positioning removed (JudgeTrackTighteningCallout component + test deleted; judges page section + judge-tour Step 6 list + methodology Pillar 5 reframe)
+- A5a `abacf37` -- IBM Bob removed from frontend (`lib/ibm-stack.ts:201-220` Bob entry + `page.tsx` 3 refs + `/judges:244` + `/judge-tour:98`); tool count 15 -> 14; ACCELERATOR 3 -> 2 (Docling library + Mellea only)
+- A5b `b9b34de` -- IBM Bob removed from docs + paper + SUBMISSION + 4 deliverables + 2 outreach drafts + apex-lite-contingency; tier counts propagated across all surfaces
 
 **Phase B commits (3 atomic so far + B6 = this entry):**
-- B0 `73f0f30` — Installed `three@0.184.0` + `@react-three/fiber@9.6.1` + `@react-three/drei@10.7.7` + `@types/three@0.184.1`
-- B1 `712de0f` — Built `components/RacingLineHero.tsx` Client Component (462 LOC): 3D track via `TubeGeometry` + CatmullRomCurve3 racing line + animated stylized car via `useFrame` + curve.getPointAt(t) interpolation + PerspectiveCamera tracking car with banking-into-corner lerp + drei Text labels (BRAKING + APEX + EXIT + "T7 entry, Lap 17") + apex-pulse sphere via sin-wave scale modulation + drei Html telemetry HUD overlay (throttle/brake/steering ribbons synced to t-parameter) + 12-second loop + prefers-reduced-motion static-SVG fallback + WebGL-unsupported fallback + ARIA labeling
-- B2 `7bbecfb` — Mounted via `RacingLineHeroShell` Client Component dynamic-import wrapper at `app/page.tsx:141` (per JudgesGalaxyMovesShell precedent + Next.js 16 ssr:false-from-Server-Component restriction per `feedback_nextjs16_dynamic_ssr_false_client_only.md`); inline SVG removed; figure wrapper + apex-rise + delay 600ms preserved
+- B0 `73f0f30` -- Installed `three@0.184.0` + `@react-three/fiber@9.6.1` + `@react-three/drei@10.7.7` + `@types/three@0.184.1`
+- B1 `712de0f` -- Built `components/RacingLineHero.tsx` Client Component (462 LOC): 3D track via `TubeGeometry` + CatmullRomCurve3 racing line + animated stylized car via `useFrame` + curve.getPointAt(t) interpolation + PerspectiveCamera tracking car with banking-into-corner lerp + drei Text labels (BRAKING + APEX + EXIT + "T7 entry, Lap 17") + apex-pulse sphere via sin-wave scale modulation + drei Html telemetry HUD overlay (throttle/brake/steering ribbons synced to t-parameter) + 12-second loop + prefers-reduced-motion static-SVG fallback + WebGL-unsupported fallback + ARIA labeling
+- B2 `7bbecfb` -- Mounted via `RacingLineHeroShell` Client Component dynamic-import wrapper at `app/page.tsx:141` (per JudgesGalaxyMovesShell precedent + Next.js 16 ssr:false-from-Server-Component restriction per `feedback_nextjs16_dynamic_ssr_false_client_only.md`); inline SVG removed; figure wrapper + apex-rise + delay 600ms preserved
 
 **Editorial-paddock palette honored:** track racing-green `#0A2818`, racing-line clay-red `#C1492C`, apex-pulse amber `#D9A441`, paper-cream `#F4EBD8` labels, ink `#0F1410` text.
 
@@ -27,7 +27,7 @@ Every locked decision with rationale + date + scope. Newest first.
 
 **Why.** Stephen explicit 2026-05-26 evening: the static SVG was "very boring with the track and stuff" + had a "T7 entry" label colliding with the orange dashed racing-line + was identified as the highest-leverage visual upgrade for galaxy-tier judging impact. Per the wave-46-galaxy-final-push plan section "S7 is the killshot. Static SVG is genuinely boring for a galaxy-tier submission." R3F 3D track delivers wow-factor at the highest-traffic surface (the landing page).
 
-**Why now.** Plan-mode approved 2026-05-26 evening; Phase A + Phase B B0-B2 shipped same evening (~3 hour session). Phase B remaining: B3 (COA-gate visual coupling on apex pulse), B4 (vitest smoke test), B5 (Lighthouse smoke verify post-deploy) — DEFERRED to next session as polish items because the killshot already lands at B2 mount; B3-B5 are quality-additive not gating.
+**Why now.** Plan-mode approved 2026-05-26 evening; Phase A + Phase B B0-B2 shipped same evening (~3 hour session). Phase B remaining: B3 (COA-gate visual coupling on apex pulse), B4 (vitest smoke test), B5 (Lighthouse smoke verify post-deploy) -- DEFERRED to next session as polish items because the killshot already lands at B2 mount; B3-B5 are quality-additive not gating.
 
 **Phase B residual:**
 - B3 deferred: extend RacingLineHero with COA-gate visual coupling (apex pulses clay-red on violation vs amber on feasible per cross-page COA-toggle state). Tactile galaxy-stretch; ship in next session.

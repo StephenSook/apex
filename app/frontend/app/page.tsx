@@ -2,7 +2,6 @@ import Link from "next/link";
 
 import RacingLineHeroShell from "../components/RacingLineHeroShell";
 import { IBM_GRANITE_STACK } from "../lib/ibm-stack";
-import OneHandModeToggle from "../components/OneHandModeToggle";
 
 export default function Home() {
   return (
@@ -58,7 +57,6 @@ function SiteHeader() {
           >
             GitHub
           </Link>
-          <OneHandModeToggle />
         </nav>
       </div>
     </header>

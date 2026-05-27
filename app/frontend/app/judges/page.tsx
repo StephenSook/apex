@@ -533,7 +533,7 @@ export default function JudgesPage() {
             />
           </div>
           <FIABlockquoteChip
-            quote="Where a driver requires adaptive control technology — hand controls, modified pedal assemblies, or differential thumb-operated triggers — the technical commission shall verify that the modifications preserve continuous-action capability across the brake-throttle simultaneity envelope."
+            quote="Where a driver requires adaptive control technology (hand controls, modified pedal assemblies, or differential thumb-operated triggers), the technical commission shall verify that the modifications preserve continuous-action capability across the brake-throttle simultaneity envelope."
             attribution="Adaptive-driver vehicle modifications + control-input simultaneity provisions, FIA Appendix L"
             sectionAnchor="Adaptive vehicle modifications · control-input simultaneity envelope"
           />
