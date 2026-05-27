@@ -91,6 +91,33 @@ export async function POST(req: NextRequest): Promise<Response> {
       { status: 400 },
     );
   }
+  // Wave-47 review Codex HIGH #2 close: allowlist baseline_fixture_id +
+  // mutation_key against the canonical catalogues shipped in Vinh's
+  // app/backend/apex/orchestration/what_if_replay.py BASELINE_FIXTURES +
+  // MUTATIONS registries. Arbitrary string echo would let a misconfigured
+  // client see 200 + canned payload for non-existent fixture, masking
+  // the bug. Allowlist mirrors Vinh's UnknownFixtureError + UnknownMutationError
+  // 400-equivalent surface so frontend canned-path matches backend reject.
+  const BASELINE_FIXTURE_ALLOWLIST = new Set(["C14-04-jerk-bound"]);
+  const MUTATION_ALLOWLIST = new Set(["MUTATION_COA_OVERLAP_INVERT"]);
+  if (!BASELINE_FIXTURE_ALLOWLIST.has(baselineId)) {
+    return Response.json(
+      {
+        error: "unknown_baseline_fixture",
+        message: `baseline_fixture_id ${baselineId} not in allowlist. Known: ${Array.from(BASELINE_FIXTURE_ALLOWLIST).join(", ")}.`,
+      },
+      { status: 400 },
+    );
+  }
+  if (!MUTATION_ALLOWLIST.has(mutationKey)) {
+    return Response.json(
+      {
+        error: "unknown_mutation_key",
+        message: `mutation_key ${mutationKey} not in allowlist. Known: ${Array.from(MUTATION_ALLOWLIST).join(", ")}.`,
+      },
+      { status: 400 },
+    );
+  }
 
   const cannedPayload = buildCannedPayload(baselineId, mutationKey, t0);
   const payload = await runWireFlipPOST<
