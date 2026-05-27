@@ -22,7 +22,7 @@ export default function AnalyzePage() {
         >
           <div className="mx-auto flex max-w-6xl flex-col gap-6 px-6 py-12 lg:px-10 lg:py-16">
             <header>
-              <p className="apex-eyebrow">Bring your own session</p>
+              <p className="apex-eyebrow">For the drivers who don&rsquo;t have a race engineer</p>
               <h2
                 id="analyze-upload-title"
                 className="font-display text-3xl tracking-tight text-ink"
@@ -30,8 +30,9 @@ export default function AnalyzePage() {
                 Or drop a custom telemetry CSV.
               </h2>
               <p className="mt-2 max-w-2xl text-base leading-relaxed text-ink-soft">
-                Drag a session CSV onto the panel below to run it through the APEX strict
-                parser. No sign-in. Files stay on the apex-one-black Vercel deploy. Five MB +
+                Adaptive racers, veteran-team drivers, grassroots competitors. Drag a session
+                CSV onto the panel below to run it through the APEX strict parser. No
+                sign-in. Files stay on the apex-one-black Vercel deploy. 4.5 MB +
                 ten-thousand row cap; canonical APEX-Bench header schema per
                 <span className="font-mono text-xs text-racing-green"> app/shared/types.ts</span>.
               </p>

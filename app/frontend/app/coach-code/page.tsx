@@ -40,7 +40,8 @@ export default function CoachCodePage() {
             id="coach-code-title"
             className="mt-3 font-display text-4xl tracking-tight text-ink sm:text-5xl"
           >
-            Coach your telemetry code.
+            Coach your telemetry code.{" "}
+            <em className="font-display italic text-accent">The race engineer for the engineers who build the race engineer.</em>
           </h1>
           <p className="mt-4 max-w-3xl text-base leading-relaxed text-ink-soft">
             Paste a snippet from your telemetry pipeline. Ask a question about how

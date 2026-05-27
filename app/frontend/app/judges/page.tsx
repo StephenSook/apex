@@ -181,7 +181,8 @@ export default function JudgesPage() {
           </h1>
           <p className="max-w-3xl text-base leading-relaxed text-ink-soft">
             Everything you need to evaluate APEX in five minutes. Live demo first, video second,
-            architecture and Q&amp;A defense pack below.
+            architecture and Q&amp;A defense pack below.{" "}
+            <em className="font-display italic text-accent">The race engineer for the drivers who don&rsquo;t have one.</em>
           </p>
           <p className="font-mono text-xs text-muted">
             Hero use case: adaptive racer with electronic hand-controls; veteran-transitioning

@@ -46,15 +46,16 @@ export default function SimRigPage() {
       <SimRigPaddockNightShell>
       <header className="border-b border-rule bg-paper">
         <div className="mx-auto flex max-w-6xl flex-col gap-4 px-6 py-14 lg:px-10 lg:py-20">
-          <p className="apex-eyebrow">APEX · Live sim-rig demo</p>
+          <p className="apex-eyebrow">APEX · Live sim-rig demo · adaptive hand-controls</p>
           <h1 className="font-display text-5xl tracking-tight text-ink sm:text-6xl">
-            Real telemetry, audited in flight.
+            Real telemetry, audited in flight.{" "}
+            <em className="font-display italic text-accent">From the drivers who don&rsquo;t have a race engineer.</em>
           </h1>
           <p className="max-w-3xl text-base leading-relaxed text-ink-soft">
-            A 20 Hz stream of adaptive-controls telemetry flowing into the APEX coaching
-            loop. Day 2 ships a canned synthetic GT4 hand-controls lap so the
-            tile is animated for the 3-minute demo video. Day 9 swaps in a live WebSocket
-            from the sim rig.
+            A 20 Hz stream of adaptive hand-controls telemetry flowing into the APEX coaching
+            loop. The tile ships a canned synthetic GT4 hand-controls lap so the demo flow
+            renders end-to-end without a live rig. Live WebSocket swap point arrives via
+            Vinh M3-V2 backend deploy.
           </p>
           <p className="font-mono text-xs text-muted">
             Adaptive hand-controls demo · GT4 sprint-series setup · circuit-agnostic synthetic layout.
