@@ -21,7 +21,7 @@ const RacingLineHero = dynamic(() => import("./RacingLineHero"), {
   ssr: false,
   loading: () => (
     <div
-      className="aspect-[16/10] w-full animate-pulse rounded-sm border border-rule bg-paper-warm"
+      className="aspect-[10/9] w-full animate-pulse rounded-sm border border-rule bg-paper-warm"
       role="status"
       aria-label="Loading racing line visualization"
     />
