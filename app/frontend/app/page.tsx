@@ -76,7 +76,7 @@ function Hero() {
       <div className="mx-auto grid max-w-7xl gap-12 px-6 py-20 lg:grid-cols-12 lg:gap-12 lg:px-10 lg:py-28">
         <div className="lg:col-span-6 flex flex-col gap-6">
           <p className="apex-eyebrow apex-rise" style={{ "--apex-delay": "0ms" } as React.CSSProperties}>
-            IBM SkillsBuild · May Challenge 2026 · Day 7 of 12
+            IBM SkillsBuild · May Challenge 2026
           </p>
           <h1
             id="hero-title"
@@ -114,20 +114,12 @@ function Hero() {
               See how it works
               <span aria-hidden="true">↓</span>
             </a>
-            <Link
-              href="https://github.com/StephenSook/apex/blob/main/PLAN.md"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-sm border border-ink/15 bg-paper-warm px-5 py-3 font-mono text-xs uppercase tracking-wider text-ink transition-colors hover:border-ink/40"
-            >
-              Read PLAN.md
-            </Link>
           </div>
           <p
             className="pt-4 font-mono text-xs text-muted apex-rise"
             style={{ "--apex-delay": "480ms" } as React.CSSProperties}
           >
-            Submission deadline 2026-05-31 · IBM Granite + watsonx · Apache 2.0
+            IBM Granite + watsonx · Apache 2.0
           </p>
         </div>
 
@@ -564,7 +556,7 @@ function SiteFooter() {
               IBM SkillsBuild May Challenge 2026.
             </p>
             <p className="pt-2 font-mono text-[11px] uppercase tracking-wider text-paper/45">
-              Apache 2.0 · Submission 2026-05-31
+              Apache 2.0
             </p>
           </div>
           <nav aria-label="Footer navigation" className="flex flex-col gap-3 text-sm">

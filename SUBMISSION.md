@@ -1,10 +1,7 @@
 # APEX - BeMyApp / Devpost Submission Draft
 
-> Mirror of Hometown-Pathway-Atlas `SUBMISSION.md` pattern. Drafted Day 1 (2026-05-20). Final fill-in Day 11 after deck + video lock. Submit Day 12 (2026-05-31).
-
 Hackathon: **IBM SkillsBuild AI Builders Challenge, May Challenge** ("AI Beyond the Finish Line")
 Portal: https://ibmskillsbuildchallenge-hub.bemyapp.com/
-Submission deadline: **2026-05-31, 11:59 PM ET**
 
 ---
 

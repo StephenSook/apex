@@ -47,8 +47,6 @@ export const metadata: Metadata = {
     "Single-page tour for IBM SkillsBuild AI Builders Challenge May 2026 judges. Demo, video, deck, repo, Q&A defense pack, IBM stack, methodology trace, and team in one place.",
 };
 
-const SUBMISSION_DEADLINE = "2026-05-31, 11:59 PM ET";
-
 const RESOURCES: ReadonlyArray<ResourceLink> = [
   {
     label: "Live demo",
@@ -183,7 +181,7 @@ export default function JudgesPage() {
           </h1>
           <p className="max-w-3xl text-base leading-relaxed text-ink-soft">
             Everything you need to evaluate APEX in five minutes. Live demo first, video second,
-            architecture and Q&amp;A defense pack below. Submission deadline {SUBMISSION_DEADLINE}.
+            architecture and Q&amp;A defense pack below.
           </p>
           <p className="font-mono text-xs text-muted">
             Hero use case: adaptive racer with electronic hand-controls; veteran-transitioning
@@ -369,8 +367,8 @@ export default function JudgesPage() {
             Eight-tier physics implementation.
           </h2>
           <p className="mt-3 max-w-3xl text-base leading-relaxed text-ink-soft">
-            Wave-30 decision D-015 locked the eight-tier physics stack in-scope for the 2026-05-31
-            submission. Each tier surfaces below as one tile with its plain-text formula, canonical
+            Wave-30 decision D-015 locked the eight-tier physics stack in-scope for the submission.
+            Each tier surfaces below as one tile with its plain-text formula, canonical
             input channels, expected outputs, and the handler that owns it inside the unrolled SCP
             outer loop per D-012. The class-to-handler binding lives on the
             <span className="font-mono text-xs text-racing-green"> ExtendedPhysicsFixture </span>

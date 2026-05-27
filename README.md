@@ -10,7 +10,7 @@
 [![Vercel](https://img.shields.io/badge/Live-Vercel%20Production-0A2818.svg)](https://apex-one-black.vercel.app)
 [![IBM SkillsBuild](https://img.shields.io/badge/IBM%20SkillsBuild-May%202026%20Challenge-052FAD.svg)](https://ibmskillsbuildchallenge-hub.bemyapp.com/)
 
-Built for the **IBM SkillsBuild AI Builders Challenge, May 2026** (theme: "AI Beyond the Finish Line"). Submission deadline 2026-05-31, 11:59 PM ET.
+Built for the **IBM SkillsBuild AI Builders Challenge, May 2026** (theme: "AI Beyond the Finish Line").
 
 ---
 
