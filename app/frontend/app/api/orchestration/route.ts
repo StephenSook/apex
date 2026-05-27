@@ -89,6 +89,7 @@ export async function GET(_req: NextRequest): Promise<Response> {
       trace_id: `error-${Date.now().toString(36)}`,
       nodes: [],
       total_ms: 0,
+      compute_ms: 0,
       swap_point: `Vinh M3-V14 swap-in error: ${err instanceof Error ? err.message : String(err)}`,
     };
     return Response.json(fallback, {
