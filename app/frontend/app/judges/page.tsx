@@ -14,6 +14,7 @@ import Link from "next/link";
 import ApexCamPanel from "../../components/ApexCamPanel";
 import COAGateToggle from "../../components/COAGateToggle";
 import EngineAgnosticByteEqualityDemo from "../../components/EngineAgnosticByteEqualityDemo";
+import FIABlockquoteChip from "../../components/FIABlockquoteChip";
 import NotebookLMHoverAudio from "../../components/NotebookLMHoverAudio";
 import RealtimeCOADiffPanel from "../../components/RealtimeCOADiffPanel";
 import JudgesGalaxyMovesShell from "../../components/JudgesGalaxyMovesShell";
@@ -533,6 +534,11 @@ export default function JudgesPage() {
               panelLabel="COA-parameterized simultaneity gate"
             />
           </div>
+          <FIABlockquoteChip
+            quote="Where a driver requires adaptive control technology — hand controls, modified pedal assemblies, or differential thumb-operated triggers — the technical commission shall verify that the modifications preserve continuous-action capability across the brake-throttle simultaneity envelope."
+            attribution="Adaptive-driver vehicle modifications + control-input simultaneity provisions, FIA Appendix L"
+            sectionAnchor="Adaptive vehicle modifications · control-input simultaneity envelope"
+          />
           <div className="mt-8">
             <RealtimeCOADiffPanel />
           </div>
