@@ -84,4 +84,73 @@ describe("/api/coach-code wave-46 Phase 6.2 Granite 4.1 8B code-feedback", () =>
     expect(data.feedback).not.toMatch(/FIA Article \d+/i);
     expect(data.feedback).toMatch(/FIA Appendix L per the published revision/);
   });
+
+  // Wave-46 C13 R4 OpenRouter throw-branch fallback tests per OVERRIDE-
+  // comparator 14-test-file quality bar. Mock openRouterChatCompletion
+  // to throw; verify route falls back to canned-fallback engine + emits
+  // X-Apex-Coach-Code-Fallback header.
+
+  it("falls back to canned when OpenRouter throws + emits Fallback header", async () => {
+    vi.stubEnv("OPENROUTER_API_KEY", "sk-test-mock-key");
+    const openrouterMod = await import("../../../../lib/openrouter-client");
+    vi.spyOn(openrouterMod, "openRouterChatCompletion").mockRejectedValue(
+      new Error("ECONNREFUSED openrouter.ai"),
+    );
+
+    const res = await POST(
+      mockRequest({ code: "// telemetry code", question: "anything" }) as unknown as Parameters<typeof POST>[0],
+    );
+    expect(res.status).toBe(200);
+    const data = (await res.json()) as { engine: string; feedback: string };
+    expect(data.engine).toBe("coach-code-canned-fallback");
+    expect(data.feedback).toMatch(/APEX three-layer architecture/);
+    expect(res.headers.get("X-Apex-Coach-Code-Fallback")).toBe("openrouter-error");
+  });
+
+  it("emits retry_count = 0 + empty violation_summary when canned-fallback fires", async () => {
+    vi.stubEnv("OPENROUTER_API_KEY", "");
+    const res = await POST(
+      mockRequest({ code: "// telemetry code", question: "test" }) as unknown as Parameters<typeof POST>[0],
+    );
+    const data = (await res.json()) as {
+      retry_count: number;
+      violation_summary: ReadonlyArray<ReadonlyArray<string>>;
+    };
+    expect(data.retry_count).toBe(0);
+    expect(data.violation_summary).toEqual([[]]);
+  });
+
+  it("returns scrubbed feedback + retry_count = 0 on clean OpenRouter response (no violations detected)", async () => {
+    vi.stubEnv("OPENROUTER_API_KEY", "sk-test-mock-key");
+    const openrouterMod = await import("../../../../lib/openrouter-client");
+    vi.spyOn(openrouterMod, "openRouterChatCompletion").mockResolvedValue({
+      id: "test",
+      model: "ibm-granite/granite-4.1-8b-instruct",
+      choices: [
+        {
+          message: {
+            role: "assistant",
+            content: "Aggregate the telemetry at 1 Hz per Stage 1. Cite FIA Appendix L per the published revision.",
+          },
+        },
+      ],
+      usage: { prompt_tokens: 142, completion_tokens: 67 },
+    });
+
+    const res = await POST(
+      mockRequest({ code: "fn x() {}", question: "any" }) as unknown as Parameters<typeof POST>[0],
+    );
+    expect(res.status).toBe(200);
+    const data = (await res.json()) as {
+      engine: string;
+      retry_count: number;
+      violation_summary: ReadonlyArray<ReadonlyArray<string>>;
+      feedback: string;
+    };
+    expect(data.engine).toBe("coach-code-real");
+    expect(data.retry_count).toBe(0);
+    expect(data.violation_summary).toEqual([[]]);
+    expect(data.feedback).toMatch(/Aggregate the telemetry/);
+    expect(res.headers.get("X-Apex-Coach-Code-Retry-Count")).toBe("0");
+  });
 });
