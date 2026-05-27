@@ -4,6 +4,26 @@ Every locked decision with rationale + date + scope. Newest first.
 
 ---
 
+## 2026-05-27 D-064: Wave-47 close-out + OVERRIDE intel strategic positioning + 5-cascade fix-forward arc
+
+**Decision.** Wave-47 closes with ~30 atomic commits across 6 cascades (A through E) plus the four wave-47 feature commits (G4 one-hand accessibility mode + G1 Granite Speech TTS coach-voice + Steal #4 cause/consequences/recommendation/evidence 4-block CornerCard + Steal #1 retry-loop coverage on coach-code from wave-46). Triggered by OVERRIDE deep-dive (BeMyApp competitor `broadcomms/override-may-2026`, see `~/.claude/projects/-Users-stephensookra-Desktop-IBM-May/memory/project_apex_override_competitor.md`) plus 4-agent parallel review batch surfacing 30+ findings (Codex BLOCKER+HIGH+MED, Gemini drift, silent-failure-hunter BLOCKER+HIGH+MED, code-reviewer CRITICAL).
+
+**Strategic positioning lock.** Concede TORCS sim-integration axis entirely (OVERRIDE has 125 MB of hands-on-labs sunk content + noVNC in-browser drive; cannot replicate in remaining time). Reposition APEX as "real-world racer co-pilot" (Sarah Reynolds persona + adaptive hand-controls + Mission 44 + Team BRIT + Spinal Track + Raceability stakeholder grounding + MME Motorsport consent-named partner) versus OVERRIDE's "TORCS lab co-pilot" (simulator integration for the IBM SkillsBuild sandbox).
+
+**Cascade trail.**
+
+- Cascade A (`328d417`): OneHandModeToggle moved from `/`-only SiteHeader to global `layout.tsx` fixed-position so every page reaches the G4 accessibility moat. Em-dash sweep on README L179 + decision-log D-063 (10 occurrences) + FIA blockquote on /judges:536 (2 occurrences) per HARD-COMPLIANCE `feedback_em_dash_zero_tolerance`.
+- Cascade B (`98faca2`): LLM-route hardening. openrouter-stream scrubber unconditional on both stub paths + `X-Apex-Openrouter-Phase` header; coach-code threads `req.signal` + preserves `retryCount + violationSummary` telemetry through error path + emits `X-Apex-Coach-Code-Fallback-Reason`; coa-diff docstring Sarah Reynolds persona-leak rewritten per Lane K.
+- Cascade C (`75da741` + `ffe40d0` + `1b133a1`): upload-telemetry runtime nodejs->edge + instanceof File->Blob compat (Codex BLOCKER); scrubber Unicode + spaced-dot normalization (Codex HIGH); CoachCodePanel AbortController + stale-fetch guard; COA-GATE label + FIA chip contrast lifted to WCAG AA; wire-flip helper console.error on operator-intent backend failures.
+- Cascade D (`45b2ab0`): ibm-stack 15->14 + FACADE tier dropped + Mellea role aligned + hero aria-label rewritten to match cycling live bars.
+- Cascade E (`e847fff`): /judges Day-N sweep (8 locations); landing page hero CTA row surfaces /upload + /coach-code + /compare; STT cap 5MB->4.5MB Edge floor align.
+
+**Honesty checkpoint.** 27 task items closed of 39 surfaced this arc. 12 remaining (G2 + G3 + G5 + G6 + C5 helper extension + counter-position propagation + component tests batch + NotebookLM 5 prompts + Vinh Phase 3+4+5+6 verify + Phase F submission gate + Steal #1 full retry-loop port to openrouter-stream + D-064 itself). The arc shipped every BLOCKER and HIGH finding from the 4-agent review batch; remaining items are feature scope plus Phase F gate runs.
+
+**Cross-references.** `project_apex_override_competitor.md` + `feedback_galaxy_ambition_no_deferrals.md` + `feedback_no_time_pressure_restraint.md` + `feedback_persona_not_hardcoded_in_ui.md` + `feedback_em_dash_zero_tolerance.md` + `feedback_llm_output_compliance_scrubber.md` + `feedback_exhaustive_tool_inventory_before_every_task.md`.
+
+---
+
 ## 2026-05-27 D-063: Wave-46 Phase B R3F RacingLineHero killshot ship + IBM Bob retirement + Stephen-explicit chrome removals
 
 **Decision.** Wave-46 galaxy-final-push delivered the killshot: replaced the wave-1 hand-coded inline-SVG racing-line hero on `/` (lines 137-249 of `app/frontend/app/page.tsx`) with a 3D React-Three-Fiber visualization (`components/RacingLineHero.tsx` + dynamic-import wrapper `components/RacingLineHeroShell.tsx`). Plus Phase A executed Stephen-explicit removals (BuildStatus + footer chrome + multi-track positioning + Day-counter + IBM Bob across 24+ surfaces).
