@@ -107,6 +107,84 @@ def test_what_if_replay_missing_fields_returns_400(client):
     assert r.status_code == 400
 
 
+# ---- GET /api/orchestration (wave-47 cascade-#53 wire-flip V14) ------
+# These tests lock the canonical Sarah-fixture filenames the endpoint
+# resolves at request time. The previous filename drift
+# (sarah-reynolds-coa.json instead of sarah-reynolds-coa-stub.json)
+# silently returned 503 because the wire-flip helper fell back to
+# canned, masking a deploy that never actually lit up to real data.
+
+def test_orchestration_returns_200_with_canonical_fixtures(client):
+    r = client.get("/api/orchestration")
+    assert r.status_code == 200, (
+        f"GET /api/orchestration returned {r.status_code}; "
+        f"check fixture filenames in _sarah_fixtures_or_503(). "
+        f"Body: {r.json()}"
+    )
+
+
+def test_orchestration_emits_6_node_trace_in_frontend_shape(client):
+    r = client.get("/api/orchestration")
+    assert r.status_code == 200
+    body = r.json()
+    # Frontend wire-flip helper expects engine + trace_id + nodes[] +
+    # total_ms + swap_point + compute_ms per Stephen commit ec21681.
+    assert body["engine"] == "langgraph-v14-real"
+    assert body["trace_id"]
+    assert isinstance(body["total_ms"], int)
+    assert body["swap_point"] == "Vinh M3-V14"
+    assert body["compute_ms"] >= 0
+    nodes = body["nodes"]
+    assert len(nodes) == 6
+    expected_ids = ["ingestion", "rag", "projection", "guardian",
+                     "instruct", "provenance"]
+    actual_ids = [n["id"] for n in nodes]
+    assert actual_ids == expected_ids
+    for node in nodes:
+        assert node["status"] == "ok"
+        assert node["label"]   # title-cased frontend display string
+        assert node["elapsed_ms"] >= 0
+
+
+def test_orchestration_503_when_fixtures_missing(client, tmp_path, monkeypatch):
+    """If the canonical Sarah fixtures move or get deleted, the endpoint
+    MUST return 503 so the frontend wire-flip helper falls back to canned
+    rather than failing the request. Per Stephen comment ec21681 L150-152.
+    """
+    import apex.server as server_mod
+
+    def fake_fixtures_or_503():
+        from fastapi import HTTPException
+        raise HTTPException(
+            status_code=503,
+            detail="sarah-reynolds canonical fixtures missing on backend",
+        )
+
+    monkeypatch.setattr(
+        server_mod, "_sarah_fixtures_or_503", fake_fixtures_or_503,
+    )
+    r = client.get("/api/orchestration")
+    assert r.status_code == 503
+    assert "missing" in r.json()["detail"].lower()
+
+
+def test_orchestration_fixture_filenames_match_disk(client):
+    """Regression lock for the wave-47 ec21681 filename drift bug.
+
+    Stephen's first cut named `sarah-reynolds-coa.json` but the file on
+    disk is `sarah-reynolds-coa-stub.json`. This test asserts the
+    canonical filenames the endpoint resolves to actually exist; the
+    integration test above (200 check) catches the resolved path being
+    importable end-to-end.
+    """
+    from apex.server import _sarah_fixtures_or_503
+    telemetry, coa = _sarah_fixtures_or_503()
+    assert telemetry.exists(), f"telemetry fixture missing: {telemetry}"
+    assert coa.exists(), f"coa fixture missing: {coa}"
+    assert telemetry.name == "sarah-reynolds-telemetry.csv"
+    assert coa.name == "sarah-reynolds-coa-stub.json"
+
+
 # ---- GET /api/session-context ----------------------------------------
 
 def test_session_context_returns_tiles(client):
