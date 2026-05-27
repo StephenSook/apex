@@ -144,6 +144,38 @@ export function parseMahalanobisConfidence(raw: number | null): MahalanobisConfi
 }
 
 // ---------------------------------------------------------------------------
+// STTConfidence: float 0..1 from Granite Speech 4.1 2B-Plus ASR
+// ---------------------------------------------------------------------------
+
+declare const __sttConfidenceBrand: unique symbol;
+
+/**
+ * STT confidence score from Granite Speech 4.1 2B-Plus speaker-attributed
+ * ASR per D-058 wave-46 Phase 5.6. Bounded [0, 1] inclusive. Wave-46.5
+ * type-design REWORK R6 close-out per the type-design-analyzer dispatch
+ * recommendation. Mirrors the brand-construction pattern from
+ * MahalanobisConfidence + AuditId + CommitSha above.
+ *
+ * Negative + > 1 + NaN + Infinity values throw at the decoder boundary;
+ * upstream Granite Speech is expected to emit values within [0, 1] but
+ * an out-of-range value should be a hard failure, not silent corruption.
+ */
+export type STTConfidence = number & { readonly [__sttConfidenceBrand]: never };
+
+/**
+ * Validate + brand a raw number as an STTConfidence in [0, 1]. Throws on
+ * out-of-range + NaN + Infinity.
+ */
+export function parseSTTConfidence(raw: number): STTConfidence {
+  if (!Number.isFinite(raw) || raw < 0 || raw > 1) {
+    throw new Error(
+      `apex.brands.parseSTTConfidence: invalid value ${raw}; expected finite number in [0, 1].`,
+    );
+  }
+  return raw as STTConfidence;
+}
+
+// ---------------------------------------------------------------------------
 // HorizonStep: integer 0..29 (HORIZON-1)
 // ---------------------------------------------------------------------------
 

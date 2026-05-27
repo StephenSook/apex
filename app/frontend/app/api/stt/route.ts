@@ -21,6 +21,7 @@
 
 import type { NextRequest } from "next/server";
 
+import { parseSTTConfidence } from "../../../../shared/brands";
 import type { STTResponse } from "../../../../shared/types";
 import { getVinhBackendBaseUrl, shouldUseRealBackend } from "../../../lib/env";
 import { VINH_SWAP_POINTS } from "../../../lib/vinh-swap-points";
@@ -33,7 +34,7 @@ const CANNED_TRANSCRIPT =
 
 const CANNED_RESPONSE_TEMPLATE: Omit<STTResponse, "engine" | "compute_ms" | "swap_point"> = {
   transcript: CANNED_TRANSCRIPT,
-  confidence: 0.94,
+  confidence: parseSTTConfidence(0.94),
   language: "en-US",
   speakers: [
     {
@@ -150,7 +151,7 @@ export async function POST(req: NextRequest): Promise<Response> {
       engine: "stt-v9-canned-fallback",
       compute_ms: Math.round(performance.now() - t0),
       transcript: "",
-      confidence: 0,
+      confidence: parseSTTConfidence(0),
       language: "en-US",
       speakers: [],
       word_timestamps: [],

@@ -16,6 +16,7 @@ import type {
   PhysicsTier,
   PhysicsTierValue,
   Severity,
+  STTConfidence,
 } from "./brands";
 
 /**
@@ -1777,11 +1778,30 @@ export interface STTSpeakerSegment {
   readonly text: string;
 }
 
+/**
+ * Wave-46.5 type-design REWORK R6 close-out: STTRequest captures the
+ * validated post-parse shape of a /api/stt POST body so the route handler
+ * is not relying on inline `{audio?: unknown}` shapes for the validated
+ * variant. The current route accepts text bodies as a fallback path for
+ * the canned-fallback canned-transcript engine; this Request type is the
+ * forward-compatible shape that will activate when Granite Speech vLLM
+ * serve lands on the Vinh side.
+ */
+export interface STTRequest {
+  readonly audio_b64?: string;
+  readonly mime_type?: string;
+  readonly language_hint?: string;
+}
+
 export interface STTResponse {
   readonly engine: "stt-v9-canned-fallback" | "stt-v9-real";
   readonly compute_ms: number;
   readonly transcript: string;
-  readonly confidence: number;
+  /**
+   * Confidence score in [0, 1]. Branded via STTConfidence per brands.ts
+   * + wave-46.5 type-design REWORK R6. Decoder validates at wire boundary.
+   */
+  readonly confidence: STTConfidence;
   readonly language: string;
   readonly speakers: ReadonlyArray<STTSpeakerSegment>;
   readonly word_timestamps: ReadonlyArray<STTWordTimestamp>;
