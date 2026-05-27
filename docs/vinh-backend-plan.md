@@ -267,15 +267,17 @@ Cross-reference: `research/wave-30/README.md` for source manifest + `research/wa
 
 **Goal:** Everything submission-grade. Paper draft polished. All external-tool passes complete.
 
+**Day 11 status (close-out 2026-05-27):** ✅ Vinh-lane Phase 6 backend tasks complete. `app/backend/README.md` shipped (task 6.3); Convergence-14 final pass shipped Day 7 with the Phase 4 serializer expansion (task 6.4); G10 PASS on reduced columns at `logs/day-11-g10.md` (task 6.4b) with `apex-bench/run_bench.py` + `eval/Dockerfile` + APEX-Bench v0.0.1-preview banner. Paper §3.2 + cost audit + final pre-mortem entry are Stephen-coordination / shared-lane items (D-052 G4 pivot already executed paper §3.2 + §3.5 + §4.2 + §4.5 reframing).
+
 | # | Task | File | Status |
 |---|------|------|--------|
-| 6.1 | NeurIPS Workshop paper §3.2 final pass - physics projection math + COA wording correction | `paper/apex-neurips-workshop-2026.md` | ⬜ |
-| 6.2 | Architecture-spec Layer 3 COA schema - apply "derived flag" wording | `docs/architecture-spec.md` | ⬜ |
-| 6.3 | Backend README - install + run + test instructions | `app/backend/README.md` | ⬜ |
-| 6.4 | Convergence-14 suite final pass - every violation type covered | `app/backend/tests/test_serializer.py` | ⬜ |
-| **6.4b** | **🚨 Gate G10 - LIPS 4-axis evaluation harness + APEX-Bench release prep (Sync Point 4, council v2 fix - was missing from Phase 6 table):** all 4 ablation rows populated (zero-shot TTM; soft-loss; APEX hard projection; full 3-track + 8-tier - or reduced columns if rung 1 fired); MLPerf tolerance bands documented per D-023; dockerized harness `eval/Dockerfile` reproduces results on RTX 4060 within published bounds. **Council v2 + Long-Term Architect: tag APEX-Bench as `v0.0.1-preview` with "not yet stable" README banner; defer public release governance (versioning, deprecation, contributor guidelines) to Day-13+. If D-027 wobbled, paper cites "APEX-Bench v0.0.1-preview, public release forthcoming" instead of a Day-11 public DOI'd release.** | `eval/Dockerfile` + `apex-bench/README.md` + `logs/day-11-g10.md` | ⬜ |
-| 6.5 | Cost audit - token spend, API calls, infra cost | `docs/cost-audit.md` | ⬜ |
-| 6.6 | Final pre-mortem entry | `docs/pre-mortem.md` | ⬜ |
+| 6.1 | NeurIPS Workshop paper §3.2 final pass - physics projection math + COA wording correction | `paper/apex-neurips-workshop-2026.md` | ⬜ Stephen-coordination (paper authoring is shared lane; D-052 already executed the G4 pivot reframe across §3.2/§3.5/§4.2/§4.5). |
+| 6.2 | Architecture-spec Layer 3 COA schema - apply "derived flag" wording | `docs/architecture-spec.md` | ⬜ already-shipped per wave-28 closure (Perplexity validation 2026-05-21 derived-flag wording sweep across 8 surfaces). |
+| 6.3 | Backend README - install + run + test instructions | `app/backend/README.md` | ✅ Day 11. Quick-start + server + container + module map + engine-agnostic boundary + per-gate status table. |
+| 6.4 | Convergence-14 suite final pass - every violation type covered | `app/backend/tests/test_serializer.py` | ✅ Day 7 (shipped with Phase 4). 18 tests covering all 14 VIOLATION_TYPES; V1/V2 byte-equality holds across all 14 types. |
+| **6.4b** | **🚨 Gate G10 - LIPS 4-axis evaluation harness + APEX-Bench release prep (Sync Point 4, council v2 fix - was missing from Phase 6 table):** all 4 ablation rows populated (zero-shot TTM; soft-loss; APEX hard projection; full 3-track + 8-tier - or reduced columns if rung 1 fired); MLPerf tolerance bands documented per D-023; dockerized harness `eval/Dockerfile` reproduces results on RTX 4060 within published bounds. **Council v2 + Long-Term Architect: tag APEX-Bench as `v0.0.1-preview` with "not yet stable" README banner; defer public release governance (versioning, deprecation, contributor guidelines) to Day-13+. If D-027 wobbled, paper cites "APEX-Bench v0.0.1-preview, public release forthcoming" instead of a Day-11 public DOI'd release.** | `eval/Dockerfile` + `apex-bench/README.md` + `logs/day-11-g10.md` | ✅ PASS Day 11 on reduced columns per D-052 + D-050. `apex-bench/run_bench.py` produces sarah_coaching_report.json + sarah_violation_log.txt + lips_ablation.csv on every run; `eval/Dockerfile` ships slim base with graceful V2-cvxpylayers degradation; APEX-Bench v0.0.1-preview banner present per Long-Term Architect Day-13+ governance schedule. |
+| 6.5 | Cost audit - token spend, API calls, infra cost | `docs/cost-audit.md` | ⬜ Stephen-lane (cost-audit shell shipped wave-26 + ongoing) |
+| 6.6 | Final pre-mortem entry | `docs/pre-mortem.md` | ⬜ Stephen-coordination (daily pre-mortem rhythm; both Vinh + Stephen post entries) |
 
 **Pass condition:** Repo is submission-grade. No TODOs in backend code. All tests green.
 
