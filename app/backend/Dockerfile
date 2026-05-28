@@ -86,6 +86,7 @@ COPY fixtures /srv/app/fixtures
 # --- runtime ----------------------------------------------------------
 ENV PYTHONPATH=/srv/app \
     APEX_AUDIT_LOG_PATH=/srv/audit/audit-log.jsonl \
+    APEX_FIXTURES_DIR=/srv/app/fixtures \
     APEX_COMMIT_SHA=container \
     APEX_ENABLE_TTM=0 \
     PYTHONUNBUFFERED=1

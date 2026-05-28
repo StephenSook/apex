@@ -222,17 +222,27 @@ def get_session_context():
 
 
 def _sarah_fixtures_or_503() -> tuple[Path, Path]:
-    # Repo-root fixtures dir; this file is app/backend/apex/server.py, so
-    # parents[3] resolves to the repo root reliably regardless of how the
-    # server is launched.
-    repo_root = Path(__file__).resolve().parents[3]
-    base = repo_root / "fixtures" / "personas"
+    # wave-48 deploy fix: container layout (`/srv/app/apex/server.py`)
+    # makes `parents[3]` resolve to `/` not the repo root. Allow an
+    # explicit `APEX_FIXTURES_DIR` env override so the HF Spaces Docker
+    # image can point at `/srv/app/fixtures` without breaking the local
+    # dev path resolution.
+    env_dir = os.environ.get("APEX_FIXTURES_DIR", "").strip()
+    if env_dir:
+        base = Path(env_dir) / "personas"
+    else:
+        # Local dev: app/backend/apex/server.py -> parents[3] = repo root.
+        repo_root = Path(__file__).resolve().parents[3]
+        base = repo_root / "fixtures" / "personas"
     telemetry = base / "sarah-reynolds-telemetry.csv"
     coa = base / "sarah-reynolds-coa-stub.json"
     if not telemetry.exists() or not coa.exists():
         raise HTTPException(
             status_code=503,
-            detail="sarah-reynolds canonical fixtures missing on backend",
+            detail=(
+                f"sarah-reynolds canonical fixtures missing on backend "
+                f"(searched {base}; set APEX_FIXTURES_DIR env to override)"
+            ),
         )
     return telemetry, coa
 
