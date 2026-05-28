@@ -1,3 +1,5 @@
+"use client";
+
 /**
  * GraniteCitationFooter: per-recommendation citation chain rendered
  * below the existing ProvenanceFooterBlock in CoachingReport. Surfaces
@@ -14,6 +16,15 @@
  * because the editorial-paddock layout favors the unified citation
  * column over scattered per-card expandables.
  *
+ * Wave-51b scroll-anchor pulse upgrade: when each citation enters the
+ * viewport, the section_anchor paragraph pulses clay-red briefly via
+ * the .apex-citation-pulse utility shipped in wave-51b globals.css.
+ * IntersectionObserver fires once per citation; observer disconnects
+ * after the first intersect so the pulse does not re-fire on scroll-
+ * back. Honors prefers-reduced-motion via the shared hook at
+ * lib/use-prefers-reduced-motion (reduce-motion users see the static
+ * ink color from first paint; no observer registered).
+ *
  * Static doc references: passage data is sourced from docs/architecture-spec.md
  * + paper §3 + decision-log D-022 + D-039 (canonical citation corpus). Real
  * per-recommendation triggered_rules wire when the AnalyzeResponse extension
@@ -26,6 +37,9 @@
  * accessible without ARIA work).
  */
 
+import { useEffect, useRef, useState } from "react";
+
+import { usePrefersReducedMotion } from "../lib/use-prefers-reduced-motion";
 import type { CoachingReport } from "../../shared/types";
 
 interface GraniteCitationFooterProps {
@@ -100,6 +114,63 @@ function severityLabel(severity: CitationLine["severity"]): string {
   }
 }
 
+function CitationItem({ citation }: { readonly citation: CitationLine }) {
+  const anchorRef = useRef<HTMLParagraphElement | null>(null);
+  const [pulsed, setPulsed] = useState(false);
+  const prefersReducedMotion = usePrefersReducedMotion();
+
+  useEffect(() => {
+    if (prefersReducedMotion) return;
+    const node = anchorRef.current;
+    if (!node) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setPulsed(true);
+            observer.disconnect();
+            break;
+          }
+        }
+      },
+      { threshold: 0.5 },
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [prefersReducedMotion]);
+
+  const shouldPulse = pulsed && !prefersReducedMotion;
+
+  return (
+    <li className="flex flex-col gap-2 rounded-sm border border-rule bg-paper-warm p-4">
+      <div className="flex items-baseline justify-between gap-3">
+        <p
+          ref={anchorRef}
+          className={`font-display text-base text-ink${shouldPulse ? " apex-citation-pulse" : ""}`}
+        >
+          {citation.section_anchor}
+        </p>
+        <span
+          className={`rounded-sm border bg-paper px-2 py-0.5 font-mono text-[9px] uppercase tracking-wider ${severityBadgeClass(citation.severity)}`}
+        >
+          {severityLabel(citation.severity)}
+        </span>
+      </div>
+      <details className="group">
+        <summary className="cursor-pointer font-mono text-[11px] uppercase tracking-wider text-racing-green group-open:text-accent">
+          Granite excerpt · {citation.passage_id}
+        </summary>
+        <p className="mt-2 text-xs leading-relaxed text-ink-soft">
+          {citation.excerpt}
+        </p>
+      </details>
+      <p className="font-mono text-[10px] text-muted">
+        Rule id: {citation.rule_id}
+      </p>
+    </li>
+  );
+}
+
 export default function GraniteCitationFooter(_props: GraniteCitationFooterProps) {
   // Wave-42 cascade-fix-forward c3de91f (revealed by 1c95ab5 5-tab restructure): dropped the driverId reference
   // from the section subhead. Prior render duplicated the report.driver_id
@@ -134,32 +205,7 @@ export default function GraniteCitationFooter(_props: GraniteCitationFooterProps
       </header>
       <ul className="flex flex-col gap-3">
         {STATIC_DOC_REFERENCES.map((citation) => (
-          <li
-            key={citation.rule_id}
-            className="flex flex-col gap-2 rounded-sm border border-rule bg-paper-warm p-4"
-          >
-            <div className="flex items-baseline justify-between gap-3">
-              <p className="font-display text-base text-ink">
-                {citation.section_anchor}
-              </p>
-              <span
-                className={`rounded-sm border bg-paper px-2 py-0.5 font-mono text-[9px] uppercase tracking-wider ${severityBadgeClass(citation.severity)}`}
-              >
-                {severityLabel(citation.severity)}
-              </span>
-            </div>
-            <details className="group">
-              <summary className="cursor-pointer font-mono text-[11px] uppercase tracking-wider text-racing-green group-open:text-accent">
-                Granite excerpt · {citation.passage_id}
-              </summary>
-              <p className="mt-2 text-xs leading-relaxed text-ink-soft">
-                {citation.excerpt}
-              </p>
-            </details>
-            <p className="font-mono text-[10px] text-muted">
-              Rule id: {citation.rule_id}
-            </p>
-          </li>
+          <CitationItem key={citation.rule_id} citation={citation} />
         ))}
       </ul>
       <p className="mt-3 font-mono text-[10px] uppercase tracking-wider text-muted">
