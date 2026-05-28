@@ -1,0 +1,45 @@
+name: HF Space keep-alive
+
+# Wave-48 polish: HuggingFace Spaces free tier sleeps after ~30 minutes
+# of inactivity. During the submission demo window (2026-05-27 through
+# 2026-05-31), every cold-start is a 30+ second penalty on the FIRST
+# /api/* call from production frontend. Keep the Space warm via /healthz
+# ping every 10 minutes.
+#
+# No untrusted inputs consumed (no issue/PR/commit text in run: steps);
+# only static curl calls to a known URL. Safe by inspection.
+#
+# Disable after submission deadline by editing the schedule cron OR
+# removing this file.
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch: {}
+
+permissions: {}
+
+jobs:
+  ping:
+    name: Ping HF Space /healthz
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    env:
+      BACKEND_URL: "https://ssookra-apex-backend.hf.space"
+    steps:
+      - name: Ping backend healthz
+        run: |
+          response=$(curl -sS -o /tmp/body -w "%{http_code}|%{time_total}" --max-time 30 "${BACKEND_URL}/healthz")
+          status=${response%%|*}
+          elapsed=${response##*|}
+          body=$(cat /tmp/body)
+          echo "HTTP status: $status"
+          echo "Elapsed: ${elapsed}s"
+          echo "Body: $body"
+          if [ "$status" != "200" ]; then
+            echo "::error::HF Space /healthz returned $status (expected 200)"
+            exit 1
+          fi
+          curl -sS -o /dev/null --max-time 30 "${BACKEND_URL}/api/orchestration" \
+            && echo "orchestration warm" \
+            || echo "::warning::orchestration warmup failed (non-fatal)"

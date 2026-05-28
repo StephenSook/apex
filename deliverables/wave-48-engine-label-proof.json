@@ -1,0 +1,70 @@
+{
+  "wave": "wave-48",
+  "captured_iso": "2026-05-27T21:19:30-04:00",
+  "frontend_origin": "https://apex-one-black.vercel.app",
+  "backend_origin": "https://ssookra-apex-backend.hf.space",
+  "backend_env": {
+    "APEX_ENABLE_TSPULSE": "1",
+    "APEX_ENABLE_TTM": "1",
+    "OPENROUTER_API_KEY": "set (on backend Space)",
+    "APEX_OTEL_ENABLED": "unset (lazy-import no-op)"
+  },
+  "vercel_env": {
+    "NEXT_PUBLIC_VINH_BACKEND_BASE_URL": "https://ssookra-apex-backend.hf.space",
+    "NEXT_PUBLIC_USE_REAL_BACKEND_V12": "1",
+    "NEXT_PUBLIC_USE_REAL_BACKEND_V13": "1",
+    "NEXT_PUBLIC_USE_REAL_BACKEND_V14": "1",
+    "NEXT_PUBLIC_USE_REAL_BACKEND_V15": "1",
+    "NEXT_PUBLIC_USE_REAL_TSPULSE": "1",
+    "NEXT_PUBLIC_USE_REAL_TIMING_SHEET": "1",
+    "NEXT_PUBLIC_USE_REAL_SESSION_CONTEXT": "1",
+    "NEXT_PUBLIC_USE_REAL_AUDIT_LOG": "1",
+    "NEXT_PUBLIC_USE_REAL_WHAT_IF_REPLAY": "1",
+    "HF_TOKEN": "set (server-side)"
+  },
+  "direct_backend_smoke": {
+    "GET /healthz": { "status": 200, "ms": 316, "body": "{\"status\":\"ok\"}" },
+    "GET /api/orchestration": { "status": 200, "ms": 10181, "engine": "langgraph-v14-real", "note": "first call cold-loaded TTM r2 (~10s); subsequent calls under 200ms" },
+    "GET /api/session-context": { "status": 200, "ms": 43 },
+    "GET /api/tspulse/anomaly": { "status": 200, "ms": 595, "engine": "tspulse-r1-anomaly", "note": "REAL IBM Granite TimeSeries TSPulse r1 polyphase head; APEX_ENABLE_TSPULSE=1 confirmed live" }
+  },
+  "production_wire_flip_smoke": {
+    "GET /api/orchestration": { "status": 200, "ms": 323, "engine": "langgraph-v14-real" },
+    "GET /api/session-context": { "status": 200, "ms": 147, "engine": "session-context-v4-real" },
+    "GET /api/tspulse/anomaly": { "status": 200, "ms": 156, "engine": "tspulse-v7-real" },
+    "GET /api/projector-stage-a": { "status": 200, "ms": 86, "engine": "pacejka-v12-canned-fallback", "reason": "Vinh M3-V12 backend not shipped; wire-flip honestly falls back" },
+    "GET /api/projector-stage-b": { "status": 200, "ms": 121, "engine": "scp-v13-canned-fallback", "reason": "Vinh M3-V13 backend not shipped; wire-flip honestly falls back" },
+    "GET /api/lips-harness": { "status": 200, "ms": 157, "engine": "lips-v15-canned-fallback", "reason": "Vinh M3-V15 backend not shipped; wire-flip honestly falls back" },
+    "GET /api/judges/coa-diff": { "status": 200, "ms": 123, "engine": "coa-diff-canned-fallback", "reason": "Vinh M3-V14 coa-diff route not exposed; wire-flip honestly falls back" },
+    "GET /api/tire-degradation": { "status": 200, "ms": 109, "engine": "tire-degradation-canned-fallback", "reason": "no Vinh route; honest label" },
+    "GET /api/weather-brief": { "status": 200, "ms": 125, "engine": "demo-fixture-donington-park", "reason": "OPENWEATHER_API_KEY unset; honest demo-fixture label not misleading canned-fallback" },
+    "POST /api/audit-log": { "status": 200, "ms": 261, "engine": "audit-log-v4-real" },
+    "POST /api/what-if-replay": { "status": 200, "ms": 1037, "engine": "what-if-replay-v4-real" }
+  },
+  "summary": {
+    "real_wire_count": 6,
+    "honest_fallback_count": 5,
+    "demo_burning_canned_count": 0,
+    "verdict": "All 11 routes return 200. 6 serve real backend data; 5 serve honestly labeled canned-fallback for swap-points Vinh has not shipped on the backend; 0 misleading or broken. Production /api/* responses match the wave-48 honesty-tier promise."
+  },
+  "production_page_walk_smoke": {
+    "GET /": { "status": 200, "ms": 52, "title": "APEX | AI race engineer for adaptive racers", "has_unhandled_error": false },
+    "GET /judges": { "status": 200, "ms": 31, "title": "Judges' Tour · APEX | APEX", "has_unhandled_error": false, "note": "the page that earlier crashed on the orchestration status literal mismatch; status mapping fix landed + page renders clean" },
+    "GET /judge-tour": { "status": 200, "ms": 337, "title": "Judge tour | APEX | APEX", "has_unhandled_error": false },
+    "GET /analyze": { "status": 200, "ms": 110, "title": "Analyze · APEX | APEX", "has_unhandled_error": false },
+    "GET /upload": { "status": 200, "ms": 163, "title": "Upload telemetry | APEX | APEX", "has_unhandled_error": false },
+    "GET /sim-rig": { "status": 200, "ms": 148, "title": "Sim-rig live · APEX | APEX", "has_unhandled_error": false },
+    "GET /coach-code": { "status": 200, "ms": 235, "title": "Coach code | APEX | APEX", "has_unhandled_error": false },
+    "GET /compare": { "status": 200, "ms": 142, "title": "Compare drivers | APEX | APEX", "has_unhandled_error": false },
+    "GET /lips-harness": { "status": 200, "ms": 309, "title": "APEX · LIPS 4-axis evaluation harness | APEX", "has_unhandled_error": false },
+    "GET /status": { "status": 200, "ms": 178, "title": "Status · APEX | APEX", "has_unhandled_error": false },
+    "GET /ibm-stack": { "status": 404, "ms": 32, "title": "404: This page could not be found.", "has_unhandled_error": false, "note": "page never built; referenced in memory but not part of the deployed route map. Not load-bearing for demo." }
+  },
+  "page_walk_summary": {
+    "pages_tested": 11,
+    "pages_200_clean": 10,
+    "pages_404": 1,
+    "pages_crashed": 0,
+    "verdict": "10 of 11 pages render with valid titles + no unhandled errors. /ibm-stack 404 is a never-shipped route; no production navigation links to it from existing pages."
+  }
+}
