@@ -66,6 +66,38 @@
 
 ---
 
+## Status snapshot (last sync 2026-05-28 Day 9 wave-51 cinematic hero close-out)
+
+**Wave-51 cinematic editorial-paddock hero upgrade.** Stephen explicit night 2026-05-27/28 "shock factor wow factor" ask on the landing-page hero. Direction locked: Editorial Paddock Cinematic Noir with Warmth. Reference vocabulary from motionsites.ai patterns translated to the warm-cream + racing-green + clay-red + amber + ink palette. Editorial-paddock identity preserved end-to-end. Zero new dependencies.
+
+**Wave-51 ship ledger (8 atomic commits + 2 cascade closures):**
+
+1. `1f86ff8` feat(css): 8 cinematic editorial-paddock chrome utilities in globals.css
+2. `1c3b683` feat(ui): RacingLineHero rev-5 cinematic upgrade (cosmic halo + 3 orbital glow rings + 12 spark embers + shutter sweep)
+3. `97f481c` feat(ui): BlurText word-by-word blur-to-crisp reveal component
+4. `43d0e1a` feat(ui): landing page hero h1 BlurText word-by-word reveal
+5. `ca71662` fix(ui): cascade-#55 BlurText rAF defer for React 19 set-state-in-effect lint rule
+6. `caea281` fix(ui): cascade-#56 reduce-motion accessibility hook + BlurText simplification + ember conditional render + ember-bloom drop
+7. `48c8a78` docs(decision-log): wave-51 D-070 close-out
+
+**Codex adversarial review HIGH findings closure:**
+- HIGH #2 BlurText first-paint invisible-text for reduce-motion users: ✅ closed `caea281` (render visible by default; class applies only on motion-OK + in-view)
+- HIGH #3 SVG bloom mobile Safari compositing cost: ✅ closed `caea281` (ember-bloom feGaussianBlur filter dropped from moving embers)
+- HIGH #4 SMIL embers bypassing reduce-motion CSS reset: ✅ closed `caea281` (ember group conditional-rendered behind !prefersReducedMotion)
+
+**Playwright production SHIP verdict.** BlurText 10 words rendered, RacingLineHero SVG present + 3 orbital glow rings + 12 spark embers, .apex-shutter-sweep overlay present, editorial-paddock palette preserved (#F4EBD8 cream + #0F1410 ink), mobile 375x667 no horizontal overflow, zero hydration errors, zero React warnings.
+
+**Production state post-wave-51.** HEAD `caea281` + D-070 close at `48c8a78`. CI GREEN per push. apex-one-black.vercel.app reflects the cinematic upgrade. Rev-4 SVG-only hero remains in git history at `1c3b683^` for instant revert if needed per Stephen explicit fallback.
+
+**Phase 2 cinematic stretches (NOT shipped wave-51; named swap-points for post-wave-51 evaluation):**
+- R3F overlay layer with @react-three/postprocessing Bloom + Vignette. Compatibility verified: postprocessing@6.39.1 + three@0.184.0 safe combo. Ship cost ~280KB gzip behind next/dynamic.
+- Live latency badge on /judges (~1 hr).
+- Granite Citation Footer scroll-anchor pulse (~30 min).
+- Sarah Reynolds illustrated portrait via Nano Banana Pro or Replicate FLUX 1.1 (Stephen operator-action; Claude-shippable wiring once asset lands).
+- NotebookLM master Audio Overview at /judges + SUBMISSION (Stephen operator-action).
+
+---
+
 ## Status snapshot (last sync 2026-05-27 night Day 8 wave-50 audit close-out)
 
 **Wave-50 audit close-out + check-off.** Ten atomic commits shipped this session per Stephen explicit "thorough deep audit; brutally honest; everything in scope" directive. Five-agent parallel dispatch (Gemini 1M repo gap + Codex adversarial + silent-failure-hunter wave-49 + code-reviewer wave-49 + new-tool research + Playwright production walk) surfaced BLOCKER + HIGH + MED findings; wave-50 batch closed the load-bearing ones.
