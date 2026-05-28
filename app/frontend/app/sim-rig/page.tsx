@@ -10,12 +10,11 @@ export const metadata: Metadata = {
     "Live sim-rig telemetry tile demonstrating APEX consuming adaptive-controls telemetry at 20 Hz. Stretch S1 (Day 9 lock) pulled forward to Day 2 per galaxy-tier no-deferrals rule.",
 };
 
-const STRETCH_CONTEXT = `Stretch inclusion S1 in PLAN.md §18. Day 2 of build (today) ships against a
-canned synthetic adaptive-controls GT4 lap stream so the live tile
-is real on the demo video Day 10. Day 9 swap: this component connects to the
-Vinh-lane WebSocket at GET /api/sim-rig/stream returning a SimRigFrame stream
-per app/shared/types.ts. The render path does not change between simulated and
-live modes, so the swap is a one-line prop change.`;
+const STRETCH_CONTEXT = `Stretch inclusion S1 in PLAN.md §18. The tile ships against a
+synthetic adaptive-controls GT4 lap stream so the live demo flow renders end-to-end
+without a live driver-rig connection. Live WebSocket swap point lives at GET /api/sim-rig/stream
+returning a SimRigFrame stream per app/shared/types.ts; the render path is identical
+between simulated and live modes, so flipping is a one-line prop change.`;
 
 const CHANNEL_NOTES: ReadonlyArray<readonly [string, string]> = [
   [
@@ -24,7 +23,7 @@ const CHANNEL_NOTES: ReadonlyArray<readonly [string, string]> = [
   ],
   [
     "Throttle / Brake",
-    "Throttle in percent, brake in megapascals. The canned profile drops throttle and lifts brake through the slow-hairpin window; outside that window, throttle modulates against brake on a 3x oscillation.",
+    "Throttle in percent, brake in megapascals. The synthetic profile drops throttle and lifts brake through the slow-hairpin window; outside that window, throttle modulates against brake on a 3x oscillation.",
   ],
   [
     "Steering / Lat G",
@@ -36,7 +35,7 @@ const CHANNEL_NOTES: ReadonlyArray<readonly [string, string]> = [
   ],
   [
     "Gear / RPM",
-    "Engine RPM scaled with speed; gear bucketed against speed thresholds matched to a generic GT4 hand-controls setup used by the canned simulated stream.",
+    "Engine RPM scaled with speed; gear bucketed against speed thresholds matched to a generic GT4 hand-controls setup used by the synthetic simulated stream.",
   ],
 ];
 
@@ -53,9 +52,9 @@ export default function SimRigPage() {
           </h1>
           <p className="max-w-3xl text-base leading-relaxed text-ink-soft">
             A 20 Hz stream of adaptive hand-controls telemetry flowing into the APEX coaching
-            loop. The tile ships a canned synthetic GT4 hand-controls lap so the demo flow
-            renders end-to-end without a live rig. Live WebSocket swap point arrives via
-            Vinh M3-V2 backend deploy.
+            loop. The tile renders a synthetic GT4 hand-controls lap so the live demo flow
+            renders end-to-end without a tethered driver rig. Live WebSocket swap point at
+            apex/sim_rig/ws_server.py lights via Vinh M3-V2 backend deploy.
           </p>
           <p className="font-mono text-xs text-muted">
             Adaptive hand-controls demo · GT4 sprint-series setup · circuit-agnostic synthetic layout.

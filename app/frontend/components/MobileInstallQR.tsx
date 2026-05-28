@@ -58,7 +58,8 @@ export default function MobileInstallQR({
         <p className="apex-eyebrow">PWA install affordance</p>
         <h4 className="font-display text-lg leading-snug text-ink">{heading}</h4>
         <p className="font-mono text-[11px] leading-relaxed text-ink-soft">
-          QR visual placeholder + URL text. Scannable QR via static-asset bundling lands wave-46.
+          Open the URL below on your phone to install. The visual signals
+          QR-affordance; the URL is the one-tap install path.
         </p>
         <Link
           href={targetUrl}

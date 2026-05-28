@@ -5,8 +5,10 @@
  * for the LangGraph + MCP + ContextForge orchestration runtime swap-
  * point per D-017 G7. Renders a 6-node state-machine execution trace
  * (ingestion -> RAG -> projection -> Guardian -> instruct -> provenance)
- * from /api/orchestration. HEAD shows canned-fallback engine; Vinh M3-V14
- * swaps in the real LangGraph runtime + MCP + ContextForge wire-up.
+ * from /api/orchestration. Wave-49 1d17eee shipped the real LangGraph
+ * runtime at apex/orchestration/langgraph_runtime.py; engine label
+ * reflects real backend when NEXT_PUBLIC_USE_REAL_BACKEND_V14=1 + the
+ * HF Space is warm.
  *
  * Wave-45 Phase 9 Block F: D-017 demoted Langflow to FACADE wave-30;
  * D-026 + G7 path is LangGraph + Granite MCP Gateway + ContextForge for
@@ -94,9 +96,10 @@ export default function LangGraphRuntimePanel() {
         </h3>
         <p className="mt-2 text-sm leading-relaxed text-ink-soft">
           The actual runtime path per D-026 maximal architecture; Langflow facade is the
-          export-graph artifact, not the runtime. HEAD shows canned-fallback engine while
-          Vinh wires <span className="font-mono">apex/orchestration/langgraph_runtime.py</span>
-          {" "}+ Granite MCP Gateway + ContextForge tool registry.
+          export-graph artifact, not the runtime. Wave-49 lit
+          {" "}<span className="font-mono">apex/orchestration/langgraph_runtime.py</span>{" "}
+          + Granite MCP Gateway + ContextForge tool registry; engine label reflects the live
+          state machine when <span className="font-mono">NEXT_PUBLIC_USE_REAL_BACKEND_V14=1</span>.
         </p>
       </header>
 

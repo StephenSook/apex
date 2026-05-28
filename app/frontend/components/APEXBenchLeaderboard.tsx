@@ -36,7 +36,7 @@ import { scrubInventedRegulatoryAnchors } from "../lib/scrub-regulatory-anchors"
 const STORAGE_KEY = "apex-bench-leaderboard-v0_1_0";
 
 const APEX_BENCH_SWAP_POINT =
-  "POST /api/lips-harness/submit + GET /api/lips-harness/leaderboard pending Vinh M3-V15 community-leaderboard backend deploy; HEAD persists submissions to localStorage so the surface ships demo-functional";
+  "Submissions persist in browser localStorage at HEAD; community-wide POST /api/lips-harness/submit + GET /api/lips-harness/leaderboard backend deploys per the M3-V15 swap-point";
 
 type Tier = "canonical" | "community" | "experimental";
 

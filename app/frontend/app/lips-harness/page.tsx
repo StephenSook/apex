@@ -5,8 +5,9 @@
  * the 4-row ablation table covering zero-shot TTM + soft-loss-only +
  * APEX hard projection + full 3-track ensemble + 8-tier physics.
  *
- * HEAD ships canned-fallback engine while Vinh wires the Dockerized
- * evaluation harness at eval/Dockerfile + apex-bench/ Day 11.
+ * Wave-49 lit apex/lips/harness.py; engine label flips real when
+ * NEXT_PUBLIC_USE_REAL_BACKEND_V15=1. Dockerized evaluation harness
+ * at eval/Dockerfile + apex-bench/ pre-release per the wave-50 close-out.
  *
  * Cross-ref: paper §4.6 Reproducibility statement + D-026 + G10.
  */

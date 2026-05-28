@@ -439,8 +439,10 @@ export default function JudgesPage() {
             Wave-45 Phase 9 Block F V14 close-out. Langflow is the export-graph artifact;
             the actual runtime path is LangGraph + Granite MCP Gateway + ContextForge tool
             registry per the D-026 maximal-architecture lock. Six nodes drive the pipeline
-            from ingestion through provenance. HEAD shows canned-fallback engine while
-            Vinh M3-V14 wires <span className="font-mono text-xs text-racing-green">apex/orchestration/langgraph_runtime.py</span>.
+            from ingestion through provenance. Wave-49 lit
+            {" "}<span className="font-mono text-xs text-racing-green">apex/orchestration/langgraph_runtime.py</span>;
+            engine label reflects the live state machine when{" "}
+            <span className="font-mono text-xs text-racing-green">NEXT_PUBLIC_USE_REAL_BACKEND_V14=1</span>.
           </p>
           <div className="mt-8">
             <LangGraphRuntimePanel />

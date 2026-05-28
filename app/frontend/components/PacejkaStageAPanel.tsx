@@ -92,8 +92,9 @@ export default function PacejkaStageAPanel() {
         <p className="mt-2 text-sm leading-relaxed text-ink-soft">
           The Pacejka tire-force linearization wave for each physics tier (vehicle dynamics,
           friction ellipse, polyphase anomaly, thermal envelope, SCP outer loop, Pacejka core,
-          bicycle model, forward-Euler kinematic step). HEAD ships canned-fallback engine while
-          Vinh wires <span className="font-mono">apex/backend/apex/physics/projection_pacejka.py</span>.
+          bicycle model, forward-Euler kinematic step). Wave-49 lit
+          {" "}<span className="font-mono">apex/physics/projection_pacejka.py</span>;
+          engine label flips real when <span className="font-mono">NEXT_PUBLIC_USE_REAL_BACKEND_V12=1</span>.
         </p>
       </header>
 
