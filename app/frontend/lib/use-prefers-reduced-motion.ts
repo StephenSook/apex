@@ -36,6 +36,12 @@ export function usePrefersReducedMotion(): boolean {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
+    // Wave-51b cascade-#58 close: jsdom env exposes window but does NOT
+    // implement matchMedia; the prior bare-window guard let the code
+    // through + the matchMedia call threw TypeError in CoachingReport
+    // + AnalyzeFlow test suites that render GraniteCitationFooter.
+    // Defensive type-check guards against test envs lacking the API.
+    if (typeof window.matchMedia !== "function") return;
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
 
     let rafId = 0;
