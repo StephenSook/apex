@@ -37,9 +37,25 @@
  * Editorial-paddock palette + Fraunces display + IBM Plex Mono numerics.
  */
 
+import { useEffect, useState } from "react";
+
 import type { TSPulseAnomalyState, TSPulseBand } from "../../shared/types";
 
-import { MOCK_TSPULSE_ACTIVE } from "../lib/mocks/judges-mocks";
+// Wave-49 mock-sweep: replaces module-scope MOCK_TSPULSE_ACTIVE
+// fallback with a live /api/tspulse/anomaly fetch on mount. The wire-
+// flip route forwards to the HF Space backend at
+// `apex.tspulse.anomaly.TSPulseAnomalyDetector` (real IBM Granite
+// TimeSeries TSPulse r1 polyphase head when APEX_ENABLE_TSPULSE=1 is
+// set on the deploy). Frozen idle-state fallback below is the demo
+// fixture shown only when the fetch fails (network OR HF Space cold-
+// start exceeding the 5s budget).
+const FALLBACK_IDLE_STATE: TSPulseAnomalyState = { status: "idle" };
+const FETCH_TIMEOUT_MS = 5_000;
+
+interface TSPulseResponseBody {
+  readonly state: TSPulseAnomalyState;
+  readonly engine: string;
+}
 
 // Wave-46 Phase 4.4 type-design promotion: TSPulseBand + TSPulseAnomalyState
 // hoisted to `app/shared/types.ts` so the new /api/tspulse/anomaly route
@@ -103,10 +119,42 @@ function bandLabel(band: TSPulseBand): string {
 }
 
 export default function TSPulseAnomalyPanel({
-  state = MOCK_TSPULSE_ACTIVE,
+  state: propState,
 }: {
   readonly state?: TSPulseAnomalyState;
-}) {
+} = {}) {
+  const [fetchedState, setFetchedState] = useState<TSPulseAnomalyState>(FALLBACK_IDLE_STATE);
+
+  useEffect(() => {
+    if (propState !== undefined) return;
+    let cancelled = false;
+    const controller = new AbortController();
+    const timeoutHandle = setTimeout(() => controller.abort("timeout"), FETCH_TIMEOUT_MS);
+    (async () => {
+      try {
+        const res = await fetch("/api/tspulse/anomaly", {
+          signal: controller.signal,
+          cache: "no-store",
+        });
+        if (cancelled || !res.ok) return;
+        const body = (await res.json()) as TSPulseResponseBody;
+        if (!cancelled && body.state) {
+          setFetchedState(body.state);
+        }
+      } catch {
+        // Honest fallback: keep idle state on any fetch failure
+      } finally {
+        clearTimeout(timeoutHandle);
+      }
+    })();
+    return () => {
+      cancelled = true;
+      clearTimeout(timeoutHandle);
+      controller.abort("source-changed");
+    };
+  }, [propState]);
+
+  const state = propState ?? fetchedState;
   return (
     <section
       aria-labelledby="tspulse-anomaly-title"

@@ -23,8 +23,6 @@
 
 import dynamic from "next/dynamic";
 
-import { MOCK_TSPULSE_ACTIVE } from "../lib/mocks/judges-mocks";
-
 const LazyLoadingShim = () => (
   <div className="h-40 rounded-sm border border-rule bg-paper-warm motion-safe:animate-pulse" />
 );
@@ -56,7 +54,7 @@ export default function JudgesGalaxyMovesShell() {
       <ALoRAStatusBadge />
       <GEPAEvolutionPanel />
       <EAGLE3LatencyBadge />
-      <TSPulseAnomalyPanel state={MOCK_TSPULSE_ACTIVE} />
+      <TSPulseAnomalyPanel />
       <GraniteVisionParser />
     </div>
   );
