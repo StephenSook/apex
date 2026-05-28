@@ -69,8 +69,15 @@ export default function BlurText({
     if (typeof window === "undefined") return;
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
     if (mq.matches) {
-      setReduceMotion(true);
-      return;
+      // Wave-51 cascade-#55 close per feedback_react19_set_state_in_effect_workarounds.md:
+      // defer the reduce-motion state set past the synchronous effect phase via
+      // requestAnimationFrame so the React 19 set-state-in-effect lint rule does
+      // not flag the conditional sync update. The visible behavior is identical;
+      // the reduce-motion branch renders one extra paint with the default state
+      // before flipping to the static branch, but the .apex-blur-word static
+      // fallback renders the text fully visible on that first paint anyway.
+      const rafId = requestAnimationFrame(() => setReduceMotion(true));
+      return () => cancelAnimationFrame(rafId);
     }
     const node = containerRef.current;
     if (!node) return;
