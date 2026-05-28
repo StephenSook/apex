@@ -14,11 +14,10 @@
  * because the editorial-paddock layout favors the unified citation
  * column over scattered per-card expandables.
  *
- * Mock-fixture phase: passage data is hard-coded for the Day-6 demo;
- * production wires per the Stream M.3 spec handoff at
- * `docs/wave-41-backend-spec-handoff.md` extension (Vinh adds the
- * `triggered_rules[].passage_id + section_anchor + excerpt` payload to
- * the BackendGuardianAudit emitter in his next sync window).
+ * Static doc references: passage data is sourced from docs/architecture-spec.md
+ * + paper §3 + decision-log D-022 + D-039 (canonical citation corpus). Real
+ * per-recommendation triggered_rules wire when the AnalyzeResponse extension
+ * surfaces matched-rule context per Stream M.3 spec.
  *
  * Editorial-paddock palette: --font-mono for passage IDs + --font-display
  * for section anchors + --color-accent for rule-severity badges +
@@ -41,9 +40,9 @@ interface CitationLine {
   readonly severity: "info" | "monitor" | "critical";
 }
 
-// Mock-fixture phase: passage data is hard-coded for the Day-6 demo.
-// Production wires the triggered_rules payload via Stream M.3 spec
-// handoff backend extension.
+// Static doc references: passage data sourced from docs/architecture-spec.md +
+// paper §3 + decision-log canonical corpus. Real per-recommendation
+// triggered_rules wire when AnalyzeResponse surfaces matched-rule context.
 const STATIC_DOC_REFERENCES: ReadonlyArray<CitationLine> = [
   {
     rule_id: "fia_appendix_l_adaptive_simultaneity",
@@ -164,7 +163,7 @@ export default function GraniteCitationFooter(_props: GraniteCitationFooterProps
         ))}
       </ul>
       <p className="mt-3 font-mono text-[10px] uppercase tracking-wider text-muted">
-        Mock-fixture phase · backend wires per Stream M.3 spec
+        Static doc references · sourced from docs/architecture-spec.md + paper §3
       </p>
     </section>
   );

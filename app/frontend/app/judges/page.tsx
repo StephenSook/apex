@@ -580,14 +580,15 @@ export default function JudgesPage() {
             inference). Wave-44 Phase 6a adds the IBM TSPulse 1M polyphase time-frequency anomaly
             detector (D-016 Layer 2; per-window detection before the projector QP fires). Move #5
             (Agent-as-Judge tri-agent critic loop, Layer 7) renders one section below. Each panel
-            here uses mock fixtures today; backend wire-up arrives per <span className="font-mono text-xs text-racing-green">docs/vinh-backend-plan.md</span>
-            Phase 4 tasks 4.4 (EAGLE-3) + 4.5 (aLoRA) + 4.6 (GEPA artifact read) + wave-44 plan
-            Vinh-scope V7 (TSPulse anomaly endpoint).
+            here renders demo fixtures from the wave-46 INTEGRATION-tier stub; live fetch wires
+            via the wave-49 <span className="font-mono text-xs text-racing-green">NEXT_PUBLIC_USE_REAL_*</span> env flags
+            (TSPulse anomaly endpoint shipped wave-49 commit <span className="font-mono text-xs text-racing-green">1d17eee</span>;
+            EAGLE-3 + aLoRA + GEPA are ACCELERATOR-tier swap-points per the per-tool honesty ladder).
           </p>
           <JudgesGalaxyMovesShell />
           <p className="mt-6 font-mono text-xs italic text-muted">
-            Panels are mock for /judges visualisation. Real fetch swaps land per
-            <span className="not-italic"> docs/decision-log.md D-019 + D-032 + wave-44 Vinh M3-V7</span>.
+            Panels render demo fixtures for /judges visualization. Live fetch wires per
+            <span className="not-italic"> docs/decision-log.md D-019 + D-032 + wave-49 Vinh M3-V7 ship</span>.
           </p>
           <div className="mt-6">
             <NotebookLMHoverAudio
@@ -612,7 +613,7 @@ export default function JudgesPage() {
             Pedagogy-Critic + Guardian-Safety) running in parallel on the draft coaching report. If
             any critic flags, IBM Mellea Instruct-Validate-Repair fires with loop_budget = 3 until
             the panel approves. Verified CoachingReport then proceeds to the Layer 8 final Guardian
-            audit per D-A. The mock panel below renders the discriminated-union pattern from{" "}
+            audit per D-A. The panel below renders the discriminated-union pattern from{" "}
             <span className="font-mono text-xs text-racing-green">app/shared/types.ts </span>
             (TriAgentVerdictPanel = three TriAgentVerdict instances; verdict-tag narrowing + empty-
             reasoning-trace fallback per GuardianAudit one level up).
@@ -621,41 +622,41 @@ export default function JudgesPage() {
             <div className="flex flex-col items-center gap-3">
               <PhysicsConfidenceRing confidence={DEMO_PHYSICS_CONFIDENCE} />
               <p className="text-center font-mono text-xs text-muted">
-                D-024 in-distribution mock: Guardian verdict preserved.
+                D-024 in-distribution demo: Guardian verdict preserved.
               </p>
             </div>
             <div className="flex flex-col items-center gap-3">
               <PhysicsConfidenceRing confidence={DEMO_PHYSICS_CONFIDENCE_OOD} />
               <p className="text-center font-mono text-xs text-muted">
-                D-024 out-of-distribution mock: Guardian verdict downgraded from approve to review.
+                D-024 out-of-distribution demo: Guardian verdict downgraded from approve to review.
               </p>
             </div>
           </div>
           <div className="mt-6 flex flex-col gap-6">
             <div>
               <p className="font-mono text-[11px] uppercase tracking-wider text-muted">
-                Mock A: flag verdict on Pedagogy-Critic
+                Demo A: flag verdict on Pedagogy-Critic
               </p>
               <div className="mt-2">
-                <TriAgentCriticPanel panel={DEMO_TRI_AGENT_VERDICT} panelId="mock-flag" />
+                <TriAgentCriticPanel panel={DEMO_TRI_AGENT_VERDICT} panelId="demo-flag" />
               </div>
             </div>
             <div>
               <p className="font-mono text-[11px] uppercase tracking-wider text-muted">
-                Mock B: reject verdict on Guardian-Safety (COA-conflict)
+                Demo B: reject verdict on Guardian-Safety (COA-conflict)
               </p>
               <div className="mt-2">
                 <TriAgentCriticPanel
                   panel={DEMO_TRI_AGENT_VERDICT_REJECT}
-                  panelId="mock-reject"
+                  panelId="demo-reject"
                 />
               </div>
             </div>
           </div>
           <p className="mt-6 font-mono text-xs italic text-muted">
-            Panel data is mock for /judges visualisation. Vinh-lane backend at{" "}
-            <span className="not-italic">app/backend/apex/critics/</span> produces real verdicts per
-            PLAN row 4.20; Mellea IVR repair loop per row 4.21.
+            Panel data renders the discriminated-union verdict shape for /judges visualization. Real
+            critic verdicts wire from <span className="not-italic">app/backend/apex/critics/</span>{" "}
+            per the wave-49 1d17eee ship; Mellea IVR repair loop per D-018.
           </p>
         </div>
       </section>

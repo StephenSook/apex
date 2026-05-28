@@ -122,9 +122,8 @@ export default async function ComparePage({ searchParams }: ComparePageProps) {
           </h1>
           <p className="max-w-3xl text-base leading-relaxed text-ink-soft">
             Wave-45 Phase 6 Block C.3 close-out per the ApexIQ competitor deep-dive steal-list item #3.
-            Stub fixtures use generic Driver A + Driver B labels per Lane K persona-decoupling rule;
-            real driver-to-driver compare wires when Vinh&apos;s Phase 4 task 4.X session-store endpoint
-            lands.
+            Demo fixtures use generic Driver A + Driver B labels per Lane K persona-decoupling rule;
+            real driver-to-driver compare wires when the session-store endpoint deploys.
           </p>
         </div>
       </header>
