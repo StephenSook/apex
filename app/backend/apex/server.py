@@ -591,7 +591,6 @@ def get_lips_harness() -> dict[str, Any]:
 @app.get("/api/judges/coa-diff")
 def get_judges_coa_diff() -> dict[str, Any]:
     """V14 paired COA-permitted vs COA-blocked verdict diff."""
-    import traceback
     telemetry, coa = _sarah_fixtures_or_503()
     try:
         return compute_coa_diff(
@@ -599,34 +598,25 @@ def get_judges_coa_diff() -> dict[str, Any]:
             coa_json=str(coa),
         )
     except Exception as exc:
-        # Surface the traceback in the response body so a deploy-time
-        # mismatch (frontend schema vs backend record fields, etc) is
-        # debuggable from curl instead of having to dig through HF Space
-        # container logs. Falls back to a structured error payload that
-        # the wire-flip helper merges with canned defaults.
-        return {
-            "engine": "coa-diff-error",
-            "compute_ms": 0,
-            "scenario": "error",
-            "permitted": {
-                "coa_overlap_flag": 1,
-                "verdict": "feasible",
-                "headline": "Backend error",
-                "body": str(exc)[:400],
-                "projection_trace": [],
-            },
-            "blocked": {
-                "coa_overlap_flag": 0,
-                "verdict": "violation",
-                "headline": "Backend error",
-                "body": str(exc)[:400],
-                "projection_trace": [],
-            },
-            "swap_point": (
-                f"BACKEND_ERROR: {type(exc).__name__}: {str(exc)[:200]} | "
-                f"traceback: {traceback.format_exc()[-600:]}"
-            ),
-        }
+        # Code-reviewer wave-50 BLOCKER #2 close: prior catch leaked
+        # traceback.format_exc() + internal exception class names to
+        # unauthenticated clients hitting the HF Space + emitted an
+        # engine literal ("coa-diff-error") outside the canonical
+        # COADiffResponse.engine union. Both vectors fixed: log
+        # server-side at ERROR level + raise HTTPException 500 with a
+        # generic message. Frontend wire-flip helper falls through to
+        # canned-fallback per design, so the user-visible UI stays
+        # honest + the public route no longer leaks internals.
+        import logging
+        logging.getLogger("apex.server").error(
+            "coa_diff_failed",
+            extra={"error_type": type(exc).__name__},
+            exc_info=True,
+        )
+        raise HTTPException(
+            status_code=500,
+            detail="coa-diff computation failed; see server logs",
+        ) from exc
 
 
 @app.get("/api/tire-degradation")
