@@ -36,8 +36,8 @@ describe("MobileInstallQR (wave-45 Phase 6 Block C.3 + wave-45.5 honesty sweep)"
     expect(aside).toBeInTheDocument();
   });
 
-  it("renders honest copy about scannable QR landing later", () => {
+  it("renders honest URL-tap affordance copy (post-wave-50 reality sweep)", () => {
     render(<MobileInstallQR />);
-    expect(screen.getByText(/Scannable QR via static-asset bundling lands wave-46/i)).toBeInTheDocument();
+    expect(screen.getByText(/Open the URL below on your phone to install/i)).toBeInTheDocument();
   });
 });
