@@ -1,5 +1,7 @@
 "use client";
 
+import { usePrefersReducedMotion } from "../lib/use-prefers-reduced-motion";
+
 /**
  * RacingLineHero (wave-51 revision-5 cinematic upgrade):
  *
@@ -72,6 +74,14 @@ const EMBER_PALETTE: ReadonlyArray<{ readonly fill: string; readonly r: number }
 ];
 
 export default function RacingLineHero() {
+  // Wave-51 cascade-#56 close per Codex HIGH #4 finding: SMIL animateMotion
+  // on the rev-5 spark embers does not stop under prefers-reduced-motion
+  // via the CSS opacity reset alone (CSS resets keyframe animations but
+  // SMIL is independent of CSS). Conditional-render the entire ember
+  // group when prefers-reduced-motion matches; the static cosmic glow +
+  // orbital rings + apex marker still read rich without the moving sparks.
+  const prefersReducedMotion = usePrefersReducedMotion();
+
   return (
     <div className="relative w-full overflow-hidden">
       <style>{`
@@ -456,30 +466,43 @@ export default function RacingLineHero() {
             racing line on staggered animateMotion paths. Each ember
             independently scintillates so the field reads as many sparks
             rather than one synchronised wave. Mixed clay-red + amber +
-            cream paper sparks tie the palette to the page. */}
-        <g aria-hidden="true" filter="url(#ember-bloom)">
-          {Array.from({ length: EMBER_COUNT }, (_, i) => {
-            const palette = EMBER_PALETTE[i % EMBER_PALETTE.length]!;
-            const offset = i * 0.6;
-            return (
-              <circle
-                key={`ember-${i}`}
-                r={palette.r}
-                fill={palette.fill}
-                className="hero-ember"
-                style={{ animationDelay: `${(i * 0.18) % 2.4}s` }}
-              >
-                <animateMotion
-                  dur="8s"
-                  begin={`${offset}s`}
-                  repeatCount="indefinite"
-                  rotate="auto"
-                  path={LINE_PATH}
-                />
-              </circle>
-            );
-          })}
-        </g>
+            cream paper sparks tie the palette to the page.
+
+            Wave-51 cascade-#56 close per Codex HIGH #3 + HIGH #4:
+            (a) entire group is conditional-rendered behind
+                prefersReducedMotion so SMIL animateMotion is removed
+                from the DOM under reduced-motion (CSS reset cannot stop
+                SMIL); (b) the per-element ember-bloom feGaussianBlur
+                filter is dropped to avoid per-frame compositing cost
+                on mobile Safari + Firefox; the static cosmic glow
+                halo + the still-applied ember scintillation opacity
+                pulse + the editorial-paddock clay-red/amber/cream
+                palette do the visual work without the GPU cost. */}
+        {!prefersReducedMotion && (
+          <g aria-hidden="true">
+            {Array.from({ length: EMBER_COUNT }, (_, i) => {
+              const palette = EMBER_PALETTE[i % EMBER_PALETTE.length]!;
+              const offset = i * 0.6;
+              return (
+                <circle
+                  key={`ember-${i}`}
+                  r={palette.r}
+                  fill={palette.fill}
+                  className="hero-ember"
+                  style={{ animationDelay: `${(i * 0.18) % 2.4}s` }}
+                >
+                  <animateMotion
+                    dur="8s"
+                    begin={`${offset}s`}
+                    repeatCount="indefinite"
+                    rotate="auto"
+                    path={LINE_PATH}
+                  />
+                </circle>
+              );
+            })}
+          </g>
+        )}
 
         <g className="racing-car-motion" aria-hidden="true">
           {/* Wave-47 cascade-C #224 close per Codex MED: prefers-reduced-
