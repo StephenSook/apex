@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import BlurText from "../components/BlurText";
+import RacingLineHeroShell from "../components/RacingLineHeroShell";
 import { IBM_GRANITE_STACK } from "../lib/ibm-stack";
 
 export default function Home() {
@@ -145,9 +146,9 @@ function Hero() {
         </div>
 
         <figure
-          className="lg:col-span-6 flex w-full items-start apex-rise"
+          className="lg:col-span-6 flex w-full flex-col items-start gap-6 apex-rise"
           style={{ "--apex-delay": "600ms" } as React.CSSProperties}
-          aria-label="Editorial paddock illustration: a hand-controls-adapted GT4 race car cockpit at golden hour with warm cream paper backdrop, racing-green track-line silhouette behind, clay-red apex marker, and amber dashboard heat-glow."
+          aria-label="Editorial paddock illustration on top + SVG cinematic racing-line visualization with orbital glow rings + spark embers + live telemetry strip underneath. Two layered hero visuals."
         >
           <Image
             src="/hero-illustration-4k.png"
@@ -158,6 +159,12 @@ function Hero() {
             sizes="(min-width: 1024px) 50vw, 100vw"
             className="h-auto w-full rounded-sm"
           />
+          <div
+            className="w-full"
+            aria-label="SVG cinematic racing line visualization with orbital glow rings + spark embers + live telemetry strip."
+          >
+            <RacingLineHeroShell />
+          </div>
         </figure>
       </div>
     </section>
