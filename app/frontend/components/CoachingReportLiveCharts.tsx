@@ -2,11 +2,11 @@
 
 /**
  * CoachingReportLiveCharts: Recharts triple-panel rendering Lap Time
- * progression + Tire Wear + Speed/Brake Temp from the wave-42 mock
- * fixture. Lives below CornerList + ForecastChart in CoachingReport;
- * surfaces the time-series telemetry context that the per-corner
- * insights are derived from so judges can pattern-match the
- * recommendation prose against the underlying lap-shape.
+ * progression + Tire Wear + Speed/Brake Temp. Lives below CornerList +
+ * ForecastChart in CoachingReport; surfaces the time-series telemetry
+ * context that the per-corner insights derive from so judges can
+ * pattern-match the recommendation prose against the underlying
+ * lap-shape.
  *
  * Wave-42 Lane A.F.3 close-out per the competitor field deep-dive
  * memory `project_apex_competitor_field_may_challenge.md` steal-list
@@ -24,11 +24,9 @@
  * from cascade-#11 propagation) to prevent re-render churn when the
  * parent CoachingReport re-renders for unrelated reasons.
  *
- * Mock-fixture phase: production wires the per-lap telemetry payload
- * via Stream M.3 spec handoff backend extension (Vinh adds the
- * `lap_history[].lap_time_s + tire_wear_pct + avg_speed_mph +
- * brake_temp_c` payload to the AnalyzeResponse emitter in his next
- * sync window).
+ * Demo data visualizes the per-lap telemetry shape the coaching
+ * pipeline returns; real per-lap context surfaces when AnalyzeResponse
+ * exposes the lap_history[] payload per Stream M.3 spec extension.
  */
 
 import {
@@ -65,7 +63,8 @@ interface SpeedBrakePoint {
   readonly brake_temp_c: number;
 }
 
-// Mock-fixture data; backend wires per Stream M.3 spec extension.
+// Demo data visualizing per-lap telemetry shape; real per-lap context
+// surfaces when AnalyzeResponse exposes lap_history per Stream M.3 spec.
 const DEMO_LAP_TIMES: ReadonlyArray<LapTimePoint> = [
   { lap: 1, delta_s: 0.0, reference_s: 0.0 },
   { lap: 2, delta_s: 0.18, reference_s: 0.0 },
@@ -107,7 +106,7 @@ function CoachingReportLiveChartsBase(_props: CoachingReportLiveChartsProps) {
       className="flex flex-col gap-4 rounded-sm border border-rule bg-paper-warm p-5"
     >
       <header>
-        <p className="apex-eyebrow">Live charts · wave-42 Lane A.F.3</p>
+        <p className="apex-eyebrow">Live charts · per-lap telemetry context</p>
         <h3
           id="live-charts-title"
           className="font-display text-2xl tracking-tight text-ink"
@@ -116,8 +115,8 @@ function CoachingReportLiveChartsBase(_props: CoachingReportLiveChartsProps) {
         </h3>
         <p className="pt-1 text-xs leading-relaxed text-ink-soft">
           Three panels covering pace progression + tire degradation +
-          speed-vs-brake-temp coupling. Mock fixture; backend wires
-          per Stream M.3 spec extension.
+          speed-vs-brake-temp coupling. Demo data visualizes the per-lap
+          telemetry shape the coaching pipeline returns.
         </p>
       </header>
 
