@@ -121,6 +121,14 @@ function CitationItem({ citation }: { readonly citation: CitationLine }) {
 
   useEffect(() => {
     if (prefersReducedMotion) return;
+    // Wave-51b cascade-#59 close: jsdom env does not implement
+    // IntersectionObserver; defensive type-check prevents the
+    // ReferenceError that cascaded into 16+ failed tests across
+    // AnalyzeFlow + CoachingReport suites. BlurText could share this
+    // same defensive guard but its tests do not currently render in
+    // jsdom (the BlurText component is only consumed by page.tsx
+    // which is not yet test-covered).
+    if (typeof IntersectionObserver === "undefined") return;
     const node = anchorRef.current;
     if (!node) return;
     const observer = new IntersectionObserver(

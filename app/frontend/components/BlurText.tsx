@@ -64,6 +64,9 @@ export default function BlurText({
   useEffect(() => {
     if (typeof window === "undefined") return;
     if (prefersReducedMotion) return;
+    // Defensive type-check for jsdom test envs lacking IntersectionObserver
+    // (same cascade-#59 mitigation as GraniteCitationFooter).
+    if (typeof IntersectionObserver === "undefined") return;
     const node = containerRef.current;
     if (!node) return;
     const observer = new IntersectionObserver(
