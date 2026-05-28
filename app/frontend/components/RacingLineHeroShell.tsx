@@ -1,33 +1,49 @@
 "use client";
 
 /**
- * RacingLineHeroShell: dynamic-import wrapper around RacingLineHero per the
- * JudgesGalaxyMovesShell pattern (Next.js 16 ssr:false from Server Component
- * restriction per feedback_nextjs16_dynamic_ssr_false_client_only.md).
+ * RacingLineHeroShell: dynamic-import wrapper around the R3F-or-SVG hero
+ * gate per the JudgesGalaxyMovesShell pattern (Next.js 16 ssr:false from
+ * Server Component restriction per feedback_nextjs16_dynamic_ssr_false_client_only.md).
  *
- * Server Components cannot directly use next/dynamic with ssr:false. The
- * fix is a Client Component shell that owns the dynamic import.
+ * Wave-52 R3F Phase 2 revision: dynamic-imports RacingLineHero3DGate
+ * which itself layer-composes RacingLineHero SVG (always rendered) +
+ * optional R3F canvas overlay + liquid-glass telemetry chips. The R3F
+ * canvas mounts only when prefers-reduced-motion does NOT match AND
+ * navigator.hardwareConcurrency is at least 4; reduce-motion + low-CPU
+ * users see the SVG only.
  *
- * Wave-46 Phase B revision-3 update: the hero is now a 960x600 widescreen
- * 2D SVG editorial illustration (no R3F dependency). The dynamic-import
- * pattern is retained because the SVG uses CSS keyframes + SMIL
- * animateMotion that initialize on first DOM-mount; isolating that
- * behind ssr:false keeps SSR clean.
+ * Loading skeleton mirrors the SVG hero aspect (10/9). The gate's own
+ * SVG fallback is the reliable first-paint regardless of how long the
+ * R3F chunk takes to load (SVG is statically imported inside the gate;
+ * only the R3F canvas itself is deferred).
+ *
+ * Architecture per feedback_nextjs16_dynamic_ssr_false_client_only.md:
+ * ssr:false only works inside a Client Component. This shell IS a
+ * Client Component ("use client" first line + no async or server data).
+ * The gate component it imports is also a Client Component for the
+ * same reason. Both are pure client trees; the shell is the boundary
+ * between the Server-Component landing page tree + the client R3F tree.
+ *
+ * Original RacingLineHero (SVG rev-5) is preserved in git as the
+ * immediate revert path. It is still imported by RacingLineHero3DGate
+ * as the static fallback and the loading state.
  */
 
 import dynamic from "next/dynamic";
 
-const RacingLineHero = dynamic(() => import("./RacingLineHero"), {
+const SVGFallbackSkeleton = () => (
+  <div
+    className="aspect-[10/9] w-full animate-pulse rounded-sm border border-rule bg-paper-warm"
+    role="status"
+    aria-label="Loading racing line visualization"
+  />
+);
+
+const RacingLineHero3DGate = dynamic(() => import("./RacingLineHero3DGate"), {
   ssr: false,
-  loading: () => (
-    <div
-      className="aspect-[10/9] w-full animate-pulse rounded-sm border border-rule bg-paper-warm"
-      role="status"
-      aria-label="Loading racing line visualization"
-    />
-  ),
+  loading: SVGFallbackSkeleton,
 });
 
 export default function RacingLineHeroShell() {
-  return <RacingLineHero />;
+  return <RacingLineHero3DGate />;
 }
