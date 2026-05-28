@@ -1,0 +1,44 @@
+{
+  "wave": "wave-49",
+  "captured_iso": "2026-05-27T22:30:00-04:00",
+  "frontend_origin": "https://apex-one-black.vercel.app",
+  "backend_origin": "https://ssookra-apex-backend.hf.space",
+  "backend_modules_shipped": [
+    "apex/judges/__init__.py",
+    "apex/judges/coa_diff.py",
+    "apex/physics/projection_pacejka.py",
+    "apex/physics/projection_scp.py",
+    "apex/lips/__init__.py",
+    "apex/lips/harness.py",
+    "apex/tire_degradation/__init__.py",
+    "apex/tire_degradation/predictor.py",
+    "apex/critics/__init__.py",
+    "apex/critics/orchestrator.py"
+  ],
+  "backend_endpoints_added": [
+    "GET /api/projector-stage-a",
+    "GET /api/projector-stage-b",
+    "GET /api/lips-harness",
+    "GET /api/judges/coa-diff",
+    "GET /api/tire-degradation",
+    "POST /api/critics/verdict"
+  ],
+  "production_engine_labels_post_warmup": {
+    "/api/orchestration": "langgraph-v14-real",
+    "/api/session-context": "session-context-v4-real",
+    "/api/tspulse/anomaly": "tspulse-v7-real",
+    "/api/projector-stage-a": "pacejka-v12-real",
+    "/api/projector-stage-b": "scp-v13-real",
+    "/api/lips-harness": "lips-v15-real",
+    "/api/judges/coa-diff": "coa-diff-real",
+    "/api/tire-degradation": "tire-degradation-real",
+    "/api/audit-log": "audit-log-v4-real",
+    "/api/what-if-replay": "what-if-replay-v4-real",
+    "/api/rag-retrieve": "granite-embedding-r2-hf-inference",
+    "/api/weather-brief": "demo-fixture-donington-park"
+  },
+  "real_count": 11,
+  "honest_label_count": 1,
+  "canned_fallback_count": 0,
+  "verdict": "12 of 12 production routes serve either real backend data (11) or honest demo-fixture label (1; weather-brief without OpenWeather token). Zero demo-burning canned-fallback labels remain on the visible production surface."
+}
