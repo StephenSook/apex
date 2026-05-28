@@ -22,8 +22,9 @@ import type {
   TireDegradationResponse,
   TireDegradationStep,
 } from "../../../../shared/types";
+import { getVinhBackendBaseUrl } from "../../../lib/env";
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const CANNED_STEPS: ReadonlyArray<TireDegradationStep> = [
@@ -39,9 +40,8 @@ const CANNED_STEPS: ReadonlyArray<TireDegradationStep> = [
   { stint_lap: 10, front_left_pct: 19, front_right_pct: 11, rear_left_pct: 0, rear_right_pct: 0 },
 ];
 
-export async function GET(_req: NextRequest): Promise<Response> {
-  const t0 = performance.now();
-  const payload: TireDegradationResponse = {
+function cannedPayload(t0: number): TireDegradationResponse {
+  return {
     engine: "tire-degradation-canned-fallback",
     compute_ms: Math.round(performance.now() - t0),
     compound: "soft",
@@ -50,6 +50,48 @@ export async function GET(_req: NextRequest): Promise<Response> {
     steps: CANNED_STEPS,
     verdict: "pit-recommended" as const,
   };
+}
+
+async function fetchRealBackend(
+  t0: number,
+): Promise<TireDegradationResponse | null> {
+  const base = getVinhBackendBaseUrl();
+  if (base === null) return null;
+  try {
+    const upstream = await fetch(`${base}/api/tire-degradation`, {
+      method: "GET",
+      headers: { Accept: "application/json" },
+      cache: "no-store",
+      signal: AbortSignal.timeout(5000),
+    });
+    if (!upstream.ok) {
+      console.warn(
+        `[apex/tire-degradation] upstream ${upstream.status}; serving canned-fallback`,
+      );
+      return null;
+    }
+    const body = (await upstream.json()) as TireDegradationResponse;
+    return {
+      ...body,
+      compute_ms: Math.round(performance.now() - t0),
+    };
+  } catch (err) {
+    console.warn(
+      "[apex/tire-degradation] real-backend fetch failed; serving canned",
+      err,
+    );
+    return null;
+  }
+}
+
+export async function GET(_req: NextRequest): Promise<Response> {
+  const t0 = performance.now();
+  let payload = cannedPayload(t0);
+  // Wave-49 wire-flip: when NEXT_PUBLIC_VINH_BACKEND_BASE_URL is set,
+  // forward to the HF Space backend tire-degradation route. Falls back
+  // to the canned-fallback on timeout / non-2xx / parse error.
+  const real = await fetchRealBackend(t0);
+  if (real !== null) payload = real;
   return Response.json(payload, {
     status: 200,
     headers: {
