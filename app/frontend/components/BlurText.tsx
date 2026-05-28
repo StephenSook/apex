@@ -90,6 +90,12 @@ export default function BlurText({
       {words.map((word, i) => {
         const isLast = i === words.length - 1;
         const delay = baseDelay + i * perWord;
+        // Wave-51 cascade-#57 close: .apex-blur-word carries
+        // display:inline-block which causes the browser to collapse the
+        // trailing whitespace inside the box per CSS white-space-collapse
+        // rules. Words read combined ("Theraceengineerforthedriverswho").
+        // Emit a non-breaking space U+00A0 instead of a regular space;
+        // NBSP is a printable character not subject to collapse rules.
         return (
           <span
             key={`blur-${i}-${word}`}
@@ -97,7 +103,7 @@ export default function BlurText({
             style={shouldAnimate ? { animationDelay: `${delay}ms` } : undefined}
           >
             {word}
-            {isLast ? "" : " "}
+            {isLast ? "" : " "}
           </span>
         );
       })}
