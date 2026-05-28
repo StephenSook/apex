@@ -66,6 +66,63 @@
 
 ---
 
+## Status snapshot (last sync 2026-05-27 night Day 8 wave-50 audit close-out)
+
+**Wave-50 audit close-out + check-off.** Ten atomic commits shipped this session per Stephen explicit "thorough deep audit; brutally honest; everything in scope" directive. Five-agent parallel dispatch (Gemini 1M repo gap + Codex adversarial + silent-failure-hunter wave-49 + code-reviewer wave-49 + new-tool research + Playwright production walk) surfaced BLOCKER + HIGH + MED findings; wave-50 batch closed the load-bearing ones.
+
+**Wave-49 Vinh task table reality check-off (rows in §Wave-46 Vinh task table above):**
+
+- Phase 2.1 V12 Pacejka: ✅ **SHIPPED wave-49** `1d17eee` (`app/backend/apex/physics/projection_pacejka.py` first-order 8-tier residual trace behind DifferentiableProjector Protocol; engine label flips real when `NEXT_PUBLIC_USE_REAL_BACKEND_V12=1`)
+- Phase 2.2 V13 SCP: ✅ **SHIPPED wave-49** `1d17eee` (`app/backend/apex/physics/projection_scp.py` 3-iterate outer loop; engine label flips real when V13 env flag set)
+- Phase 3.1 V14 LangGraph runtime: ✅ **SHIPPED wave-49** `1d17eee` (`app/backend/apex/orchestration/langgraph_runtime.py` 6-node deterministic state machine; engine label flips real when V14 env flag set)
+- Phase 3.2 V15 LIPS harness: ✅ **SHIPPED wave-49** `1d17eee` (`app/backend/apex/lips/harness.py` 4-axis ablation table; per Codex HIGH #5 honesty discipline the ablation rows are anchored to G4 baseline rather than computed live, surfaced as engineering candor on the response payload)
+- Phase 4.4 V7 TSPulse polyphase anomaly: ✅ **SHIPPED wave-48 + wave-49** (`app/backend/apex/tspulse/anomaly.py` lazy-loaded IBM TSPulse r1 head when `APEX_ENABLE_TSPULSE=1`; engine label `tspulse-r1-anomaly` vs `tspulse-stub` fallback)
+- Phase 4.5 V8 Granite Embedding R2 RAG: ✅ **SHIPPED wave-48** `a50d691` (`app/frontend/lib/granite-embedding-r2.ts` via HF Inference Providers; hybrid lexical pre-filter + cosine rerank; engine label `granite-embedding-r2-hf-inference`)
+- Phase 4.6 Guardian BYOC custom-rule expansion: ✅ **wave-50 strengthened** (unknown-violation default-flag-not-approve per Codex BLOCKER #1)
+- Phase 5.3 Granite 4.1 8B Instruct narrator real wire: ✅ **SHIPPED wave-48** (OpenRouter Granite 4.1 8B via /api/openrouter-stream; HARD-COMPLIANCE system prompt + retry-directive on attempt > 0)
+- Phase 7.2 Tire degradation predictor: ✅ **SHIPPED wave-49** `1d17eee` (`app/backend/apex/tire_degradation/predictor.py` per-axle FL/FR/RL/RR wear over 10-step stint horizon)
+- Phase 9.OV-1 Self-Correcting Retry Loop: ✅ **SHIPPED HEAD-wired wave-46 + wave-48** OpenRouter Narrator carries the retry-directive system message on attempt > 0
+- Phase 9.OV-2+4 reasoning_chain: ✅ **SHIPPED frontend wave-46** `d223f1b` + backend canonical-shape integration wave-49
+- Phase 9.OV-QB Pydantic v2 + OpenTelemetry: ✅ **PARTIAL SHIPPED wave-48** `a50d691` (`app/backend/apex/schemas.py` 14 Pydantic v2 models + `app/backend/apex/observability.py` lazy OTel scaffolding)
+- D-018 Mellea tri-agent critic orchestrator: ✅ **SHIPPED wave-49** `1d17eee` (`app/backend/apex/critics/orchestrator.py` IVR loop with physics + pedagogy + guardian_safety critics; per-attempt repair_prompt on flag/reject)
+
+**Honestly still deferred (Vinh-lane GPU OR specialized-hosting required; documented in paper §4 + D-057 as future-work):**
+
+- Phase 4.3 V10 Granite FlowState r1.1 Track 2: not on HF Inference free tier; honest INTEGRATION-tier badge at HEAD
+- Phase 4.7 V3 Granite TTM r2.1 D-010 Track 1 channel-mix decoder fine-tune EXECUTION: needs RTX 3060 Ti train; G4 FAIL pivot acknowledged in paper §4 + memory `feedback_g4_fail_pivot_documented_then_executed`
+- Phase 4.7-extra V11 Amazon Chronos-2 Track 3: separate model hosting required
+- Phase extra V2 Sim-rig WebSocket: HF Spaces free tier no WebSocket support; /sim-rig HTTP-stream simulated mode honest at HEAD
+- Phase 5.1 + 5.2 Mellea install + IVR loop on narrator: ACCELERATOR-tier slot per D-058 wave-46 + D-018 critic orchestrator ships separate from narrator IVR
+- Phase 5.4 V9 Watson STT via Granite Speech 4.1 2B-Plus: needs vLLM serve; Web Speech API HEAD ships at HEAD
+- Phase 6.4 DocTags pass-through: low-priority extension; not load-bearing
+- Phase 7.3 Pre-race weather brief NOAA: frontend OpenWeather wire shipped wave-48 with honest `demo-fixture-donington-park` fallback when `OPENWEATHER_API_KEY` unset
+- Phase extra GEPA D-019 #3: ACCELERATOR-tier; no real evolution loop at HEAD
+
+**Wave-50 audit close-out commits (Day 8 night):**
+
+1. `b59f129` fix(ui): sweep visible mock/stub prose from /judges + /compare + citation footer (silent-failure-hunter BLOCKER #1+#2+#3)
+2. `ccba0af` fix(lib): wire-flip 3s -> 8s AbortSignal.timeout for HF Space cold-start (silent-failure-hunter HIGH #5)
+3. `938c056` fix(backend): Guardian unknown-violation default-flag not approve (Codex BLOCKER #1)
+4. `49cd743` fix(backend): /api/judges/coa-diff drop traceback leak + type-union violation (code-reviewer BLOCKER #2)
+5. `f282248` docs(readme): remove Build status section per Stephen-explicit ask
+6. `76d622a` fix(ui): post-wave-49 reality sweep on canned-fallback prose + MobileInstallQR overdue-wave-46 caption
+7. `5f67900` fix(ui): CoachingReportLiveCharts caption + JSDoc reality sweep
+8. `7027537` docs: pitch script + SUBMISSION align V12 + V13 shipped state (Codex BLOCKER #2 + Gemini PH-1+PH-2)
+9. `b338063` docs(paper): §3.8 + §4 byte-equality reflect V12 + V13 wave-49 shipped state (Gemini PH-3)
+
+HEAD CI green at each push verified per `gh run list --branch main --limit N`. Production deploy at https://apex-one-black.vercel.app reflects shipped state. apex.race custom domain remains operator-action per memory `project_apex_wave_43_close_out` BLOCKING D-042; not in scope for wave-50.
+
+**Remaining Stephen operator-action queue (Day 9-12):**
+
+1. 3-min demo video record per `docs/3-min-pitch-script-2-person-v3.md` (Day 9)
+2. 30-second highlight clip cut (Day 9)
+3. YouTube unlisted upload (Day 9)
+4. BeMyApp form submission with multi-track checkboxes + 1920x600 banner (Day 11)
+5. Stakeholder DM follow-ups (5 outreach replies pending; Team BRIT Al Locke per-surface attribution consent confirm)
+6. Pre-submit T-4hr final gate per `project_apex_pre_submit_final_gate_checklist` (2026-05-31 19:59 ET)
+
+---
+
 ## Status snapshot (last sync 2026-05-26 Day 8 wave-46 session A close-out)
 
 Wave-46 session A shipped 15 atomic commits Phase 1+2+3+4 frontend scope. HEAD CI green at `3ece1d0`. Production smoke 6/6 wave-46 routes 200 (`/api/projector-stage-a` + `/api/projector-stage-b` + `/api/orchestration` + `/api/lips-harness` + `/api/judges/coa-diff` + `/api/tspulse/anomaly`; RAG POST verified). 2 cascades closed (#39 vinh-swap-points test 4-keys -> 6-keys + #40 RAG route corpus-matching query).
