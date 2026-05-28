@@ -39,7 +39,7 @@ Inputs: telemetry CSV, FIA Certificate of Adaptations PDF, written debrief.
 
 Outputs: corner-by-corner coaching report, tuning recommendation with COA section citation, next-session lap-pace envelope forecast, Granite Guardian safety stamp.
 
-The pipeline: Granite-Docling parses the COA into structured JSON. Granite Vision parses the timing sheet. A 1-Hz mini-sector aggregator preps a tensor for Granite TimeSeries TTM r2.1, a frozen pretrained time-series foundation model. The forecast passes through a differentiable physics-projection layer (CvxpyLayers QP) that enforces the constant-mu friction ellipse at HEAD (8-tier Pacejka linearization + jerk bound + SCP outer-loop deferred swap-points per D-031 staged ladder) along with the COA-flagged brake-throttle simultaneity envelope read by the V1 NumPy validator. Granite Guardian 4.1 audits the projection's text log with custom BYOC rules. Granite 4.1 8B Instruct writes the coaching report in a race-engineer voice. LangGraph + Granite MCP Gateway + ContextForge render the orchestration runtime (Langflow retained as the export-graph artifact per D-017 G7 + D-054).
+The pipeline: Granite-Docling parses the COA into structured JSON. Granite Vision parses the timing sheet. A 1-Hz mini-sector aggregator preps a tensor for Granite TimeSeries TTM r2.1, a frozen pretrained time-series foundation model. The forecast passes through a differentiable physics-projection layer (CvxpyLayers QP) that enforces the constant-mu friction ellipse plus the wave-49 V12 first-order 8-tier Pacejka residual trace plus the V13 three-iterate SCP outer-loop behind the DifferentiableProjector Protocol per D-031 staged ladder. The COA-flagged brake-throttle simultaneity envelope is read by the V1 NumPy validator. Granite Guardian 4.1 audits the projection's text log with custom BYOC rules. Granite 4.1 8B Instruct writes the coaching report in a race-engineer voice. LangGraph + Granite MCP Gateway + ContextForge render the orchestration runtime (Langflow retained as the export-graph artifact per D-017 G7 + D-054).
 
 ### How we built it
 
@@ -65,7 +65,7 @@ Methodology: Sookra Methodology v3.3 with seven phases of competitive recon (six
 
 - Convergence 14: a serializer unit-test suite that treats the physics-to-text translation as safety-critical code. Every kinematic violation type has a fixture text log and a verified Guardian verdict.
 
-- The galaxy-tier discipline. Nothing was deferred to "post-hackathon." We shipped: live sim-rig demo with iRacing telemetry, public Colab notebook, judges' tour landing page, status dashboard, methodology trace, NeurIPS Workshop paper draft, 30-second highlight clip, reproducibility metadata footer, all by 2026-05-31.
+- The galaxy-tier discipline. Nothing was deferred to "post-hackathon." We shipped: synthetic adaptive-controls GT4 sim-rig stream, public Colab notebook, judges' tour landing page, status dashboard, methodology trace, NeurIPS Workshop paper draft, 30-second highlight clip, reproducibility metadata footer, 196 backend tests, 14-tool IBM Granite stack with per-tool honesty tiers, wave-49 V12 + V13 + V14 + V15 + D-018 tri-agent critic backend ship, all by 2026-05-31.
 
 - Mapping cleanly to the 4-axis BeMyApp judging rubric reaffirmed 2026-05-27 (Technical Execution + Innovation + Challenge Fit + Implementation & Feasibility). Technical Execution: 14 IBM Granite tools with per-tool honesty tiers + 196 backend tests + Vercel production deploy + Apache 2.0 public from inception. Innovation: COA-parameterized simultaneity gate killshot + frozen-TSFM-plus-differentiable-physics-projection composition + byte-equality serializer regression contract. Challenge Fit: adaptive-racer + veteran-team-driver + grassroots-competitor tri-persona ladder with named stakeholder grounding. Implementation + Feasibility: 19/19 production routes respond 200 + APEX-Bench v0.1.0 public LIPS leaderboard + named swap-points for every INTEGRATION-tier tool.
 
@@ -79,7 +79,7 @@ Methodology: Sookra Methodology v3.3 with seven phases of competitive recon (six
 
 ### What's next for APEX
 
-A NeurIPS Workshop paper draft is in `paper/apex-neurips-workshop-2026.md` (drafted Day 11, polish post-submission). A formal data-partnership conversation with a UK adaptive racing programme or a veteran motorsport rehabilitation programme is the next post-submission move.
+The NeurIPS Workshop paper draft lives at `paper/apex-neurips-workshop-2026.md` (publication-readable at HEAD). The roadmap from here: formal data-partnership conversation with a UK adaptive racing programme or a veteran motorsport rehabilitation programme; jerk-bound enforcement swap-point activation per D-031; V3 Granite TTM r2.1 channel-mix decoder fine-tune EXECUTION on the RTX 3060 Ti per the wave-49 close-out roadmap.
 
 ---
 

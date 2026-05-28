@@ -93,7 +93,7 @@ Cm-devvit lesson: "Read each beat as a separate clip. Don't try to nail the whol
 
 (0:58 transition: physics projection card highlights; animated math: friction ellipse, bicycle model, forward-Euler kinematic step.)
 
-**Vinh.** "Layer two is a differentiable Cvxpylayers physics projection at constant mu. Friction ellipse plus bicycle model plus forward-Euler kinematic step plus a circuit-conditional friction lookup. Eight-tier Pacejka linearization, three-iteration SCP outer-loop, and jerk-bound enforcement are deferred swap-points named in the D-031 staged ladder. The HEAD ship is constant-mu friction-ellipse projection only."
+**Vinh.** "Layer two is a differentiable Cvxpylayers physics projection at constant mu. Friction ellipse plus bicycle model plus forward-Euler kinematic step plus a circuit-conditional friction lookup. The wave-49 ship lit the V12 first-order 8-tier Pacejka residual trace plus the V13 three-iterate SCP outer-loop behind the DifferentiableProjector Protocol; jerk-bound enforcement is the remaining named swap-point in the D-031 staged ladder."
 
 (1:08 transition: Guardian card highlights; animated text-log entries scroll past with check marks.)
 
