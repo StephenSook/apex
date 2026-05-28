@@ -231,11 +231,29 @@ class Guardian:
                     )
                 top_verdict = _max_verdict(top_verdict, rule.verdict)
 
+        # Codex BLOCKER wave-50 close: if violation records exist but
+        # no BYOC rule matched (V12 8-tier Pacejka + V13 SCP iterate +
+        # Convergence-14 expansion types not yet in DEFAULT_RULE_REGISTRY),
+        # default-approve is the wrong floor. Unmatched violation types
+        # represent records the rule engine doesn't know how to interpret
+        # safely. Promote unmatched-with-records to "flag" so the
+        # downstream coaching report surfaces them as concerns rather
+        # than approving by silence. Empty-log + safe-COA path above
+        # remains "approve" + early-returns.
         if not reasoning_trace:
+            unmatched_types = sorted({r.type for r in violation_log.records})
             reasoning_trace.append(
                 f"Violation log on {violation_log.engine} carried "
-                f"{len(violation_log.records)} record(s) but no BYOC rule "
-                f"matched. Default verdict: approve."
+                f"{len(violation_log.records)} record(s) of "
+                f"unmatched-by-registry type(s) {unmatched_types}. "
+                f"Default verdict: flag (rule-engine floor does not "
+                f"silently approve unmatched violation records)."
+            )
+            top_verdict = _max_verdict(top_verdict, "flag")
+            flagged_concerns.append(
+                f"Unmatched violation type(s) {unmatched_types} "
+                f"surfaced on {violation_log.engine}; review for BYOC "
+                f"rule expansion + Convergence-14 ladder coverage."
             )
 
         return GuardianAudit(
