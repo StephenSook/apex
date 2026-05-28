@@ -23,7 +23,7 @@ import type { OrchestrationNode, OrchestrationResponse } from "../../shared/type
 
 type PanelState =
   | { readonly status: "loading" }
-  | { readonly status: "ready"; readonly response: OrchestrationResponse }
+  | { readonly status: "ready"; readonly response: OrchestrationResponse; readonly roundTripMs: number }
   | { readonly status: "error"; readonly message: string };
 
 function nodeBorder(status: OrchestrationNode["status"]): string {
@@ -54,6 +54,7 @@ export default function LangGraphRuntimePanel() {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
     const run = async () => {
+      const t0 = performance.now();
       try {
         const res = await fetch("/api/orchestration", {
           cache: "no-store",
@@ -61,7 +62,8 @@ export default function LangGraphRuntimePanel() {
         });
         if (!res.ok) throw new Error(`/api/orchestration -> HTTP ${res.status}`);
         const payload = (await res.json()) as OrchestrationResponse;
-        if (!cancelled) setState({ status: "ready", response: payload });
+        const roundTripMs = Math.round(performance.now() - t0);
+        if (!cancelled) setState({ status: "ready", response: payload, roundTripMs });
       } catch (err) {
         if (cancelled) return;
         const message =
@@ -123,6 +125,13 @@ export default function LangGraphRuntimePanel() {
             </span>
             <span className="rounded-sm border border-rule bg-paper px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-ink-soft">
               Total: {state.response.total_ms} ms
+            </span>
+            <span
+              className="rounded-sm border border-rule bg-paper px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-ink-soft"
+              title="Browser-to-edge round-trip including the wire-flip helper hop"
+            >
+              Round-trip: {state.roundTripMs} ms
+              {state.response.engine === "langgraph-v14-real" ? " · via HF Space" : " · canned-fallback"}
             </span>
             <span className="rounded-sm border border-rule bg-paper px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-muted">
               trace_id {state.response.trace_id}
