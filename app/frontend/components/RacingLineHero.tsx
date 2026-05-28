@@ -1,40 +1,56 @@
 "use client";
 
 /**
- * RacingLineHero (wave-46 Phase B revision-4):
+ * RacingLineHero (wave-51 revision-5 cinematic upgrade):
  *
- * Iteration on revision-3 per Stephen visual review 2026-05-26: rev-3
- * shipped the editorial composition (paper grain, COA-GATE annotation,
- * Fraunces italic eyebrow, asymmetric apex) but the SVG rendered too
- * small inside its column and the upper-left vertical telemetry sidebar
- * lost the rev-2 bottom-stacked telemetry-bar rhythm that Stephen
- * preferred. Rev-4 restores the bottom telemetry strip (THROTTLE racing-
- * green + BRAKE clay-red + STEER amber) while keeping every rev-3
- * editorial gain.
+ * Stephen explicit night 2026-05-27/28: hero needs massive shock-factor
+ * + wow-factor without losing the editorial-paddock identity. Direction
+ * locked: Editorial Paddock Cinematic Noir with Warmth. Reference
+ * vocabulary from motionsites.ai patterns (cinematic depth + liquid-
+ * glass + word-by-word reveal + orbital energy at the focal moment),
+ * translated to the warm-cream + racing-green + clay-red + amber + ink
+ * stack. NO cold-cyber neon. NO dark-purple-AI gradient. The apex
+ * moment IS the visual killshot.
  *
- * Key rev-4 moves:
- *  - viewBox bumped to 1000x900 (was 960x600). Taller aspect lets the
- *    hero fill a column without becoming a letterbox sliver.
- *  - Track stroke width bumped to 160 (was 132); track is the hero, not
- *    a thin diagram element.
- *  - APEX/BRAKING/EXIT labels bumped to 24px (were 11px). Judges can
- *    read these from across a room now.
- *  - Apex marker outer ring r=42, inner r=18, dot r=7 (was 26/11/4).
- *    The killshot focal point looks like one.
- *  - Bottom telemetry strip restored. Three stacked horizontal bars at
- *    the bottom (THROTTLE green / BRAKE clay-red / STEER amber), each
- *    with a 14px mono label, bar height 12px, bar width 280px. Rev-3's
- *    upper-left vertical sidebar is removed.
- *  - Single-shot stroke-dashoffset draw + spring marker + breathe +
- *    SMIL animateMotion car preserved from rev-3.
- *  - Paper-grain feTurbulence + radial vignette + COA-GATE amber
- *    annotation + Fraunces italic eyebrow preserved from rev-3.
- *  - prefers-reduced-motion fallback preserved.
+ * Rev-5 layers on top of rev-4 (kept fully intact for the structural
+ * + accessibility + prefers-reduced-motion contracts):
+ *  - Cosmic glow halo behind the apex marker (radial gradient blob in
+ *    amber-to-clay-red; gives the apex atmospheric warmth).
+ *  - 3 concentric orbital glow rings breathing at offset phases
+ *    around the apex (the focal moment now reads as a glowing
+ *    cinematic point rather than a static dot). feGaussianBlur SVG
+ *    filter applied for the bloom-equivalent without any GPU-pixel
+ *    cost (SVG bloom is rasterised once + cached by the browser).
+ *  - 12 spark embers drifting along the racing line on staggered
+ *    animateMotion paths. Each ember twinkles independently via the
+ *    .apex-ember-scintillate keyframe with offset animationDelay so
+ *    the field reads as many sparks rather than one synchronised wave.
+ *    Mixed clay-red + amber + cream cream-paper sparks tie the
+ *    palette to the rest of the page.
+ *  - .apex-shutter-sweep overlay on the wrapper div: single-shot
+ *    diagonal sheen across the hero on mount. Subtle reinforcement
+ *    of the "shot through a lens" cinematic framing without an
+ *    infinite-loop animation.
+ *  - All rev-4 elements preserved: track path + racing line + apex
+ *    core + animated car + bottom telemetry strip + paper grain +
+ *    radial vignette + COA-GATE annotation + prefers-reduced-motion
+ *    fallback. The rev-5 additions also honor prefers-reduced-motion
+ *    via the global 0.01ms reset in globals.css + explicit !important
+ *    overrides where the apex-orbit-breathe + apex-ember-scintillate
+ *    keyframes would otherwise re-trigger.
  *
- * Editorial paddock palette unchanged: cream paper #F4EBD8 + racing-
+ * Editorial-paddock palette UNCHANGED: cream paper #F4EBD8 + racing-
  * green #0A2818 + clay-red #C1492C + amber #D9A441 + ink #0F1410.
  * Fraunces variable display (--font-display) + IBM Plex Mono numerics.
- * Pure CSS + SMIL; no framer-motion / R3F dependency added.
+ * Pure CSS + SMIL; zero new dependencies; R3F + framer-motion remain
+ * out of the deps tree per the wave-51 commit ledger.
+ *
+ * Per project memory feedback_galaxy_ambition_no_deferrals.md: this is
+ * the no-deferral cinematic upgrade Stephen asked for. The rev-4 SVG
+ * remains in git history as the immediate-revert path if anything in
+ * rev-5 breaks visually on production. Per
+ * feedback_conceptual_stack_vs_shipped_stack.md: every visual element
+ * here actually ships at HEAD; no swap-point promises.
  */
 
 const TRACK_PATH = "M 60 220 C 280 220, 480 220, 620 360 S 880 660, 940 720";
@@ -44,9 +60,20 @@ const APEX_X = 740;
 const APEX_Y = 480;
 const LINE_LENGTH = 1300;
 
+// Spark ember field configuration. 12 embers gives visible motion
+// density without saturating the focal apex moment. Per-ember start
+// time staggered at 0.6s offsets across an 8s motion cycle so the
+// field reads as many independent sparks rather than one wave.
+const EMBER_COUNT = 12;
+const EMBER_PALETTE: ReadonlyArray<{ readonly fill: string; readonly r: number }> = [
+  { fill: "#C1492C", r: 3.2 }, // clay-red
+  { fill: "#D9A441", r: 2.6 }, // amber
+  { fill: "#F4EBD8", r: 2.0 }, // cream paper
+];
+
 export default function RacingLineHero() {
   return (
-    <div className="relative w-full">
+    <div className="relative w-full overflow-hidden">
       <style>{`
         @keyframes line-draw {
           from { stroke-dashoffset: ${LINE_LENGTH}; opacity: 0; }
@@ -121,6 +148,25 @@ export default function RacingLineHero() {
           0%, 100% { filter: drop-shadow(0 0 2px currentColor); }
           50% { filter: drop-shadow(0 0 8px currentColor); }
         }
+        /* Wave-51 rev-5 orbital glow ring keyframes (3 rings, offset phases) */
+        @keyframes orbit-ring-outer {
+          0%, 100% { transform: scale(0.94); opacity: 0.18; }
+          50% { transform: scale(1.12); opacity: 0.45; }
+        }
+        @keyframes orbit-ring-mid {
+          0%, 100% { transform: scale(1.04); opacity: 0.55; }
+          50% { transform: scale(0.92); opacity: 0.22; }
+        }
+        @keyframes orbit-ring-inner {
+          0%, 100% { transform: scale(0.98); opacity: 0.35; }
+          50% { transform: scale(1.08); opacity: 0.62; }
+        }
+        @keyframes ember-scintillate {
+          0%, 100% { opacity: 0.92; }
+          25% { opacity: 0.45; }
+          50% { opacity: 0.88; }
+          75% { opacity: 0.30; }
+        }
         .hero-line {
           stroke-dasharray: ${LINE_LENGTH};
           stroke-dashoffset: ${LINE_LENGTH};
@@ -137,6 +183,24 @@ export default function RacingLineHero() {
           transform-origin: ${APEX_X}px ${APEX_Y}px;
           transform: scale(0);
           animation: apex-spring 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) 1.05s forwards;
+        }
+        .hero-orbit-ring {
+          transform-origin: ${APEX_X}px ${APEX_Y}px;
+          transform-box: fill-box;
+          will-change: transform, opacity;
+        }
+        .hero-orbit-outer {
+          animation: orbit-ring-outer 7s ease-in-out 1.4s infinite;
+        }
+        .hero-orbit-mid {
+          animation: orbit-ring-mid 5.5s ease-in-out 1.2s infinite;
+        }
+        .hero-orbit-inner {
+          animation: orbit-ring-inner 4.2s ease-in-out 1.0s infinite;
+        }
+        .hero-ember {
+          will-change: opacity;
+          animation: ember-scintillate 2.4s ease-in-out infinite;
         }
         .hero-telemetry-bar {
           transform-origin: left center;
@@ -187,6 +251,15 @@ export default function RacingLineHero() {
             animation: none !important;
             opacity: 1 !important;
           }
+          .hero-orbit-ring {
+            animation: none !important;
+            transform: scale(1) !important;
+            opacity: 0.35 !important;
+          }
+          .hero-ember {
+            animation: none !important;
+            opacity: 0.7 !important;
+          }
           .hero-telemetry-throttle {
             animation: none !important;
             transform: scaleX(0.82) !important;
@@ -227,7 +300,7 @@ export default function RacingLineHero() {
       <svg
         viewBox="0 0 1000 900"
         role="img"
-        aria-label="A corner racing line with the apex point marked at the upper-right third. Editorial illustration: warm cream paper backdrop with paper-grain texture, deep racing-green track surface running diagonally from upper-left to lower-right, signal clay-red racing line traced through the apex, amber apex marker with breathing pulse, bottom telemetry strip with three bars (throttle racing-green, brake clay-red, steering amber) cycling live values on a 7-second corner-cadence loop synced to the animated car traversal. COA-GATE adaptive-control simultaneity annotation visible next to the apex label."
+        aria-label="A corner racing line with the apex point marked at the upper-right third. Editorial illustration: warm cream paper backdrop with paper-grain texture, deep racing-green track surface running diagonally from upper-left to lower-right, signal clay-red racing line traced through the apex, amber apex marker with breathing pulse and three orbital glow rings, a field of twelve spark embers drifting along the racing line, bottom telemetry strip with three bars (throttle racing-green, brake clay-red, steering amber) cycling live values on a 7-second corner-cadence loop synced to the animated car traversal. COA-GATE adaptive-control simultaneity annotation visible next to the apex label."
         className="block h-auto w-full"
         preserveAspectRatio="xMidYMid meet"
       >
@@ -263,12 +336,35 @@ export default function RacingLineHero() {
             <stop offset="50%" stopColor="#C1492C" stopOpacity="0.95" />
             <stop offset="100%" stopColor="#C1492C" stopOpacity="1" />
           </linearGradient>
+          {/* Wave-51 rev-5 cinematic adds */}
+          <radialGradient id="apex-cosmic-glow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#D9A441" stopOpacity="0.55" />
+            <stop offset="35%" stopColor="#C1492C" stopOpacity="0.25" />
+            <stop offset="70%" stopColor="#D9A441" stopOpacity="0.08" />
+            <stop offset="100%" stopColor="#F4EBD8" stopOpacity="0" />
+          </radialGradient>
+          <filter id="ring-bloom" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="4" />
+          </filter>
+          <filter id="ember-bloom" x="-100%" y="-100%" width="300%" height="300%">
+            <feGaussianBlur stdDeviation="2.4" />
+          </filter>
         </defs>
 
         <g aria-hidden="true">
           <rect x={0} y={0} width={1000} height={900} fill="#F4EBD8" />
           <rect x={0} y={0} width={1000} height={900} filter="url(#paper-grain)" />
         </g>
+
+        {/* Cosmic glow halo BEHIND the track (gives apex atmospheric warmth) */}
+        <rect
+          x={APEX_X - 320}
+          y={APEX_Y - 320}
+          width={640}
+          height={640}
+          fill="url(#apex-cosmic-glow)"
+          aria-hidden="true"
+        />
 
         <g aria-hidden="true">
           <path
@@ -300,6 +396,37 @@ export default function RacingLineHero() {
           aria-hidden="true"
         />
 
+        {/* Wave-51 rev-5 orbital glow rings around the apex (THE killshot) */}
+        <g aria-hidden="true" filter="url(#ring-bloom)">
+          <circle
+            cx={APEX_X}
+            cy={APEX_Y}
+            r={108}
+            fill="none"
+            stroke="#D9A441"
+            strokeWidth={1.2}
+            className="hero-orbit-ring hero-orbit-outer"
+          />
+          <circle
+            cx={APEX_X}
+            cy={APEX_Y}
+            r={84}
+            fill="none"
+            stroke="#C1492C"
+            strokeWidth={1.6}
+            className="hero-orbit-ring hero-orbit-mid"
+          />
+          <circle
+            cx={APEX_X}
+            cy={APEX_Y}
+            r={62}
+            fill="none"
+            stroke="#D9A441"
+            strokeWidth={1.4}
+            className="hero-orbit-ring hero-orbit-inner"
+          />
+        </g>
+
         <g aria-hidden="true">
           <circle
             cx={APEX_X}
@@ -323,6 +450,35 @@ export default function RacingLineHero() {
             fill="#0F1410"
             className="hero-apex-core"
           />
+        </g>
+
+        {/* Wave-51 rev-5 spark ember field: 12 embers drifting along the
+            racing line on staggered animateMotion paths. Each ember
+            independently scintillates so the field reads as many sparks
+            rather than one synchronised wave. Mixed clay-red + amber +
+            cream paper sparks tie the palette to the page. */}
+        <g aria-hidden="true" filter="url(#ember-bloom)">
+          {Array.from({ length: EMBER_COUNT }, (_, i) => {
+            const palette = EMBER_PALETTE[i % EMBER_PALETTE.length]!;
+            const offset = i * 0.6;
+            return (
+              <circle
+                key={`ember-${i}`}
+                r={palette.r}
+                fill={palette.fill}
+                className="hero-ember"
+                style={{ animationDelay: `${(i * 0.18) % 2.4}s` }}
+              >
+                <animateMotion
+                  dur="8s"
+                  begin={`${offset}s`}
+                  repeatCount="indefinite"
+                  rotate="auto"
+                  path={LINE_PATH}
+                />
+              </circle>
+            );
+          })}
         </g>
 
         <g className="racing-car-motion" aria-hidden="true">
@@ -585,6 +741,12 @@ export default function RacingLineHero() {
           aria-hidden="true"
         />
       </svg>
+
+      {/* Wave-51 rev-5 single-shot cinematic shutter sweep across the
+          hero on mount. Reinforces the "shot through a lens" framing
+          without an infinite-loop. Honors prefers-reduced-motion via
+          the global 0.01ms reset in globals.css. */}
+      <span aria-hidden="true" className="apex-shutter-sweep" />
     </div>
   );
 }
