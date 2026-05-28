@@ -77,20 +77,20 @@ def _run_one_branch(
         bands=ToleranceBands.for_1hz_aggregation(),
     )
 
-    # Bucket the violation records by stage. Friction-ellipse +
-    # forward-Euler + bicycle stages always converge for the Sarah
-    # 5-lap fixture; the simultaneity stage is the differentiator.
+    # Bucket the violation records by stage. ViolationRecord fields
+    # per apex.shared.contracts.violations: type (literal union;
+    # the violation kind) + severity (magnitude past constraint).
     by_stage: dict[str, float] = {k: 0.0 for k in _STAGE_KEYS}
     for record in log.records:
-        rule = record.rule_id
-        if "friction" in rule or "friction_ellipse" in rule:
-            by_stage["friction_ellipse"] = max(by_stage["friction_ellipse"], record.residual_norm)
-        elif "forward_euler" in rule or "delta_v" in rule:
-            by_stage["forward_euler"] = max(by_stage["forward_euler"], record.residual_norm)
-        elif "bicycle" in rule:
-            by_stage["bicycle_model"] = max(by_stage["bicycle_model"], record.residual_norm)
-        elif "simultaneity" in rule or "coa_overlap" in rule:
-            by_stage["coa_simultaneity"] = max(by_stage["coa_simultaneity"], record.residual_norm)
+        violation_type = str(record.type)
+        if "friction" in violation_type:
+            by_stage["friction_ellipse"] = max(by_stage["friction_ellipse"], float(record.severity))
+        elif "forward_euler" in violation_type or "delta_v" in violation_type:
+            by_stage["forward_euler"] = max(by_stage["forward_euler"], float(record.severity))
+        elif "bicycle" in violation_type:
+            by_stage["bicycle_model"] = max(by_stage["bicycle_model"], float(record.severity))
+        elif "simultaneity" in violation_type or "coa_overlap" in violation_type:
+            by_stage["coa_simultaneity"] = max(by_stage["coa_simultaneity"], float(record.severity))
 
     # Heuristic baseline residuals for the converged stages so the
     # trace mirrors the deterministic Sarah pipeline output. The
