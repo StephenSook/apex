@@ -69,7 +69,7 @@ export async function runWireFlipGET<TResponse extends EnginePayload>(
       method: "GET",
       headers: { Accept: "application/json" },
       cache: "no-store",
-      signal: AbortSignal.timeout(3000),
+      signal: AbortSignal.timeout(8000),
     });
     if (!upstream.ok) {
       // Wave-47 cascade-C #238 close per silent-failure-hunter H3: when
@@ -133,7 +133,7 @@ export async function runWireFlipPOST<TBody, TResponse extends EnginePayload>(
       headers: { "Content-Type": "application/json", Accept: "application/json" },
       body: JSON.stringify(body),
       cache: "no-store",
-      signal: AbortSignal.timeout(3000),
+      signal: AbortSignal.timeout(8000),
     });
     if (!upstream.ok) {
       const isUpstreamBug = upstream.status >= 500;
