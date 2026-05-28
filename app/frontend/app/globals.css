@@ -281,3 +281,145 @@ html.apex-one-hand nav a {
   padding-block: 0.625rem;
   padding-inline: 0.875rem;
 }
+
+/*
+ * Wave-51 cinematic editorial-paddock chrome.
+ *
+ * Stephen explicit night 2026-05-27/28: hero needs "shock factor wow
+ * factor" without losing the editorial-paddock palette. Direction:
+ * Editorial Paddock Cinematic Noir with Warmth. Reference vocabulary
+ * from motionsites.ai patterns (liquid-glass + BlurText + cinematic
+ * loop) translated to the warm-cream + racing-green + clay-red + amber
+ * + ink system. No dark-purple-AI. No cold-neon-cyber.
+ *
+ * Three primitives below:
+ *   .apex-glass            : tinted-cream liquid-glass for chips + chrome
+ *   .apex-glass-strong     : heavier blur variant for primary chrome
+ *   .apex-blur-word        : per-word blur+slide+opacity reveal
+ *
+ * All honor prefers-reduced-motion via the 0.01ms global reset above;
+ * .apex-blur-word adds an extra explicit reset because the static
+ * end-state must show fully opaque + unblurred.
+ */
+
+/*
+ * Liquid-glass surface tuned to cream paper. NOT a dark-glass remix.
+ * color-mix() pulls in --paper at 78 percent + transparent for the
+ * tinted backdrop, then border + dual shadow give the floating-pill
+ * feel. Editorial-paddock palette preserved.
+ */
+.apex-glass {
+  background: color-mix(in oklab, var(--paper) 78%, transparent);
+  backdrop-filter: blur(10px) saturate(125%);
+  -webkit-backdrop-filter: blur(10px) saturate(125%);
+  border: 1px solid color-mix(in oklab, var(--ink) 10%, transparent);
+  box-shadow:
+    0 1px 0 color-mix(in oklab, var(--paper-warm) 92%, transparent) inset,
+    0 6px 20px color-mix(in oklab, var(--ink) 14%, transparent);
+  position: relative;
+  overflow: hidden;
+}
+
+/*
+ * Heavier blur variant for the load-bearing chrome (CTA pill, primary
+ * navigation chip). Reads as a darker frosted surface against the
+ * cream paper.
+ */
+.apex-glass-strong {
+  background: color-mix(in oklab, var(--paper-shadow) 62%, transparent);
+  backdrop-filter: blur(22px) saturate(135%);
+  -webkit-backdrop-filter: blur(22px) saturate(135%);
+  border: 1px solid color-mix(in oklab, var(--racing-green) 18%, transparent);
+  box-shadow:
+    0 1px 0 color-mix(in oklab, var(--paper-warm) 85%, transparent) inset,
+    0 8px 28px color-mix(in oklab, var(--racing-green-deep) 28%, transparent);
+  position: relative;
+  overflow: hidden;
+}
+
+/*
+ * BlurText word-by-word reveal. Each word starts blurred + offset
+ * downward, animates to crisp + on-baseline. Stagger via per-element
+ * animation-delay inline style from the BlurText component
+ * (see app/frontend/components/BlurText.tsx).
+ */
+@keyframes apex-blur-in {
+  0%   { filter: blur(14px); opacity: 0; transform: translateY(8px); }
+  60%  { filter: blur(2px);  opacity: 0.85; transform: translateY(2px); }
+  100% { filter: blur(0);    opacity: 1; transform: translateY(0); }
+}
+
+.apex-blur-word {
+  display: inline-block;
+  filter: blur(14px);
+  opacity: 0;
+  transform: translateY(8px);
+  animation: apex-blur-in 820ms cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+  will-change: filter, transform, opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .apex-blur-word {
+    animation: none !important;
+    filter: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/*
+ * Orbital glow pulse for the cinematic hero apex marker. Two concentric
+ * rings breathe at offset phases so the apex point reads as a glowing
+ * focal moment rather than a static dot. prefers-reduced-motion: the
+ * global 0.01ms reset above collapses the animation to a single
+ * resting frame.
+ */
+@keyframes apex-orbit-breathe {
+  0%   { opacity: 0.20; transform: scale(0.94); }
+  50%  { opacity: 0.62; transform: scale(1.08); }
+  100% { opacity: 0.20; transform: scale(0.94); }
+}
+
+@keyframes apex-orbit-breathe-offset {
+  0%   { opacity: 0.45; transform: scale(1.06); }
+  50%  { opacity: 0.12; transform: scale(0.96); }
+  100% { opacity: 0.45; transform: scale(1.06); }
+}
+
+/*
+ * Spark ember drift along the racing line. Used by 12 SVG circles in
+ * RacingLineHero rev-5 with animateMotion paths. The opacity scintillation
+ * here gives each ember an independent twinkle so the field reads as
+ * many sparks rather than one synchronised wave.
+ */
+@keyframes apex-ember-scintillate {
+  0%, 100% { opacity: 0.85; }
+  50%      { opacity: 0.28; }
+}
+
+/*
+ * Cinematic camera-shutter sweep: a thin diagonal sheen passes once
+ * across the hero on mount. Subtle reinforcement of the "shot through
+ * a lens" framing. Single-shot, not infinite.
+ */
+@keyframes apex-shutter-sweep {
+  0%   { transform: translateX(-120%) skewX(-12deg); opacity: 0; }
+  20%  { opacity: 0.55; }
+  100% { transform: translateX(220%) skewX(-12deg); opacity: 0; }
+}
+
+.apex-shutter-sweep {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    100deg,
+    transparent 0%,
+    transparent 35%,
+    color-mix(in oklab, var(--paper-warm) 70%, transparent) 50%,
+    transparent 65%,
+    transparent 100%
+  );
+  animation: apex-shutter-sweep 2200ms cubic-bezier(0.2, 0.8, 0.2, 1) 600ms both;
+  mix-blend-mode: overlay;
+}
