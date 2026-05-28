@@ -256,11 +256,21 @@ def get_orchestration() -> dict[str, Any]:
         debrief_path=None,
         narrator=_build_live_narrator(),
     )
+    # wave-48 frontend-shape mapping: LangGraph NodeStatus literal is
+    # {ok, error, skipped} on the Python side; frontend OrchestrationNode
+    # type at app/shared/types.ts:1621 expects {completed, active,
+    # pending, failed}. Map at the wire boundary so the consumer panel's
+    # exhaustive switch lands on a known case.
+    _status_map: dict[str, str] = {
+        "ok": "completed",
+        "error": "failed",
+        "skipped": "pending",
+    }
     nodes = [
         {
             "id": s.node,
             "label": s.node.replace("_", " ").title(),
-            "status": s.status,
+            "status": _status_map.get(s.status, "completed"),
             "elapsed_ms": s.duration_ms,
         }
         for s in trace.steps
