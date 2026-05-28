@@ -45,7 +45,7 @@ import { useEffect, useState } from "react";
 
 import type { TriAgentVerdictPanel } from "../../shared/types";
 import { decodeTriAgentVerdictPanel } from "./api-decode";
-import { MOCK_TRI_AGENT_VERDICT, MOCK_TRI_AGENT_VERDICT_REJECT } from "./mocks/judges-mocks";
+import { DEMO_TRI_AGENT_VERDICT, DEMO_TRI_AGENT_VERDICT_REJECT } from "./mocks/judges-mocks";
 
 export type TriAgentDataSource = "mock_flag" | "mock_reject" | "live";
 
@@ -79,9 +79,9 @@ function resolveMockFixture(
 ): TriAgentVerdictPanel {
   switch (source) {
     case "mock_flag":
-      return MOCK_TRI_AGENT_VERDICT;
+      return DEMO_TRI_AGENT_VERDICT;
     case "mock_reject":
-      return MOCK_TRI_AGENT_VERDICT_REJECT;
+      return DEMO_TRI_AGENT_VERDICT_REJECT;
     default: {
       const _exhaustive: never = source;
       throw new Error(

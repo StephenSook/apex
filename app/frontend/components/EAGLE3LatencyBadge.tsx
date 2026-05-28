@@ -26,7 +26,7 @@
  *     token-rate + draft rank displayed.
  *   - error: vLLM endpoint failure; falls back to vanilla decode.
  *
- * Mock data via `MOCK_EAGLE3_ACTIVE` in lib/mocks/judges-mocks.ts.
+ * Mock data via `DEMO_EAGLE3_ACTIVE` in lib/mocks/judges-mocks.ts.
  * Live data lands when Vinh wires the vLLM speculative-
  * decode metrics endpoint (Phase 4 task 4.4 per
  * docs/vinh-backend-plan.md).
@@ -37,7 +37,7 @@
  * Editorial-paddock palette + Fraunces display + IBM Plex Mono numerics.
  */
 
-import { MOCK_EAGLE3_ACTIVE } from "../lib/mocks/judges-mocks";
+import { DEMO_EAGLE3_ACTIVE } from "../lib/mocks/judges-mocks";
 
 export type EAGLE3State =
   | { readonly status: "disabled" }
@@ -81,7 +81,7 @@ function stateLabel(status: EAGLE3State["status"]): string {
 }
 
 export default function EAGLE3LatencyBadge({
-  state = MOCK_EAGLE3_ACTIVE,
+  state = DEMO_EAGLE3_ACTIVE,
 }: {
   readonly state?: EAGLE3State;
 }) {

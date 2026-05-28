@@ -16,7 +16,7 @@
  * The panel renders the candidate-prompt count + the per-iteration
  * faithfulness score trajectory + a callout to the selected
  * prompt's faithfulness delta vs the Day-1 baseline. Mock data
- * via `MOCK_GEPA_OPTIMIZATION` in lib/mocks/judges-mocks.ts.
+ * via `DEMO_GEPA_OPTIMIZATION` in lib/mocks/judges-mocks.ts.
  *
  * Live data lands when Vinh wires the GEPA offline job's
  * artifact-write to `app/backend/apex/prompts/optimized/` + the
@@ -26,7 +26,7 @@
  * Editorial-paddock palette + Fraunces display + IBM Plex Mono numerics.
  */
 
-import { MOCK_GEPA_OPTIMIZATION } from "../lib/mocks/judges-mocks";
+import { DEMO_GEPA_OPTIMIZATION } from "../lib/mocks/judges-mocks";
 
 export interface GEPAIteration {
   readonly iteration: number;
@@ -45,7 +45,7 @@ export interface GEPAOptimization {
 }
 
 export default function GEPAEvolutionPanel({
-  optimization = MOCK_GEPA_OPTIMIZATION,
+  optimization = DEMO_GEPA_OPTIMIZATION,
 }: {
   readonly optimization?: GEPAOptimization;
 }) {

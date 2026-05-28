@@ -7,7 +7,7 @@
  * sub-30 ms per-window detection so the projector QP retains its budget.
  *
  * HEAD canned path: returns a canned 5-band anomaly snapshot matching
- * MOCK_TSPULSE_ACTIVE shape (currently surfaced via
+ * DEMO_TSPULSE_ACTIVE shape (currently surfaced via
  * `components/JudgesGalaxyMovesShell.tsx` which passes inline mock to
  * `TSPulseAnomalyPanel`). Lets the panel migrate from prop-driven mock
  * to fetch-driven live data without a Vinh-side ship.

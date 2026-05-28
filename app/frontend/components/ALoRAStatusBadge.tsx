@@ -24,7 +24,7 @@
  *   - fallback: hot-swap failed; base model in use (role=alert).
  *   - error: unexpected error; underlying message preserved (role=alert).
  *
- * Mock data via `MOCK_ALORA_STATUS_ACTIVE` in lib/mocks/judges-mocks.ts.
+ * Mock data via `DEMO_ALORA_STATUS_ACTIVE` in lib/mocks/judges-mocks.ts.
  * Live data arrives when Vinh wires the vLLM adapter hot-swap
  * endpoint (Phase 4 task 4.5 per docs/vinh-backend-plan.md).
  *
@@ -34,7 +34,7 @@
  * Editorial-paddock palette + Fraunces display + IBM Plex Mono numerics.
  */
 
-import { MOCK_ALORA_STATUS_ACTIVE } from "../lib/mocks/judges-mocks";
+import { DEMO_ALORA_STATUS_ACTIVE } from "../lib/mocks/judges-mocks";
 
 export type ALoRAStatus =
   | { readonly status: "idle" }
@@ -89,7 +89,7 @@ function statusLabel(status: ALoRAStatus["status"]): string {
 }
 
 export default function ALoRAStatusBadge({
-  status = MOCK_ALORA_STATUS_ACTIVE,
+  status = DEMO_ALORA_STATUS_ACTIVE,
 }: {
   readonly status?: ALoRAStatus;
 }) {

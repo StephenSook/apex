@@ -151,7 +151,7 @@ export const IBM_GRANITE_STACK: ReadonlyArray<GraniteStackTool> = [
     role: "Polyphase time-frequency anomaly detector (D-016 Layer 2)",
     status: "INTEGRATION",
     // Wave-44 Phase 6a: frontend TSPulseAnomalyPanel 5-state discriminated
-    // union mounted on /judges (mock data via MOCK_TSPULSE_ACTIVE);
+    // union mounted on /judges (demonstration fixture DEMO_TSPULSE_ACTIVE);
     // backend swap-point Vinh M3-V7 endpoint POST /api/tspulse/anomaly per
     // wave-44 plan (Vinh-scope V1-V15 per D-054 wave-45). Wave-46 Phase 4.4:
     // NEW /api/tspulse/anomaly route ships canned-fallback + wire-flip behind

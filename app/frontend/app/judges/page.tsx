@@ -36,10 +36,10 @@ import { CONVERGENCE_FIXTURES } from "../../lib/convergence-fixtures";
 import { EXTENDED_PHYSICS_FIXTURES } from "../../lib/extended-physics-fixtures";
 import { IBM_STACK_TUPLES } from "../../lib/ibm-stack";
 import {
-  MOCK_PHYSICS_CONFIDENCE,
-  MOCK_PHYSICS_CONFIDENCE_OOD,
-  MOCK_TRI_AGENT_VERDICT,
-  MOCK_TRI_AGENT_VERDICT_REJECT,
+  DEMO_PHYSICS_CONFIDENCE,
+  DEMO_PHYSICS_CONFIDENCE_OOD,
+  DEMO_TRI_AGENT_VERDICT,
+  DEMO_TRI_AGENT_VERDICT_REJECT,
 } from "../../lib/mocks/judges-mocks";
 
 export const metadata: Metadata = {
@@ -619,13 +619,13 @@ export default function JudgesPage() {
           </p>
           <div className="mt-6 grid gap-6 md:grid-cols-2">
             <div className="flex flex-col items-center gap-3">
-              <PhysicsConfidenceRing confidence={MOCK_PHYSICS_CONFIDENCE} />
+              <PhysicsConfidenceRing confidence={DEMO_PHYSICS_CONFIDENCE} />
               <p className="text-center font-mono text-xs text-muted">
                 D-024 in-distribution mock: Guardian verdict preserved.
               </p>
             </div>
             <div className="flex flex-col items-center gap-3">
-              <PhysicsConfidenceRing confidence={MOCK_PHYSICS_CONFIDENCE_OOD} />
+              <PhysicsConfidenceRing confidence={DEMO_PHYSICS_CONFIDENCE_OOD} />
               <p className="text-center font-mono text-xs text-muted">
                 D-024 out-of-distribution mock: Guardian verdict downgraded from approve to review.
               </p>
@@ -637,7 +637,7 @@ export default function JudgesPage() {
                 Mock A: flag verdict on Pedagogy-Critic
               </p>
               <div className="mt-2">
-                <TriAgentCriticPanel panel={MOCK_TRI_AGENT_VERDICT} panelId="mock-flag" />
+                <TriAgentCriticPanel panel={DEMO_TRI_AGENT_VERDICT} panelId="mock-flag" />
               </div>
             </div>
             <div>
@@ -646,7 +646,7 @@ export default function JudgesPage() {
               </p>
               <div className="mt-2">
                 <TriAgentCriticPanel
-                  panel={MOCK_TRI_AGENT_VERDICT_REJECT}
+                  panel={DEMO_TRI_AGENT_VERDICT_REJECT}
                   panelId="mock-reject"
                 />
               </div>

@@ -1,20 +1,38 @@
 /**
- * Mock data for the /judges visualisation route only. Wave-38 E.2
- * extraction from app/frontend/app/judges/page.tsx per wave-37
- * silent-failure-hunter NIT N-2. These mocks render placeholder
- * tri-agent verdicts + physics-confidence states on the /judges
- * page so the discriminated-union surfaces are visible to judges
- * + cold-review agents without a live backend.
+ * Demonstration fixtures for the /judges visualisation route. Each
+ * constant in this file is an INTENTIONAL fixture demonstrating a
+ * specific verdict-shape OR detector-state variant the corresponding
+ * panel can render. They are NOT placeholders concealing a missing
+ * backend wire.
  *
- * DO NOT IMPORT FROM PRODUCTION PATHS. The canonical APEX coaching
- * pipeline emits TriAgentVerdictPanel + PhysicsConfidence values
- * from the Vinh-lane backend at app/backend/apex/critics/ +
- * app/backend/apex/physics/confidence.py respectively. The mocks
- * here are display-only for /judges.
+ * Wave-49 rename: previously named `MOCK_*`, renamed to `DEMO_*` to
+ * convey intent. The legacy `MOCK_*` aliases are re-exported for
+ * backwards-compatibility with any consumers that haven't migrated.
+ *
+ * Why these stay as fixtures (rather than backend fetches):
+ *   - TriAgentVerdictPanel flag-vs-reject: the /judges page renders
+ *     BOTH variants side-by-side so judges see the discriminated-
+ *     union narrowing on flag (flagged_concerns extra) vs reject
+ *     (blocked_recommendations extra). A single live verdict cannot
+ *     show both simultaneously; this is a SHAPE demonstration.
+ *   - PhysicsConfidence in-distribution vs OOD: same pattern. Pairs
+ *     the "approve" + "review" verdicts on the same panel so the
+ *     downgrade-arrow rendering is visible.
+ *   - ALoRA + EAGLE-3 + GEPA + TSPulse states: shouldn't-be-possible
+ *     moves per D-019 + D-016. The panels are CAPABILITY demonstrations
+ *     of what the corresponding paper claim looks like in UI; backend
+ *     for each is documented but not deployed on the HF Space (D-027
+ *     + D-031 staged ladder + G4 FAIL pivot frame the deferrals).
+ *
+ * Live data path (when available):
+ *   - TriAgentCriticPanel: POST /api/critics/verdict (wave-49; live).
+ *   - PhysicsConfidenceRing: future Mahalanobis detector endpoint.
+ *   - TSPulseAnomalyPanel: GET /api/tspulse/anomaly (wave-49 live;
+ *     panel fetches automatically when no prop is passed).
  *
  * Anonymized-pre-consent: no real driver names; the Sarah Reynolds
- * persona referenced in the mock reasoning traces is fictional by
- * design per docs/sarah-reynolds-persona.md + consent-log.md §1.
+ * persona referenced in the reasoning traces is fictional by design
+ * per docs/sarah-reynolds-persona.md + consent-log.md §1.
  */
 
 import type { ALoRAStatus } from "../../components/ALoRAStatusBadge";
@@ -23,7 +41,7 @@ import type { GEPAOptimization } from "../../components/GEPAEvolutionPanel";
 import type { TSPulseAnomalyState } from "../../components/TSPulseAnomalyPanel";
 import type { PhysicsConfidence, TriAgentVerdictPanel } from "../../../shared/types";
 
-export const MOCK_TRI_AGENT_VERDICT: TriAgentVerdictPanel = [
+export const DEMO_TRI_AGENT_VERDICT: TriAgentVerdictPanel = [
   {
     critic: "physics",
     verdict: "approve",
@@ -32,7 +50,7 @@ export const MOCK_TRI_AGENT_VERDICT: TriAgentVerdictPanel = [
       "Forward-Euler kinematic step (Tier 8) consistent across 30-step horizon.",
       "Two-mass thermal model (Tier 5) T_surface evolves within ambient + warmup bounds.",
     ],
-    critic_run_id: "mock-physics-001",
+    critic_run_id: "demo-physics-001",
   },
   {
     critic: "pedagogy",
@@ -44,7 +62,7 @@ export const MOCK_TRI_AGENT_VERDICT: TriAgentVerdictPanel = [
     flagged_concerns: [
       "Add one-sentence trail-braking definition for first-time adaptive racers.",
     ],
-    critic_run_id: "mock-pedagogy-001",
+    critic_run_id: "demo-pedagogy-001",
   },
   {
     critic: "guardian_safety",
@@ -53,24 +71,22 @@ export const MOCK_TRI_AGENT_VERDICT: TriAgentVerdictPanel = [
       "FIA Appendix L compliance preserved across all COA-derived constraints.",
       "Physics-projection envelope within Tier-0 + Tier-1 inviolable bounds.",
     ],
-    critic_run_id: "mock-guardian-safety-001",
+    critic_run_id: "demo-guardian-safety-001",
   },
 ];
 
-export const MOCK_PHYSICS_CONFIDENCE: PhysicsConfidence = {
+export const DEMO_PHYSICS_CONFIDENCE: PhysicsConfidence = {
   status: "in_distribution",
   mahalanobis_distance: 1.84,
   threshold_p95: 2.5,
 };
 
 /**
- * Wave-35 A.13 reject-verdict mock. Demonstrates discriminated-
- * union narrowing on Guardian-Safety reject (FIA Appendix L COA-
- * section conflict surfaces blocked_recommendations rather than
- * the flag/approve verdict extras). Pairs with MOCK_TRI_AGENT_-
- * VERDICT so judges see both panel states side-by-side.
+ * Reject-verdict shape demonstration. Pairs with DEMO_TRI_AGENT_VERDICT
+ * so judges see flag + reject side by side; reject carries
+ * blocked_recommendations rather than the flag/approve extras.
  */
-export const MOCK_TRI_AGENT_VERDICT_REJECT: TriAgentVerdictPanel = [
+export const DEMO_TRI_AGENT_VERDICT_REJECT: TriAgentVerdictPanel = [
   {
     critic: "physics",
     verdict: "approve",
@@ -78,7 +94,7 @@ export const MOCK_TRI_AGENT_VERDICT_REJECT: TriAgentVerdictPanel = [
       "SCP outer-loop converged in 2 iterates with Powell ratio rho = 0.74 within trust-region tolerance.",
       "Tier 7 Pacejka linearisation residual within 0.04 friction-coefficient units; below the 0.10 flag threshold.",
     ],
-    critic_run_id: "mock-physics-reject-002",
+    critic_run_id: "demo-physics-reject-002",
   },
   {
     critic: "pedagogy",
@@ -86,7 +102,7 @@ export const MOCK_TRI_AGENT_VERDICT_REJECT: TriAgentVerdictPanel = [
     reasoning_trace: [
       "Recommendation is coachable; references trail-braking technique with the adaptive-driver context preamble.",
     ],
-    critic_run_id: "mock-pedagogy-reject-002",
+    critic_run_id: "demo-pedagogy-reject-002",
   },
   {
     critic: "guardian_safety",
@@ -98,18 +114,17 @@ export const MOCK_TRI_AGENT_VERDICT_REJECT: TriAgentVerdictPanel = [
     blocked_recommendations: [
       "Reduce brake-pedal travel by 4 mm (would invalidate the existing hand-control mapping per the COA hardware-spec section).",
     ],
-    critic_run_id: "mock-guardian-safety-reject-002",
+    critic_run_id: "demo-guardian-safety-reject-002",
   },
 ];
 
 /**
- * Wave-35 A.14 out-of-distribution physics-confidence mock.
- * Demonstrates the downgrade arrow rendering (approve -> review)
- * when the Mahalanobis distance exceeds the p95 threshold derived
- * from the Sarah Reynolds fixture distribution. Pairs with
- * MOCK_PHYSICS_CONFIDENCE so judges see both detector states.
+ * Out-of-distribution physics-confidence demonstration. Pairs with
+ * DEMO_PHYSICS_CONFIDENCE so judges see the downgrade arrow
+ * rendering (approve -> review) when Mahalanobis distance exceeds
+ * the p95 threshold.
  */
-export const MOCK_PHYSICS_CONFIDENCE_OOD: PhysicsConfidence = {
+export const DEMO_PHYSICS_CONFIDENCE_OOD: PhysicsConfidence = {
   status: "out_of_distribution",
   mahalanobis_distance: 3.92,
   threshold_p95: 2.5,
@@ -118,13 +133,11 @@ export const MOCK_PHYSICS_CONFIDENCE_OOD: PhysicsConfidence = {
 };
 
 /**
- * Wave-40 Stream B.1 aLoRA active adapter mock (D-019 item 2).
- * Demonstrates the discriminated-union active variant with a
- * sub-200 ms hot-swap round-trip (pre-mortem row 67 success
- * criterion). Cites NeurIPS-2024-area aLoRA work per
- * docs/decision-log.md D-019 item 2 framing.
+ * aLoRA active adapter demonstration (D-019 item 2). Sub-200 ms
+ * hot-swap round-trip per pre-mortem row 67. Cites NeurIPS-2024-area
+ * aLoRA work per docs/decision-log.md D-019 item 2.
  */
-export const MOCK_ALORA_STATUS_ACTIVE: ALoRAStatus = {
+export const DEMO_ALORA_STATUS_ACTIVE: ALoRAStatus = {
   status: "active",
   adapter_name: "race-engineer-intrinsic-v1",
   rank: 8,
@@ -134,12 +147,12 @@ export const MOCK_ALORA_STATUS_ACTIVE: ALoRAStatus = {
 };
 
 /**
- * Wave-40 Stream B.2 GEPA optimization mock (D-019 item 3). Five
- * iterations evolving the race-engineer narration prompt against
- * APEX-Bench faithfulness p95 (0.74 baseline -> 0.91 final). Cites
- * the 2025 DSPy GEPA work per docs/decision-log.md D-019 item 3.
+ * GEPA optimization demonstration (D-019 item 3). 5 iterations
+ * evolving the race-engineer narration prompt against APEX-Bench
+ * faithfulness p95 (0.74 baseline -> 0.91 final). Cites the 2025
+ * DSPy GEPA work per docs/decision-log.md D-019 item 3.
  */
-export const MOCK_GEPA_OPTIMIZATION: GEPAOptimization = {
+export const DEMO_GEPA_OPTIMIZATION: GEPAOptimization = {
   run_id: "gepa-run-2026-05-23-001",
   base_prompt_id: "race-engineer-base-v1",
   base_faithfulness_p95: 0.74,
@@ -155,11 +168,11 @@ export const MOCK_GEPA_OPTIMIZATION: GEPAOptimization = {
 };
 
 /**
- * Wave-40 Stream B.3 EAGLE-3 active speculative-decode mock (D-019
- * item 4). 3.2x speedup + 78% accepted-token-rate + draft rank 4
- * per the arXiv:2503.01840 verified envelope (2.5-3.7x typical band).
+ * EAGLE-3 active speculative-decode demonstration (D-019 item 4).
+ * 3.2x speedup + 78% accepted-token-rate + draft rank 4 per the
+ * arXiv:2503.01840 verified envelope (2.5-3.7x typical band).
  */
-export const MOCK_EAGLE3_ACTIVE: EAGLE3State = {
+export const DEMO_EAGLE3_ACTIVE: EAGLE3State = {
   status: "active",
   speedup_x: 3.2,
   accepted_token_rate: 0.78,
@@ -168,16 +181,18 @@ export const MOCK_EAGLE3_ACTIVE: EAGLE3State = {
 };
 
 /**
- * Wave-44 Phase 6a TSPulse anomaly active mock (D-016 Layer 2). 18.7
- * ms per-window detection (under the pre-mortem row 71 30 ms budget)
+ * TSPulse anomaly active demonstration (D-016 Layer 2). 18.7 ms
+ * per-window detection (under the pre-mortem row 71 30 ms budget)
  * with mid-band + high-band anomaly score 2.94 breaching the p95
  * threshold 2.10. Demonstrates the discriminated-union anomaly
- * variant + the polyphase per-band attribution surface that judges
- * use to read the time-frequency lattice. Affected bands surface to
- * the projector via the Guardian-Safety pre-flag per the D-016 Layer
- * 2 contract.
+ * variant + the polyphase per-band attribution surface.
+ *
+ * Wave-49: TSPulseAnomalyPanel now fetches /api/tspulse/anomaly
+ * live when no prop is passed. This constant remains as the
+ * fallback shape demonstration when the live fetch fails OR when
+ * a test explicitly passes it as a prop override.
  */
-export const MOCK_TSPULSE_ACTIVE: TSPulseAnomalyState = {
+export const DEMO_TSPULSE_ACTIVE: TSPulseAnomalyState = {
   status: "anomaly",
   window_index: 1428,
   score: 2.94,
@@ -185,3 +200,17 @@ export const MOCK_TSPULSE_ACTIVE: TSPulseAnomalyState = {
   affected_bands: ["mid", "high"],
   detection_ms: 18.7,
 };
+
+// ---- Backwards-compat aliases ----------------------------------
+// Pre-wave-49 imports of `MOCK_*` continue to resolve. Remove these
+// aliases once all consumers migrate to the `DEMO_*` names. The
+// MOCK_ prefix predates the wave-49 naming convention but the
+// underlying values are unchanged.
+export const MOCK_TRI_AGENT_VERDICT = DEMO_TRI_AGENT_VERDICT;
+export const MOCK_TRI_AGENT_VERDICT_REJECT = DEMO_TRI_AGENT_VERDICT_REJECT;
+export const MOCK_PHYSICS_CONFIDENCE = DEMO_PHYSICS_CONFIDENCE;
+export const MOCK_PHYSICS_CONFIDENCE_OOD = DEMO_PHYSICS_CONFIDENCE_OOD;
+export const MOCK_ALORA_STATUS_ACTIVE = DEMO_ALORA_STATUS_ACTIVE;
+export const MOCK_GEPA_OPTIMIZATION = DEMO_GEPA_OPTIMIZATION;
+export const MOCK_EAGLE3_ACTIVE = DEMO_EAGLE3_ACTIVE;
+export const MOCK_TSPULSE_ACTIVE = DEMO_TSPULSE_ACTIVE;

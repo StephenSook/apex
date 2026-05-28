@@ -26,7 +26,7 @@
  *   - error: detector unavailable; underlying message preserved
  *     (role=alert).
  *
- * Mock data via `MOCK_TSPULSE_ACTIVE` in lib/mocks/judges-mocks.ts.
+ * Demonstration fixture `DEMO_TSPULSE_ACTIVE` in lib/mocks/judges-mocks.ts.
  * Live data arrives once Vinh M3-V7 backend wires the polyphase
  * detector endpoint (POST /api/tspulse/anomaly per wave-44 plan
  * Vinh-scope addition V7).
@@ -41,7 +41,7 @@ import { useEffect, useState } from "react";
 
 import type { TSPulseAnomalyState, TSPulseBand } from "../../shared/types";
 
-// Wave-49 mock-sweep: replaces module-scope MOCK_TSPULSE_ACTIVE
+// Wave-49 mock-sweep: replaces module-scope DEMO_TSPULSE_ACTIVE
 // fallback with a live /api/tspulse/anomaly fetch on mount. The wire-
 // flip route forwards to the HF Space backend at
 // `apex.tspulse.anomaly.TSPulseAnomalyDetector` (real IBM Granite

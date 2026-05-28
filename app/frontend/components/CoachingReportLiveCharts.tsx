@@ -66,7 +66,7 @@ interface SpeedBrakePoint {
 }
 
 // Mock-fixture data; backend wires per Stream M.3 spec extension.
-const MOCK_LAP_TIMES: ReadonlyArray<LapTimePoint> = [
+const DEMO_LAP_TIMES: ReadonlyArray<LapTimePoint> = [
   { lap: 1, delta_s: 0.0, reference_s: 0.0 },
   { lap: 2, delta_s: 0.18, reference_s: 0.0 },
   { lap: 3, delta_s: 0.05, reference_s: 0.0 },
@@ -76,7 +76,7 @@ const MOCK_LAP_TIMES: ReadonlyArray<LapTimePoint> = [
   { lap: 7, delta_s: -0.08, reference_s: 0.0 },
 ];
 
-const MOCK_TIRE_WEAR: ReadonlyArray<TireWearPoint> = [
+const DEMO_TIRE_WEAR: ReadonlyArray<TireWearPoint> = [
   { lap: 1, degradation_pct: 4 },
   { lap: 2, degradation_pct: 11 },
   { lap: 3, degradation_pct: 19 },
@@ -86,7 +86,7 @@ const MOCK_TIRE_WEAR: ReadonlyArray<TireWearPoint> = [
   { lap: 7, degradation_pct: 62 },
 ];
 
-const MOCK_SPEED_BRAKE: ReadonlyArray<SpeedBrakePoint> = [
+const DEMO_SPEED_BRAKE: ReadonlyArray<SpeedBrakePoint> = [
   { lap: 1, avg_speed_mph: 142, brake_temp_c: 380 },
   { lap: 2, avg_speed_mph: 145, brake_temp_c: 420 },
   { lap: 3, avg_speed_mph: 147, brake_temp_c: 460 },
@@ -127,7 +127,7 @@ function CoachingReportLiveChartsBase(_props: CoachingReportLiveChartsProps) {
         </p>
         <div className="h-48 w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={[...MOCK_LAP_TIMES]} margin={{ top: 8, right: 16, bottom: 8, left: 0 }}>
+            <LineChart data={[...DEMO_LAP_TIMES]} margin={{ top: 8, right: 16, bottom: 8, left: 0 }}>
               <CartesianGrid stroke="var(--color-rule)" strokeDasharray="3 3" />
               <XAxis
                 dataKey="lap"
@@ -176,7 +176,7 @@ function CoachingReportLiveChartsBase(_props: CoachingReportLiveChartsProps) {
         <div className="h-48 w-full">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart
-              data={[...MOCK_TIRE_WEAR]}
+              data={[...DEMO_TIRE_WEAR]}
               margin={{ top: 8, right: 16, bottom: 8, left: 0 }}
             >
               <CartesianGrid stroke="var(--color-rule)" strokeDasharray="3 3" />
@@ -218,7 +218,7 @@ function CoachingReportLiveChartsBase(_props: CoachingReportLiveChartsProps) {
         <div className="h-48 w-full">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
-              data={[...MOCK_SPEED_BRAKE]}
+              data={[...DEMO_SPEED_BRAKE]}
               margin={{ top: 8, right: 16, bottom: 8, left: 0 }}
             >
               <CartesianGrid stroke="var(--color-rule)" strokeDasharray="3 3" />
@@ -286,12 +286,12 @@ function CoachingReportLiveChartsBase(_props: CoachingReportLiveChartsProps) {
 
 // Wave-43 D2.6 close-out: dropped React.memo wrapper per cold-review-2
 // type-design-analyzer H1 + silent-failure-hunter M-R2-4 cross-
-// corroboration. The component is pure-mock-fixture today (MOCK_LAP_
-// TIMES + MOCK_TIRE_WEAR + MOCK_SPEED_BRAKE are module-scope
-// constants); memo was dead code AND a drift hazard for when Stream
-// M.3 backend wire-up replaces MOCK_* with report-derived telemetry.
-// React.memo default shallow-equality on the typed prop is the
-// correct memoization choice IF memoization is needed; for now no
-// memoization is needed.
+// corroboration. The component is pure-demo-fixture today (DEMO_LAP_
+// TIMES + DEMO_TIRE_WEAR + DEMO_SPEED_BRAKE are module-scope
+// constants); memo was dead code AND a drift hazard for when the
+// Stream M.3 backend wire-up replaces the DEMO_* constants with
+// report-derived telemetry. React.memo default shallow-equality on
+// the typed prop is the correct memoization choice IF memoization is
+// needed; for now no memoization is needed.
 
 export default CoachingReportLiveChartsBase;

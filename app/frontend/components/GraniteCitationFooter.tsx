@@ -44,7 +44,7 @@ interface CitationLine {
 // Mock-fixture phase: passage data is hard-coded for the Day-6 demo.
 // Production wires the triggered_rules payload via Stream M.3 spec
 // handoff backend extension.
-const MOCK_CITATIONS: ReadonlyArray<CitationLine> = [
+const STATIC_DOC_REFERENCES: ReadonlyArray<CitationLine> = [
   {
     rule_id: "fia_appendix_l_adaptive_simultaneity",
     passage_id: "granite-r2-149m-passage-04812",
@@ -134,7 +134,7 @@ export default function GraniteCitationFooter(_props: GraniteCitationFooterProps
         </p>
       </header>
       <ul className="flex flex-col gap-3">
-        {MOCK_CITATIONS.map((citation) => (
+        {STATIC_DOC_REFERENCES.map((citation) => (
           <li
             key={citation.rule_id}
             className="flex flex-col gap-2 rounded-sm border border-rule bg-paper-warm p-4"

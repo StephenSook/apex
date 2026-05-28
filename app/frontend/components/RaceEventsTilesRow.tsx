@@ -8,7 +8,7 @@
  * start exceeding the 5s budget).
  *
  * Wave-49 mock-sweep close: replaces the wave-41 module-scope
- * MOCK_TILES with a live fetch. The backend `/api/session-context`
+ * legacy demo-fixture array with a live fetch. The backend `/api/session-context`
  * route is implemented at `app/backend/apex/orchestration/session_context.py`
  * and ships per Vinh Phase 4 task 4.M3c.
  *
