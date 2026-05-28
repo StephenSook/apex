@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import BlurText from "../components/BlurText";
 import RacingLineHeroShell from "../components/RacingLineHeroShell";
 import { IBM_GRANITE_STACK } from "../lib/ibm-stack";
 
@@ -80,11 +81,12 @@ function Hero() {
           </p>
           <h1
             id="hero-title"
-            className="font-display text-5xl leading-[1.05] tracking-tight text-ink sm:text-6xl lg:text-7xl apex-rise"
-            style={{ "--apex-delay": "120ms" } as React.CSSProperties}
+            className="font-display text-5xl leading-[1.05] tracking-tight text-ink sm:text-6xl lg:text-7xl"
           >
-            The race engineer for the drivers who{" "}
-            <em className="font-display italic text-accent">don&rsquo;t have one.</em>
+            <BlurText text="The race engineer for the drivers who" baseDelay={120} />{" "}
+            <em className="font-display italic text-accent">
+              <BlurText text={"don’t have one."} baseDelay={720} perWord={120} />
+            </em>
           </h1>
           <p
             className="max-w-xl text-lg leading-relaxed text-ink-soft apex-rise"
