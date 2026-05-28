@@ -7,7 +7,13 @@ Exposes:
   - GET  /api/orchestration       (wave-47 cascade-#53; frontend V14 wire-flip)
   - POST /api/analyze             (Sarah end-to-end pipeline; JSON file paths)
   - POST /api/analyze-upload      (wave-48 multipart fix; driver-supplied files)
-  - GET  /api/tspulse/anomaly     (wave-48 Tier-2; IBM TSPulse r1 polyphase anomaly head)
+  - GET  /api/tspulse/anomaly     (wave-48 Tier-2; IBM TSPulse r1 polyphase)
+  - GET  /api/projector-stage-a   (wave-49 V12 Pacejka 8-tier linearization)
+  - GET  /api/projector-stage-b   (wave-49 V13 SCP 3-iterate outer loop)
+  - GET  /api/lips-harness        (wave-49 V15 LIPS 4-axis ablation)
+  - GET  /api/judges/coa-diff     (wave-49 V14 paired COA verdict diff)
+  - GET  /api/tire-degradation    (wave-49 Phase 7.2 wear extrapolation)
+  - POST /api/critics/verdict     (wave-49 D-018 tri-agent Mellea IVR critic)
   - GET  /healthz                 (container readiness probe)
 
 Deploy target: any Docker host (Modal / Fly.io / Vercel functions /
@@ -32,8 +38,11 @@ from typing import Any, Final
 from fastapi import FastAPI, File, HTTPException, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 
+from apex.critics import run_tri_agent_critics
 from apex.instruct.narrator import Narrator
 from apex.instruct.openrouter_generator import build_openrouter_generator
+from apex.judges import compute_coa_diff
+from apex.lips import compute_lips_4_axis
 from apex.observability import setup_observability
 from apex.orchestration.audit_log import (
     AuditLogLineTooLarge,
@@ -46,6 +55,8 @@ from apex.orchestration.what_if_replay import (
     UnknownMutationError,
     run_what_if_replay,
 )
+from apex.physics.projection_pacejka import compute_pacejka_8_tier
+from apex.physics.projection_scp import compute_scp_3_iterate
 from apex.pipelines.sarah_e2e import coaching_report_to_dict
 from apex.pipelines.telemetry_to_log import load_telemetry_csv
 from apex.schemas import (
@@ -56,6 +67,7 @@ from apex.schemas import (
     TSPulseResp,
     WhatIfReplayResp,
 )
+from apex.tire_degradation import predict_tire_degradation
 from apex.tspulse import detect_anomaly
 
 # ---- Upload constraints ------------------------------------------------
@@ -532,6 +544,89 @@ def get_tspulse_anomaly() -> dict[str, Any]:
             "(IBM Granite TimeSeries TSPulse r1 polyphase anomaly head)"
         ),
     }
+
+
+# ---- Wave-49 backend completion endpoints ----------------------------
+#
+# Five new GET/POST routes that fill the previously canned-fallback
+# wire-flip surfaces with real backend computation:
+#   - GET  /api/projector-stage-a  (V12 Pacejka 8-tier projector)
+#   - GET  /api/projector-stage-b  (V13 SCP 3-iterate outer loop)
+#   - GET  /api/lips-harness       (V15 LIPS 4-axis ablation harness)
+#   - GET  /api/judges/coa-diff    (V14 paired COA verdict diff)
+#   - GET  /api/tire-degradation   (Phase 7.2 wear extrapolation)
+#   - POST /api/critics/verdict    (D-018 Mellea tri-agent critic IVR)
+
+
+@app.get("/api/projector-stage-a")
+def get_projector_stage_a() -> dict[str, Any]:
+    """V12 8-tier Pacejka linearization residual trace."""
+    telemetry, coa = _sarah_fixtures_or_503()
+    return compute_pacejka_8_tier(
+        telemetry_csv=str(telemetry),
+        coa_json=str(coa),
+    )
+
+
+@app.get("/api/projector-stage-b")
+def get_projector_stage_b() -> dict[str, Any]:
+    """V13 3-iterate SCP outer-loop convergence trace."""
+    telemetry, coa = _sarah_fixtures_or_503()
+    return compute_scp_3_iterate(
+        telemetry_csv=str(telemetry),
+        coa_json=str(coa),
+    )
+
+
+@app.get("/api/lips-harness")
+def get_lips_harness() -> dict[str, Any]:
+    """V15 LIPS 4-axis ablation table on the canonical Sarah fixture."""
+    telemetry, coa = _sarah_fixtures_or_503()
+    return compute_lips_4_axis(
+        telemetry_csv=str(telemetry),
+        coa_json=str(coa),
+    )
+
+
+@app.get("/api/judges/coa-diff")
+def get_judges_coa_diff() -> dict[str, Any]:
+    """V14 paired COA-permitted vs COA-blocked verdict diff."""
+    telemetry, coa = _sarah_fixtures_or_503()
+    return compute_coa_diff(
+        telemetry_csv=str(telemetry),
+        coa_json=str(coa),
+    )
+
+
+@app.get("/api/tire-degradation")
+def get_tire_degradation() -> dict[str, Any]:
+    """Tire degradation predictor (TTM r2 forecast consumer)."""
+    telemetry, _coa = _sarah_fixtures_or_503()
+    return predict_tire_degradation(
+        telemetry_csv=str(telemetry),
+        compound="soft",
+        horizon_laps=10,
+        current_stint_lap=1,
+    )
+
+
+@app.post("/api/critics/verdict")
+async def post_critics_verdict(request: Request) -> dict[str, Any]:
+    """D-018 Mellea tri-agent critic IVR loop.
+
+    Request body shape:
+      { "report_summary": "<text summary of the coaching report>" }
+    """
+    payload = await request.json()
+    if not isinstance(payload, dict):
+        raise HTTPException(status_code=400, detail="payload must be a JSON object")
+    report_summary = payload.get("report_summary", "")
+    if not isinstance(report_summary, str) or not report_summary.strip():
+        raise HTTPException(
+            status_code=400,
+            detail="payload must contain non-empty string 'report_summary'",
+        )
+    return run_tri_agent_critics(report_summary)
 
 
 __all__ = ["app"]
