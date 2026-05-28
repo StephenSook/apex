@@ -93,26 +93,13 @@ Total Stephen time: about 4 hours including listening QA + drift hunt + any rege
 
 ## 3. Honeycomb.io free OpenTelemetry dashboard
 
-**Tool.** Honeycomb.io free tier supports OpenTelemetry ingestion. Sign up at https://honeycomb.io and create a new environment + API key.
+Full step-by-step runbook lives at `docs/honeycomb-otel-runbook.md` (wave-51c).
 
-### Steps for Stephen
+Quick summary: sign up at honeycomb.io free tier, create a `production` environment, copy the ingest API key, set 3 env vars on the HF Space (`OTEL_EXPORTER_OTLP_ENDPOINT=https://api.honeycomb.io`, `OTEL_EXPORTER_OTLP_HEADERS=x-honeycomb-team=<key>`, `APEX_OTEL_ENABLED=1`), Factory rebuild, send a smoke request, then verify the `apex-backend` dataset receives spans.
 
-1. Sign up at honeycomb.io with email + create a new team "apex"
-2. Create environment "production"
-3. Copy the ingest API key from the environment settings
-4. Set the env var on the HF Space backend via the HF web UI at https://huggingface.co/spaces/ssookra/apex-backend/settings:
-   - Key: `OTEL_EXPORTER_OTLP_ENDPOINT` Value: `https://api.honeycomb.io:443`
-   - Key: `OTEL_EXPORTER_OTLP_HEADERS` Value: `x-honeycomb-team=<api-key-from-step-3>`
-   - Key: `APEX_OTEL_ENABLED` Value: `1`
-5. Restart the HF Space (Settings -> Factory rebuild)
-6. Ping Claude
+Important wave-51c fix: the endpoint MUST be the base URL `https://api.honeycomb.io` without the `:443` port and without the `/v1/traces` path. The OTel Python SDK appends the signal path automatically. Earlier draft of this doc said `:443` which would have worked for HTTPS-default-port but the simpler base URL is the canonical form.
 
-**Claude follow-up on env vars set** (~30 min):
-- Verify the existing `app/backend/apex/observability.py` lazy OTel scaffolding wires through cleanly to the Honeycomb endpoint
-- Add a "Production observability" link on /judges pointing at the public Honeycomb dashboard URL
-- Update SUBMISSION.md story to mention the production OTel dashboard as the OVERRIDE-counter on the production-grade-instrumentation axis
-
-Total Stephen time: about 30 minutes. Cost: free.
+Total Stephen time: about 25 minutes. Cost: free.
 
 ---
 
