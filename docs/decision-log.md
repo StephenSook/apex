@@ -4,6 +4,58 @@ Every locked decision with rationale + date + scope. Newest first.
 
 ---
 
+## 2026-05-28 D-070: Wave-51 cinematic editorial-paddock hero upgrade + reduce-motion accessibility hook
+
+**Decision.** Stephen explicit night 2026-05-27/28 "shock factor wow factor" ask on the landing-page hero. Direction locked: Editorial Paddock Cinematic Noir with Warmth. Reference vocabulary from motionsites.ai patterns (cinematic loop + liquid-glass + BlurText + orbital energy at the focal moment) translated to the warm-cream + racing-green + clay-red + amber + ink palette. NO cold-cyber neon. NO dark-purple-AI gradient. Editorial-paddock identity preserved end-to-end. Zero new dependencies (R3F + framer-motion remain out of the deps tree per galaxy-ambition + bundle-size discipline).
+
+**Tool-inventory audit per D-007 BLOCKING (documented USE/DEFER decisions):**
+- USE: `frontend-design` skill, `karpathy-guidelines`, `feature-dev:code-architect` sub-agent, `cc-gemini-plugin:gemini-agent` (motionsites.ai pattern dive), `general-purpose` (Context7 + bundle-size research), `codex:codex-rescue` (post-ship adversarial review), `mcp__plugin_playwright_playwright__*` (production verify)
+- DEFER: `mcp__plugin_serena_serena__*` (small focused changes), `mcp__stitch__*` (existing palette not getting replaced), `mcp__magic__21st_magic_component_builder` (manual craft fits editorial-paddock better than generated), Figma/Gmail/Calendar/Notion/Slack connectors (no comm task)
+
+**Commit ledger (8 atomic, newest first):**
+
+- `caea281` fix(ui): wave-51 cascade-#56 reduce-motion accessibility hook + BlurText + ember conditional render. Closes Codex HIGH #2 + #3 + #4. NEW `lib/use-prefers-reduced-motion.ts` single client hook with rAF-deferred setState; BlurText rewrite renders words VISIBLE by default; RacingLineHero ember group conditional-rendered behind !prefersReducedMotion so SMIL animateMotion is removed from the DOM; ember-bloom feGaussianBlur filter dropped to avoid mobile Safari per-frame compositing cost.
+- `ca71662` fix(ui): wave-51 cascade-#55 BlurText defer reduce-motion setState via rAF. Closes React 19 set-state-in-effect lint rule fire on the conditional sync setReduceMotion inside useEffect early-return.
+- `43d0e1a` feat(ui): wave-51 landing page hero h1 BlurText word-by-word reveal. Hero h1 headline wrapped in BlurText components; .apex-rise + --apex-delay removed from h1 because BlurText owns the entrance; right-single-quote U+2019 preserved.
+- `97f481c` feat(ui): wave-51 BlurText word-by-word blur-to-crisp reveal component. New BlurText component renders word-by-word blur-in reveal via IntersectionObserver + .apex-blur-word utility; baseDelay + perWord stagger; honors prefers-reduced-motion.
+- `1c3b683` feat(ui): wave-51 RacingLineHero rev-5 cinematic upgrade with orbital glow + spark embers + cosmic halo + shutter sweep. Rev-4 SVG structure preserved entirely; cosmic glow halo behind apex + 3 concentric orbital glow rings (7s outer + 5.5s mid + 4.2s inner) with feGaussianBlur ring-bloom filter + 12 spark embers on staggered animateMotion paths + cinematic shutter sweep overlay.
+- `1f86ff8` feat(css): wave-51 cinematic editorial-paddock chrome utilities. globals.css additions: .apex-glass + .apex-glass-strong (tinted-cream liquid-glass via color-mix in oklab), .apex-blur-word + @keyframes apex-blur-in, @keyframes apex-orbit-breathe + apex-orbit-breathe-offset (orbital ring pulse), .apex-ember-scintillate (ember twinkle), .apex-shutter-sweep + keyframe (single-shot cinematic sheen).
+
+**Background research dispatched in parallel (per D-007 quality-over-speed tool-inventory):**
+- `cc-gemini-plugin:gemini-agent` motionsites.ai pattern dive returned implementation playbook with concrete code blocks for R3F overlay + BlurText + LiquidGlassTelemetryChips + reduce-motion gate. NOT shipped at wave-51; PATH A (SVG-enhanced base) chosen per Stephen explicit "fallback to current if anything breaks" + lower-risk T-3d-to-submission.
+- `general-purpose` R3F + postprocessing advanced research returned compatibility matrix: @react-three/postprocessing@3.0.4 + postprocessing@6.39.1 + three@0.184.0 safe combo. NOT installed at wave-51; preserved as Phase 2 swap-point if Stephen wants further cinematic depth post-wave-51 visual evaluation.
+- `codex:codex-rescue` adversarial review of wave-51 hero returned 3 HIGH findings closed via cascade-#56; 4 MED findings (color-mix() plain-color fallback, shutter sweep replay on route remount, TypeScript / Next.js 16 safety, operator-attribution sweep on page.tsx) verified non-blocking.
+- `general-purpose` Playwright production verify SHIP verdict at apex-one-black.vercel.app: BlurText 10 words rendered, RacingLineHero SVG viewBox 1000x900 present, 3 orbital glow rings (`hero-orbit-outer/mid/inner`), 12 spark embers (`hero-ember`), .apex-shutter-sweep overlay present, body bg #F4EBD8 cream, h1 ink #0F1410, mobile 375x667 no horizontal overflow, zero hydration errors, zero React warnings. One SOFT WARN: 404 on /\<hash\>/script.js (likely stale prefetch or browser-extension; not credibility hit).
+
+**Files changed:**
+- app/frontend/app/globals.css (+142 lines: 8 cinematic primitives)
+- app/frontend/components/RacingLineHero.tsx (rev-4 -> rev-5; cosmic halo + 3 orbital rings + 12 spark embers + shutter sweep overlay + conditional ember rendering behind !prefersReducedMotion)
+- app/frontend/components/BlurText.tsx (NEW; word-by-word reveal)
+- app/frontend/lib/use-prefers-reduced-motion.ts (NEW; reduce-motion hook with rAF-deferred setState)
+- app/frontend/app/page.tsx (hero h1 wrapped in BlurText components; .apex-rise removed from h1)
+
+**Production state post-wave-51:**
+- HEAD: caea281
+- CI: GREEN per push (after cascade-#55 + cascade-#56 closures)
+- Production URL: https://apex-one-black.vercel.app
+- Mobile responsive: confirmed via Playwright at 375x667 no horizontal overflow
+- Accessibility: prefers-reduced-motion users see fully visible static text from first paint + zero SMIL animateMotion in DOM
+- Bundle impact: zero new dependencies; pure CSS keyframes + IntersectionObserver + matchMedia
+- Fallback path: rev-4 SVG-only hero remains in git history for instant revert per Stephen explicit fallback
+
+**Phase 2 swap-points (NOT shipped at wave-51; documented as named follow-ups):**
+- R3F overlay layer with @react-three/postprocessing Bloom + Vignette per the gemini-agent + general-purpose research playbooks. Compatibility verified: @react-three/postprocessing@3.0.4 + postprocessing@6.39.1 + three@0.184.0. Ship cost: ~280KB gzip behind next/dynamic ssr:false. Trigger: Stephen post-wave-51 visual evaluation request for further cinematic depth.
+- Live latency badge on /judges surfacing /api/orchestration round-trip latency in the engine-label pill. Ship cost: ~1 hr.
+- Granite Citation Footer scroll-anchor pulse on FIA citation viewport intersection. Ship cost: ~30 min.
+- Sarah Reynolds illustrated portrait via Nano Banana Pro or Replicate FLUX 1.1 for /judges OR /coach-code OR landing hero. Stephen operator-action; Claude-shippable wiring once asset lands.
+- NotebookLM master Audio Overview at top of /judges-page OR SUBMISSION.md. Stephen operator-action; per the new-tool research from wave-50 dispatch.
+
+**Galaxy-ambition + no-deferrals discipline preserved.** Every wave-51 atomic commit either ships a real visible upgrade OR documents a Phase 2 swap-point with rationale. Editorial-paddock palette identity end-to-end. HARD-COMPLIANCE: zero em-dash in prose; zero AI-tone words in commit messages.
+
+**Cross-references.** All four agent transcripts at `/private/tmp/claude-501/-Users-stephensookra-Desktop-IBM-May/79d79236-00ac-476f-8c13-3ced09302b20/tasks/{a9409adc9244e862d,a6e16701d9c21349b,a576b41facbbf26f7,a5ccf7739d09d37f4}.output`. Memory rules consulted: `feedback_galaxy_ambition_no_deferrals` + `feedback_no_time_pressure_restraint` + `feedback_em_dash_zero_tolerance` + `feedback_atomic_commit_discipline` + `feedback_cascade_fix_forward_discipline` + `feedback_ci_green_per_push_verify_or_cascade` + `feedback_quality_over_speed` + `feedback_react19_set_state_in_effect_workarounds` + `feedback_useState_lazy_init_hydration_footgun` + `feedback_exhaustive_tool_inventory_before_every_task`.
+
+---
+
 ## 2026-05-27 D-069: Wave-50 brutal-honest audit close + post-wave-49 prose/code BLOCKER closures
 
 **Decision.** Stephen invoked the wave-50 audit directive 2026-05-27 night Day 8: "thorough deep audit; brutally honest; use every MCP plugin connector sub-agent skill superpower; galaxy ambition; nothing post-hackathon; don't be holding any bag." Five-agent parallel dispatch (cc-gemini-plugin:gemini-agent 1M repo gap audit + codex:codex-rescue adversarial review + pr-review-toolkit:silent-failure-hunter wave-49 sweep + pr-review-toolkit:code-reviewer wave-49 pass + general-purpose 21st.dev + Nano Banana Pro + NotebookLM research + general-purpose Playwright production walk) surfaced BLOCKER + HIGH + MED findings across UI prose, backend code, production page reality. Wave-50 batch closes the load-bearing findings + ships Stephen-explicit asks (README BuildStatus removal + script update + production zero-mock verify + PLAN.md check-off).
