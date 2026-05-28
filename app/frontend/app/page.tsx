@@ -1,7 +1,7 @@
+import Image from "next/image";
 import Link from "next/link";
 
 import BlurText from "../components/BlurText";
-import RacingLineHeroShell from "../components/RacingLineHeroShell";
 import { IBM_GRANITE_STACK } from "../lib/ibm-stack";
 
 export default function Home() {
@@ -12,6 +12,7 @@ export default function Home() {
         <Hero />
         <AdaptiveCommunity />
         <DriverContext />
+        <CoaGateVisual />
         <Architecture />
         <Differentiators />
         <StackBadges />
@@ -146,9 +147,17 @@ function Hero() {
         <figure
           className="lg:col-span-6 flex w-full items-start apex-rise"
           style={{ "--apex-delay": "600ms" } as React.CSSProperties}
-          aria-label="A racing line through a corner with the apex point marked"
+          aria-label="Editorial paddock illustration: a hand-controls-adapted GT4 race car cockpit at golden hour with warm cream paper backdrop, racing-green track-line silhouette behind, clay-red apex marker, and amber dashboard heat-glow."
         >
-          <RacingLineHeroShell />
+          <Image
+            src="/hero-illustration-4k.png"
+            alt="Editorial paddock motorsport illustration: hand-controls-adapted GT4 cockpit interior at golden hour. Warm cream paper textured backdrop with subtle racing-green track-line silhouette. Clay-red apex marker. Amber heat-glow on the dashboard telemetry. Generated via Nano Banana Pro per docs/nano-banana-runbook.md wave-51c ship."
+            width={5504}
+            height={3072}
+            priority
+            sizes="(min-width: 1024px) 50vw, 100vw"
+            className="h-auto w-full rounded-sm"
+          />
         </figure>
       </div>
     </section>
@@ -319,6 +328,48 @@ function DriverContext() {
             <span className="font-mono">+0.34s mid-sector delta</span>
           </footer>
         </blockquote>
+      </div>
+    </section>
+  );
+}
+
+/* -------------------------------------------------------------- */
+/* COA gate visual (wave-51d Nano Banana editorial illustration)    */
+/* -------------------------------------------------------------- */
+function CoaGateVisual() {
+  return (
+    <section
+      id="coa-gate-visual"
+      aria-labelledby="coa-gate-visual-title"
+      className="border-b border-rule bg-paper"
+    >
+      <div className="mx-auto flex max-w-6xl flex-col gap-6 px-6 py-16 lg:px-10 lg:py-20">
+        <header className="flex flex-col gap-3 max-w-3xl">
+          <p className="apex-eyebrow">The COA gate, visualized</p>
+          <h2
+            id="coa-gate-visual-title"
+            className="font-display text-3xl leading-tight text-ink"
+          >
+            Brake-throttle traces crossing at the apex.{" "}
+            <em className="italic text-accent">
+              When the COA permits it, the projection recognizes it.
+            </em>
+          </h2>
+        </header>
+        <figure className="flex flex-col gap-3 rounded-sm border border-rule bg-paper-warm p-3">
+          <Image
+            src="/coa-gate-illustration-4k.png"
+            alt="Editorial paddock infographic: clay-red brake telemetry trace + racing-green throttle telemetry trace overlaid through a corner, crossing at the apex point. Amber heat-glow halo around the apex crossing. Warm cream paper background with subtle paddock dust grain. Plex Mono callout coa_overlap_flag = 1. Generated via Nano Banana Pro per docs/nano-banana-runbook.md wave-51c ship."
+            width={5504}
+            height={3072}
+            sizes="(min-width: 1024px) 1024px, 100vw"
+            className="h-auto w-full rounded-sm"
+          />
+          <figcaption className="font-mono text-[11px] uppercase tracking-wider text-muted">
+            Editorial illustration. coa_overlap_flag is the tensor-level signal the V1 NumPy validator
+            reads from the parsed FIA Certificate of Adaptations.
+          </figcaption>
+        </figure>
       </div>
     </section>
   );

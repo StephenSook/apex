@@ -279,6 +279,48 @@ export default function JudgesPage() {
       </section>
 
       <section
+        id="canonical-persona"
+        aria-labelledby="canonical-persona-title"
+        className="border-b border-rule bg-paper"
+      >
+        <div className="mx-auto grid max-w-6xl gap-10 px-6 py-16 lg:grid-cols-12 lg:gap-12 lg:px-10 lg:py-20">
+          <div className="lg:col-span-5 flex flex-col gap-4">
+            <p className="apex-eyebrow">The canonical demo persona</p>
+            <h2
+              id="canonical-persona-title"
+              className="font-display text-3xl leading-tight text-ink"
+            >
+              Sarah Reynolds.{" "}
+              <em className="italic text-accent">Fictional by design.</em>
+            </h2>
+            <p className="text-base leading-relaxed text-ink-soft">
+              Sarah Reynolds is the persona who lives in the storytelling layer of APEX: a
+              mid-thirties RAF veteran left-leg amputee competing in Britcar Trophy in a BMW M240i
+              fitted with MME Motorsport electronic hand-controls. The persona is intentionally
+              fictional. Real adaptive drivers are referenced anonymously per the per-surface
+              consent discipline in <Link href="/methodology" className="underline hover:text-racing-green">methodology.md</Link>.
+            </p>
+            <p className="font-mono text-xs uppercase tracking-wider text-muted">
+              Lane K storytelling-layer-only · NOT default UI state · NOT default API response
+            </p>
+          </div>
+          <figure className="lg:col-span-7 flex flex-col gap-3 rounded-sm border border-rule bg-paper-warm p-3">
+            <Image
+              src="/sarah-reynolds-portrait-4k.png"
+              alt="Editorial paddock illustration: profile view of a fictional mid-thirties RAF veteran left-leg amputee adaptive race driver inside a Britcar Trophy BMW M240i cockpit. Electronic hand-control hardware visible on the steering wheel with MME Motorsport ring-throttle paddle. Warm cream paper backdrop with subtle racing-green track-line silhouette. Hand-control hardware in clay-red signal accent. Amber dashboard glow on the right edge. Editorial illustration style; NOT photoreal. Generated via Nano Banana Pro per docs/nano-banana-runbook.md wave-51c ship."
+              width={3584}
+              height={4800}
+              sizes="(min-width: 1024px) 600px, 100vw"
+              className="h-auto w-full rounded-sm"
+            />
+            <figcaption className="font-mono text-[11px] uppercase tracking-wider text-muted">
+              Editorial illustration; fictional persona. Real operators anonymized per per-surface consent.
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section
         id="architecture"
         aria-labelledby="architecture-title"
         className="border-b border-rule bg-paper-warm"
