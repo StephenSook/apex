@@ -40,6 +40,9 @@ from __future__ import annotations
 
 import logging
 import os
+import time
+
+from apex import observability_metrics
 
 logger = logging.getLogger(__name__)
 
@@ -162,14 +165,36 @@ def setup_observability(app):
         @app.middleware("http")
         async def apex_otel_request_middleware(request, call_next):
             path = request.url.path
-            if path in {"/healthz", "/favicon.ico"}:
+            # Skip readiness + the observability panel's own polling so the
+            # live dashboard reflects real product traffic, not self-polling.
+            if path in {"/healthz", "/favicon.ico", "/api/observability/summary"}:
                 return await call_next(request)
+            started = time.perf_counter()
             with tracer.start_as_current_span(f"{request.method} {path}") as span:
                 span.set_attribute("http.method", request.method)
                 span.set_attribute("http.url", str(request.url))
                 span.set_attribute("http.route", path)
                 response = await call_next(request)
                 span.set_attribute("http.status_code", response.status_code)
+                # Mirror into the in-process live-metrics aggregator with the
+                # REAL Honeycomb trace_id so /api/observability/summary can
+                # deep-link each recent request to its trace waterfall.
+                try:
+                    span_ctx = span.get_span_context()
+                    trace_id_hex = (
+                        format(span_ctx.trace_id, "032x")
+                        if span_ctx and span_ctx.trace_id
+                        else None
+                    )
+                except Exception:  # pragma: no cover - defensive
+                    trace_id_hex = None
+                observability_metrics.record_request(
+                    route=path,
+                    method=request.method,
+                    status=response.status_code,
+                    duration_ms=(time.perf_counter() - started) * 1000.0,
+                    trace_id=trace_id_hex,
+                )
                 return response
 
         logger.info(
