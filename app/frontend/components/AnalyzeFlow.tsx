@@ -161,8 +161,17 @@ export default function AnalyzeFlow() {
                 </p>
               </header>
               <div className="flex flex-col gap-6 lg:flex-row">
+                {/*
+                  Wave-57 a11y C2: this is a button group that swaps which
+                  always-mounted pane is visible, not an APG tab widget. A
+                  bare role="tab" without a tablist + aria-controls + roving
+                  tabindex + arrow-key handler announces affordances that do
+                  not exist. Honest shape: a labelled group of toggle buttons
+                  with aria-pressed. Each button is its own Tab stop, which is
+                  the correct keyboard model for a button group.
+                */}
                 <nav
-                  aria-label="Analysis tabs"
+                  aria-label="Analysis views"
                   className="flex shrink-0 flex-row flex-wrap gap-2 lg:w-56 lg:flex-col"
                 >
                   {TABS.map((tab) => {
@@ -171,8 +180,7 @@ export default function AnalyzeFlow() {
                       <button
                         key={tab.key}
                         type="button"
-                        role="tab"
-                        aria-selected={isActive}
+                        aria-pressed={isActive}
                         onClick={() => setActiveTab(tab.key)}
                         className={`rounded-sm border px-4 py-2 text-left transition-colors ${
                           isActive
@@ -188,7 +196,7 @@ export default function AnalyzeFlow() {
                     );
                   })}
                 </nav>
-                <div role="tabpanel" aria-labelledby="analyze-tabs-title" className="flex-1">
+                <div className="flex-1">
                   {/*
                     Wave-43 D2.12 + D2.10b close-out per silent-failure
                     M-R2-3 + type-design M1 + M3 cross-corroboration:
