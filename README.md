@@ -22,7 +22,7 @@ Per the BeMyApp pinned submission rubric, every project must clearly answer thre
 - **The AI approach.** A frozen Granite TimeSeries TTM forecaster wrapped in a two-stage validator (differentiable convex QP for friction-ellipse + forward-Euler + jerk-bound constraints, plus a post-projection feasibility filter for the nonconvex bicycle-model coupling and COA-parameterized brake-throttle simultaneity gate) and audited by Granite Guardian. The COA-parameterized simultaneity gate is, to the best of our literature review through 2026-Q2, the first public AI race-engineer workflow we found that reads FIA Certificate of Adaptations data as a binding regulatory input; if a prior workflow is identified, the claim narrows accordingly (full scoping in paper §5.3). See [The AI approach](#the-ai-approach).
 - **Why it matters in racing.** The FIA lifted its single-seater ban on disabled drivers in December 2017, but the regulatory barrier was replaced by an economic one. Adaptive racing is a real audience that current AI race-engineer tools systematically misdiagnose because they assume able-bodied physics. See [Why it matters in racing](#why-it-matters-in-racing).
 
-**Judging-rubric self-assessment.** Per the 4-axis BeMyApp rubric reaffirmed on the May Challenge Discord on 2026-05-27 (Technical Execution + Innovation + Challenge Fit + Implementation & Feasibility), APEX maps as follows: Technical Execution covered by 14 IBM Granite tools tracked at `app/frontend/lib/ibm-stack.ts` + 196 backend tests + Vercel production deploy + Apache 2.0 public from inception. Innovation covered by the COA-parameterized simultaneity gate killshot + frozen-TSFM-plus-differentiable-physics-projection composition + byte-equality serializer regression contract. Challenge Fit covered by the adaptive-racer + veteran-team-driver + grassroots-competitor tri-persona ladder anchored against Mission 44 + Team BRIT correspondence + MME Motorsport per-surface consent. Implementation + Feasibility covered by 19/19 production routes responding 200 + APEX-Bench v0.1.0 public LIPS-rubric leaderboard + named swap-points for every honesty-tier INTEGRATION tool.
+**Judging-rubric self-assessment.** Per the 4-axis BeMyApp rubric reaffirmed on the May Challenge Discord on 2026-05-27 (Technical Execution + Innovation + Challenge Fit + Implementation & Feasibility), APEX maps as follows: Technical Execution covered by 14 IBM Granite tools tracked at `app/frontend/lib/ibm-stack.ts` + 196 backend tests + Vercel production deploy + Apache 2.0 public from inception. Innovation covered by the COA-parameterized simultaneity gate killshot + frozen-TSFM-plus-differentiable-physics-projection composition + byte-equality serializer regression contract. Challenge Fit covered by the adaptive-racer + veteran-team-driver + grassroots-competitor tri-persona ladder anchored against Mission 44 + Team BRIT correspondence + MME Motorsport per-surface consent. Implementation + Feasibility covered by 19/19 production routes responding 200 + APEX-Bench v0.1.0 public LIPS-rubric leaderboard + named swap-points for every honesty-tier INTEGRATION tool + live production observability (an OpenTelemetry span per backend request exported to Honeycomb, mirrored in an embedded live telemetry panel on `/judges` with deep-links into the real trace waterfalls).
 
 ---
 
@@ -160,6 +160,8 @@ flowchart TB
 
 Full architecture spec: [`docs/architecture-spec.md`](./docs/architecture-spec.md) (v0 live, Day 2 expansion). SVG export at `docs/architecture.svg` lands Day 11.
 
+**Production observability.** Every backend request emits an OpenTelemetry span (`app/backend/apex/observability.py`) exported to Honeycomb over OTLP HTTP (dataset `apex-backend`). The `/judges` page embeds a live telemetry cockpit that mirrors the same signals in-product (throughput, p50/p95/p99 latency, status-class mix, per-route averages), with recent requests deep-linked into their real Honeycomb trace waterfalls. Most hackathon backends ship no observability; APEX surfaces it live and honest, falling back to a clearly labelled wiring state when the backend is unreachable rather than faking numbers.
+
 ---
 
 ## Tech stack
@@ -177,6 +179,7 @@ Full architecture spec: [`docs/architecture-spec.md`](./docs/architecture-spec.m
 - granite-tsfm + transformers + torch (Granite models)
 - pytest + ruff + mypy strict
 - Vercel Fluid Compute (Node.js runtime) for /api/openrouter-stream + /api/watson-tts; backend FastAPI service runs alongside per Stream M.3 spec handoff in `docs/wave-41-backend-spec-handoff.md`
+- OpenTelemetry tracing (OTLP HTTP) on every backend request, exported to Honeycomb (dataset `apex-backend`); the live telemetry cockpit on `/judges` reads `GET /api/observability/summary`
 
 **AI (IBM Granite stack, full 14-tool honesty-tier inventory; see §5 above for per-tool wire-up status)**
 - Granite Instruct 4.1 8B (race-engineer narrative; WIRED at HEAD via OpenRouter)
