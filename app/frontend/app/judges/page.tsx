@@ -650,9 +650,9 @@ export default function JudgesPage() {
             />
           </div>
           <FIABlockquoteChip
-            quote="Where a driver requires adaptive control technology (hand controls, modified pedal assemblies, or differential thumb-operated triggers), the technical commission shall verify that the modifications preserve continuous-action capability across the brake-throttle simultaneity envelope."
-            attribution="Adaptive-driver vehicle modifications + control-input simultaneity provisions, FIA Appendix L"
-            sectionAnchor="Adaptive vehicle modifications · control-input simultaneity envelope"
+            quote="APEX reads the driver's FIA Certificate of Adaptations, the binding document Appendix L requires for a disabled driver, and derives their brake-throttle simultaneity envelope from the approved hand-control hardware specification it records. The public FIA text does not publish a discrete simultaneity field, so APEX infers the envelope from the homologated equipment rather than asserting a rule the regulation does not state."
+            attribution="APEX characterization of the FIA Appendix L Certificate-of-Adaptations provisions. Paraphrase, not a verbatim quote."
+            sectionAnchor="FIA Certificate of Adaptations · Appendix L"
           />
           <div className="mt-8">
             <RealtimeCOADiffPanel />
