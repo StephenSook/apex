@@ -122,29 +122,29 @@ describe("AnalyzeFlow integration", () => {
     };
 
     // Click Tuning tab; Tuning pane heading appears visible.
-    const tuningTab = screen.getByRole("tab", { name: /^Tuning/i });
+    const tuningTab = screen.getByRole("button", { name: /^Tuning/i });
     await user.click(tuningTab);
     expect(visibleHeading(/Tuning recommendation/i)).not.toBeNull();
     const coachingHeading = screen.getByRole("heading", { name: /Corner-by-corner coaching/i });
     expect(coachingHeading.closest(".hidden")).not.toBeNull();
 
     // Click Forecast tab; Forecast pane heading appears visible.
-    const forecastTab = screen.getByRole("tab", { name: /^Forecast/i });
+    const forecastTab = screen.getByRole("button", { name: /^Forecast/i });
     await user.click(forecastTab);
     expect(visibleHeading(/Next-session forecast/i)).not.toBeNull();
 
     // Click Audit tab; Granite Guardian pane heading appears visible.
-    const auditTab = screen.getByRole("tab", { name: /^Audit/i });
+    const auditTab = screen.getByRole("button", { name: /^Audit/i });
     await user.click(auditTab);
     expect(visibleHeading(/Granite Guardian verdict/i)).not.toBeNull();
 
     // Click Chat tab; AICopilotChat heading appears visible.
-    const chatTab = screen.getByRole("tab", { name: /^Chat/i });
+    const chatTab = screen.getByRole("button", { name: /^Chat/i });
     await user.click(chatTab);
     expect(visibleHeading(/Ask the race engineer/i)).not.toBeNull();
 
     // Click Coaching tab back; CoachingReport heading is visible again.
-    const coachingTab = screen.getByRole("tab", { name: /^Coaching/i });
+    const coachingTab = screen.getByRole("button", { name: /^Coaching/i });
     await user.click(coachingTab);
     expect(visibleHeading(/Corner-by-corner coaching/i)).not.toBeNull();
   });
