@@ -257,6 +257,14 @@ See `app/frontend/` for the live code.
 
 ---
 
+## Observability
+
+Every backend request emits an OpenTelemetry span via the tracer set up in `app/backend/apex/observability.py` (enabled when `APEX_OTEL_ENABLED=1`). The OTLP HTTP exporter is constructed without explicit kwargs so the SDK reads `OTEL_EXPORTER_OTLP_ENDPOINT` + `OTEL_EXPORTER_OTLP_HEADERS` from the environment and appends `/v1/traces` per the spec; spans land in Honeycomb under `service.name = apex-backend` (dataset `apex-backend`). When `FastAPIInstrumentor` is unavailable (wave-51d wrapt pin conflict), a manual middleware records one span per request with `http.method` + `http.route` + `http.status_code`.
+
+A thread-safe in-process aggregator (`app/backend/apex/observability_metrics.py`) mirrors the same signals for `GET /api/observability/summary`: totals, status-class mix, p50/p95/p99 latency over a recent window, per-route averages, EPS, uptime, and recent requests carrying their real Honeycomb `trace_id`. The frontend proxies this at `app/frontend/app/api/observability/summary/route.ts` and renders the live cockpit in `ProductionObservabilityPanel.tsx` on `/judges`, deep-linking each recent request into its Honeycomb trace waterfall. Live numbers come only from the real backend (engine `observability-live`); an unreachable backend yields an honest `observability-awaiting-backend` wiring state, never fabricated metrics. Cross-ref: decision-log D-071.
+
+---
+
 ## COA parsed JSON schema (mirror of `app/shared/types.ts` `FIACoa`)
 
 Granite-Docling parses the COA PDF into structured JSON matching the `FIACoa` interface in `app/shared/types.ts`. Nine adaptation domains, each optional but at least one populated:

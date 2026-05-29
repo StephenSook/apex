@@ -199,6 +199,20 @@ No audio. Hard cap at 3:00.
 
 ---
 
+## Production observability B-roll (optional insert, visual-only, zero added runtime)
+
+Wave-53 shipped a live production-observability cockpit on `/judges`: an OpenTelemetry span on every backend request exported to Honeycomb, mirrored in an embedded panel with real trace-waterfall deep-links. It is strong proof of production rigor (most hackathon backends ship none), so it earns a place in the visual track without spending a single second of the locked 180s budget.
+
+**Rule.** Visual-only insert. It changes NO voiceover line and adds NO runtime. The 8-beat structure and the storyboard's verbatim shot list stay unchanged. If the Day 10 take runs long, this insert is cut first.
+
+**Where it backs.** Beat 7 (2:30-2:50, stack + infra) is the natural home. While Vinh names the orchestration runtime, a 3 to 4 second picture-in-picture of the live `/judges` cockpit (throughput, p50/p95/p99, one trace row deep-linking into Honeycomb) plays lower-right, then exits. No VO references it; the visual carries it.
+
+**Caption (Plex Mono, lower-third, optional).** `Live production telemetry · OpenTelemetry to Honeycomb · /judges`
+
+**Extended-cut option.** If a longer non-BeMyApp cut is ever produced, a dedicated 6 to 8 second observability beat can sit between Beat 6 and Beat 7 with its own VO. Out of scope for the 180s submission cut.
+
+---
+
 ## Total runtime
 
 2:58 +/- 1 s. Trim Beat 4 by 3 s if Day 10 production take runs long: cut the "two jobs split between two models" line and let the visual carry it.

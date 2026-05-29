@@ -51,6 +51,8 @@ Frontend: Next.js 16 + React 19 + Tailwind CSS v4 + TypeScript strict, deployed 
 
 Backend: Python 3.12 + FastAPI + cvxpylayers + transformers + granite-tsfm, deployed via Vercel Fluid Compute (Node.js runtime) for /api/openrouter-stream + /api/watson-tts with a FastAPI backend container alongside per the Stream M.3 spec handoff.
 
+Observability: every backend request emits an OpenTelemetry span (OTLP HTTP) exported to Honeycomb (dataset `apex-backend`). The /judges page embeds a live telemetry cockpit (throughput, p50/p95/p99 latency, status-class mix, per-route averages) that mirrors the same signals in-product, with recent requests deep-linked into the real Honeycomb trace waterfall.
+
 Methodology: Sookra Methodology v3.3 with seven phases of competitive recon (six-model murder-board + judge-sim), NotebookLM gap analysis on the seven-voice synthesis, PhysicsTTM physics-constrained foundation-model architecture (the load-bearing innovation that closes the kinetic-hallucination objection), Convergence-14 serializer unit-test suite, twelve atomic-commit days with the green-squares discipline, manual coordination via PLAN.md (no git hooks, mirrors the Trace + Hometown convention).
 
 ### Challenges we ran into
@@ -61,6 +63,8 @@ Methodology: Sookra Methodology v3.3 with seven phases of competitive recon (six
 
 - **60-second budget on commodity hardware.** Granite-Docling cold-start can take 10+ minutes on first parse. We solved this by caching document parses at driver onboarding so the live 60-second loop only runs TTM forecast, physics projection, Guardian audit, and Instruct narrator.
 
+- **Getting OTLP spans to land in Honeycomb.** The OpenTelemetry SDK appends `/v1/traces` to the configured base endpoint, so passing the full signal URL produced 404s and zero spans, and a stale ingest key returned 401s. Constructing the exporter from the standard env vars and fixing the `x-honeycomb-team` header got production spans flowing. We then mirror the same data in-product so judges see live telemetry without a Honeycomb login.
+
 ### Accomplishments that we're proud of
 
 - The novelty triple-lock: (1) first pretrained TSFM on motorsport telemetry, (2) first AI to ingest the FIA Certificate of Adaptations as a tensor-level safety flag, (3) first integrated post-race coaching workflow tuned for adaptive driver hand-control channels. Each is independently verifiable. Three firsts means defense-in-depth.
@@ -68,6 +72,8 @@ Methodology: Sookra Methodology v3.3 with seven phases of competitive recon (six
 - Convergence 14: a serializer unit-test suite that treats the physics-to-text translation as safety-critical code. Every kinematic violation type has a fixture text log and a verified Guardian verdict.
 
 - The galaxy-tier discipline. Nothing was deferred to "post-hackathon." We shipped: synthetic adaptive-controls GT4 sim-rig stream, public Colab notebook, judges' tour landing page, status dashboard, methodology trace, NeurIPS Workshop paper draft, 30-second highlight clip, reproducibility metadata footer, 196 backend tests, 14-tool IBM Granite stack with per-tool honesty tiers, wave-49 V12 + V13 + V14 + V15 + D-018 tri-agent critic backend ship, all by 2026-05-31.
+
+- Production observability most hackathon backends skip: a real OpenTelemetry span per request exported to Honeycomb, mirrored live and embedded on the judges page with deep-links into real trace waterfalls. Live telemetry in the product, not a screenshot.
 
 - Mapping cleanly to the 4-axis BeMyApp judging rubric reaffirmed 2026-05-27 (Technical Execution + Innovation + Challenge Fit + Implementation & Feasibility). Technical Execution: 14 IBM Granite tools with per-tool honesty tiers + 196 backend tests + Vercel production deploy + Apache 2.0 public from inception. Innovation: COA-parameterized simultaneity gate killshot + frozen-TSFM-plus-differentiable-physics-projection composition + byte-equality serializer regression contract. Challenge Fit: adaptive-racer + veteran-team-driver + grassroots-competitor tri-persona ladder with named stakeholder grounding. Implementation + Feasibility: 19/19 production routes respond 200 + APEX-Bench v0.1.0 public LIPS leaderboard + named swap-points for every INTEGRATION-tier tool.
 
@@ -94,6 +100,8 @@ The NeurIPS Workshop paper draft lives at `paper/apex-neurips-workshop-2026.md` 
 - Granite Guardian
 - Granite Instruct
 - LangGraph
+- OpenTelemetry
+- Honeycomb
 - Vercel
 - Next.js
 - React

@@ -115,7 +115,7 @@
 - Phase 7.2 Tire degradation predictor: ✅ **SHIPPED wave-49** `1d17eee` (`app/backend/apex/tire_degradation/predictor.py` per-axle FL/FR/RL/RR wear over 10-step stint horizon)
 - Phase 9.OV-1 Self-Correcting Retry Loop: ✅ **SHIPPED HEAD-wired wave-46 + wave-48** OpenRouter Narrator carries the retry-directive system message on attempt > 0
 - Phase 9.OV-2+4 reasoning_chain: ✅ **SHIPPED frontend wave-46** `d223f1b` + backend canonical-shape integration wave-49
-- Phase 9.OV-QB Pydantic v2 + OpenTelemetry: ✅ **PARTIAL SHIPPED wave-48** `a50d691` (`app/backend/apex/schemas.py` 14 Pydantic v2 models + `app/backend/apex/observability.py` lazy OTel scaffolding)
+- Phase 9.OV-QB Pydantic v2 + OpenTelemetry: ✅ **PARTIAL SHIPPED wave-48** `a50d691` (`app/backend/apex/schemas.py` 14 Pydantic v2 models + `app/backend/apex/observability.py` lazy OTel scaffolding) → ✅ **OTel COMPLETED wave-53** `1b0a88b` (live OTLP spans to Honeycomb on every backend request + `app/backend/apex/observability_metrics.py` aggregator + `GET /api/observability/summary` + embedded live telemetry cockpit on `/judges` with real Honeycomb trace deep-links; D-071; honest `observability-awaiting-backend` fallback when the backend is unreachable)
 - D-018 Mellea tri-agent critic orchestrator: ✅ **SHIPPED wave-49** `1d17eee` (`app/backend/apex/critics/orchestrator.py` IVR loop with physics + pedagogy + guardian_safety critics; per-attempt repair_prompt on flag/reject)
 
 **Honestly still deferred (Vinh-lane GPU OR specialized-hosting required; documented in paper §4 + D-057 as future-work):**
