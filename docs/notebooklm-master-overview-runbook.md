@@ -68,9 +68,10 @@ If the SDK breaks against a Google internal-API change, do it by hand.
    > retrained physics-informed neural network.
    > Three: the COA-parameterized brake-throttle simultaneity gate
    > killshot. Existing AI race-engineer tools encode throttle times
-   > brake equals zero because able-bodied drivers do not press both.
-   > Adaptive drivers do, when their FIA Certificate of Adaptations
-   > permits simultaneity through their hand-control system. APEX reads
+   > brake equals zero. But simultaneous brake and throttle is a real
+   > racing technique, used by able-bodied drivers who left-foot-brake
+   > and by adaptive drivers whose FIA Certificate of Adaptations
+   > homologates it through their hand-control system. APEX reads
    > the COA at tensor level. To the best of the team's literature
    > review through 2026-Q2, no prior public AI race-engineer workflow
    > reads COA data as a binding regulatory input.

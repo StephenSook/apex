@@ -74,6 +74,46 @@ MME Motorsport granted consent at no cost. Per professional courtesy, an acknowl
 
 ---
 
+## 2. Team BRIT (Al Locke, Engineering Director) - 2026-05-29
+
+**Sender:** Al Locke `al@teambrit.co.uk` (Engineering Director, Team BRIT)
+**CC:** Mike Scudamore `mike@teambrit.co.uk` (on the prior 2026-05-26 thread)
+**Subject:** RE: AI introduction (APEX per-surface attribution + demo-accuracy questions)
+**Date received:** 2026-05-29
+**Reply to:** Stephen Sookra `ssookra@students.kennesaw.edu`
+**Consent scope:** the surfaces Stephen enumerated in his request: the SafetyAlignmentPanel on `/judges`, the BeMyApp Project Story field, the 3-minute submission video voice-over, and the README acknowledgements section.
+
+**Verbatim consent grant:**
+
+> We are happy for Team BRIT to be cited in any of those texts specified in your request.
+
+**Approved attribution form:** "Team BRIT" (corporate citation only). Individuals (Al Locke, Mike Scudamore) are NOT named on public surfaces unless they separately approve, per the same corporate-only posture as §1. The personal sender + CC names in this entry are audit-trail only.
+
+**Approved surfaces:**
+
+1. SafetyAlignmentPanel on `apex-one-black.vercel.app/judges` (ISO 26262 vocabulary alignment)
+2. BeMyApp Project Story field
+3. 3-minute submission video voice-over
+4. README Acknowledgements section
+
+**Not approved:** personal naming of Al Locke or Mike Scudamore on any public surface.
+
+**Substantive engineering input (applied 2026-05-29, see decision-log D-072):**
+
+- Al corrected the core simultaneity framing. Simultaneous brake + throttle is a legitimate racing technique used by able-bodied drivers too (left-foot braking, trail-braking, turbo spool-up), not something unique to hand controls. Verbatim: "it's not a characteristic of hand controls, it's a characteristic of a racing driver. Hand controls should be expected to replicate this same function." The prior "no able-bodied driver presses both at once" premise was factually wrong and has been reframed across every surface.
+- Al clarified that Team BRIT's STM32 multi-CAN gateway maps homologated inputs to different outputs (e.g. a secondary clutch paddle vectored to a throttle controller) while preserving frozen data bits + CRC; STM32 is also used elsewhere in complete hand-control systems including brake-by-wire. APEX's Sarah persona uses MME Motorsport hardware (not Team BRIT's), so there is no misattribution; demo descriptions are kept as input-mapping / homologation-envelope mechanisms.
+- Al offered a call with a Team BRIT adaptive-controls driver coach (at Spa) before the deadline. Stephen is accepting.
+
+**Prior-thread context:** Al's 2026-05-26 briefing (Team BRIT AI/ML workflows + roadmap) gave content-use consent and the ISO 26262 vocabulary that anchors paper §3.8 + the SafetyAlignmentPanel. This 2026-05-29 reply adds the per-surface attribution consent.
+
+**Effect on project posture:**
+
+- SafetyAlignmentPanel + README acks now name Team BRIT (corporate). Anonymized "adaptive-control engineering teams in motorsport" framing retired on those surfaces.
+- Operator-attribution risk closed on the Team BRIT surface.
+- Brake-throttle simultaneity framing corrected project-wide (D-072).
+
+---
+
 ## Template for future consent entries
 
 Use this template when new consents arrive:

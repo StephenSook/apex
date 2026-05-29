@@ -25,7 +25,7 @@ Portal: https://ibmskillsbuildchallenge-hub.bemyapp.com/
 
 ## 2. Story (description, ~ 7 blocks)
 
-> **Listen: 20-minute NotebookLM deep dive** — `app/frontend/public/audio/master-overview.mp3` (also embedded as a hover-audio panel on the [Judges page](https://apex-one-black.vercel.app/judges) under the 2-minute judge tour CTA). Two-host conversational walkthrough generated from paper §3 + decision-log D-001 through D-070 + architecture-spec + README.
+> **Listen: 20-minute NotebookLM deep dive** at `app/frontend/public/audio/master-overview.mp3` (also embedded as a hover-audio panel on the [Judges page](https://apex-one-black.vercel.app/judges) under the 2-minute judge tour CTA). Two-host conversational walkthrough generated from paper §3 + decision-log D-001 through D-070 + architecture-spec + README.
 
 ### Inspiration
 
@@ -59,7 +59,7 @@ Methodology: Sookra Methodology v3.3 with seven phases of competitive recon (six
 
 - **Kinetic hallucination.** TTM was pretrained on weather and retail data. Without constraints it can forecast 4G lateral with zero steering, or speed climbing with throttle at zero. We built a differentiable physics-projection layer to enforce per-step physical feasibility before the forecast reaches the driver.
 
-- **COA semantics for adaptive drivers.** Standard race-engineering tools assume able-bodied physics, encoding `brake * throttle = 0`. a UK adaptive racing programme and adaptive hand-control systems explicitly permit simultaneous brake + throttle mid-corner. Penalizing that input misdiagnoses every adaptive driver. APEX reads the COA as a tensor-level flag so the physics model matches the car.
+- **COA semantics for adaptive drivers.** Standard race-engineering tools hard-code `brake * throttle = 0`. But simultaneous brake and throttle is a legitimate racing technique (left-foot braking, trail-braking, holding throttle to keep a turbo spooled), and adaptive hand-control systems are homologated to do it under the driver's FIA Certificate of Adaptations. Penalizing that input misdiagnoses adaptive drivers and any left-foot-braker. APEX reads the COA as a tensor-level flag so the physics model matches the car.
 
 - **60-second budget on commodity hardware.** Granite-Docling cold-start can take 10+ minutes on first parse. We solved this by caching document parses at driver onboarding so the live 60-second loop only runs TTM forecast, physics projection, Guardian audit, and Instruct narrator.
 

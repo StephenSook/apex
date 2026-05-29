@@ -21,8 +21,8 @@
  * Sample mutation: Sarah Reynolds COA overlap flag inversion. The
  * baseline fixture has `coa_overlap_flag = 1` (her MME Motorsport
  * hand-control hardware permits simultaneous brake + throttle); the
- * what-if mutation flips it to `coa_overlap_flag = 0` (able-bodied
- * baseline) + the replay shows the recoaching report would emit a
+ * what-if mutation flips it to `coa_overlap_flag = 0` (mutual-
+ * exclusion baseline) + the replay shows the recoaching report would emit a
  * coa_simultaneity_violation tier-0 entry instead of approving the
  * pattern. Demonstrates the COA-parameterized brake-throttle
  * simultaneity gate (D-022) is load-bearing for the adaptive-racer
@@ -149,7 +149,7 @@ export function runWhatIfReplay(
   //   - mutated.coa_simul_permitted === true  -> overlap now permitted
   //     by adaptive equipment -> empty record list (no violation).
   //   - mutated.coa_simul_permitted === false -> overlap now disallowed
-  //     (able-bodied baseline) -> single coa_simultaneity_violation
+  //     (mutual-exclusion baseline) -> single coa_simultaneity_violation
   //     record at tier 0.
   //
   // Brand-propagation: step + tier + severity construction via parsers

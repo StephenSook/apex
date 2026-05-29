@@ -507,7 +507,7 @@ function Differentiators() {
       lead:
         "First integrated workflow for adaptive driver hand-control channels.",
       body:
-        "COA-parameterized brake-throttle simultaneity. Competing tools assume able-bodied physics and systematically misdiagnose adaptive drivers.",
+        "COA-parameterized brake-throttle simultaneity. Competing tools hard-code a brake-throttle mutual-exclusion and systematically misdiagnose adaptive drivers, and any left-foot-braker.",
     },
     {
       n: "04",

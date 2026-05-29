@@ -87,7 +87,7 @@ export const CORPUS: ReadonlyArray<RAGChunk> = [
     id: "methodology-coa-simultaneity",
     source: "docs/methodology.md",
     title: "COA-parameterized brake-throttle simultaneity",
-    text: "Existing tools encode throttle times brake equals zero because no able-bodied driver presses both at once. Adaptive drivers do, when their FIA Certificate of Adaptations permits simultaneity through their hand-control or paddle-shift system. APEX reads the COA at tensor level. When the COA permits simultaneity, the projection layer permits it. When the COA does not, the constraint enforces.",
+    text: "Existing tools encode throttle times brake equals zero. But simultaneous brake and throttle is a real racing technique (left-foot braking, trail-braking), used by able-bodied drivers and by adaptive drivers whose FIA Certificate of Adaptations homologates it through their hand-control or paddle-shift system. APEX reads the COA at tensor level. When the COA permits simultaneity, the projection layer permits it. When the COA does not, the constraint enforces.",
   },
   {
     id: "methodology-five-pillars",

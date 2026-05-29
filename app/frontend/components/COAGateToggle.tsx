@@ -51,7 +51,7 @@ function verdictCopy(state: COAGateState): { headline: string; body: string } {
     case "blocked":
       return {
         headline: "Projector verdict: violation",
-        body: "COA flag = 0. The same physical input is treated as a brake-throttle simultaneity violation under able-bodied physics. Tuning recommendation reads `release brake before throttle` which is unactionable for an adaptive driver. This is exactly the misdiagnosis APEX prevents.",
+        body: "COA flag = 0. The same physical input is treated as a violation by a validator that hard-codes brake-throttle mutual-exclusion. Tuning recommendation reads `release brake before throttle` which is unactionable for an adaptive driver whose COA homologates the simultaneity. This is exactly the misdiagnosis APEX prevents.",
       };
     default: {
       const _exhaustive: never = state;
@@ -125,7 +125,7 @@ export default function COAGateToggle() {
         role={state === "blocked" ? "alert" : undefined}
       >
         <p className="font-mono text-[10px] uppercase tracking-wider text-muted">
-          {state === "permitted" ? "Feasible per COA" : "Violation under able-bodied physics"}
+          {state === "permitted" ? "Feasible per COA" : "Violation under mutual-exclusion physics"}
         </p>
         <p className="font-display text-lg leading-snug text-ink">
           {verdict.headline}

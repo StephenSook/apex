@@ -45,7 +45,7 @@ const CANNED_BLOCKED: COADiffVerdict = {
   coa_overlap_flag: 0,
   verdict: "violation",
   headline: "Projector verdict: violation",
-  body: "COA flag = 0. The same physical input is treated as a brake-throttle simultaneity violation under able-bodied physics. Tuning recommendation reads `release brake before throttle` which is unactionable for an adaptive driver. This is exactly the misdiagnosis APEX prevents.",
+  body: "COA flag = 0. The same physical input is treated as a violation by a validator that hard-codes brake-throttle mutual-exclusion. Tuning recommendation reads `release brake before throttle` which is unactionable for an adaptive driver whose COA homologates the simultaneity. This is exactly the misdiagnosis APEX prevents.",
   projection_trace: [
     { stage: "Friction ellipse", residual_norm: 0.0008, status: "converged" },
     { stage: "Forward-Euler kinematic step", residual_norm: 0.0003, status: "converged" },

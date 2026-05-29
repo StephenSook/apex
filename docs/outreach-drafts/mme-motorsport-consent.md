@@ -23,7 +23,7 @@ Hi,
 
 I am a sophomore Computer Science student at Kennesaw State University. My teammate Vinh Le and I are building APEX, an AI race engineer for adaptive racers, for the IBM SkillsBuild AI Builders Challenge (submission 2026-05-31).
 
-APEX uses the FIA Certificate of Adaptations under Article 18.3 of Appendix L as a tensor-level input. When a driver's COA permits simultaneous brake-throttle inputs, our physics-projection layer permits the input. That is the architectural detail that distinguishes APEX from existing race-engineer AI tools (Track Titan, Trophi.ai), which assume able-bodied physics and systematically misdiagnose adaptive drivers.
+APEX uses the FIA Certificate of Adaptations under Article 18.3 of Appendix L as a tensor-level input. When a driver's COA permits simultaneous brake-throttle inputs, our physics-projection layer permits the input. That is the architectural detail that distinguishes APEX from existing race-engineer AI tools (Track Titan, Trophi.ai), which hard-code a brake-throttle mutual-exclusion and systematically misdiagnose adaptive drivers.
 
 Our hero persona is a fictional driver named Sarah Reynolds (RAF veteran, left-leg amputee, Britcar Trophy in a hand-controlled BMW M240i). The persona materials currently reference MME Motorsport electronic hand-controls as her supplier, because the simultaneity-permitting hand-control technology you ship is exactly what makes the COA-aware physics layer matter.
 
