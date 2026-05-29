@@ -29,9 +29,9 @@ Portal: https://ibmskillsbuildchallenge-hub.bemyapp.com/
 
 ### Inspiration
 
-A professional race engineer costs £400-500 per day. Every F1 driver has one. Most adaptive racers, veteran-team drivers, and grassroots competitors do not. The FIA lifted its single-seater ban on disabled drivers in December 2017. The barrier stopped being regulatory. It became economic.
+A professional race engineer can cost several hundred pounds a day at club and amateur level (industry estimates). Every F1 driver has one. Most adaptive racers, veteran-team drivers, and grassroots competitors do not. The FIA lifted its single-seater ban on disabled drivers in December 2017. The barrier stopped being regulatory. It became economic.
 
-APEX is the same IBM Granite stack that ships to Scuderia Ferrari's ~400 million fans, pointed at the drivers who need a race engineer the most.
+APEX is built on IBM Granite, the same platform IBM ships to Scuderia Ferrari's ~400 million fans, pointed at the drivers who need a race engineer the most.
 
 ### What it does
 
@@ -71,11 +71,11 @@ Methodology: Sookra Methodology v3.3 with seven phases of competitive recon (six
 
 - Convergence 14: a serializer unit-test suite that treats the physics-to-text translation as safety-critical code. Every kinematic violation type has a fixture text log and a verified Guardian verdict.
 
-- The galaxy-tier discipline. Nothing was deferred to "post-hackathon." We shipped: synthetic adaptive-controls GT4 sim-rig stream, public Colab notebook, judges' tour landing page, status dashboard, methodology trace, NeurIPS Workshop paper draft, 30-second highlight clip, reproducibility metadata footer, 196 backend tests, 14-tool IBM Granite stack with per-tool honesty tiers, wave-49 V12 + V13 + V14 + V15 + D-018 tri-agent critic backend ship, all by 2026-05-31.
+- The galaxy-tier discipline. Nothing was deferred to "post-hackathon." We shipped: synthetic adaptive-controls GT4 sim-rig stream, public Colab notebook, judges' tour landing page, status dashboard, methodology trace, NeurIPS Workshop paper draft, 30-second highlight clip, reproducibility metadata footer, 192 backend tests, 14-tool IBM Granite stack with per-tool honesty tiers, wave-49 V12 + V13 + V14 + V15 + D-018 tri-agent critic backend ship, all by 2026-05-31.
 
 - Production observability most hackathon backends skip: a real OpenTelemetry span per request exported to Honeycomb, mirrored live and embedded on the judges page with deep-links into real trace waterfalls. Live telemetry in the product, not a screenshot.
 
-- Mapping cleanly to the 4-axis BeMyApp judging rubric reaffirmed 2026-05-27 (Technical Execution + Innovation + Challenge Fit + Implementation & Feasibility). Technical Execution: 14 IBM Granite tools with per-tool honesty tiers + 196 backend tests + Vercel production deploy + Apache 2.0 public from inception. Innovation: COA-parameterized simultaneity gate killshot + frozen-TSFM-plus-differentiable-physics-projection composition + byte-equality serializer regression contract. Challenge Fit: adaptive-racer + veteran-team-driver + grassroots-competitor tri-persona ladder with named stakeholder grounding. Implementation + Feasibility: 19/19 production routes respond 200 + APEX-Bench v0.1.0 public LIPS leaderboard + named swap-points for every INTEGRATION-tier tool.
+- Mapping cleanly to the 4-axis BeMyApp judging rubric reaffirmed 2026-05-27 (Technical Execution + Innovation + Challenge Fit + Implementation & Feasibility). Technical Execution: 14 IBM Granite tools with per-tool honesty tiers + 192 backend tests + Vercel production deploy + Apache 2.0 public from inception. Innovation: COA-parameterized simultaneity gate killshot + frozen-TSFM-plus-differentiable-physics-projection composition + byte-equality serializer regression contract. Challenge Fit: adaptive-racer + veteran-team-driver + grassroots-competitor tri-persona ladder with named stakeholder grounding. Implementation + Feasibility: 19/19 production routes respond 200 + APEX-Bench v0.1.0 LIPS evaluation harness (canned scaffold at /lips-harness; live eval numbers at camera-ready) + named swap-points for every INTEGRATION-tier tool.
 
 ### What we learned
 

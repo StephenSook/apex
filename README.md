@@ -3,7 +3,7 @@
 ![APEX banner: editorial magazine cover with Fraunces italic wordmark on warm cream paper, racing-line apex marker, and IBM Granite attribution](deliverables/bemyapp-banner-1920x600.png)
 
 > **AI race engineer for adaptive racers.**
-> The same IBM Granite stack that powers Scuderia Ferrari's post-race fan app, pointed at the drivers who need a race engineer most.
+> Built on IBM Granite, the same platform IBM ships to Scuderia Ferrari's post-race fan app, pointed at the drivers who need a race engineer most.
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![Built on IBM Granite](https://img.shields.io/badge/Built%20on-IBM%20Granite-052FAD.svg)](https://www.ibm.com/granite)
@@ -22,7 +22,7 @@ Per the BeMyApp pinned submission rubric, every project must clearly answer thre
 - **The AI approach.** A frozen Granite TimeSeries TTM forecaster wrapped in a two-stage validator (differentiable convex QP for friction-ellipse + forward-Euler + jerk-bound constraints, plus a post-projection feasibility filter for the nonconvex bicycle-model coupling and COA-parameterized brake-throttle simultaneity gate) and audited by Granite Guardian. The COA-parameterized simultaneity gate is, to the best of our literature review through 2026-Q2, the first public AI race-engineer workflow we found that reads FIA Certificate of Adaptations data as a binding regulatory input; if a prior workflow is identified, the claim narrows accordingly (full scoping in paper §5.3). See [The AI approach](#the-ai-approach).
 - **Why it matters in racing.** The FIA lifted its single-seater ban on disabled drivers in December 2017, but the regulatory barrier was replaced by an economic one. Adaptive racing is a real audience that current AI race-engineer tools systematically misdiagnose because they hard-code a brake-throttle mutual-exclusion that the driver's FIA Certificate of Adaptations actually permits. See [Why it matters in racing](#why-it-matters-in-racing).
 
-**Judging-rubric self-assessment.** Per the 4-axis BeMyApp rubric reaffirmed on the May Challenge Discord on 2026-05-27 (Technical Execution + Innovation + Challenge Fit + Implementation & Feasibility), APEX maps as follows: Technical Execution covered by 14 IBM Granite tools tracked at `app/frontend/lib/ibm-stack.ts` + 196 backend tests + Vercel production deploy + Apache 2.0 public from inception. Innovation covered by the COA-parameterized simultaneity gate killshot + frozen-TSFM-plus-differentiable-physics-projection composition + byte-equality serializer regression contract. Challenge Fit covered by the adaptive-racer + veteran-team-driver + grassroots-competitor tri-persona ladder anchored against Mission 44 + Team BRIT engineering-director review and per-surface citation consent + MME Motorsport per-surface consent. Implementation + Feasibility covered by 19/19 production routes responding 200 + APEX-Bench v0.1.0 public LIPS-rubric leaderboard + named swap-points for every honesty-tier INTEGRATION tool + live production observability (an OpenTelemetry span per backend request exported to Honeycomb, mirrored in an embedded live telemetry panel on `/judges` with deep-links into the real trace waterfalls).
+**Judging-rubric self-assessment.** Per the 4-axis BeMyApp rubric reaffirmed on the May Challenge Discord on 2026-05-27 (Technical Execution + Innovation + Challenge Fit + Implementation & Feasibility), APEX maps as follows: Technical Execution covered by 14 IBM Granite tools tracked at `app/frontend/lib/ibm-stack.ts` + 192 backend tests + Vercel production deploy + Apache 2.0 public from inception. Innovation covered by the COA-parameterized simultaneity gate killshot + frozen-TSFM-plus-differentiable-physics-projection composition + byte-equality serializer regression contract. Challenge Fit covered by the adaptive-racer + veteran-team-driver + grassroots-competitor tri-persona ladder anchored against Mission 44 + Team BRIT engineering-director review and per-surface citation consent + MME Motorsport per-surface consent. Implementation + Feasibility covered by 19/19 production routes responding 200 + APEX-Bench v0.1.0 LIPS evaluation harness (canned scaffold at `/lips-harness`; live eval numbers at camera-ready) + named swap-points for every honesty-tier INTEGRATION tool + live production observability (an OpenTelemetry span per backend request exported to Honeycomb, mirrored in an embedded live telemetry panel on `/judges` with deep-links into the real trace waterfalls).
 
 ---
 
@@ -89,7 +89,7 @@ Three constituencies, one shared product gap.
 - **Veteran motorsport rehabilitation programmes.** Veteran-team drivers competing through veteran motorsport rehabilitation programmes often run with combat-injury-driven adaptations under the same COA framework. The economic barrier is identical. Specific operator programmes anonymized in this public file pending per-surface consent per the project's operator-attribution rule.
 - **Grassroots clubman and amateur racers.** Britcar Trophy, SRO regional series, Britcar 12 Hour, club-level endurance racing. Post-race coaching is currently optional because it's a luxury good. APEX is free at the point of use for these audiences (Apache 2.0; Vercel apex-one-black.vercel.app deploy hosted at submission), open-source for any other developer to extend.
 
-The Scuderia Ferrari precedent matters because IBM already shipped the same Granite stack to a Formula One team. APEX takes the same architecture and points it at the drivers who need it most, not the drivers who can already afford a paid race engineer.
+The Scuderia Ferrari precedent matters because IBM already ships IBM Granite to a Formula One team. APEX is built on the same Granite platform (different Granite products: TTM, Docling, Vision, Guardian) and points it at the drivers who need it most, not the drivers who can already afford a paid race engineer.
 
 ---
 
@@ -240,12 +240,8 @@ npm run dev   # http://localhost:3000
 #   app/frontend/public/fixtures/sarah-coa.pdf
 # Fill the debrief + driver-id fields, click "Generate coaching report".
 #
-# Day 6+ (post-G6 integration): the backend CLI handles the same flow:
-# cd app/backend
-# python -m apex.cli analyze \
-#   --telemetry ../../fixtures/telemetry/sarah-lap-17.csv \
-#   --coa ../../fixtures/coa/sarah-coa.json \
-#   --debrief ../../fixtures/personas/sarah-debrief.txt
+# Zero-install path: open deliverables/apex-demo.ipynb in Colab (no local setup).
+# Live path: https://apex-one-black.vercel.app/analyze (production deploy).
 ```
 
 ---
