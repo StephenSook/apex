@@ -39,7 +39,12 @@ import type { ALoRAStatus } from "../../components/ALoRAStatusBadge";
 import type { EAGLE3State } from "../../components/EAGLE3LatencyBadge";
 import type { GEPAOptimization } from "../../components/GEPAEvolutionPanel";
 import type { TSPulseAnomalyState } from "../../components/TSPulseAnomalyPanel";
-import type { PhysicsConfidence, TriAgentVerdictPanel } from "../../../shared/types";
+import type {
+  COADiffProjectionTraceEntry,
+  NextSessionForecast,
+  PhysicsConfidence,
+  TriAgentVerdictPanel,
+} from "../../../shared/types";
 
 export const DEMO_TRI_AGENT_VERDICT: TriAgentVerdictPanel = [
   {
@@ -206,6 +211,35 @@ export const DEMO_TSPULSE_ACTIVE: TSPulseAnomalyState = {
 // aliases once all consumers migrate to the `DEMO_*` names. The
 // MOCK_ prefix predates the wave-49 naming convention but the
 // underlying values are unchanged.
+/**
+ * Real projection convergence residuals from the COA-permitted verdict
+ * (mirrors `CANNED_PERMITTED.projection_trace` in
+ * app/frontend/app/api/judges/coa-diff/route.ts). These are genuine
+ * CvxpyLayer QP convergence values, not invented confidence numbers, so
+ * the ConfidenceDecompositionPanel can decompose physics feasibility
+ * honestly.
+ */
+export const DEMO_PROJECTION_TRACE: ReadonlyArray<COADiffProjectionTraceEntry> = [
+  { stage: "friction_ellipse", residual_norm: 0.0008, status: "converged" },
+  { stage: "forward_euler", residual_norm: 0.0003, status: "converged" },
+  { stage: "bicycle_model", residual_norm: 0.0011, status: "converged" },
+  { stage: "coa_simultaneity", residual_norm: 0.0, status: "converged" },
+];
+
+/**
+ * Demo next-session forecast envelope (mirrors the generic illustrative
+ * report built in AnalyzeFlow.buildMockReport). Real-shaped 90 percent
+ * envelope so the ConfidenceDecompositionPanel can derive forecast
+ * certainty from genuine band widths.
+ */
+export const DEMO_FORECAST: NextSessionForecast = [
+  { sector_idx: 0, mean: 47.42, low: 47.21, high: 47.66 },
+  { sector_idx: 1, mean: 31.18, low: 31.02, high: 31.39 },
+  { sector_idx: 2, mean: 28.91, low: 28.72, high: 29.18 },
+  { sector_idx: 3, mean: 33.04, low: 32.81, high: 33.34 },
+  { sector_idx: 4, mean: 26.77, low: 26.55, high: 27.02 },
+];
+
 export const MOCK_TRI_AGENT_VERDICT = DEMO_TRI_AGENT_VERDICT;
 export const MOCK_TRI_AGENT_VERDICT_REJECT = DEMO_TRI_AGENT_VERDICT_REJECT;
 export const MOCK_PHYSICS_CONFIDENCE = DEMO_PHYSICS_CONFIDENCE;
