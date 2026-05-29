@@ -7,6 +7,14 @@ Icon
 .Spotlight-V100
 .Trashes
 
+# Cloud-sync (iCloud/Dropbox) duplicate-file artifacts. A synced folder whose
+# path contains a space (e.g. "IBM May") spawns "<name> 2.<ext>" copies and can
+# delete the original mid-edit (wave-58 hit this on two route tests). The real
+# fix is to stop syncing the repo folder; this only stops the dup junk from
+# being committed if it slips in.
+* [0-9].*
+* [0-9][0-9].*
+
 # Python
 __pycache__/
 *.py[cod]
