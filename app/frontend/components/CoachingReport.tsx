@@ -24,6 +24,7 @@ import type {
 
 import type { AuditId } from "../../shared/brands";
 
+import { useState } from "react";
 import dynamic from "next/dynamic";
 
 import CoachVoicePlayback from "./CoachVoicePlayback";
@@ -49,7 +50,59 @@ export interface CoachingReportProps {
   readonly report: CoachingReportType;
 }
 
+function ReadingLevelToggle({
+  level,
+  onChange,
+}: {
+  readonly level: "beginner" | "expert";
+  readonly onChange: (next: "beginner" | "expert") => void;
+}) {
+  const options: ReadonlyArray<{
+    readonly key: "expert" | "beginner";
+    readonly label: string;
+    readonly hint: string;
+  }> = [
+    { key: "expert", label: "Expert", hint: "Full engineering detail" },
+    { key: "beginner", label: "Beginner", hint: "Plain English" },
+  ];
+  return (
+    <div
+      role="group"
+      aria-label="Coaching reading level"
+      className="mt-3 inline-flex items-center gap-1 self-start rounded-sm border border-rule bg-paper p-1"
+    >
+      <span className="px-2 font-mono text-[10px] uppercase tracking-wider text-muted">
+        Reading level
+      </span>
+      {options.map((opt) => {
+        const active = opt.key === level;
+        return (
+          <button
+            key={opt.key}
+            type="button"
+            aria-pressed={active}
+            title={opt.hint}
+            onClick={() => onChange(opt.key)}
+            className={`rounded-sm px-3 py-1 font-mono text-xs uppercase tracking-wider transition-colors ${
+              active
+                ? "bg-racing-green text-paper"
+                : "bg-paper text-ink-soft hover:text-racing-green"
+            }`}
+          >
+            {opt.label}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 export default function CoachingReport({ report }: CoachingReportProps) {
+  // Reading-level toggle (wave-55, PitLane-steal honest variant). Self-
+  // contained client state so every CoachingReport mount gets the toggle
+  // without prop-threading from callers. Display-only filter over real
+  // authored text; never fabricates or truncates.
+  const [readingLevel, setReadingLevel] = useState<"beginner" | "expert">("expert");
   return (
     <section
       id="coaching-report"
@@ -71,11 +124,12 @@ export default function CoachingReport({ report }: CoachingReportProps) {
             Sixty seconds end to end on Granite. Every recommendation cites the
             specific FIA Appendix L Article and COA section that authorises it.
           </p>
+          <ReadingLevelToggle level={readingLevel} onChange={setReadingLevel} />
         </header>
 
         <div className="grid gap-10 lg:grid-cols-3 lg:gap-12">
           <div className="lg:col-span-2 flex flex-col gap-6">
-            <CornerList corners={report.corners} />
+            <CornerList corners={report.corners} readingLevel={readingLevel} />
             <ForecastChart forecast={report.forecast} />
             <CoachingReportLiveCharts report={report} />
           </div>
@@ -130,7 +184,13 @@ function buildCoachingNarration(report: CoachingReportType): string {
   return `${topCorners} ${tuning} ${verdict}`;
 }
 
-function CornerList({ corners }: { corners: ReadonlyArray<CornerInsight> }) {
+function CornerList({
+  corners,
+  readingLevel,
+}: {
+  corners: ReadonlyArray<CornerInsight>;
+  readingLevel: "beginner" | "expert";
+}) {
   return (
     <div className="flex flex-col gap-4">
       <h3 className="font-display text-2xl tracking-tight text-ink">
@@ -139,7 +199,7 @@ function CornerList({ corners }: { corners: ReadonlyArray<CornerInsight> }) {
       <ol className="flex flex-col gap-3" aria-label="Corner-by-corner coaching insights">
         {corners.map((corner, index) => (
           <li key={`${corner.sector}-${corner.name}-${index}`}>
-            <CornerCard corner={corner} />
+            <CornerCard corner={corner} readingLevel={readingLevel} />
           </li>
         ))}
       </ol>
@@ -173,12 +233,24 @@ const REASONING_STEP_TONE: Record<
   },
 };
 
-function CornerCard({ corner }: { corner: CornerInsight }) {
+function CornerCard({
+  corner,
+  readingLevel,
+}: {
+  corner: CornerInsight;
+  readingLevel: "beginner" | "expert";
+}) {
   const slower = corner.current_delta_s > 0;
   const deltaLabel = `${slower ? "+" : ""}${corner.current_delta_s.toFixed(2)} s`;
   const deltaTone = slower ? "text-accent" : "text-racing-green";
-  const chain = corner.reasoning_chain ?? [];
+  const beginner = readingLevel === "beginner";
+  // Beginner suppresses the 4-step reasoning chain in favour of one plain
+  // sentence; Expert keeps the full chain (or the detailed recommendation).
+  const chain = beginner ? [] : (corner.reasoning_chain ?? []);
   const hasChain = chain.length > 0;
+  const recommendationText = beginner
+    ? (corner.recommendation_beginner ?? corner.recommendation)
+    : corner.recommendation;
 
   return (
     <article className="rounded-sm border border-rule bg-paper-warm p-5">
@@ -190,7 +262,7 @@ function CornerCard({ corner }: { corner: CornerInsight }) {
       </header>
       <p className={`font-mono text-base ${deltaTone}`}>{deltaLabel} vs reference</p>
       {!hasChain && (
-        <p className="pt-2 text-sm leading-relaxed text-ink-soft">{corner.recommendation}</p>
+        <p className="pt-2 text-sm leading-relaxed text-ink-soft">{recommendationText}</p>
       )}
       {hasChain && (
         <ol

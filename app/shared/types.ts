@@ -391,6 +391,16 @@ export interface CornerInsight {
    * them in arrival order so backend can ship 1-4 steps as available.
    */
   readonly reasoning_chain?: ReadonlyArray<ReasoningChainStep>;
+  /**
+   * Optional plain-language version of `recommendation` for the
+   * Beginner reading-level toggle (wave-55). Display-only: when the
+   * reader selects Beginner, the coaching surface renders this in
+   * place of `recommendation` (and in place of `reasoning_chain`).
+   * Honest by construction: it is authored prose carried alongside
+   * the expert text, not a runtime truncation. Backend may omit it;
+   * the consumer falls back to `recommendation`.
+   */
+  readonly recommendation_beginner?: string;
 }
 
 export interface TuningDelta {
