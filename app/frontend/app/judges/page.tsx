@@ -25,6 +25,7 @@ import MobileInstallQR from "../../components/MobileInstallQR";
 import PacejkaStageAPanel from "../../components/PacejkaStageAPanel";
 import SCPStageBPanel from "../../components/SCPStageBPanel";
 import TTMInBrowserPanel from "../../components/TTMInBrowserPanel";
+import ProductionObservabilityPanel from "../../components/ProductionObservabilityPanel";
 
 import { ConvergenceFixtureGrid } from "../../components/ConvergenceFixtureGrid";
 import { ExtendedPhysicsFixtureGrid } from "../../components/ExtendedPhysicsFixtureGrid";
@@ -59,6 +60,12 @@ const RESOURCES: ReadonlyArray<ResourceLink> = [
     label: "Live sim-rig stream",
     href: "/sim-rig",
     detail: "20 Hz adaptive-controls telemetry tile. Canned synthetic GT4 hand-controls lap; HTTP-stream live now, WebSocket Vinh M3-V2.",
+    badge: "live",
+  },
+  {
+    label: "Live production observability",
+    href: "#observability",
+    detail: "OpenTelemetry spans from apex-backend to Honeycomb, mirrored live in-page: throughput, p50/p95/p99 latency, status mix, and deep-links to real Honeycomb trace waterfalls.",
     badge: "live",
   },
   {
@@ -281,6 +288,36 @@ export default function JudgesPage() {
               </div>
             ))}
           </dl>
+        </div>
+      </section>
+
+      <section
+        id="observability"
+        aria-labelledby="observability-section-title"
+        className="border-b border-rule bg-paper-warm"
+      >
+        <div className="mx-auto max-w-6xl px-6 py-16 lg:px-10 lg:py-20">
+          <h2
+            id="observability-section-title"
+            className="font-display text-3xl tracking-tight text-ink"
+          >
+            Production observability, live and embedded.
+          </h2>
+          <p className="mt-3 max-w-3xl text-base leading-relaxed text-ink-soft">
+            wave-53. The deployed apex-backend exports an OpenTelemetry span for every request to
+            Honeycomb (dataset{" "}
+            <span className="font-mono text-xs text-racing-green">apex-backend</span>, service{" "}
+            <span className="font-mono text-xs text-racing-green">apex-backend</span>) and mirrors
+            the same signals in the live panel below. Real traffic, refreshed in-page, with every
+            recent request deep-linked to its real Honeycomb trace waterfall. Wiring lives at{" "}
+            <span className="font-mono text-xs text-racing-green">app/backend/apex/observability.py</span>{" "}
+            + <span className="font-mono text-xs text-racing-green">observability_metrics.py</span>;
+            spans land via OTLP HTTP when{" "}
+            <span className="font-mono text-xs text-racing-green">APEX_OTEL_ENABLED=1</span>.
+          </p>
+          <div className="mt-8">
+            <ProductionObservabilityPanel />
+          </div>
         </div>
       </section>
 
