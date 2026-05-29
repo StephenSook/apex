@@ -108,6 +108,9 @@ fixtures/large/
 .turbo/
 *.tgz
 
+# HuggingFace Space deploy staging dir (scripts/deploy-backend-hf-spaces.sh; regeneratable)
+.hf-space-build/
+
 # Logs (keep daily build logs, ignore noisy runtime logs)
 *.log
 !logs/day-*.md
