@@ -648,6 +648,7 @@ export default function JudgesPage() {
             <NotebookLMHoverAudio
               panelId="coa-gate"
               panelLabel="COA-parameterized simultaneity gate"
+              transcript="Text version of the key points this commentary covers (also shown in this section). A validator that hard-codes brake-throttle mutual-exclusion (throttle times brake equals zero) misdiagnoses an adaptive driver whose FIA Certificate of Adaptations homologates simultaneous brake and throttle through corner entry. APEX reads the COA at the tensor level and sets a per-step coa_overlap_flag, so the exact same physical input is feasible for a driver whose COA permits the overlap and a violation for one whose COA does not. The interactive toggle in this section flips that flag so you can watch the projector verdict change between feasible and violation. This is APEX's central differentiator: same coaching pipeline, different output, governed by what the driver's COA actually allows."
             />
           </div>
           <FIABlockquoteChip
