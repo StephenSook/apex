@@ -66,6 +66,18 @@
 
 ---
 
+## Status snapshot (2026-05-29 wave-57 a11y + honesty-sweep + CI-discipline)
+
+**Wave-57 close-out (PRs #8, #9, #10 merged to main, all green).**
+
+- **a11y (PR #8).** Full audit of the live surfaces (APEX is FOR adaptive + disabled racers, so this is on-mission). Fixed: amber-as-text failed WCAG AA at 1.9:1 across ~30 components (added `--amber-ink #8A5A12` text token + 58 swaps; bright `--amber` kept for borders/fills + amber-on-green which passes at 7:1); `--accent` darkened to #B23E22 (4.9:1) for clay error text; AnalyzeFlow's broken `role=tab` widget (no tablist / aria-controls / roving-tabindex / arrow-keys) demoted to a labelled button group with aria-pressed; COA-gate live region scoped to just the verdict block (status / alert); ForecastChart SVG aria-label now states the pace range. Audit confirmed strong existing a11y (skip link, focus-visible ring, prefers-reduced-motion, keyboard dropzone, labelled forms).
+- **Honesty sweep (PR #10).** Aligned the not-yet-recorded video + audio scripts + storyboard + deck + payload + persona + outreach drafts to the README/SUBMISSION reframe already on main: Ferrari "same IBM Granite stack" -> "built on IBM Granite, the same platform"; cost "£400-500 / four-to-five-hundred" -> "several hundred pounds (industry estimate)" (resolves the wave-23 M4 price drift). README gained a "what is live right now" honest-tiering callout in the Live demo section.
+- **Backend, verified read-only (no change shipped, honest finding):** the test suite ALREADY collects cleanly in a torch-less judge env. Every torch/cvxpy dependency is lazy (forecast.py imports torch inside a method; test_ttm_integration imports it inside skip-guarded fixtures) or importorskip-guarded (test_physics_v2). test_server only needs fastapi, which it already guards. projection_pacejka.py is genuine NumPy with an honest docstring distinguishing real-math tiers (friction ellipse + forward-Euler reuse the V1 validator) from linearized/deferred tiers (thermal + Pacejka nonlinear solves deferred to GPU training); not fabricated-as-real data.
+- **Repo:** GitHub topics added; the 4 stale wave-53/54/55 branches were already gone (delete errored because nothing to delete); stray root `.log` files removed. Root status/transcript file moves SKIPPED on purpose: they have inbound links across 8+ docs (PLAN, architecture-spec, decision-log, pre-mortem, vinh-backend-plan, logs/), so moving them pre-submission risks broken links for cosmetic gain.
+- **CI discipline lesson:** a rebase-merge spawns a FRESH main CI run with new SHAs that can diverge from the branch run. PR #8's branch CI was green, but the post-merge main run went red (a stale ForecastChart aria-label assertion that the branch run had not re-evaluated post-rebase; fixed in PR #9). Always watch the post-merge main run, not only the branch run.
+
+---
+
 ## Status snapshot (2026-05-29 wave-56 honesty audit + remaining-tasks lock)
 
 **Wave-56 honesty audit close-out.** Three-agent parallel audit (PLAN-vs-code completeness + credibility-liability hunt + repo-hygiene/README). Shipped on `fix-wave-56-honesty-audit-credibility-fixes`: defused a fabricated FIA Appendix L "quote" on /judges (DQ-risk; now an honest labelled paraphrase + real FIA link), removed 41 internal adversarial/competitor-recon files from the public repo (git rm --cached + gitignore; local copies kept), corrected over-claims to match the code (test count -> 192, Ferrari "stack" -> "built on IBM Granite platform", APEX-Bench "leaderboard" -> "evaluation harness / canned scaffold", uncited cost softened, Pydantic 14 -> 4, /analyze + observability honesty labels), Colab "Section 3(c)" -> synthetic-fixture label, deleted macOS Finder " 2" dup junk + broken git refs. **Audit verdict: the codebase is genuinely honest; the honesty tiers (2 WIRED / 10 INTEGRATION / 2 ACCELERATOR) are accurate. No hidden stubs.**
@@ -78,10 +90,10 @@ Stephen (frontend + ops):
 - [ ] Verify `app/frontend/lib/webgpu-nano.ts` is genuinely WIRED (it carries a WIRED badge as 1 of the 2 wired tools).
 - [ ] Post-submission: rotate the Honeycomb ingest key (scheduled 2026-06-01).
 - [ ] Team BRIT driver-coach call this weekend (Al offered; reply sent).
-- [ ] Optional repo polish: add GitHub repo topics; delete the 4 stale merged remote branches; move root scratch files (council-transcript*, STATUS_DAY*, physics-ttm-neurips-methods.md) into docs/ or logs/.
+- [x] Repo polish (wave-57): GitHub topics added; the 4 stale branches were already gone; stray root `.log` files removed. Root scratch-file moves (council-transcript*, STATUS_DAY*, physics-ttm-neurips-methods.md) SKIPPED on purpose: inbound links across 8+ docs make a pre-submission move a broken-link risk for cosmetic gain.
 
 Vinh (backend; INTEGRATION -> WIRED swap-points, honest gaps per the wave-56 completeness audit):
-- [ ] Guard the `torch` import in `tests/test_server.py` (it errors on collection in a torch-less env) OR document the required env, so a judge's `pytest` runs clean. (192 test functions across 18 files.)
+- [x] ALREADY SATISFIED (wave-57 verified read-only): the suite collects clean in a torch-less env. `test_server` only needs fastapi (importorskip-guarded); all torch/cvxpy deps are lazy or importorskip-guarded. No change needed. (192 test functions across 18 files.)
 - [ ] Real 8-tier Pacejka physics in `projection_pacejka.py` (currently a deterministic residual trace with hardcoded fallback constants wrapping the real V2 constant-mu cvxpylayers projector).
 - [ ] Real successive-convexification loop in `projection_scp.py` (currently a deterministic multiplicative-shrink convergence trace).
 - [ ] Frozen-TTM as the live forecast engine (ships behind `APEX_ENABLE_TTM=1`; default seasonal-naive after the G4 FAIL; needs the D-010 channel-mix fine-tune to be defensible as a forecaster).
