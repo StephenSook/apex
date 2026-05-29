@@ -81,7 +81,7 @@ She is the entire demographic in one persona:
 
 - **Adaptive driver community:** her amputation requires hand-controls. Public documentation for the leading commercial AI race-engineer tools we surveyed (Track Titan, Trophi.ai) does not document any conditional removal of the brake-throttle mutual-exclusion assumption nor any FIA-Certificate-of-Adaptations parsing path. Without such handling, her simultaneous brake-throttle inputs read as either invalid telemetry or driver error rather than the COA-permitted technique they actually are. APEX reads her COA at the tensor level and recognises the simultaneity her car explicitly supports.
 - **Veteran motorsport community:** a veteran motorsport rehabilitation programme routed her into racing. Multiple UK + US programmes serve the same demographic (anonymized aggregate per operator-attribution rule; canonical programme list in private memory).
-- **Grassroots community:** no paid race engineer. Volunteer crew. Budget-bound. The £400-500 a day a pro engineer costs is the difference between her getting coaching and not.
+- **Grassroots community:** no paid race engineer. Volunteer crew. Budget-bound. The several hundred pounds a day a pro engineer costs is the difference between her getting coaching and not.
 
 She is the human form of the £500-a-day-coaching-gap that APEX exists to close.
 

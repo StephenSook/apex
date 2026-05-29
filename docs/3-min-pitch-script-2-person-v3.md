@@ -43,7 +43,7 @@ Cm-devvit lesson: "Read each beat as a separate clip. Don't try to nail the whol
 
 **Scene.** Hand-coded SVG racing line graphic on cream paper. Apex point annotated in clay red. Pull-back zoom across the 17 s.
 
-**Stephen.** "A professional race engineer costs four to five hundred pounds a day."
+**Stephen.** "A professional race engineer costs several hundred pounds a day."
 
 (0:14 transition: FIA logo + 2017 timestamp fade in upper-left.)
 
@@ -53,7 +53,7 @@ Cm-devvit lesson: "Read each beat as a separate clip. Don't try to nail the whol
 
 **Stephen.** "After the FIA regulatory revision in late 2017 lifted the single-seater ban on disabled drivers, the barrier stopped being regulatory. It became economic."
 
-**Visual overlay.** Plex Mono callout at 0:08 in clay red: `£400-500 / day`. Plex Sans body at 0:14: `Adaptive racers · veterans · grassroots`. Final overlay at 0:20: `2017 · FIA Appendix L revision`.
+**Visual overlay.** Plex Mono callout at 0:08 in clay red: `several hundred £ / day`. Plex Sans body at 0:14: `Adaptive racers · veterans · grassroots`. Final overlay at 0:20: `2017 · FIA Appendix L revision`.
 
 **Cut.** Hard cut to Beat 3.
 
@@ -85,7 +85,7 @@ Cm-devvit lesson: "Read each beat as a separate clip. Don't try to nail the whol
 
 **Scene transition.** Cut to LangGraph orchestration graph screenshot, full screen, racing-green border.
 
-**Vinh** (engineering-confident, measured): "APEX runs on the same IBM Granite stack that ships to Scuderia Ferrari's fan app, pointed at the drivers who need a race engineer most."
+**Vinh** (engineering-confident, measured): "APEX runs on IBM Granite, the same platform that ships to Scuderia Ferrari's fan app, pointed at the drivers who need a race engineer most."
 
 (0:50 transition: animate three rectangular layer cards entering top-down. Layer 1 amber + Layer 2 clay + Layer 3 racing-green.)
 

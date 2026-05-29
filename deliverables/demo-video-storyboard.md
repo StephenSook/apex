@@ -35,7 +35,7 @@
 
 | Time | Visual | Audio (VO) | On-screen overlay | Cut |
 |------|--------|-----------|-------------------|-----|
-| 0:08 - 0:14 | Cut to hand-coded SVG racing line graphic on cream paper. Apex point annotated in clay red. | "A professional race engineer costs four to five hundred pounds a day." | Plex Mono callout: `£400-500 / day` (clay red) | Hard cut |
+| 0:08 - 0:14 | Cut to hand-coded SVG racing line graphic on cream paper. Apex point annotated in clay red. | "A professional race engineer costs several hundred pounds a day." | Plex Mono callout: `several hundred £ / day` (clay red) | Hard cut |
 | 0:14 - 0:20 | Pull-back zoom on the racing line; FIA logo + 2017 timestamp fade in upper-left. | "Every Formula One driver has one. Most adaptive racers, veteran-team drivers, and grassroots competitors do not." | Plex Sans body: `Adaptive racers - veterans - grassroots` | None (continuous zoom) |
 | 0:20 - 0:25 | SVG racing line crossfades to a static FIA Appendix L cover-page mockup with the adaptive-equipment-homologation section highlighted. | "After the FIA regulatory revision in late 2017 lifted the single-seater ban on disabled drivers, the barrier stopped being regulatory. It became economic." | Overlay: `2017 - FIA Appendix L revision` (specific revision date verified at camera-ready against the live Appendix L PDF) | 400 ms cross-fade |
 
@@ -51,7 +51,7 @@
 
 | Time | Visual | Audio (VO) | On-screen overlay | Cut |
 |------|--------|-----------|-------------------|-----|
-| 0:42 - 0:50 | Cut to Langflow orchestration graph screenshot, full screen, racing-green border. | "APEX is the same IBM Granite stack IBM ships to Scuderia Ferrari's roughly 400 million fans, pointed at the drivers who need a race engineer most." | Overlay: `IBM Granite stack - same as Scuderia Ferrari precedent` | Hard cut |
+| 0:42 - 0:50 | Cut to Langflow orchestration graph screenshot, full screen, racing-green border. | "APEX is built on IBM Granite, the same platform IBM ships to Scuderia Ferrari's roughly 400 million fans, pointed at the drivers who need a race engineer most." | Overlay: `Built on IBM Granite - same platform as the Scuderia Ferrari precedent` | Hard cut |
 | 0:50 - 0:58 | Animate three rectangular layer cards entering top-down: TTM (amber), Physics projection (clay), Guardian (racing green). | "Three layers. Layer one is a frozen Granite TimeSeries TTM, IBM's pretrained foundation model from NeurIPS 2024. We do not retrain it." | Layer 1 card: `Granite TimeSeries TTM r2.1 - NeurIPS 2024 - frozen` | Staggered reveal, 200 ms per card |
 | 0:58 - 1:08 | Physics projection card highlights. Animated math: friction ellipse, bicycle model, forward-Euler kinematic step. | "Layer two is a differentiable physics projection that enforces the friction ellipse, the bicycle model, and a forward-Euler kinematic step on every forecast step." | Plex Mono math sticker: `ax^2 / mu_x^2 + ay^2 / mu_y^2 <= 1` | Highlight overlay only |
 | 1:08 - 1:18 | Guardian card highlights. Animated text-log entries scroll past with check marks. | "Layer three is Granite Guardian with custom rules auditing the structured text log of every projection correction. Granite 4.1 8B Instruct writes the coaching report in a race-engineer voice." | Plex Mono callout: `Granite Guardian 4.1 8B - BYOC rules` | Highlight overlay only |

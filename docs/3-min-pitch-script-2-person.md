@@ -32,7 +32,7 @@ This split surfaces the two-person team without forcing the viewer to track whic
 
 | Time | Visual | Narrator | What is said |
 |------|--------|----------|--------------|
-| 0:08 - 0:14 | Cut to hand-coded SVG racing line on cream paper. Apex point annotated in clay red. | Stephen | "A professional race engineer costs four to five hundred pounds a day." |
+| 0:08 - 0:14 | Cut to hand-coded SVG racing line on cream paper. Apex point annotated in clay red. | Stephen | "A professional race engineer costs several hundred pounds a day." |
 | 0:14 - 0:20 | Pull-back zoom on the racing line; FIA logo + 2017 timestamp fade in upper-left. | Stephen | "Every Formula One driver has one. Most adaptive racers, veteran-team drivers, and grassroots competitors do not." |
 | 0:20 - 0:25 | SVG crossfades to FIA Appendix L cover-page mockup; adaptive-equipment-homologation section highlighted. | Stephen | "After the FIA regulatory revision in late 2017 lifted the single-seater ban on disabled drivers, the barrier stopped being regulatory. It became economic." |
 
@@ -48,7 +48,7 @@ This split surfaces the two-person team without forcing the viewer to track whic
 
 | Time | Visual | Narrator | What is said |
 |------|--------|----------|--------------|
-| 0:42 - 0:50 | Cut to LangGraph orchestration graph screenshot, full screen, racing-green border. | Vinh | "APEX runs on the same IBM Granite stack that ships to Scuderia Ferrari's fan app, pointed at the drivers who need a race engineer most." |
+| 0:42 - 0:50 | Cut to LangGraph orchestration graph screenshot, full screen, racing-green border. | Vinh | "APEX runs on IBM Granite, the same platform that ships to Scuderia Ferrari's fan app, pointed at the drivers who need a race engineer most." |
 | 0:50 - 0:58 | Animate three rectangular layer cards top-down: TTM amber + Physics projection clay + Guardian racing green. | Vinh | "Three layers. Layer one is a frozen Granite TimeSeries TTM r2.1 with a channel-mix decoder fine-tune per the D-010 Track 1 pivot. NeurIPS 2024 release. We aggregate raw fifty hertz telemetry to one hertz mini-sector tensors so the input sits inside the model's published support envelope." |
 | 0:58 - 1:08 | Physics projection card highlights; animated math: friction ellipse, bicycle model, forward-Euler kinematic step. | Vinh | "Layer two is a differentiable Cvxpylayers physics projection at constant mu. Friction ellipse plus bicycle model plus forward-Euler kinematic step plus a circuit-conditional friction lookup. Eight-tier Pacejka linearization, three-iteration SCP outer-loop, and jerk-bound enforcement are deferred swap-points named in the D-031 staged ladder. The HEAD ship is constant-mu friction-ellipse projection only." |
 | 1:08 - 1:18 | Guardian card highlights; animated text-log entries scroll with check marks. | Vinh | "Layer three is Granite Guardian 4.1 8B with custom rules auditing the structured text log of every projection correction. Granite 4.1 8B Instruct writes the coaching report in a race-engineer voice." |
