@@ -25,7 +25,7 @@ Portal: https://ibmskillsbuildchallenge-hub.bemyapp.com/
 
 ## 2. Story (description, ~ 7 blocks)
 
-> **Listen: 20-minute NotebookLM deep dive** at `app/frontend/public/audio/master-overview.mp3` (also embedded as a hover-audio panel on the [Judges page](https://apex-one-black.vercel.app/judges) under the 2-minute judge tour CTA). Two-host conversational walkthrough generated from paper §3 + decision-log D-001 through D-070 + architecture-spec + README.
+> **Listen: NotebookLM deep dive** at `app/frontend/public/audio/master-overview.mp3` (also embedded as a hover-audio panel on the [Judges page](https://apex-one-black.vercel.app/judges) under the 2-minute judge tour CTA). Two-host conversational walkthrough generated from paper §3 + decision-log D-001 through D-070 + architecture-spec + README.
 
 ### Inspiration
 
