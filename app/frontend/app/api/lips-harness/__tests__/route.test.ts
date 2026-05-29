@@ -72,10 +72,10 @@ describe("/api/lips-harness V15 LIPS swap-point stub", () => {
     );
     const res = await GET(mockRequest() as unknown as Parameters<typeof GET>[0]);
     const data = (await res.json()) as { engine: string; rows: ReadonlyArray<unknown>; seed: number };
-    expect(data.engine).toBe("lips-v15-real");
+    expect(data.engine).toBe("lips-v15-staged");
     expect(data.rows).toHaveLength(1);
     expect(data.seed).toBe(7);
-    expect(res.headers.get("X-Apex-Lips-Engine")).toBe("lips-v15-real");
+    expect(res.headers.get("X-Apex-Lips-Engine")).toBe("lips-v15-staged");
   });
 
   it("falls back to canned when env flag on + base URL set + upstream 5xx", async () => {

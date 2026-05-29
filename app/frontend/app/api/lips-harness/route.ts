@@ -11,7 +11,7 @@
  * Wave-46 D-058 Phase 3.3 + 3.4: when `NEXT_PUBLIC_USE_REAL_BACKEND_V15`
  * is "1" AND `NEXT_PUBLIC_VINH_BACKEND_BASE_URL` is set, fetch the real
  * Vinh backend at `${base}/api/lips-harness` + return the upstream
- * `LIPSResponse` payload with engine = "lips-v15-real". Falls back to
+ * `LIPSResponse` payload with engine = "lips-v15-staged". Falls back to
  * canned on fetch failure.
  */
 
@@ -83,7 +83,7 @@ async function fetchRealBackend(t0: number): Promise<LIPSResponse | null> {
     const body = (await upstream.json()) as LIPSResponse;
     return {
       ...body,
-      engine: "lips-v15-real",
+      engine: "lips-v15-staged",
       compute_ms: Math.round(performance.now() - t0),
     };
   } catch (err) {

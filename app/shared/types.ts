@@ -1655,7 +1655,7 @@ export interface LIPSRow {
 }
 
 export interface LIPSResponse {
-  readonly engine: "lips-v15-canned-fallback" | "lips-v15-real";
+  readonly engine: "lips-v15-canned-fallback" | "lips-v15-staged";
   readonly rows: ReadonlyArray<LIPSRow>;
   readonly dataset: string;
   readonly seed: number;
@@ -1679,7 +1679,7 @@ export interface PacejkaTier {
 }
 
 export interface PacejkaResponse {
-  readonly engine: "pacejka-v12-canned-fallback" | "pacejka-v12-real";
+  readonly engine: "pacejka-v12-canned-fallback" | "pacejka-v12-staged";
   readonly compute_ms: number;
   readonly tiers: ReadonlyArray<PacejkaTier>;
   readonly final_violation_count: number;
@@ -1695,7 +1695,7 @@ export interface SCPIterate {
 }
 
 export interface SCPResponse {
-  readonly engine: "scp-v13-canned-fallback" | "scp-v13-real";
+  readonly engine: "scp-v13-canned-fallback" | "scp-v13-staged";
   readonly compute_ms: number;
   readonly iterates: ReadonlyArray<SCPIterate>;
   readonly final_residual: number;

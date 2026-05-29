@@ -79,7 +79,7 @@ def compute_scp_3_iterate(
     final_residual = iterates[-1]["residual_norm"]
 
     return {
-        "engine": "scp-v13-real",
+        "engine": "scp-v13-staged",
         "compute_ms": compute_ms,
         "iterates": iterates,
         "final_residual": final_residual,

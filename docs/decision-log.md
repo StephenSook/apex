@@ -134,9 +134,9 @@ Every locked decision with rationale + date + scope. Newest first.
 | GET /api/orchestration | `langgraph-v14-real` |
 | GET /api/session-context | `session-context-v4-real` |
 | GET /api/tspulse/anomaly | `tspulse-v7-real` |
-| GET /api/projector-stage-a | `pacejka-v12-real` |
-| GET /api/projector-stage-b | `scp-v13-real` |
-| GET /api/lips-harness | `lips-v15-real` |
+| GET /api/projector-stage-a | `pacejka-v12-staged` |
+| GET /api/projector-stage-b | `scp-v13-staged` |
+| GET /api/lips-harness | `lips-v15-staged` |
 | GET /api/judges/coa-diff | `coa-diff-real` |
 | GET /api/tire-degradation | `tire-degradation-real` |
 | POST /api/audit-log | `audit-log-v4-real` (wave-48) |
