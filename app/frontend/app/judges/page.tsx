@@ -463,6 +463,7 @@ export default function JudgesPage() {
         guardianVerdict="approve"
         forecast={DEMO_FORECAST}
         physicsConfidence={DEMO_PHYSICS_CONFIDENCE}
+        dataMode="demo"
       />
 
       <section

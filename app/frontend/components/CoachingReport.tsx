@@ -46,6 +46,9 @@ const CoachingReportLiveCharts = dynamic(
   },
 );
 
+/** Coaching-output reading level. Frontend-only display toggle; the backend does not emit it. */
+export type ReadingLevel = "beginner" | "expert";
+
 export interface CoachingReportProps {
   readonly report: CoachingReportType;
 }
@@ -54,8 +57,8 @@ function ReadingLevelToggle({
   level,
   onChange,
 }: {
-  readonly level: "beginner" | "expert";
-  readonly onChange: (next: "beginner" | "expert") => void;
+  readonly level: ReadingLevel;
+  readonly onChange: (next: ReadingLevel) => void;
 }) {
   const options: ReadonlyArray<{
     readonly key: "expert" | "beginner";
@@ -102,7 +105,7 @@ export default function CoachingReport({ report }: CoachingReportProps) {
   // contained client state so every CoachingReport mount gets the toggle
   // without prop-threading from callers. Display-only filter over real
   // authored text; never fabricates or truncates.
-  const [readingLevel, setReadingLevel] = useState<"beginner" | "expert">("expert");
+  const [readingLevel, setReadingLevel] = useState<ReadingLevel>("expert");
   return (
     <section
       id="coaching-report"
@@ -189,7 +192,7 @@ function CornerList({
   readingLevel,
 }: {
   corners: ReadonlyArray<CornerInsight>;
-  readingLevel: "beginner" | "expert";
+  readingLevel: ReadingLevel;
 }) {
   return (
     <div className="flex flex-col gap-4">
@@ -238,7 +241,7 @@ function CornerCard({
   readingLevel,
 }: {
   corner: CornerInsight;
-  readingLevel: "beginner" | "expert";
+  readingLevel: ReadingLevel;
 }) {
   const slower = corner.current_delta_s > 0;
   const deltaLabel = `${slower ? "+" : ""}${corner.current_delta_s.toFixed(2)} s`;

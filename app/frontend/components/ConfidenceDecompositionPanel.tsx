@@ -20,6 +20,7 @@
 
 import type {
   COADiffProjectionTraceEntry,
+  GuardianAudit,
   NextSessionForecast,
   PhysicsConfidence,
 } from "../../shared/types";
@@ -42,27 +43,59 @@ interface Dimension {
 
 export interface ConfidenceDecompositionPanelProps {
   readonly projectionTrace: ReadonlyArray<COADiffProjectionTraceEntry>;
-  readonly guardianVerdict: "approve" | "flag" | "reject";
+  readonly guardianVerdict: GuardianAudit["verdict"];
   readonly forecast: NextSessionForecast;
   readonly physicsConfidence: PhysicsConfidence;
+  /**
+   * Whether these props are live per-session computations or representative
+   * demo fixtures. Defaults to "demo" (the safe, under-claiming default): a
+   * live mount must opt in explicitly. Drives the honesty disclosure so the
+   * page never reads as "live" when it is showing fixtures.
+   */
+  readonly dataMode?: "demo" | "live";
 }
 
 function physicsFeasibilityDim(
   trace: ConfidenceDecompositionPanelProps["projectionTrace"],
 ): Dimension {
+  const source = "Stage 1 + 2 projection residual norms (CvxpyLayer QP convergence)";
+  // Empty trace means no projection ran. Returning a green "converged" here
+  // (the vacuous-`every` trap) would fabricate confidence from no data, the
+  // exact pattern this panel exists to refuse.
+  if (trace.length === 0) {
+    return { label: "Physics feasibility", value: "no projection trace", tone: "low", source };
+  }
   const maxResidual = trace.reduce((m, e) => Math.max(m, e.residual_norm), 0);
-  const allConverged = trace.every((e) => e.status === "converged");
+  // `status` is a three-state union (converged | linearized | violation).
+  // `linearized` is a legitimate intermediate solver state, not a feasibility
+  // violation, so it must not render red.
+  const hasViolation = trace.some((e) => e.status === "violation");
+  const hasLinearized = trace.some((e) => e.status === "linearized");
+  if (hasViolation) {
+    return {
+      label: "Physics feasibility",
+      value: `violation · max resid ${maxResidual.toFixed(3)}`,
+      tone: "low",
+      source,
+    };
+  }
+  if (hasLinearized) {
+    return {
+      label: "Physics feasibility",
+      value: `linearized · max resid ${maxResidual.toFixed(4)}`,
+      tone: "medium",
+      source,
+    };
+  }
   return {
     label: "Physics feasibility",
-    value: allConverged
-      ? `converged · max resid ${maxResidual.toFixed(4)}`
-      : `violation · max resid ${maxResidual.toFixed(3)}`,
-    tone: allConverged ? "high" : "low",
-    source: "Stage 1 + 2 projection residual norms (CvxpyLayer QP convergence)",
+    value: `converged · max resid ${maxResidual.toFixed(4)}`,
+    tone: "high",
+    source,
   };
 }
 
-function guardianDim(verdict: "approve" | "flag" | "reject"): Dimension {
+function guardianDim(verdict: GuardianAudit["verdict"]): Dimension {
   const tone: Tone = verdict === "approve" ? "high" : verdict === "flag" ? "medium" : "low";
   return {
     label: "Guardian safety",
@@ -84,13 +117,24 @@ function forecastDim(forecast: ConfidenceDecompositionPanelProps["forecast"]): D
   const meanBand =
     forecast.reduce((s, p) => s + (p.high - p.low), 0) / forecast.length;
   const meanMean = forecast.reduce((s, p) => s + p.mean, 0) / forecast.length;
-  const bandPct = meanMean !== 0 ? (meanBand / meanMean) * 100 : 0;
+  const source = "Next-session forecast 90% envelope width, post-projection";
+  // A zero (or near-zero) mean makes the band/pace ratio undefined. Surface it
+  // as undefined rather than a confident green 0.00%.
+  if (meanMean === 0) {
+    return {
+      label: "Forecast certainty",
+      value: `±${meanBand.toFixed(3)} s mean band (band/pace ratio undefined)`,
+      tone: "low",
+      source,
+    };
+  }
+  const bandPct = (meanBand / meanMean) * 100;
   const tone: Tone = bandPct < 1 ? "high" : bandPct < 2 ? "medium" : "low";
   return {
     label: "Forecast certainty",
     value: `±${meanBand.toFixed(3)} s mean band (${bandPct.toFixed(2)}% of pace)`,
     tone,
-    source: "Next-session forecast 90% envelope width, post-projection",
+    source,
   };
 }
 
@@ -110,6 +154,7 @@ export default function ConfidenceDecompositionPanel({
   guardianVerdict,
   forecast,
   physicsConfidence,
+  dataMode = "demo",
 }: ConfidenceDecompositionPanelProps) {
   const dims: ReadonlyArray<Dimension> = [
     physicsFeasibilityDim(projectionTrace),
@@ -139,13 +184,20 @@ export default function ConfidenceDecompositionPanel({
           does not. One dimension below is an integration-tier preview, labelled as
           such.
         </p>
+        {dataMode === "demo" && (
+          <p className="mt-4 inline-block rounded-sm border border-rule bg-paper-warm px-3 py-1.5 font-mono text-[10px] leading-relaxed text-muted">
+            Demo fixtures on this judges tour: each dimension is populated from a
+            representative fixture that mirrors live pipeline output. In a live session
+            each is computed per-run.
+          </p>
+        )}
         <dl className="mt-8 grid gap-4 sm:grid-cols-2">
           {dims.map((d) => {
             const tone = TONE_CLASS[d.tone];
             return (
               <div
                 key={d.label}
-                className={`flex flex-col gap-2 rounded-sm border-y border-r border-l-2 border-rule ${tone.border} bg-paper-warm p-5`}
+                className={`flex flex-col gap-2 rounded-sm border-l-4 ${tone.border} bg-paper-warm p-5`}
               >
                 <dt className="font-mono text-[10px] uppercase tracking-wider text-muted">
                   {d.label}

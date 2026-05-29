@@ -78,4 +78,34 @@ describe("ConfidenceDecompositionPanel", () => {
     );
     expect(screen.getByText("REJECT")).toBeInTheDocument();
   });
+
+  it("does not fabricate a green converged verdict from an empty projection trace (honesty guard)", () => {
+    render(
+      <ConfidenceDecompositionPanel
+        projectionTrace={[]}
+        guardianVerdict="approve"
+        forecast={FORECAST}
+        physicsConfidence={PC_IN}
+      />,
+    );
+    expect(screen.getByText(/no projection trace/i)).toBeInTheDocument();
+    expect(screen.queryByText(/converged/i)).not.toBeInTheDocument();
+  });
+
+  it("renders a linearized projection stage as its own state, not a violation", () => {
+    const linearizedTrace: ReadonlyArray<COADiffProjectionTraceEntry> = [
+      { stage: "friction_ellipse", residual_norm: 0.0008, status: "converged" },
+      { stage: "stage_2_feasibility", residual_norm: 0.02, status: "linearized" },
+    ];
+    render(
+      <ConfidenceDecompositionPanel
+        projectionTrace={linearizedTrace}
+        guardianVerdict="approve"
+        forecast={FORECAST}
+        physicsConfidence={PC_IN}
+      />,
+    );
+    expect(screen.getByText(/linearized/i)).toBeInTheDocument();
+    expect(screen.queryByText(/violation/i)).not.toBeInTheDocument();
+  });
 });
