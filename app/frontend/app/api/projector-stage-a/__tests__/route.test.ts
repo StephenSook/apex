@@ -58,9 +58,9 @@ describe("/api/projector-stage-a V12 Pacejka swap-point stub", () => {
     );
     const res = await GET(mockRequest() as unknown as Parameters<typeof GET>[0]);
     const data = (await res.json()) as { engine: string; tiers: ReadonlyArray<unknown> };
-    expect(data.engine).toBe("pacejka-v12-real");
+    expect(data.engine).toBe("pacejka-v12-staged");
     expect(data.tiers).toHaveLength(1);
-    expect(res.headers.get("X-Apex-Projector-Engine")).toBe("pacejka-v12-real");
+    expect(res.headers.get("X-Apex-Projector-Engine")).toBe("pacejka-v12-staged");
   });
 
   it("falls back to canned when env flag on + base URL set + upstream 5xx", async () => {

@@ -60,9 +60,9 @@ describe("/api/projector-stage-b V13 SCP 3-iterate swap-point stub", () => {
     );
     const res = await GET(mockRequest() as unknown as Parameters<typeof GET>[0]);
     const data = (await res.json()) as { engine: string; iterates: ReadonlyArray<unknown> };
-    expect(data.engine).toBe("scp-v13-real");
+    expect(data.engine).toBe("scp-v13-staged");
     expect(data.iterates).toHaveLength(1);
-    expect(res.headers.get("X-Apex-Projector-Engine")).toBe("scp-v13-real");
+    expect(res.headers.get("X-Apex-Projector-Engine")).toBe("scp-v13-staged");
   });
 
   it("falls back to canned when env flag on + base URL set + upstream 5xx", async () => {

@@ -94,7 +94,7 @@ export default function PacejkaStageAPanel() {
           friction ellipse, polyphase anomaly, thermal envelope, SCP outer loop, Pacejka core,
           bicycle model, forward-Euler kinematic step). Wave-49 lit
           {" "}<span className="font-mono">apex/physics/projection_pacejka.py</span>;
-          engine label flips real when <span className="font-mono">NEXT_PUBLIC_USE_REAL_BACKEND_V12=1</span>.
+          engine label flips from canned-fallback to the staged V12 backend engine when <span className="font-mono">NEXT_PUBLIC_USE_REAL_BACKEND_V12=1</span>.
         </p>
       </header>
 
@@ -109,7 +109,7 @@ export default function PacejkaStageAPanel() {
           <div className="flex flex-wrap items-baseline gap-3">
             <span
               className={`rounded-sm border px-3 py-1 font-mono text-[11px] uppercase tracking-wider ${
-                state.response.engine === "pacejka-v12-real"
+                state.response.engine === "pacejka-v12-staged"
                   ? "border-racing-green bg-paper text-racing-green"
                   : "border-amber bg-paper text-amber-ink"
               }`}

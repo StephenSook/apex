@@ -108,7 +108,7 @@ export default function SCPStageBPanel() {
           <div className="flex flex-wrap items-baseline gap-3">
             <span
               className={`rounded-sm border px-3 py-1 font-mono text-[11px] uppercase tracking-wider ${
-                state.response.engine === "scp-v13-real"
+                state.response.engine === "scp-v13-staged"
                   ? "border-racing-green bg-paper text-racing-green"
                   : "border-amber bg-paper text-amber-ink"
               }`}

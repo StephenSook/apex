@@ -19,7 +19,7 @@ Each tier emits a residual_norm + status that the panel surfaces. The
 load-bearing math (friction ellipse + forward-Euler + bicycle) reuses
 the V1 NumPy validator output; thermal + Pacejka are linearized values
 because their full nonlinear solves are deferred to GPU training per
-the D-031 staged ladder. Honest engine label `pacejka-v12-real` flips
+the D-031 staged ladder. Honest engine label `pacejka-v12-staged` flips
 on when the route hits this backend.
 """
 
@@ -214,7 +214,7 @@ def compute_pacejka_8_tier(
     compute_ms = int((time.time() - t0) * 1000.0)
 
     return {
-        "engine": "pacejka-v12-real",
+        "engine": "pacejka-v12-staged",
         "compute_ms": compute_ms,
         "tiers": tiers,
         "final_violation_count": tier_1_viols,

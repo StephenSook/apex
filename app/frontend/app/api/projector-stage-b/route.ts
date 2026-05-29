@@ -11,7 +11,7 @@
  * Wave-46 D-058 Phase 2.4 + 2.6: when `NEXT_PUBLIC_USE_REAL_BACKEND_V13`
  * is "1" AND `NEXT_PUBLIC_VINH_BACKEND_BASE_URL` is set, fetch the real
  * Vinh backend at `${base}/api/projector-stage-b` + return the upstream
- * `SCPResponse` payload with engine = "scp-v13-real". Falls back to
+ * `SCPResponse` payload with engine = "scp-v13-staged". Falls back to
  * canned on fetch failure.
  *
  * Wave-46 Phase C4 R10 migrated to runWireFlipGET helper at lib/wire-flip.ts.
@@ -48,7 +48,7 @@ export async function GET(_req: NextRequest): Promise<Response> {
       routeId: "projector-stage-b",
       t0,
       cannedPayload,
-      realEngineLabel: "scp-v13-real",
+      realEngineLabel: "scp-v13-staged",
     });
     return Response.json(payload, {
       status: 200,

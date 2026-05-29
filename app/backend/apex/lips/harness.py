@@ -112,7 +112,7 @@ def compute_lips_4_axis(
     compute_ms = int((time.time() - t0) * 1000.0)
 
     return {
-        "engine": "lips-v15-real",
+        "engine": "lips-v15-staged",
         "rows": rows,
         "dataset": "Sarah Reynolds Donington Park 2026 Britcar Trophy 5-lap fixture (deterministic synth; seed=42)",
         "seed": 42,
