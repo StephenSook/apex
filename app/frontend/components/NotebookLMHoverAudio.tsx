@@ -36,6 +36,14 @@ import { useRef, useState } from "react";
 interface NotebookLMHoverAudioProps {
   readonly panelId: string;
   readonly panelLabel: string;
+  /**
+   * Optional text equivalent for the audio commentary (WCAG 2.1 SC 1.2.1,
+   * Audio-only Prerecorded). When provided, renders an always-reachable
+   * <details> so a deaf or hard-of-hearing user gets the content without
+   * playing audio. Pass the NotebookLM-exported transcript, or a concise
+   * text summary of the key points the commentary covers.
+   */
+  readonly transcript?: string;
 }
 
 type AudioState =
@@ -44,7 +52,7 @@ type AudioState =
   | { readonly status: "playing" }
   | { readonly status: "missing" };
 
-export default function NotebookLMHoverAudio({ panelId, panelLabel }: NotebookLMHoverAudioProps) {
+export default function NotebookLMHoverAudio({ panelId, panelLabel, transcript }: NotebookLMHoverAudioProps) {
   const [state, setState] = useState<AudioState>({ status: "idle" });
   const audioRef = useRef<HTMLAudioElement>(null);
   const audioSrc = `/audio/${panelId}.mp3`;
@@ -127,6 +135,14 @@ export default function NotebookLMHoverAudio({ panelId, panelLabel }: NotebookLM
         onEnded={handleReset}
         className={state.status === "playing" ? "w-full" : "sr-only"}
       />
+      {transcript && (
+        <details className="self-start max-w-prose rounded-sm border border-rule bg-paper-warm p-2">
+          <summary className="cursor-pointer font-mono text-[10px] uppercase tracking-wider text-racing-green">
+            Read a text version of this commentary
+          </summary>
+          <p className="mt-2 font-sans text-xs leading-relaxed text-ink-soft">{transcript}</p>
+        </details>
+      )}
     </div>
   );
 }
