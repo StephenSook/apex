@@ -34,7 +34,7 @@ function verdictChipClass(verdict: ConvergenceExpectedVerdict): string {
     return "border-racing-green bg-paper text-racing-green";
   }
   if (verdict === "flag") {
-    return "border-amber bg-paper text-amber";
+    return "border-amber bg-paper text-amber-ink";
   }
   if (verdict === "reject") {
     return "border-accent bg-paper text-accent";

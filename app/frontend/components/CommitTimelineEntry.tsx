@@ -49,7 +49,7 @@ function prefixPillClass(prefix: ConventionalPrefix): string {
     case "feat":
       return "border-racing-green bg-paper text-racing-green";
     case "fix":
-      return "border-amber bg-paper text-amber";
+      return "border-amber bg-paper text-amber-ink";
     case "docs":
       return "border-rule bg-paper text-muted";
     case "test":

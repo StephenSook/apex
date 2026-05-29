@@ -221,7 +221,7 @@ const REASONING_STEP_TONE: Record<
   },
   consequences: {
     border: "border-amber",
-    label: "text-amber",
+    label: "text-amber-ink",
     dot: "bg-amber",
   },
   recommendation: {
@@ -394,14 +394,14 @@ function ForecastChart({ forecast }: { forecast: NextSessionForecast }) {
         projection.
       </p>
       {isDegenerate && (
-        <p className="font-mono text-xs leading-relaxed text-amber">
+        <p className="font-mono text-xs leading-relaxed text-amber-ink">
           Note: forecast envelope is flat. Zero variance across mini-sectors is unusual; verify the
           projection.
         </p>
       )}
       <svg
         role="img"
-        aria-label={`Next-session forecast across ${forecast.length} mini-sector${forecast.length === 1 ? "" : "s"}`}
+        aria-label={`Next-session forecast envelope: mean projection ${meanLow} s to ${meanHigh} s across ${forecast.length} mini-sector${forecast.length === 1 ? "" : "s"}, 90 percent confidence band after physics projection`}
         viewBox={`0 0 ${W} ${H}`}
         className="h-56 w-full"
       >

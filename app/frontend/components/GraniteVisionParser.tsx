@@ -131,14 +131,14 @@ export default function GraniteVisionParser() {
           type="button"
           onClick={() => void handleCanned()}
           disabled={state.status === "parsing"}
-          className="rounded-sm border border-amber bg-paper px-4 py-2 font-mono text-[11px] uppercase tracking-wider text-amber transition-colors hover:bg-amber hover:text-paper disabled:cursor-not-allowed disabled:opacity-50"
+          className="rounded-sm border border-amber bg-paper px-4 py-2 font-mono text-[11px] uppercase tracking-wider text-amber-ink transition-colors hover:bg-amber hover:text-paper disabled:cursor-not-allowed disabled:opacity-50"
         >
           Try the canned fixture
         </button>
       </div>
 
       {state.status === "parsing" && (
-        <p className="font-mono text-xs text-amber" aria-live="polite">
+        <p className="font-mono text-xs text-amber-ink" aria-live="polite">
           Parsing {state.filename}...
         </p>
       )}

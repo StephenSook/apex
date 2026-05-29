@@ -148,7 +148,7 @@ export default function TelemetryUploadPanel() {
       </label>
 
       {state.status === "uploading" && (
-        <p className="font-mono text-[11px] uppercase tracking-wider text-amber">
+        <p className="font-mono text-[11px] uppercase tracking-wider text-amber-ink">
           Uploading + parsing {state.filename}...
         </p>
       )}

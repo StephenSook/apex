@@ -178,7 +178,7 @@ function buildEntryFromForm(form: FormState): LeaderboardEntry {
 
 function tierChip(tier: Tier): string {
   if (tier === "canonical") return "border-racing-green bg-paper text-racing-green";
-  if (tier === "community") return "border-amber bg-paper text-amber";
+  if (tier === "community") return "border-amber bg-paper text-amber-ink";
   return "border-rule bg-paper text-muted";
 }
 

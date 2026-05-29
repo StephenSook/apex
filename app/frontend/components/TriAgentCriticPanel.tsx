@@ -94,7 +94,7 @@ function verdictTone(verdict: TriAgentVerdict["verdict"]): string {
     case "approve":
       return "text-racing-green";
     case "flag":
-      return "text-amber";
+      return "text-amber-ink";
     case "reject":
       return "text-accent";
     default: {
@@ -122,7 +122,7 @@ export default function TriAgentCriticPanel({ panel, panelId }: TriAgentCriticPa
           </h3>
         </div>
         {anyFlag ? (
-          <span className="rounded-sm border border-amber bg-paper px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-amber">
+          <span className="rounded-sm border border-amber bg-paper px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-amber-ink">
             Mellea IVR repair triggered
           </span>
         ) : (
@@ -174,12 +174,12 @@ function TriAgentCriticCard({ verdict, panelId }: TriAgentCriticCardProps) {
           <ConcernList
             title="Flagged concerns"
             items={verdict.flagged_concerns}
-            tone="text-amber"
+            tone="text-amber-ink"
           />
         ) : (
           <p
             role="alert"
-            className="rounded-sm border-2 border-amber bg-paper p-2 font-mono text-xs leading-relaxed text-amber"
+            className="rounded-sm border-2 border-amber bg-paper p-2 font-mono text-xs leading-relaxed text-amber-ink"
           >
             Critic returned a flag verdict without recorded concerns; treat as provisional
             pending Mellea IVR repair.

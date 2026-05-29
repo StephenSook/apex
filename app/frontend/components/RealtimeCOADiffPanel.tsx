@@ -70,7 +70,7 @@ function VerdictPane({ verdict }: { readonly verdict: COADiffVerdict }) {
                 entry.status === "converged"
                   ? "text-racing-green"
                   : entry.status === "linearized"
-                    ? "text-amber"
+                    ? "text-amber-ink"
                     : "text-accent"
               }`}
             >

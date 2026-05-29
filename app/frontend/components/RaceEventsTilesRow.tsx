@@ -58,7 +58,7 @@ function severityTextColor(severity: TileSeverity): string {
     case "ok":
       return "text-racing-green";
     case "monitor":
-      return "text-amber";
+      return "text-amber-ink";
     case "critical":
       return "text-accent";
     default: {

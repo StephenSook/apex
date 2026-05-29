@@ -127,7 +127,7 @@ export default function StatusPage() {
           </p>
           <ul className="mt-8 flex flex-col gap-3">
             <li className="rounded-sm border border-rule bg-paper p-4">
-              <p className="font-mono text-xs uppercase tracking-wider text-amber">
+              <p className="font-mono text-xs uppercase tracking-wider text-amber-ink">
                 Day 9 · Hugging Face Space health
               </p>
               <p className="mt-1 text-sm text-ink-soft">
@@ -136,7 +136,7 @@ export default function StatusPage() {
               </p>
             </li>
             <li className="rounded-sm border border-rule bg-paper p-4">
-              <p className="font-mono text-xs uppercase tracking-wider text-amber">
+              <p className="font-mono text-xs uppercase tracking-wider text-amber-ink">
                 Day 5 · Vercel deploy URL
               </p>
               <p className="mt-1 text-sm text-ink-soft">
@@ -146,7 +146,7 @@ export default function StatusPage() {
               </p>
             </li>
             <li className="rounded-sm border border-rule bg-paper p-4">
-              <p className="font-mono text-xs uppercase tracking-wider text-amber">
+              <p className="font-mono text-xs uppercase tracking-wider text-amber-ink">
                 Day 10 · Demo video
               </p>
               <p className="mt-1 text-sm text-ink-soft">
@@ -183,7 +183,7 @@ type SignalTone = "racing-green" | "ink" | "amber" | "accent";
 const SIGNAL_TONE_CLASS: Record<SignalTone, string> = {
   "racing-green": "text-racing-green",
   ink: "text-ink",
-  amber: "text-amber",
+  amber: "text-amber-ink",
   accent: "text-accent",
 };
 

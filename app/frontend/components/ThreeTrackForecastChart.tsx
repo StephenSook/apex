@@ -284,7 +284,7 @@ export default function ThreeTrackForecastChart({ forecast }: ThreeTrackForecast
       {isDegenerate && (
         <p
           role="status"
-          className="rounded-sm border-2 border-amber bg-paper p-3 font-mono text-xs leading-relaxed text-amber"
+          className="rounded-sm border-2 border-amber bg-paper p-3 font-mono text-xs leading-relaxed text-amber-ink"
         >
           Forecast envelope is flat across all three tracks (zero cross-track variance). This is
           mathematically possible but unusual for motorsport telemetry; verify the projection
@@ -295,7 +295,7 @@ export default function ThreeTrackForecastChart({ forecast }: ThreeTrackForecast
       {forecast.status === "diverged" && (
         <p
           role="alert"
-          className="rounded-sm border-2 border-amber bg-paper p-3 font-mono text-xs leading-relaxed text-amber"
+          className="rounded-sm border-2 border-amber bg-paper p-3 font-mono text-xs leading-relaxed text-amber-ink"
         >
           Three-track ensemble divergence exceeds 2 sigma at{" "}
           {forecast.divergence_sigma.toFixed(2)}. Fallback strategy active:{" "}
@@ -370,7 +370,7 @@ export default function ThreeTrackForecastChart({ forecast }: ThreeTrackForecast
                 <span
                   className={`rounded-sm border px-1.5 py-0.5 text-[9px] uppercase tracking-wider ${
                     tier === "INTEGRATION"
-                      ? "border-amber bg-paper text-amber"
+                      ? "border-amber bg-paper text-amber-ink"
                       : "border-rule bg-paper text-muted"
                   }`}
                   aria-label={`Wire-up tier: ${tier}`}
@@ -416,7 +416,7 @@ function DivergenceChip({ sigma, converged }: { sigma: number; converged: boolea
     );
   }
   const borderClass = converged ? "border-racing-green" : "border-amber";
-  const toneClass = converged ? "text-racing-green" : "text-amber";
+  const toneClass = converged ? "text-racing-green" : "text-amber-ink";
   return (
     <span
       className={`rounded-sm border ${borderClass} bg-paper px-3 py-1 font-mono text-[11px] uppercase tracking-wider ${toneClass}`}

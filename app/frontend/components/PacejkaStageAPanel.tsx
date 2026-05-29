@@ -99,7 +99,7 @@ export default function PacejkaStageAPanel() {
       </header>
 
       {state.status === "loading" && (
-        <p className="font-mono text-xs uppercase tracking-wider text-amber">
+        <p className="font-mono text-xs uppercase tracking-wider text-amber-ink">
           Loading Pacejka 8-tier trace...
         </p>
       )}
@@ -111,7 +111,7 @@ export default function PacejkaStageAPanel() {
               className={`rounded-sm border px-3 py-1 font-mono text-[11px] uppercase tracking-wider ${
                 state.response.engine === "pacejka-v12-real"
                   ? "border-racing-green bg-paper text-racing-green"
-                  : "border-amber bg-paper text-amber"
+                  : "border-amber bg-paper text-amber-ink"
               }`}
             >
               Engine: {state.response.engine}
@@ -138,7 +138,7 @@ export default function PacejkaStageAPanel() {
                       tier.status === "converged"
                         ? "border-racing-green text-racing-green"
                         : tier.status === "linearized"
-                          ? "border-amber text-amber"
+                          ? "border-amber text-amber-ink"
                           : "border-rule text-muted"
                     }`}
                   >

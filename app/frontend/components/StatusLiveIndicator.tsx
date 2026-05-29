@@ -129,7 +129,7 @@ function ErrorTile({
       role="alert"
       className="flex flex-col gap-3 rounded-sm border-2 border-amber bg-paper p-5"
     >
-      <p className="font-mono text-xs uppercase tracking-wider text-amber">
+      <p className="font-mono text-xs uppercase tracking-wider text-amber-ink">
         CI status temporarily unavailable
       </p>
       <p className="text-sm leading-relaxed text-ink-soft">{state.message}</p>
@@ -236,7 +236,7 @@ type Verdict =
 const TONE: Record<Verdict, { readonly border: string; readonly text: string }> = {
   success: { border: "border-racing-green", text: "text-racing-green" },
   failure: { border: "border-accent", text: "text-accent" },
-  cancelled: { border: "border-amber", text: "text-amber" },
+  cancelled: { border: "border-amber", text: "text-amber-ink" },
   neutral: { border: "border-rule", text: "text-ink-soft" },
   skipped: { border: "border-rule", text: "text-ink-soft" },
   in_progress: { border: "border-rule", text: "text-ink-soft" },

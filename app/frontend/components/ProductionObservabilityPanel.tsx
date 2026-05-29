@@ -135,7 +135,7 @@ export default function ProductionObservabilityPanel() {
       </header>
 
       {summary === null && error === null ? (
-        <p className="font-mono text-xs uppercase tracking-wider text-amber">
+        <p className="font-mono text-xs uppercase tracking-wider text-amber-ink">
           Connecting to live telemetry…
         </p>
       ) : null}
@@ -165,7 +165,7 @@ export default function ProductionObservabilityPanel() {
               className={`flex items-center gap-2 rounded-sm border px-3 py-1 font-mono text-[11px] uppercase tracking-wider ${
                 isLive
                   ? "border-racing-green bg-paper text-racing-green"
-                  : "border-amber bg-paper text-amber"
+                  : "border-amber bg-paper text-amber-ink"
               }`}
             >
               <span
@@ -188,7 +188,7 @@ export default function ProductionObservabilityPanel() {
           </div>
 
           {!isLive ? (
-            <p className="rounded-sm border border-amber bg-paper-warm p-3 font-mono text-[11px] leading-relaxed text-amber">
+            <p className="rounded-sm border border-amber bg-paper-warm p-3 font-mono text-[11px] leading-relaxed text-amber-ink">
               Wiring status (not a live read): the apex-backend OpenTelemetry → Honeycomb pipeline
               is live and the <span className="not-italic">{HONEYCOMB.dataset}</span> dataset is
               receiving spans. In-app live metrics appear once this frontend deploy points at the
