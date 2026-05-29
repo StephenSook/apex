@@ -539,7 +539,7 @@ function Differentiators() {
             id="diff-title"
             className="font-display text-4xl leading-tight sm:text-5xl"
           >
-            Five claims. <em className="italic text-amber-ink">Each independently verifiable.</em>
+            Five claims. <em className="italic text-amber">Each independently verifiable.</em>
           </h2>
         </div>
 
