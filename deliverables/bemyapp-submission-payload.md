@@ -89,7 +89,7 @@ The AI race engineer for the drivers who do not have one.
 ### One-paragraph elevator (90-120 words)
 
 ```
-APEX is an AI race engineer for adaptive racers, veteran-team drivers, and grassroots competitors who cannot afford the four-to-five-hundred-pounds-a-day professional race engineer that every Formula One driver has. We point the same IBM Granite stack that ships to Scuderia Ferrari's roughly four hundred million fans at the drivers who need a race engineer most. APEX reads the driver's telemetry, their FIA Certificate of Adaptations under the Appendix L provisions, and a written debrief, then returns a corner-by-corner coaching report with a tuning recommendation, a next-session forecast envelope, and a Granite Guardian safety stamp in sixty seconds end-to-end on a commodity RTX 4060 GPU.
+APEX is an AI race engineer for adaptive racers, veteran-team drivers, and grassroots competitors who cannot afford the professional race engineer (several hundred pounds a day at club level, by industry estimates) that every Formula One driver has. We point IBM Granite, the same platform IBM ships to Scuderia Ferrari's roughly four hundred million fans, at the drivers who need a race engineer most. APEX reads the driver's telemetry, their FIA Certificate of Adaptations under the Appendix L provisions, and a written debrief, then returns a corner-by-corner coaching report with a tuning recommendation, a next-session forecast envelope, and a Granite Guardian safety stamp in sixty seconds end-to-end on a commodity RTX 4060 GPU.
 ```
 
 ## The problem (BeMyApp pinned rubric Q1)

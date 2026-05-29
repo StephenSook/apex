@@ -94,7 +94,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "APEX | AI race engineer for adaptive racers",
     description:
-      "The same IBM Granite stack that ships to Scuderia Ferrari's fan app, pointed at the drivers who need a race engineer most.",
+      "Built on IBM Granite, the same platform IBM ships to Scuderia Ferrari's fan app, pointed at the drivers who need a race engineer most.",
     siteName: "APEX",
     type: "website",
     url: "/",

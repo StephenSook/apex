@@ -56,7 +56,7 @@ const RESOURCES: ReadonlyArray<ResourceLink> = [
   {
     label: "Live demo",
     href: "/analyze",
-    detail: "Three-slot upload → corner-by-corner coaching report in ~60s on Granite.",
+    detail: "Three-slot upload → corner-by-corner coaching report. Illustrative report at HEAD; the live Granite analyze path is a backend swap-point.",
     badge: "live",
   },
   {
@@ -311,8 +311,9 @@ export default function JudgesPage() {
             Honeycomb (dataset{" "}
             <span className="font-mono text-xs text-racing-green">apex-backend</span>, service{" "}
             <span className="font-mono text-xs text-racing-green">apex-backend</span>) and mirrors
-            the same signals in the live panel below. Real traffic, refreshed in-page, with every
-            recent request deep-linked to its real Honeycomb trace waterfall. Wiring lives at{" "}
+            the same signals in the live panel below when the apex-backend is reachable. If it is not,
+            the panel shows an honest awaiting-backend wiring state instead of fabricated numbers.
+            Each recent request deep-links to its real Honeycomb trace waterfall. Wiring lives at{" "}
             <span className="font-mono text-xs text-racing-green">app/backend/apex/observability.py</span>{" "}
             + <span className="font-mono text-xs text-racing-green">observability_metrics.py</span>;
             spans land via OTLP HTTP when{" "}

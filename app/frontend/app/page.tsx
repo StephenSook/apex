@@ -94,11 +94,11 @@ function Hero() {
             className="max-w-xl text-lg leading-relaxed text-ink-soft apex-rise"
             style={{ "--apex-delay": "240ms" } as React.CSSProperties}
           >
-            A pro race engineer costs roughly{" "}
-            <span className="font-mono text-base text-ink">£400 to £500</span> a day.
+            A pro race engineer can cost{" "}
+            <span className="font-mono text-base text-ink">several hundred pounds</span> a day.
             Every F1 driver has one. Most adaptive racers, veteran-team drivers, and
-            grassroots competitors do not. APEX puts the same IBM Granite stack that
-            ships to Scuderia Ferrari&rsquo;s ~400 million fans in the hands of the
+            grassroots competitors do not. APEX is built on IBM Granite, the same platform IBM
+            ships to Scuderia Ferrari&rsquo;s ~400 million fans, and points it at the
             drivers who need a race engineer the most.
           </p>
           <p

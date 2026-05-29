@@ -30,7 +30,7 @@ About 25 minutes end to end, broken roughly:
 ### 1. Sign up at Honeycomb
 
 1. Go to https://www.honeycomb.io/signup
-2. Sign up with the gmail Stephen uses for the submission (stephensookra@gmail.com works)
+2. Sign up with the gmail Stephen uses for the submission
 3. On the team-creation prompt, set team name to `apex`
 4. Skip the integrations onboarding wizard; do step 2 manually below
 
