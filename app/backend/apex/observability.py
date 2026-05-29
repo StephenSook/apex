@@ -66,15 +66,26 @@ def setup_observability(app):
             BatchSpanProcessor,
             ConsoleSpanExporter,
         )
-        from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
     except ImportError as exc:
         logger.warning(
-            "APEX_OTEL_ENABLED=1 but opentelemetry packages not installed; "
+            "APEX_OTEL_ENABLED=1 but core opentelemetry packages not installed; "
             "skipping (install with `pip install opentelemetry-api "
-            "opentelemetry-sdk opentelemetry-instrumentation-fastapi`): %s",
+            "opentelemetry-sdk`): %s",
             exc,
         )
         return None
+
+    # FastAPIInstrumentor is OPTIONAL per wave-51d cascade-#60: the
+    # opentelemetry-instrumentation 0.60b pins wrapt<2.0 which conflicts
+    # with Vinh's wrapt==2.2.1 requirements pin. Without auto-instrumentation,
+    # request-level spans land via the manual middleware fallback below.
+    # If instrumentation-fastapi IS installed, it provides richer auto-spans.
+    try:
+        from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
+        fastapi_instrumentor_available = True
+    except ImportError:
+        FastAPIInstrumentor = None  # type: ignore[assignment]
+        fastapi_instrumentor_available = False
 
     service_name = os.environ.get("OTEL_SERVICE_NAME", "apex-backend")
     resource = Resource.create({"service.name": service_name})
@@ -137,9 +148,36 @@ def setup_observability(app):
 
     trace.set_tracer_provider(provider)
 
-    FastAPIInstrumentor.instrument_app(app)
-    logger.info("OTel auto-instrumentation active on FastAPI app")
-    return trace.get_tracer(service_name)
+    tracer = trace.get_tracer(service_name)
+
+    if fastapi_instrumentor_available and FastAPIInstrumentor is not None:
+        FastAPIInstrumentor.instrument_app(app)
+        logger.info("OTel auto-instrumentation active on FastAPI app")
+    else:
+        # Wave-51d cascade-#60 manual fallback: register a FastAPI middleware
+        # that creates a span per request. Cheaper than full auto-
+        # instrumentation but still surfaces HTTP method + path + status
+        # + latency to Honeycomb. Skip noisy paths so the dashboard does
+        # not drown in healthz polling.
+        @app.middleware("http")
+        async def apex_otel_request_middleware(request, call_next):
+            path = request.url.path
+            if path in {"/healthz", "/favicon.ico"}:
+                return await call_next(request)
+            with tracer.start_as_current_span(f"{request.method} {path}") as span:
+                span.set_attribute("http.method", request.method)
+                span.set_attribute("http.url", str(request.url))
+                span.set_attribute("http.route", path)
+                response = await call_next(request)
+                span.set_attribute("http.status_code", response.status_code)
+                return response
+
+        logger.info(
+            "OTel manual request-tracing middleware active (FastAPIInstrumentor "
+            "not installed; install opentelemetry-instrumentation-fastapi for "
+            "richer auto-spans when wrapt compatibility permits)"
+        )
+    return tracer
 
 
 __all__ = ["setup_observability"]

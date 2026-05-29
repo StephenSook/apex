@@ -73,6 +73,16 @@ RUN grep -vE "^(torch==|llama_cpp_python==|fastf1==|opentelemetry-)" requirement
       python-multipart \
       structlog
 
+# Wave-51d cascade-#60: install OTel packages needed for Honeycomb wire-up.
+# Skipping opentelemetry-instrumentation-fastapi due to wrapt<2.0 peer dep
+# vs Vinh's wrapt==2.2.1 pin (see comment above). observability.py wave-51d
+# falls back to manual request-tracing middleware when FastAPIInstrumentor
+# missing; still ships per-request spans with HTTP method + path + status.
+RUN pip install --no-cache-dir \
+      opentelemetry-api==1.39.0 \
+      opentelemetry-sdk==1.39.0 \
+      opentelemetry-exporter-otlp-proto-http==1.39.0
+
 # --- app code + fixtures ----------------------------------------------
 # COPY assumes the build context contains: apex/ + fixtures/ + (optional)
 # docs/. For HF Spaces deploy, the deploy script symlinks/copies
