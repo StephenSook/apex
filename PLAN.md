@@ -66,6 +66,33 @@
 
 ---
 
+## Status snapshot (2026-05-29 wave-56 honesty audit + remaining-tasks lock)
+
+**Wave-56 honesty audit close-out.** Three-agent parallel audit (PLAN-vs-code completeness + credibility-liability hunt + repo-hygiene/README). Shipped on `fix-wave-56-honesty-audit-credibility-fixes`: defused a fabricated FIA Appendix L "quote" on /judges (DQ-risk; now an honest labelled paraphrase + real FIA link), removed 41 internal adversarial/competitor-recon files from the public repo (git rm --cached + gitignore; local copies kept), corrected over-claims to match the code (test count -> 192, Ferrari "stack" -> "built on IBM Granite platform", APEX-Bench "leaderboard" -> "evaluation harness / canned scaffold", uncited cost softened, Pydantic 14 -> 4, /analyze + observability honesty labels), Colab "Section 3(c)" -> synthetic-fixture label, deleted macOS Finder " 2" dup junk + broken git refs. **Audit verdict: the codebase is genuinely honest; the honesty tiers (2 WIRED / 10 INTEGRATION / 2 ACCELERATOR) are accurate. No hidden stubs.**
+
+**Remaining work to submission (2026-05-31).**
+
+Stephen (frontend + ops):
+- [ ] Demo video record + 30s clip + YouTube unlisted upload (script: `docs/3-min-pitch-script-2-person-v3.md`; includes the new confidence-decomposition panel + COA-gate toggle + observability cockpit; optional visual-only observability B-roll, zero added runtime).
+- [ ] BeMyApp submission form (payload `deliverables/bemyapp-submission-payload.md`; 1920x600 banner; team GitHub handles incl. Vinh; YouTube URL).
+- [ ] Verify `app/frontend/lib/webgpu-nano.ts` is genuinely WIRED (it carries a WIRED badge as 1 of the 2 wired tools).
+- [ ] Post-submission: rotate the Honeycomb ingest key (scheduled 2026-06-01).
+- [ ] Team BRIT driver-coach call this weekend (Al offered; reply sent).
+- [ ] Optional repo polish: add GitHub repo topics; delete the 4 stale merged remote branches; move root scratch files (council-transcript*, STATUS_DAY*, physics-ttm-neurips-methods.md) into docs/ or logs/.
+
+Vinh (backend; INTEGRATION -> WIRED swap-points, honest gaps per the wave-56 completeness audit):
+- [ ] Guard the `torch` import in `tests/test_server.py` (it errors on collection in a torch-less env) OR document the required env, so a judge's `pytest` runs clean. (192 test functions across 18 files.)
+- [ ] Real 8-tier Pacejka physics in `projection_pacejka.py` (currently a deterministic residual trace with hardcoded fallback constants wrapping the real V2 constant-mu cvxpylayers projector).
+- [ ] Real successive-convexification loop in `projection_scp.py` (currently a deterministic multiplicative-shrink convergence trace).
+- [ ] Frozen-TTM as the live forecast engine (ships behind `APEX_ENABLE_TTM=1`; default seasonal-naive after the G4 FAIL; needs the D-010 channel-mix fine-tune to be defensible as a forecaster).
+- [ ] Real Granite Vision timing-sheet inference (`_parse_with_granite_vision` is a named stub returning fixtures).
+- [ ] Backend RAG module (`apex/embedding/`) + wire the LangGraph rag node (real RAG is frontend-only at HEAD).
+- [ ] Correctly deferred (documented future work, NOT claimed shipped): FlowState, Chronos-2 ensemble, polyphase, MCP servers, ContextForge, aLoRA, EAGLE-3, GEPA, Mellea IVR.
+
+**Honesty principle (load-bearing):** do NOT relabel INTEGRATION-tier items as WIRED to "look done." The tier labels are the moat that the competitor field lost. Wire for real or keep the honest label.
+
+---
+
 ## Status snapshot (last sync 2026-05-28 Day 9 wave-51 cinematic hero close-out)
 
 **Wave-51 cinematic editorial-paddock hero upgrade.** Stephen explicit night 2026-05-27/28 "shock factor wow factor" ask on the landing-page hero. Direction locked: Editorial Paddock Cinematic Noir with Warmth. Reference vocabulary from motionsites.ai patterns translated to the warm-cream + racing-green + clay-red + amber + ink palette. Editorial-paddock identity preserved end-to-end. Zero new dependencies.
