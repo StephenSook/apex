@@ -277,10 +277,10 @@ if run_check 10; then
   hf_url="${APEX_HF_URL:-}"
   if [[ -z "$hf_url" ]]; then final_or_warn 10 "HF Space URL not yet set (Vinh Day 9 deploy). Set APEX_HF_URL env var."
   else
-    code=$(curl -s -o /dev/null -w "%{http_code}" "$hf_url/health" --max-time 30 || echo "000")
+    code=$(curl -s -o /dev/null -w "%{http_code}" "$hf_url/healthz" --max-time 30 || echo "000")
     case "$code" in
-      200) pass 10 "HF Space /health 200 at $hf_url" ;;
-      *) soft_or_fail 10 "HF Space /health returned $code at $hf_url" ;;
+      200) pass 10 "HF Space /healthz 200 at $hf_url" ;;
+      *) soft_or_fail 10 "HF Space /healthz returned $code at $hf_url" ;;
     esac
   fi
 fi
@@ -359,7 +359,9 @@ if run_check 15; then
   else fail 15 "LICENSE missing or not Apache 2.0"; fi
 fi
 
-# Check 16 — All 8 IBM tools cited in README
+# Check 16 — core IBM Granite tools cited in README (representative subset; the
+# full 14-tool inventory + per-tool tiers live in app/frontend/lib/ibm-stack.ts).
+# IBM Bob was retired 2026-05-26 (15 -> 14); do not re-add it here.
 if run_check 16; then
   tools=(
     "Granite-Docling"
@@ -367,15 +369,14 @@ if run_check 16; then
     "Granite TimeSeries TTM|Granite TTM"
     "Granite 4.1 8B Instruct|Granite 4.1 Instruct"
     "Granite Guardian 4.1|Granite Guardian"
-    "Langflow"
+    "Granite 4.0 Nano|Granite Nano"
     "Docling library|Docling "
-    "IBM Bob"
   )
   missing=()
   for t in "${tools[@]}"; do
     if ! grep -qE "$t" README.md 2>/dev/null; then missing+=("$t"); fi
   done
-  if [[ ${#missing[@]} -eq 0 ]]; then pass 16 "all 8 IBM tools cited in README"
+  if [[ ${#missing[@]} -eq 0 ]]; then pass 16 "core IBM Granite tools cited in README"
   else fail 16 "missing tool citations in README: ${missing[*]}"; fi
 fi
 
