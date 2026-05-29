@@ -16,7 +16,7 @@
  * surface, the links are verification for authenticated viewers.
  */
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   buildHoneycombTraceUrl,
@@ -44,11 +44,6 @@ function formatUptime(seconds: number): string {
   return `${hours}h ${minutes}m`;
 }
 
-function timeAgo(fromMs: number, nowMs: number): string {
-  const delta = Math.max(0, Math.round((nowMs - fromMs) / 1000));
-  return delta < 1 ? "just now" : `${delta}s ago`;
-}
-
 interface MetricTileProps {
   readonly label: string;
   readonly value: string;
@@ -68,45 +63,38 @@ function MetricTile({ label, value, hint }: MetricTileProps) {
 export default function ProductionObservabilityPanel() {
   const [summary, setSummary] = useState<ObservabilitySummary | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [fetchedAtMs, setFetchedAtMs] = useState<number | null>(null);
   const [reload, setReload] = useState(0);
-  const liveRef = useRef(true);
-
-  const load = useCallback(async (signal: AbortSignal) => {
-    try {
-      const res = await fetch("/api/observability/summary", {
-        cache: "no-store",
-        signal,
-      });
-      if (!res.ok) throw new Error(`/api/observability/summary -> HTTP ${res.status}`);
-      const payload = (await res.json()) as ObservabilitySummary;
-      if (!liveRef.current) return;
-      setSummary(payload);
-      setError(null);
-      setFetchedAtMs(Date.now());
-    } catch (err) {
-      if (!liveRef.current) return;
-      if (err instanceof Error && err.name === "AbortError") return;
-      setError(err instanceof Error ? err.message : String(err));
-    }
-  }, []);
 
   useEffect(() => {
-    liveRef.current = true;
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
-    void load(controller.signal).finally(() => clearTimeout(timeoutId));
-    const interval = setInterval(() => {
-      const c = new AbortController();
-      const t = setTimeout(() => c.abort(), FETCH_TIMEOUT_MS);
-      void load(c.signal).finally(() => clearTimeout(t));
-    }, REFRESH_MS);
-    return () => {
-      liveRef.current = false;
-      clearInterval(interval);
-      controller.abort();
+    let cancelled = false;
+    const runOnce = async () => {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+      try {
+        const res = await fetch("/api/observability/summary", {
+          cache: "no-store",
+          signal: controller.signal,
+        });
+        if (!res.ok) throw new Error(`/api/observability/summary -> HTTP ${res.status}`);
+        const payload = (await res.json()) as ObservabilitySummary;
+        if (cancelled) return;
+        setSummary(payload);
+        setError(null);
+      } catch (err) {
+        if (cancelled) return;
+        if (err instanceof Error && err.name === "AbortError") return;
+        setError(err instanceof Error ? err.message : String(err));
+      } finally {
+        clearTimeout(timeoutId);
+      }
     };
-  }, [load, reload]);
+    void runOnce();
+    const interval = setInterval(() => void runOnce(), REFRESH_MS);
+    return () => {
+      cancelled = true;
+      clearInterval(interval);
+    };
+  }, [reload]);
 
   const isLive = summary?.engine === "observability-live";
   const statusEntries = summary
@@ -194,11 +182,9 @@ export default function ProductionObservabilityPanel() {
                 Exporter: OTLP → Honeycomb
               </span>
             ) : null}
-            {fetchedAtMs !== null ? (
-              <span className="rounded-sm border border-rule bg-paper px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-muted">
-                Updated {timeAgo(fetchedAtMs, Date.now())} · auto every {REFRESH_MS / 1000}s
-              </span>
-            ) : null}
+            <span className="rounded-sm border border-rule bg-paper px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-muted">
+              Auto-refresh every {REFRESH_MS / 1000}s
+            </span>
           </div>
 
           {!isLive ? (
