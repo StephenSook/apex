@@ -1,10 +1,10 @@
 # BeMyApp Submission Payload, APEX
 
-> Verbatim copy for each field on the BeMyApp submission form for IBM SkillsBuild AI Builders Challenge May 2026. Draft Day 2 PM from the live BeMyApp form structure pulled 2026-05-21 PM; wave-42 Day 6 refresh applied to reflect 12-tool IBM stack + 5 shouldn't-be-possible moves + Phase 0 contracts shipped + cascade-#11 brand-propagation + wave-42 Lane E.M.1/M.2 type-spec PRs; wave-46 D-058 refresh expands the stack to 15 tools (added Granite 4.1 3B Instruct fast-path AICopilotChat routing + Granite Speech 4.1 2B-Plus speaker-attributed ASR + Mellea Instruct-Validate-Repair critic loop); refine Day 10-11 with the live demo URL + recorded video link.
+> Verbatim copy for each field on the BeMyApp submission form for IBM SkillsBuild AI Builders Challenge May 2026. Draft Day 2 PM from the live BeMyApp form structure pulled 2026-05-21 PM; wave-42 Day 6 refresh applied to reflect 12-tool IBM stack + 5 shouldn't-be-possible moves + Phase 0 contracts shipped + cascade-#11 brand-propagation + wave-42 Lane E.M.1/M.2 type-spec PRs; wave-46 D-058 refresh expands the stack to 14 tools (added Granite 4.1 3B Instruct fast-path AICopilotChat routing + Granite Speech 4.1 2B-Plus speaker-attributed ASR + Mellea Instruct-Validate-Repair critic loop; IBM Bob removed 2026-05-26, 15 -> 14); refine Day 10-11 with the live demo URL + recorded video link.
 >
 > **Owner:** Stephen Sookra. **Submission window opens:** TBD. **Hard deadline:** 2026-05-31, 11:59 PM ET.
 >
-> **Live demo URL:** https://apex-one-black.vercel.app (Vercel production deploy LIVE per D-046 cascade-#15 + cascade-#18 close-out 2026-05-24; all 4 routes 200).
+> **Live demo URL:** https://apex-one-black.vercel.app (Vercel production deploy LIVE per D-046 cascade-#15 + cascade-#18 close-out 2026-05-24; all production routes respond).
 >
 > The fields directly below mirror the live BeMyApp project page template field-for-field (reference: `~/.claude/projects/-Users-stephensookra-Desktop-IBM-May/memory/reference_bemyapp_submission_template.md`). The "Reference long-form drafts" section below the form-aligned section keeps the wider material (README-length elevator, full IBM-tools enumeration, full multi-track checklist) in case BeMyApp adds more fields or for cross-use in deck + video.
 
@@ -107,7 +107,7 @@ APEX is a three-layer PhysicsTTM architecture with a two-stage projection-and-au
 ## Why it matters in racing (BeMyApp pinned rubric Q3)
 
 ```
-Three constituencies share one product gap. Adaptive racers running hand-control rigs in Britcar Trophy, the adaptive-driver UK championships, and FFSA Handikart. Veteran-team drivers competing through veteran motorsport rehabilitation programmes with combat-injury-driven adaptations. Grassroots clubman and amateur racers in SRO regional series and Britcar endurance. Their FIA Certificate of Adaptations (governed by Appendix L of the International Sporting Code) is a binding document. APEX reads it at the tensor level. When the COA permits simultaneous brake-throttle inputs, the physics layer permits them. When the COA does not, the constraint enforces. Same coaching pipeline, different output, depending on what the driver's COA actually says they are allowed to do. The Scuderia Ferrari precedent matters because IBM already shipped this stack to a Formula One team; APEX takes the same architecture and points it at the drivers who need it most.
+Three constituencies share one product gap. Adaptive racers running hand-control rigs in Britcar Trophy, the adaptive-driver UK championships, and FFSA Handikart. Veteran-team drivers competing through veteran motorsport rehabilitation programmes with combat-injury-driven adaptations. Grassroots clubman and amateur racers in SRO regional series and Britcar endurance. Their FIA Certificate of Adaptations (governed by Appendix L of the International Sporting Code) is a binding document. APEX reads it at the tensor level. When the COA permits simultaneous brake-throttle inputs, the physics layer permits them. When the COA does not, the constraint enforces. Same coaching pipeline, different output, depending on what the driver's COA actually says they are allowed to do. The IBM and Scuderia Ferrari watsonx case study is the precedent: IBM ships Granite to a Formula One team's fan app. APEX is built on the same Granite platform, with different Granite products (TTM, Docling, Vision, Guardian), and points it at the drivers who need a race engineer most.
 ```
 
 ## IBM tools used (every load-bearing slot; 14 tools at wave-46-final per D-058 stack expansion minus IBM Bob retirement = wave-30 D-016 baseline 12 + wave-46 D-058 additions Granite 4.1 3B Instruct + Granite Speech 4.1 2B-Plus + Mellea, minus IBM Bob 2026-05-26)
@@ -121,7 +121,7 @@ Three constituencies share one product gap. Adaptive racers running hand-control
 
 4. Granite TimeSeries TTM r2.1. Frozen pretrained Tiny Time Mixer (NeurIPS 2024) as Track 1 of the 3-track forecasting ensemble per D-010. Aggregated 1-Hz mini-sector tensor input. We do not retrain.
 
-5. Granite FlowState 9.1M. Track 2 of the 3-track forecasting ensemble per D-010. Sampling-rate-invariant continuous-time SSM.
+5. Granite FlowState r1.1 18.5M. Track 2 of the 3-track forecasting ensemble per D-010. Sampling-rate-invariant continuous-time SSM.
 
 6. IBM TSPulse 1M. Time-frequency anomaly detector on polyphase phase streams per D-016.
 
