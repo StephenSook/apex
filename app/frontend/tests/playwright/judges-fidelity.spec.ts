@@ -52,4 +52,16 @@ test.describe("/judges fidelity", () => {
     await page.evaluate(() => window.scrollTo(0, 0));
     expect(consoleErrors).toEqual([]);
   });
+
+  test("renders the live production-observability cockpit", async ({ page }) => {
+    await page.goto("/judges", { waitUntil: "networkidle" });
+    await expect(
+      page.getByRole("heading", { name: /Production observability, live and embedded/i }),
+    ).toBeVisible();
+    // Panel resolves to either live or awaiting-backend; either way the
+    // real-dataset CTA renders once the summary fetch settles.
+    await expect(
+      page.getByRole("link", { name: /Explore the live apex-backend dataset in Honeycomb/i }),
+    ).toBeVisible();
+  });
 });
