@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 
 import type {
   CoachingReport as CoachingReportType,
@@ -125,5 +126,37 @@ describe("CoachingReport", () => {
   it("renders the empty-forecast fallback when forecast has zero points", () => {
     render(<CoachingReport report={makeReport({ forecast: [] })} />);
     expect(screen.getByText(/No forecast available/i)).toBeInTheDocument();
+  });
+
+  it("defaults to Expert reading level and shows the detailed recommendation", () => {
+    render(<CoachingReport report={makeReport()} />);
+    const expertBtn = screen.getByRole("button", { name: /Expert/i });
+    expect(expertBtn).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByText(/Trail-brake in two micro-presses/)).toBeInTheDocument();
+  });
+
+  it("swaps to the beginner prose when the Beginner toggle is clicked", async () => {
+    const user = userEvent.setup();
+    const corners: ReadonlyArray<CornerInsight> = [
+      {
+        name: "Old Hairpin",
+        sector: 2,
+        current_delta_s: 0.34,
+        recommendation: "Trail-brake in two micro-presses.",
+        recommendation_beginner: "Brake a little later and in two gentle steps.",
+        citations: [{ fia_article: "Appendix L", coa_section: "the hardware-spec section" }],
+      },
+    ];
+    render(<CoachingReport report={makeReport({ corners })} />);
+    await user.click(screen.getByRole("button", { name: /Beginner/i }));
+    expect(screen.getByText(/Brake a little later and in two gentle steps/)).toBeInTheDocument();
+    expect(screen.queryByText(/Trail-brake in two micro-presses/)).not.toBeInTheDocument();
+  });
+
+  it("falls back to the expert recommendation in Beginner mode when no beginner text exists", async () => {
+    const user = userEvent.setup();
+    render(<CoachingReport report={makeReport()} />);
+    await user.click(screen.getByRole("button", { name: /Beginner/i }));
+    expect(screen.getByText(/Trail-brake in two micro-presses/)).toBeInTheDocument();
   });
 });

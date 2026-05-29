@@ -409,6 +409,8 @@ function buildMockReport(submission: DropzoneSubmission): CoachingReportType {
         current_delta_s: 0.34,
         recommendation:
           "Trail-brake the entry phase across two micro-presses rather than one continuous ramp. If your uploaded COA permits brake-throttle simultaneity (Stage 2 of the physics-projection layer reads the parsed flag), the entry-phase overlap will clear feasibility; otherwise the projector flags it. Reduce the secondary-actuation modulation depth by roughly ten percent against the lap shape recorded in your telemetry.",
+        recommendation_beginner:
+          "Brake a touch later into this corner and in two gentle presses instead of one, and ease that second press by about ten percent. If your Certificate of Adaptations clears braking and throttle together, APEX keeps that input; if it does not, APEX flags it.",
         citations: [
           { fia_article: "Appendix L", coa_section: "Adaptive-equipment provisions" },
         ],
@@ -419,6 +421,8 @@ function buildMockReport(submission: DropzoneSubmission): CoachingReportType {
         current_delta_s: 0.08,
         recommendation:
           "Throttle pickup is conservative against your lap-shape PB by roughly eighty milliseconds. Steering angle peaks before throttle re-application across the sector; tighten the gap to recover most of the delta.",
+        recommendation_beginner:
+          "You are getting back on the throttle a little late here, about eighty milliseconds. Pick the throttle up a bit sooner as you unwind the steering, and you win most of that time back.",
         citations: [
           { fia_article: "Appendix L", coa_section: "Adaptive-equipment provisions" },
         ],
@@ -429,6 +433,8 @@ function buildMockReport(submission: DropzoneSubmission): CoachingReportType {
         current_delta_s: -0.05,
         recommendation:
           "Strong exit. Mid-corner throttle pickup is conservative by roughly five percent against the projected friction envelope; you have margin to push without a Stage 2 feasibility violation.",
+        recommendation_beginner:
+          "Good corner. You have a little room to get on the power earlier through the middle without losing grip.",
         citations: [
           { fia_article: "Appendix L", coa_section: "Adaptive-equipment provisions" },
         ],
