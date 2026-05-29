@@ -220,7 +220,7 @@ export default function JudgesPage() {
           <div className="mt-6">
             <NotebookLMHoverAudio
               panelId="master-overview"
-              panelLabel="APEX master overview, twenty-minute NotebookLM deep dive across paper, decision-log, architecture-spec, and README"
+              panelLabel="APEX master overview, a NotebookLM deep dive across paper, decision-log, architecture-spec, and README"
             />
           </div>
           <div className="mt-4 grid gap-3 sm:grid-cols-2">
