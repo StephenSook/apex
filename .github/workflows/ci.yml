@@ -78,7 +78,7 @@ jobs:
       - name: Install GPU-free deps
         run: |
           python -m pip install --upgrade pip
-          grep -vE '^(cvxpy|cvxpylayers|diffcp|llama_cpp_python|granite-tsfm|fastf1|transformers|datasets|accelerate)([=<>! ]|$)' requirements.txt > /tmp/req-ci.txt
+          grep -vE '^(cvxpy|cvxpylayers|diffcp|llama_cpp_python|granite-tsfm|fastf1|transformers|datasets|accelerate|opentelemetry-api|opentelemetry-sdk|opentelemetry-instrumentation-fastapi|opentelemetry-exporter-otlp-proto-http)([=<>! ]|$)' requirements.txt > /tmp/req-ci.txt
           pip install -r /tmp/req-ci.txt
           pip install fastapi "uvicorn[standard]" structlog
       - name: Run backend tests (GPU/heavy-dep tests importorskip)
