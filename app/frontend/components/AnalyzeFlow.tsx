@@ -472,7 +472,7 @@ function buildMockReport(submission: DropzoneSubmission): CoachingReportType {
       reasoning_trace: [
         "Friction-ellipse check passed across all 10 mini-sectors; max load 0.92 mu * g.",
         "Bicycle-model tie between lateral G and steering angle within bounds across the lap.",
-        "COA-derived c_overlap flag (from your uploaded COA) routed through Stage 2; brake-throttle simultaneity cleared per parsed permission window.",
+        "COA-derived c_overlap flag routed through Stage 2; brake-throttle simultaneity cleared per the COA permission window. Illustrative demo: the live path parses your uploaded COA via Granite-Docling when the backend ships.",
         "Tuning delta of -10 pct primary-actuation modulation is within manufacturer envelope and does not introduce a forward-Euler kinematic violation in the projected next session.",
       ],
       // Wave-40 cascade #10 close-out + silent-failure-hunter H-1:
