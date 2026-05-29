@@ -221,7 +221,7 @@ Full architecture spec: [`docs/architecture-spec.md`](./docs/architecture-spec.m
 - No NIL violations. Sarah Reynolds is a fictional persona by design.
 - No git hooks. `.git/hooks/` stays defaults-only. Coordination is manual via PLAN.md edits per D-006.
 - Conditional phrasing on physics claims ("forecast envelope" not "guaranteed pace").
-- Every coaching claim cites a specific COA section and FIA Article via the provenance footer.
+- Every coaching claim cites a specific COA section under FIA Appendix L via the provenance footer.
 
 ---
 
@@ -231,19 +231,20 @@ Full architecture spec: [`docs/architecture-spec.md`](./docs/architecture-spec.m
 git clone https://github.com/StephenSook/apex.git
 cd apex
 
-# Backend
+# Backend (optional; the frontend runs against demo fixtures without it).
+# Full setup + ML deps (torch, cvxpy, granite-tsfm) in app/backend/README.md.
 cd app/backend
 python3 -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt   # Day 2 onwards
-uvicorn apex.main:app --reload --port 8000
+pip install numpy fastapi "uvicorn[standard]" structlog
+uvicorn apex.server:app --reload --port 8000
 
 # Frontend (new terminal)
 cd app/frontend
-npm install
-npm run dev   # http://localhost:3000
+pnpm install
+pnpm dev   # http://localhost:3000
 
 # Try the canned Sarah Reynolds demo via the live UI
-# Day 2: open http://localhost:3000/analyze, then drag the bundled fixtures:
+# Open http://localhost:3000/analyze, then drag the bundled fixtures:
 #   app/frontend/public/fixtures/sarah-lap-17.csv
 #   app/frontend/public/fixtures/sarah-coa.pdf
 # Fill the debrief + driver-id fields, click "Generate coaching report".
