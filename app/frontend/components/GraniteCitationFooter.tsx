@@ -89,7 +89,7 @@ function severityBadgeClass(severity: CitationLine["severity"]): string {
     case "info":
       return "border-racing-green text-racing-green";
     case "monitor":
-      return "border-amber text-amber";
+      return "border-amber text-amber-ink";
     case "critical":
       return "border-accent text-accent";
     default: {

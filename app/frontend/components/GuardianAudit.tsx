@@ -29,7 +29,7 @@ const VERDICT_BORDER: Record<GuardianAuditType["verdict"], string> = {
 
 const VERDICT_TONE: Record<GuardianAuditType["verdict"], string> = {
   approve: "text-racing-green",
-  flag: "text-amber",
+  flag: "text-amber-ink",
   reject: "text-accent",
 };
 
@@ -46,7 +46,7 @@ export default function GuardianAudit({ audit }: GuardianAuditProps) {
       </h3>
 
       {audit.verdict === "flag" && audit.flagged_concerns.length > 0 && (
-        <ConcernList title="Flagged concerns" items={audit.flagged_concerns} tone="text-amber" />
+        <ConcernList title="Flagged concerns" items={audit.flagged_concerns} tone="text-amber-ink" />
       )}
       {audit.verdict === "reject" && audit.blocked_recommendations.length > 0 && (
         <ConcernList

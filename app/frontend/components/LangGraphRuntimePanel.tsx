@@ -106,7 +106,7 @@ export default function LangGraphRuntimePanel() {
       </header>
 
       {state.status === "loading" && (
-        <p className="font-mono text-xs uppercase tracking-wider text-amber">
+        <p className="font-mono text-xs uppercase tracking-wider text-amber-ink">
           Loading orchestration trace...
         </p>
       )}
@@ -118,7 +118,7 @@ export default function LangGraphRuntimePanel() {
               className={`rounded-sm border px-3 py-1 font-mono text-[11px] uppercase tracking-wider ${
                 state.response.engine === "langgraph-v14-real"
                   ? "border-racing-green bg-paper text-racing-green"
-                  : "border-amber bg-paper text-amber"
+                  : "border-amber bg-paper text-amber-ink"
               }`}
             >
               Engine: {state.response.engine}
@@ -157,7 +157,7 @@ export default function LangGraphRuntimePanel() {
                     node.status === "completed"
                       ? "border-racing-green text-racing-green"
                       : node.status === "active"
-                        ? "border-amber text-amber"
+                        ? "border-amber text-amber-ink"
                         : node.status === "failed"
                           ? "border-accent text-accent"
                           : "border-rule text-muted"

@@ -245,7 +245,7 @@ function AdaptiveCommunity() {
               </p>
             </li>
             <li className="rounded-sm border-l-2 border-amber bg-paper-warm p-5">
-              <p className="font-mono text-[10px] uppercase tracking-wider text-amber">
+              <p className="font-mono text-[10px] uppercase tracking-wider text-amber-ink">
                 Community
               </p>
               <p className="mt-2 font-display text-xl leading-tight text-ink">
@@ -539,7 +539,7 @@ function Differentiators() {
             id="diff-title"
             className="font-display text-4xl leading-tight sm:text-5xl"
           >
-            Five claims. <em className="italic text-amber">Each independently verifiable.</em>
+            Five claims. <em className="italic text-amber-ink">Each independently verifiable.</em>
           </h2>
         </div>
 
@@ -593,7 +593,7 @@ function StackBadges() {
                     t.status === "WIRED"
                       ? "border-racing-green bg-paper text-racing-green"
                       : t.status === "INTEGRATION"
-                      ? "border-amber bg-paper text-amber"
+                      ? "border-amber bg-paper text-amber-ink"
                       : "border-rule bg-paper text-muted"
                   }`}
                   aria-label={`Status: ${t.status}`}

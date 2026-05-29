@@ -173,7 +173,7 @@ export default function AICopilotChat({ panelId = "ai-copilot-chat" }: AICopilot
             <span
               className={`rounded-sm border px-3 py-1 font-mono text-[10px] uppercase tracking-wider ${
                 routedModel === "granite-4-1-3b-instruct"
-                  ? "border-amber bg-paper text-amber"
+                  ? "border-amber bg-paper text-amber-ink"
                   : "border-racing-green bg-paper text-racing-green"
               }`}
               aria-label={`Routing scaffold preview: classifier would route to ${routedModelLabel(routedModel)} once Vinh M3 chat_router.py + Granite 4.1 3B Instruct OpenRouter access lands. Live routing is not active at HEAD.`}

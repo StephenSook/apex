@@ -336,7 +336,7 @@ function ConnectionIndicator({
           ? "Live (HTTP)"
           : "Live"
         : "Reconnecting";
-  const tone = mode === "simulated" ? "text-amber" : connected ? "text-racing-green" : "text-accent";
+  const tone = mode === "simulated" ? "text-amber-ink" : connected ? "text-racing-green" : "text-accent";
   return (
     <span className={`font-mono text-xs uppercase tracking-wider ${tone}`}>{label}</span>
   );
@@ -373,7 +373,7 @@ function classifyChannel(label: string, channels: TelemetryRow): ChannelTone {
 
 const TONE_CLASSNAME: Readonly<Record<ChannelTone, string>> = {
   neutral: "text-ink",
-  caution: "text-amber",
+  caution: "text-amber-ink",
   warning: "text-accent",
 };
 

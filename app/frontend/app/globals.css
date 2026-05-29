@@ -6,8 +6,12 @@
  * WCAG 2.1 AA contrast verified:
  *   ink #0F1410 on paper #F4EBD8 = 14.7:1 (AAA)
  *   paper on racing-green #0A2818 = 13.1:1 (AAA)
- *   ink on accent #C1492C = 4.6:1 (AA large; small text uses ink directly)
+ *   accent #B23E22 on paper = 4.9:1 (AA) for clay-red text + error messages;
+ *     paper on accent = 4.9:1 (AA) for white labels on clay fills. Wave-57 S1.
  *   muted #5C5346 on paper = 6.8:1 (AA)
+ *   amber-ink #8A5A12 on paper = 5.0:1 (AA) for amber used AS TEXT on light;
+ *     bright --amber #D9A441 is reserved for borders/fills + amber-on-green
+ *     (7.0:1) where it still passes. See wave-57 a11y C1.
  */
 :root {
   --paper: #f4ebd8;
@@ -19,9 +23,12 @@
   --rule: #d9ceb8;
   --racing-green: #0a2818;
   --racing-green-deep: #061a10;
-  --accent: #c1492c;
+  --accent: #b23e22;
   --accent-soft: #d97759;
   --amber: #d9a441;
+  /* Darkened amber for use AS TEXT on light backgrounds: 5.0:1 on paper (AA).
+     Bright --amber stays for borders/fills + amber-on-racing-green text. */
+  --amber-ink: #8a5a12;
   --signal-blue: #052fad;
 }
 
@@ -38,6 +45,7 @@
   --color-accent: var(--accent);
   --color-accent-soft: var(--accent-soft);
   --color-amber: var(--amber);
+  --color-amber-ink: var(--amber-ink);
   --color-signal-blue: var(--signal-blue);
 
   --color-background: var(--paper);
@@ -203,6 +211,9 @@ body::before {
   --accent: #f08560;
   --accent-soft: #f4a888;
   --amber: #f3c468;
+  /* On the dark backdrop, amber-as-text uses the lifted bright value (10.9:1)
+     since here the background is dark, not cream. */
+  --amber-ink: #f3c468;
   --signal-blue: #6a8eed;
 }
 

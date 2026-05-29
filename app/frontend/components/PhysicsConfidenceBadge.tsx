@@ -97,7 +97,7 @@ export default function PhysicsConfidenceBadge({ confidence }: PhysicsConfidence
   }
 
   const borderClass = inDistribution ? "border-racing-green" : "border-amber";
-  const toneClass = inDistribution ? "text-racing-green" : "text-amber";
+  const toneClass = inDistribution ? "text-racing-green" : "text-amber-ink";
   const distance = confidence.mahalanobis_distance.toFixed(2);
   const threshold = confidence.threshold_p95.toFixed(2);
   const statusLabel = inDistribution ? "in-distribution" : "out-of-distribution";

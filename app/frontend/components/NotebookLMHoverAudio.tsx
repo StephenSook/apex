@@ -89,7 +89,7 @@ export default function NotebookLMHoverAudio({ panelId, panelLabel }: NotebookLM
       )}
       {state.status === "loading" && (
         <p
-          className="font-mono text-[10px] uppercase tracking-wider text-amber"
+          className="font-mono text-[10px] uppercase tracking-wider text-amber-ink"
           aria-live="polite"
         >
           Loading audio...

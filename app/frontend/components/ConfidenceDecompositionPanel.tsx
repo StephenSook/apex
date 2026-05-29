@@ -29,7 +29,7 @@ type Tone = "high" | "medium" | "low";
 
 const TONE_CLASS: Record<Tone, { readonly border: string; readonly value: string }> = {
   high: { border: "border-racing-green", value: "text-racing-green" },
-  medium: { border: "border-amber", value: "text-amber" },
+  medium: { border: "border-amber", value: "text-amber-ink" },
   low: { border: "border-accent", value: "text-accent" },
 };
 
@@ -207,7 +207,7 @@ export default function ConfidenceDecompositionPanel({
                   Source: {d.source}
                 </p>
                 {d.note && (
-                  <p className="font-mono text-[10px] leading-relaxed text-amber">{d.note}</p>
+                  <p className="font-mono text-[10px] leading-relaxed text-amber-ink">{d.note}</p>
                 )}
               </div>
             );

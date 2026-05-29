@@ -164,7 +164,7 @@ export default function EdgeSummary() {
       {effectiveStatus === "offline" && (
         <p
           role="status"
-          className="rounded-sm border-2 border-amber bg-paper p-3 font-mono text-xs leading-relaxed text-amber"
+          className="rounded-sm border-2 border-amber bg-paper p-3 font-mono text-xs leading-relaxed text-amber-ink"
         >
           Server-authoritative reconnect pending. Edge results are advisory only per D-021; no
           mechanical recommendations are emitted offline. The local Newton friction-ellipse

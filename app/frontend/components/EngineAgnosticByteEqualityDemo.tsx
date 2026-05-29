@@ -38,7 +38,7 @@ function statusPill(status: "byte-identical" | "engine-line-diff-only" | "conten
       return {
         label: "ENGINE-LINE-DIFF-ONLY (D-050 PASS)",
         border: "border-amber",
-        text: "text-amber",
+        text: "text-amber-ink",
       };
     case "content-diff":
       return {

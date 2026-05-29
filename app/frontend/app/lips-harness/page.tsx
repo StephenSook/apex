@@ -104,7 +104,7 @@ export default async function LIPSHarnessPage() {
               className={`rounded-sm border px-3 py-1 font-mono text-[11px] uppercase tracking-wider ${
                 result.data.engine === "lips-v15-real"
                   ? "border-racing-green bg-paper text-racing-green"
-                  : "border-amber bg-paper text-amber"
+                  : "border-amber bg-paper text-amber-ink"
               }`}
             >
               Engine: {result.data.engine}

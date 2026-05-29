@@ -101,7 +101,7 @@ export default function TTMInBrowserPanel() {
       )}
 
       {state.status === "loading" && (
-        <p className="font-mono text-xs text-amber">
+        <p className="font-mono text-xs text-amber-ink">
           Loading Granite TimeSeries TTM r2.1 model…
         </p>
       )}
@@ -116,7 +116,7 @@ export default function TTMInBrowserPanel() {
               className={`rounded-sm border px-3 py-1 font-mono text-[11px] uppercase tracking-wider ${
                 state.result.runtime === "transformers-js"
                   ? "border-racing-green bg-paper text-racing-green"
-                  : "border-amber bg-paper text-amber"
+                  : "border-amber bg-paper text-amber-ink"
               }`}
             >
               Runtime: {state.result.runtime}

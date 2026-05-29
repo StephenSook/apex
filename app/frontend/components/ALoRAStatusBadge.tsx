@@ -157,7 +157,7 @@ export default function ALoRAStatusBadge({
       {status.status === "fallback" && (
         <p
           role="alert"
-          className="rounded-sm border-2 border-amber bg-paper p-3 font-mono text-xs leading-relaxed text-amber"
+          className="rounded-sm border-2 border-amber bg-paper p-3 font-mono text-xs leading-relaxed text-amber-ink"
         >
           Adapter hot-swap failed: {status.reason}. Routing to base Granite Instruct 4.1 8B
           per pre-mortem row 67 fallback path. Coaching report remains within the G8 15s

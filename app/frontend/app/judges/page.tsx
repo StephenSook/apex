@@ -279,7 +279,7 @@ export default function JudgesPage() {
                       status === "WIRED"
                         ? "border-racing-green bg-paper text-racing-green"
                         : status === "INTEGRATION"
-                        ? "border-amber bg-paper text-amber"
+                        ? "border-amber bg-paper text-amber-ink"
                         : "border-rule bg-paper text-muted"
                     }`}
                     aria-label={`Status: ${status}`}
@@ -926,7 +926,7 @@ function BadgeChip({ badge }: { badge: ResourceLink["badge"] }) {
     );
   }
   return (
-    <span className="rounded-sm border border-amber px-2 py-1 font-mono text-[10px] uppercase tracking-wider text-amber">
+    <span className="rounded-sm border border-amber px-2 py-1 font-mono text-[10px] uppercase tracking-wider text-amber-ink">
       Pending
     </span>
   );

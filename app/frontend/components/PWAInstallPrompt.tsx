@@ -142,7 +142,7 @@ export default function PWAInstallPrompt() {
         aria-label="Install APEX on iOS"
         className="flex flex-col gap-2 rounded-sm border-2 border-amber bg-paper-warm p-4"
       >
-        <p className="font-mono text-[10px] uppercase tracking-wider text-amber">
+        <p className="font-mono text-[10px] uppercase tracking-wider text-amber-ink">
           Install APEX on iPhone or iPad
         </p>
         <p className="text-sm leading-snug text-ink-soft">
