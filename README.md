@@ -45,6 +45,14 @@ APEX changes that.
 - **Status dashboard:** [https://apex-one-black.vercel.app/status](https://apex-one-black.vercel.app/status)
 - **Try fixture:** Sarah Reynolds (fictional persona), RAF veteran, left-leg amputee, Britcar Trophy 2026, #34 BMW M240i with MME Motorsport electronic hand-controls (per consent receipt 2026-05-22 from MME Motorsport d.o.o. logged in `docs/consent-log.md`), Donington Park GP, Lap 17
 
+### What is live right now (honest tiering)
+
+Everything on the deployed app is clickable today. The honesty tier (surfaced as a status pill on `/judges` and `/`) tells you which path is which:
+
+- **Wired end-to-end at HEAD.** Granite Instruct 4.1 8B coaching narration (via OpenRouter) and the Granite 4.0 Nano 350M in-browser WebGPU edge model. The interactive COA simultaneity-gate toggle and the engine-agnostic byte-equality projector demo run client-side in the browser.
+- **UI-complete, backend swap-point documented (INTEGRATION tier).** The ten Granite tools in §5 render their real product surfaces against illustrative fixtures, each behind a named `NEXT_PUBLIC_USE_REAL_BACKEND_*` flag with a swap-point file. The render path is identical across fixture and live, so wiring the backend changes the data source, not the UI.
+- **Honest fallbacks, never faked numbers.** The `/analyze` report is an illustrative report at HEAD (the live Granite analyze path is a documented backend swap), and the production-observability cockpit shows real Honeycomb spans when the backend is reachable and a clearly labelled wiring state when it is not. Nothing is presented as live that is not.
+
 ---
 
 <a id="the-ai-approach"></a>
