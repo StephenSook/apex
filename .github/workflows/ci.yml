@@ -54,10 +54,35 @@ jobs:
       - name: Next.js production build
         run: pnpm build
 
-  # Backend job intentionally omitted until Vinh scaffolds `app/backend/pyproject.toml`.
-  # `hashFiles` is not allowed in job-level `if:` (workflow-validator rejects it).
-  # When Vinh ships the backend, add a second job (no top-level `if:`) running
-  # ruff + pytest --cov=apex --cov-fail-under=70.
+  # Wave-62: the backend is complete (Stephen took ownership from Vinh), so the
+  # 192 backend tests now run in CI instead of only locally. This enforces the
+  # byte-equality serializer contract + physics V1 + server + contracts +
+  # instruct + guardian + pipelines on every push. The torch/cvxpy/cvxpylayers
+  # tests importorskip; llama-cpp-python / granite-tsfm / fastf1 / transformers /
+  # datasets / accelerate are excluded from the install (those tests skip
+  # cleanly) so CI stays fast + wheel-only with no from-source builds.
+  backend:
+    name: Backend (pytest, GPU-free)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: app/backend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install GPU-free deps
+        run: |
+          python -m pip install --upgrade pip
+          grep -vE '^(cvxpy|cvxpylayers|diffcp|llama_cpp_python|granite-tsfm|fastf1|transformers|datasets|accelerate)([=<>! ]|$)' requirements.txt > /tmp/req-ci.txt
+          pip install -r /tmp/req-ci.txt
+          pip install fastapi "uvicorn[standard]" structlog
+      - name: Run backend tests (GPU/heavy-dep tests importorskip)
+        run: python -m pytest tests/ -q
 
   # Wave-43 C2.4 + C2.5 Playwright fidelity job. Separate from the frontend
   # vitest job so a Playwright failure surfaces independently from vitest
