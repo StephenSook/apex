@@ -13,6 +13,8 @@ describe("FIABlockquoteChip wave-46 OVERRIDE-steal #3 component", () => {
       />,
     );
     expect(screen.getByText(/requires adaptive control technology/i)).toBeInTheDocument();
+    // Honesty guard: the chip must label itself a characterization, never a verbatim FIA quote.
+    expect(screen.getByText(/not a verbatim quote/i)).toBeInTheDocument();
     expect(screen.getByText(/Adaptive vehicle modifications/i)).toBeInTheDocument();
     // Wave-47 cascade-#53 fix: "FIA Appendix L" appears in BOTH the
     // attribution prop value + the always-rendered chip span; use
@@ -23,7 +25,7 @@ describe("FIABlockquoteChip wave-46 OVERRIDE-steal #3 component", () => {
     ).toBeInTheDocument();
     const verifyLink = screen.getByRole("link", { name: /Verify on FIA.com/i });
     expect(verifyLink).toBeInTheDocument();
-    expect(verifyLink).toHaveAttribute("href", "https://www.fia.com/regulation/category/123");
+    expect(verifyLink).toHaveAttribute("href", "https://www.fia.com/disability-accessibility");
     expect(verifyLink).toHaveAttribute("target", "_blank");
     expect(verifyLink).toHaveAttribute("rel", "noreferrer noopener");
   });
