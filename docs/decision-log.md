@@ -1543,3 +1543,21 @@ Wave-43 plan locked under no-time-pressure rule + galaxy-ambition (calendar date
 **Affected.** Wave-42 commits 0baa161 (B-1 close-out) + this D-040 entry. Wave-43 plan at `~/.claude/plans/all-right-i-want-rippling-moon.md`. Lane H2.4 cascade #12 + #13 memory-rule additions. Lane G2.1 canonical FIACoa shape (touches `app/shared/types.ts` + `fixtures/personas/sarah-reynolds-coa-stub.json`).
 
 ---
+
+## 2026-05-29 D-071: Wave-53 live production-observability cockpit on /judges (OTel to Honeycomb)
+
+**Decision.** Shipped a live, embedded production-observability surface on /judges driven by real OpenTelemetry telemetry from the deployed apex-backend, with deep-links into real Honeycomb trace waterfalls. Numbered D-071 to clear the inline D-041..D-070 references (this is the first structured heading entry since the file's D-040 backfill gap; the wave-49 sequence reached D-068).
+
+**What shipped (PR #1, rebase-merged to main, CI green on PR and main; 5 atomic commits f869944 + d67f7b2 + a910b77 + c813ca5 + f1c7c8b).**
+- Backend: `app/backend/apex/observability_metrics.py` thread-safe in-process aggregator; the OTel request middleware records each request with its real Honeycomb trace_id; new `GET /api/observability/summary`, an honest in-product mirror of the spans exported to Honeycomb over OTLP (cold start reports zeroes, never fabricated). 4 unit tests pass.
+- Frontend: `lib/observability.ts` (Honeycomb trace/dataset deep-link builders + honest fallback), `app/frontend/app/api/observability/summary/route.ts` (same-origin edge proxy, 3s timeout, awaiting-backend fallback so the panel never renders broken), `components/ProductionObservabilityPanel.tsx` (live auto-refresh cockpit: throughput, p50/p95/p99, status mix, per-route, recent traces deep-linked to Honeycomb), new `#observability` section + resource tile on /judges, Playwright assertion.
+
+**Architecture rationale.** Chose an own-backend live-metrics endpoint plus Honeycomb trace deep-links over the Honeycomb Query Data API, because the Query Data API is plan-gated, Honeycomb pages cannot be iframe-embedded (per Honeycomb docs), and non-team Honeycomb links require a login. The own endpoint is free-tier-safe, anonymous-viewable, and always works; the panel degrades to an honest "awaiting live backend" wiring state when the backend is unreachable, never fabricating metrics (per `feedback_conceptual_stack_vs_shipped_stack`).
+
+**Honeycomb coordinates (verified from docs share-trace).** Trace permalink format `https://ui.honeycomb.io/<team>/environments/<env>/datasets/<dataset>/trace?trace_id=...&trace_start_ts=...&trace_end_ts=...`; team `stephensookra-gettingstarted`, env `production`, dataset `apex-backend`.
+
+**Go-live (Stephen-action; panel degrades gracefully until then).** (1) Set Vercel env `NEXT_PUBLIC_VINH_BACKEND_BASE_URL=https://ssookra-apex-backend.hf.space`. (2) Redeploy the HF Space via `APEX_HF_TOKEN=... APEX_HF_SPACE=ssookra/apex-backend bash scripts/deploy-backend-hf-spaces.sh` so it serves `/api/observability/summary`. (3) Rotate the Honeycomb ingest key post-submission (it appeared in screenshots).
+
+**Affected.** New files above + `app/frontend/app/judges/page.tsx` (#observability section + resource tile) + `app/backend/apex/observability.py` + `app/backend/apex/server.py`. Housekeeping: removed untracked `app/frontend/app/judges/page 2.tsx` + cleaned Finder/iCloud `.git` junk refs (`main 3`, `main 2.lock`). New global + project memory rule `no-busywait-no-overorchestration` (read/catch-up tasks run synchronous; no busy-wait poll loops; trust harness notifications).
+
+---
