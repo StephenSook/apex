@@ -140,8 +140,20 @@ export default function RootLayout({
             <OneHandModeToggle />
           </div>
         </OneHandModeProvider>
-        <SpeedInsights />
-        <Analytics />
+        {/*
+          Wave-59: Vercel Analytics + Speed Insights are gated behind an env
+          flag. Their scripts 404 in the browser console until Web Analytics
+          is enabled on the Vercel project, which collects nothing and signals
+          nothing while erroring. Default off keeps the console clean for
+          judges. To turn analytics on: set NEXT_PUBLIC_ENABLE_ANALYTICS=1 AND
+          enable Web Analytics + Speed Insights in the Vercel dashboard.
+        */}
+        {process.env.NEXT_PUBLIC_ENABLE_ANALYTICS === "1" && (
+          <>
+            <SpeedInsights />
+            <Analytics />
+          </>
+        )}
       </body>
     </html>
   );
