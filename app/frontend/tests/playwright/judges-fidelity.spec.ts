@@ -32,6 +32,9 @@ test.describe("/judges fidelity", () => {
     await expect(page.getByText(/Race-engineer intrinsic adapter/i).first()).toBeVisible();
     await expect(page.getByText(/Offline DSPy prompt optimization/i).first()).toBeVisible();
     await expect(page.getByText(/Draft-and-accept latency speedup/i).first()).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: /Confidence, broken into the signals/i }),
+    ).toBeVisible();
     expect(consoleErrors).toEqual([]);
   });
 

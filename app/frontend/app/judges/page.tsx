@@ -17,6 +17,7 @@ import EngineAgnosticByteEqualityDemo from "../../components/EngineAgnosticByteE
 import FIABlockquoteChip from "../../components/FIABlockquoteChip";
 import NotebookLMHoverAudio from "../../components/NotebookLMHoverAudio";
 import RealtimeCOADiffPanel from "../../components/RealtimeCOADiffPanel";
+import ConfidenceDecompositionPanel from "../../components/ConfidenceDecompositionPanel";
 import SafetyAlignmentPanel from "../../components/SafetyAlignmentPanel";
 import JudgesGalaxyMovesShell from "../../components/JudgesGalaxyMovesShell";
 import JudgesEdgePlaneShell from "../../components/JudgesEdgePlaneShell";
@@ -37,8 +38,10 @@ import { CONVERGENCE_FIXTURES } from "../../lib/convergence-fixtures";
 import { EXTENDED_PHYSICS_FIXTURES } from "../../lib/extended-physics-fixtures";
 import { IBM_STACK_TUPLES } from "../../lib/ibm-stack";
 import {
+  DEMO_FORECAST,
   DEMO_PHYSICS_CONFIDENCE,
   DEMO_PHYSICS_CONFIDENCE_OOD,
+  DEMO_PROJECTION_TRACE,
   DEMO_TRI_AGENT_VERDICT,
   DEMO_TRI_AGENT_VERDICT_REJECT,
 } from "../../lib/mocks/judges-mocks";
@@ -454,6 +457,13 @@ export default function JudgesPage() {
       </section>
 
       <SafetyAlignmentPanel />
+
+      <ConfidenceDecompositionPanel
+        projectionTrace={DEMO_PROJECTION_TRACE}
+        guardianVerdict="approve"
+        forecast={DEMO_FORECAST}
+        physicsConfidence={DEMO_PHYSICS_CONFIDENCE}
+      />
 
       <section
         id="physics-tiers"
