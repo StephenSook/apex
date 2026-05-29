@@ -70,7 +70,6 @@ export default function COAGateToggle() {
   return (
     <section
       aria-labelledby="coa-gate-toggle-title"
-      aria-live="polite"
       className={`flex flex-col gap-4 rounded-sm border-2 ${statusBorder(state)} bg-paper p-5 transition-colors duration-300`}
     >
       <header>
@@ -122,7 +121,10 @@ export default function COAGateToggle() {
         className={`flex flex-col gap-2 rounded-sm border-l-2 transition-colors duration-300 ${
           state === "permitted" ? "border-racing-green" : "border-accent"
         } bg-paper p-3`}
-        role={state === "blocked" ? "alert" : undefined}
+        // Wave-57 a11y S2: scope the live region to just the verdict block so
+        // flipping the switch announces only the changed verdict, not the whole
+        // section. "status" = polite (feasible); "alert" = assertive (blocked).
+        role={state === "blocked" ? "alert" : "status"}
       >
         <p className="font-mono text-[10px] uppercase tracking-wider text-muted">
           {state === "permitted" ? "Feasible per COA" : "Violation under mutual-exclusion physics"}
