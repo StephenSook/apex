@@ -91,7 +91,10 @@ describe("CoachingReport", () => {
   it("renders the ForecastChart with role=img + aria-label", () => {
     render(<CoachingReport report={makeReport()} />);
     const chart = screen.getByRole("img", {
-      name: /Next-session forecast across 2 mini-sectors/i,
+      // Wave-57 a11y S4: the SVG aria-label now states the pace range too, so
+      // a screen-reader user gets the numbers, not just the count. Match the
+      // envelope label + the mini-sector count without coupling to exact means.
+      name: /Next-session forecast envelope:.*across 2 mini-sectors/i,
     });
     expect(chart).toBeInTheDocument();
   });
