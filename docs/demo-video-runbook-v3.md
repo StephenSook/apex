@@ -135,7 +135,7 @@ Color codes: `PrimaryColour=&H100F14` = ink `#0F1410`. `BackColour=&HF4EBD8` = c
 
 ## Pre-record rehearsal checklist (Stephen + Vinh, run T-3 → T-1 = Day 9 evening)
 
-1. Production Vercel deploy at `https://apex-one-black.vercel.app` returns 200 on all 19 routes including 6 audio MP3s
+1. Production Vercel deploy at `https://apex-one-black.vercel.app` responds on all 20 API routes (zero 5xx) and returns 200 on every public page; 6 audio MP3 assets present
 2. `/analyze` flow walks end-to-end with Sarah canned fixture without errors
 3. `/judges` page renders Q&A defense pack including PitWall counter-position card 6
 4. `/ibm-stack` page renders 14-tool grid with honesty-tier pills
