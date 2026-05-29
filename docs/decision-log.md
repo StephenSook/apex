@@ -1561,3 +1561,17 @@ Wave-43 plan locked under no-time-pressure rule + galaxy-ambition (calendar date
 **Affected.** New files above + `app/frontend/app/judges/page.tsx` (#observability section + resource tile) + `app/backend/apex/observability.py` + `app/backend/apex/server.py`. Housekeeping: removed untracked `app/frontend/app/judges/page 2.tsx` + cleaned Finder/iCloud `.git` junk refs (`main 3`, `main 2.lock`). New global + project memory rule `no-busywait-no-overorchestration` (read/catch-up tasks run synchronous; no busy-wait poll loops; trust harness notifications).
 
 ---
+
+## 2026-05-29 D-072: Team BRIT per-surface citation consent + brake-throttle simultaneity reframe (Al Locke engineering-director review)
+
+**Decision.** (1) Recorded Team BRIT per-surface citation consent (consent-log §2) and named Team BRIT corporately on the SafetyAlignmentPanel (`/judges`) + README acknowledgements. (2) Corrected the brake-throttle simultaneity framing across every judge-facing and shipped surface, removing the factually-wrong premise that "no able-bodied driver presses both at once."
+
+**Why.** Al Locke (Engineering Director, Team BRIT, the UK team that races disabled drivers and APEX's "Driver D" outreach target) reviewed APEX and flagged that simultaneous brake + throttle is a legitimate racing technique used by able-bodied drivers too (left-foot braking, trail-braking, turbo spool-up): "it's not a characteristic of hand controls, it's a characteristic of a racing driver. Hand controls should be expected to replicate this same function." The old framing rested on a false premise a knowledgeable judge would catch. The reframe is stronger: a naive validator that hard-codes `throttle * brake = 0` is wrong for ANY driver who uses the technique, and acute for adaptive drivers whose permitted envelope is defined by their COA-homologated hardware. APEX's COA-as-tensor-input novelty is preserved; the killshot is now bulletproof against the left-foot-braking objection and aligned with the domain expert who validated it.
+
+**Surfaces reframed.** README (3) + SUBMISSION + bemyapp payload (3) + `app/frontend/app/judges/page.tsx` (2) + `app/frontend/app/page.tsx` + `app/frontend/app/judge-tour/page.tsx` + `components/COAGateToggle.tsx` (2) + `components/TwinDriverNarrativePanel.tsx` (3) + `lib/rag-retrieve.ts` + `lib/what-if-replay.ts` (2 comments) + `app/api/judges/coa-diff/route.ts` + `app/api/openrouter-stream/route.ts` + `docs/q-and-a-flashcards.md` (2) + `docs/sarah-reynolds-persona.md` (2) + `paper/apex-neurips-workshop-2026.md` (4) + `docs/notebooklm-master-overview-runbook.md` + all 3 pitch scripts + 2 storyboards + the MME + Driver-D outreach drafts.
+
+**Follow-ups (Stephen-action).** (a) Regenerate the `master-overview.mp3` NotebookLM audio from the corrected sources (the shipped audio states the old false premise; embedded on `/judges`). (b) Take Al's offered driver-coach call before submission. (c) Verify the "FIA Appendix L simultaneity-envelope" quote on `/judges` (`judges/page.tsx`) is a real passage or mark it a paraphrase, per D-004 no-bluffing.
+
+**Affected.** Consent-log §2 + the surfaces above. Numbered D-072 (follows D-071).
+
+---

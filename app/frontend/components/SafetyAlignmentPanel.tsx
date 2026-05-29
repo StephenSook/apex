@@ -6,9 +6,9 @@
  * consent + the paper §3.8 Safety-alignment-with-adaptive-control-
  * engineering-practice section.
  *
- * Anonymized framing per Mod-tool attribution principle: cites
- * "adaptive-control engineering teams in motorsport" rather than naming
- * any operator. Surfaces 7 specific checks the standard's vocabulary
+ * Team BRIT granted per-surface citation permission 2026-05-29 (see
+ * docs/consent-log.md); the panel names Team BRIT corporately, not any
+ * individual. Surfaces 7 specific checks the standard's vocabulary
  * names + maps each to the APEX invariant that addresses it by
  * construction. Mounts on /judges + /methodology so judges reading the
  * coach surface see WHY the HARD-COMPLIANCE invariants exist.
@@ -74,9 +74,10 @@ export default function SafetyAlignmentPanel() {
           ISO 26262 vocabulary set, line by line.
         </h2>
         <p className="mt-3 max-w-3xl text-base leading-relaxed text-ink-soft">
-          Adaptive-control engineering teams in motorsport cite ISO 26262 in engineering
-          correspondence as the framework they apply when reviewing brake-by-wire interfaces,
-          CAN gateway controllers, and adaptive throttle / brake / clutch logic. APEX maps
+          Team BRIT, a professional team that races disabled drivers in UK endurance
+          championships, cites ISO 26262 in engineering correspondence as the framework it
+          applies when reviewing brake-by-wire interfaces, custom CAN gateway controllers, and
+          adaptive throttle / brake / clutch logic, and granted permission to be cited. APEX maps
           its coaching-surface invariants against the standard&rsquo;s vocabulary set so the
           things a functional-safety reviewer flags are the same things APEX&rsquo;s Guardian
           + scrubber + bounded retry-loop + AbortSignal threading address by construction. We
@@ -100,8 +101,8 @@ export default function SafetyAlignmentPanel() {
           ))}
         </dl>
         <p className="mt-6 font-mono text-xs italic text-muted">
-          Vocabulary set sourced from adaptive-racing-team engineering correspondence; mapping
-          to APEX invariants is the contribution.
+          Vocabulary set sourced from Team BRIT engineering correspondence, cited with
+          permission (2026-05-29); mapping to APEX invariants is the contribution.
         </p>
       </div>
     </section>

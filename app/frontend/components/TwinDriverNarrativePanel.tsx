@@ -31,17 +31,17 @@ const ADAPTIVE_EXCERPT: CoachingExcerpt = {
   coaching_action:
     "Trail-brake in two micro-presses (4mm + 6mm on the secondary lever) into turn 3 while feathering throttle on the primary control.",
   rationale:
-    "Your FIA Certificate of Adaptations approves the brake + throttle simultaneity per the adaptive-equipment provisions of FIA Appendix L per the published revision. The same physical input that would flag as a violation for an able-bodied driver is feasible because the COA hardware-spec section permits the dual-lever pattern. The projector reads coa_overlap_flag = 1 + accepts the input.",
+    "Your FIA Certificate of Adaptations approves the brake + throttle simultaneity per the adaptive-equipment provisions of FIA Appendix L per the published revision. The same physical input that a validator hard-coding mutual-exclusion would flag as a violation is feasible here because the COA hardware-spec section permits the dual-lever pattern. The projector reads coa_overlap_flag = 1 + accepts the input.",
 };
 
 const VETERAN_EXCERPT: CoachingExcerpt = {
-  persona: "Driver B · veteran archetype (able-bodied controls)",
+  persona: "Driver B · veteran archetype (standard controls, no adaptive COA)",
   coa_overlap_flag: 0,
   verdict: "violation",
   coaching_action:
     "Release brake fully before applying throttle into turn 3. Standard trail-brake technique with sequential pedal handoff.",
   rationale:
-    "Without an adaptive COA on file, the projector reads coa_overlap_flag = 0 + applies the able-bodied throttle * brake = 0 mutual-exclusion constraint. The same physical input pattern (residual brake pressure + rising throttle) flags as a brake-throttle simultaneity violation. Coaching prescribes the sequential pedal handoff the regulatory baseline requires.",
+    "Without an adaptive COA on file, the projector reads coa_overlap_flag = 0 + applies the default throttle * brake = 0 mutual-exclusion constraint. The same physical input pattern (residual brake pressure + rising throttle) flags as a brake-throttle simultaneity violation. Coaching prescribes the sequential pedal handoff the regulatory baseline requires.",
 };
 
 function VerdictPill({ verdict }: { readonly verdict: "feasible" | "violation" }) {

@@ -69,9 +69,10 @@ export default async function JudgeTourPage({ searchParams }: JudgeTourPageProps
             body={
               <>
                 <p>
-                  Track Titan and Trophi.ai assume able-bodied physics: throttle times brake equals zero, no
-                  exceptions. Drivers using FIA-approved electronic hand-controls press both simultaneously
-                  by design. Existing AI race engineers misdiagnose this as driver error or invalid telemetry.
+                  Track Titan and Trophi.ai hard-code throttle times brake equals zero. But simultaneous
+                  brake and throttle is a real racing technique, and drivers using FIA-approved electronic
+                  hand-controls run it by design, homologated in their Certificate of Adaptations. Existing
+                  AI race engineers misdiagnose it as driver error or invalid telemetry.
                 </p>
                 <p>
                   APEX is the race engineer for the drivers who do not have one. Built on IBM Granite. Free

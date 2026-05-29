@@ -117,7 +117,7 @@ Cm-devvit lesson: "Read each beat as a separate clip. Don't try to nail the whol
 
 (1:38 transition: Track Titan logo with red X overlays the right trace; APEX logo with green check appears next to it.)
 
-**Vinh.** "Standard tools assume able-bodied physics. They encode throttle times brake equals zero. Sarah's electronic hand-control system has approved hardware that permits simultaneous brake and throttle inputs mid-corner. Her COA permits it."
+**Vinh.** "Standard tools hard-code throttle times brake equals zero. But that is a real racing technique, left-foot braking, trail-braking. Sarah's hand controls are homologated to do it, and her Certificate of Adaptations records it."
 
 (1:46 transition: zoom into hardware-spec text from Section 3(c) of synthetic COA. Highlight dual-stage trigger description. Cut back to telemetry trace with APEX permitted-region shading.)
 
