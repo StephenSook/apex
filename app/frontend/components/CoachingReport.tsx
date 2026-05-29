@@ -124,8 +124,9 @@ export default function CoachingReport({ report }: CoachingReportProps) {
           <p className="max-w-2xl text-base leading-relaxed text-ink-soft">
             Generated for{" "}
             <span className="font-mono text-sm text-ink">{report.driver_id}</span>.
-            Sixty seconds end to end on Granite. Every recommendation cites the
-            specific FIA Appendix L Article and COA section that authorises it.
+            Illustrative report at HEAD; the live Granite analyze path is a
+            documented backend swap-point. Every recommendation cites the FIA
+            Appendix L provision and COA section that authorises it.
           </p>
           <ReadingLevelToggle level={readingLevel} onChange={setReadingLevel} />
         </header>
@@ -467,7 +468,7 @@ function ProvenanceFooterBlock({
     ["Granite TTM", provenance.model_versions.granite_ttm],
     ["Granite 4.1 8B Instruct", provenance.model_versions.granite_instruct],
     ["Granite Guardian", provenance.model_versions.granite_guardian],
-    ["Commit", provenance.commit_sha.slice(0, 10)],
+    ["Commit", /^0+$/.test(provenance.commit_sha) ? "demo fixture (no build sha)" : provenance.commit_sha.slice(0, 10)],
     ["Generated", provenance.generated_at_iso],
   ];
 

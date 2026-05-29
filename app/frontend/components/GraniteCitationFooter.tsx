@@ -37,7 +37,7 @@
  * accessible without ARIA work).
  */
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 
 import { usePrefersReducedMotion } from "../lib/use-prefers-reduced-motion";
 import type { CoachingReport } from "../../shared/types";
@@ -190,9 +190,12 @@ export default function GraniteCitationFooter(_props: GraniteCitationFooterProps
   // implicitly via its placement inside CoachingReport; the driver-id
   // anchor was redundant. _props prefix per @typescript-eslint convention
   // since the prop is intentionally unused after the fix-forward.
+  // Wave-60: useId so two always-mounted instances (AnalyzeFlow keeps all
+  // tab panes mounted) do not emit a duplicate DOM id / aria-labelledby.
+  const titleId = useId();
   return (
     <section
-      aria-labelledby="granite-citation-footer-title"
+      aria-labelledby={titleId}
       className="mt-8 rounded-sm border border-rule bg-paper p-5"
     >
       <header className="pb-3">
@@ -200,15 +203,17 @@ export default function GraniteCitationFooter(_props: GraniteCitationFooterProps
           Granite citation chain · wave-42 G.3
         </p>
         <h3
-          id="granite-citation-footer-title"
+          id={titleId}
           className="font-display text-xl tracking-tight text-ink"
         >
           Sources behind this coaching report.
         </h3>
         <p className="pt-1 text-xs leading-relaxed text-ink-soft">
-          Every coaching recommendation above traces back to a Granite
-          Embedding R2 retrieved passage. Audit the chain from claim to
-          source via the citation list below.
+          Every coaching recommendation above traces back to a documented
+          source passage in the APEX corpus (architecture-spec, decision-log,
+          methodology, paper). These references are curated; Granite Embedding
+          R2 retrieval is the INTEGRATION-tier path that selects them live when
+          the backend ships. Audit the chain from claim to source below.
         </p>
       </header>
       <ul className="flex flex-col gap-3">

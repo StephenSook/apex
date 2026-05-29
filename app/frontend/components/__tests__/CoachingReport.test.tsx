@@ -85,7 +85,9 @@ describe("CoachingReport", () => {
     expect(screen.getByText("Granite TTM")).toBeInTheDocument();
     expect(screen.getByText("Granite 4.1 8B Instruct")).toBeInTheDocument();
     expect(screen.getByText("Granite Guardian")).toBeInTheDocument();
-    expect(screen.getByText("0000000000")).toBeInTheDocument();
+    // Wave-60 honesty: the all-zeros commit_sha sentinel renders as an honest
+    // "demo fixture" label, not a fake-looking "0000000000" commit hash.
+    expect(screen.getByText("demo fixture (no build sha)")).toBeInTheDocument();
   });
 
   it("renders the ForecastChart with role=img + aria-label", () => {
