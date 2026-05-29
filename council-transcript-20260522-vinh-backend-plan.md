@@ -1,3 +1,5 @@
+> **Editorial note (added 2026-05-29).** This is a Day-3 (2026-05-22) pre-code adversarial review: an LLM-council pressure-test that deliberately posed the hardest risk questions BEFORE backend work began. The framing below ("owner has not started", "will it ship") is the review prompt, not a status report. It is preserved as engineering-process provenance and cited in `paper/apex-neurips-workshop-2026.md`, `docs/decision-log.md`, and `docs/vinh-backend-plan.md`. The flagged risks were subsequently resolved: the backend shipped with 192 passing tests and the D-027 Stage C gradient-flow gate PASSED on Day 3. Read this as documented rigor, not current status.
+
 # LLM Council Transcript — Vinh Backend Plan Pressure Test
 
 **Date:** 2026-05-22
