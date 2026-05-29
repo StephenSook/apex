@@ -47,7 +47,7 @@ https://github.com/StephenSook/apex
 ### The Issue (3 paragraphs, ~140 words; depth-matched to NeuroPit's panel)
 
 ```
-A professional race engineer costs £400 to £500 per day. Every Formula 1 driver has one. Most adaptive racers, veteran motorsport rehabilitation programme drivers, and grassroots competitors do not. The FIA lifted its single-seater ban on disabled drivers in December 2017. The regulatory barrier dropped. **The economic barrier stayed.**
+A professional race engineer costs several hundred pounds per day (industry estimate). Every Formula 1 driver has one. Most adaptive racers, veteran motorsport rehabilitation programme drivers, and grassroots competitors do not. The FIA lifted its single-seater ban on disabled drivers in December 2017. The regulatory barrier dropped. **The economic barrier stayed.**
 
 Existing AI race-engineer tools hard-code `throttle * brake = 0`. But simultaneous brake and throttle is a real racing technique: able-bodied drivers do it when they left-foot-brake or trail-brake, and adaptive drivers running hand-control systems do it within the envelope their FIA Certificate of Adaptations homologates. **Tools that assume mutual exclusion read the technique as driver error and prescribe corrections the driver should not execute.**
 

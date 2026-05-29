@@ -16,7 +16,7 @@ Voice A: "You have seen the three-layer architecture, the COA-parameterized gate
 
 Voice B: "What is the elevator pitch in one sentence?"
 
-Voice A: "The race engineer for the drivers who do not have one. Adaptive racers, veteran-team drivers, grassroots competitors. APEX puts the same IBM Granite stack that ships to Scuderia Ferrari's fan app in the hands of the drivers who need a race engineer most."
+Voice A: "The race engineer for the drivers who do not have one. Adaptive racers, veteran-team drivers, grassroots competitors. APEX puts IBM Granite, the same platform that ships to Scuderia Ferrari's fan app in the hands of the drivers who need a race engineer most."
 
 Voice B: "What is the demo flow if I have only ninety seconds?"
 
