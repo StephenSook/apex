@@ -59,7 +59,7 @@ Parses the driver's FIA Certificate of Adaptations PDF into structured JSON. Pre
 
 **1a-bis. Docling library (`app/backend/apex/intake/docling_conv.py`)**
 
-Open-source IBM Docling conversion layer (`docling` PyPI package), distinct from the Granite-Docling 258M vision model used in 1a. Wraps PDF + table conversion utilities, OCR fallbacks, and the table-extraction routines that Granite-Docling's vision pass hands off to. Counted as a distinct entry in the fifteen-tool IBM Granite stack at wave-46 (twelve through wave-30 D-016 baseline + wave-45 D-054; wave-30 added Granite Embedding R2 + IBM TSPulse + Granite FlowState + Granite 4.0 Nano on the wave-22 8-tool baseline; wave-46 D-058 added Granite 4.1 3B Instruct fast-path routing + Granite Speech 4.1 2B-Plus ASR + Mellea IVR loop).
+Open-source IBM Docling conversion layer (`docling` PyPI package), distinct from the Granite-Docling 258M vision model used in 1a. Wraps PDF + table conversion utilities, OCR fallbacks, and the table-extraction routines that Granite-Docling's vision pass hands off to. Counted as a distinct entry in the 14-tool IBM Granite stack (15 at the wave-46 D-058 peak, minus the IBM Bob retirement 2026-05-26) (twelve through wave-30 D-016 baseline + wave-45 D-054; wave-30 added Granite Embedding R2 + IBM TSPulse + Granite FlowState + Granite 4.0 Nano on the wave-22 8-tool baseline; wave-46 D-058 added Granite 4.1 3B Instruct fast-path routing + Granite Speech 4.1 2B-Plus ASR + Mellea IVR loop).
 
 - Role: post-process Granite-Docling raw output into the structured JSON schema; handle non-vision-driven sections (text-only Appendix L preambles, PDF metadata).
 - Output: cleaned `FIACoa` shape (see `app/shared/types.ts`).
