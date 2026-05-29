@@ -14,6 +14,7 @@ Exposes:
   - GET  /api/judges/coa-diff     (wave-49 V14 paired COA verdict diff)
   - GET  /api/tire-degradation    (wave-49 Phase 7.2 wear extrapolation)
   - POST /api/critics/verdict     (wave-49 D-018 tri-agent Mellea IVR critic)
+  - GET  /api/observability/summary (wave-53 live OTel telemetry cockpit)
   - GET  /healthz                 (container readiness probe)
 
 Deploy target: any Docker host (Modal / Fly.io / Vercel functions /
@@ -32,12 +33,14 @@ import json
 import os
 import shutil
 import tempfile
+import time
 from pathlib import Path
 from typing import Any, Final
 
 from fastapi import FastAPI, File, HTTPException, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 
+from apex import observability_metrics
 from apex.critics import run_tri_agent_critics
 from apex.instruct.narrator import Narrator
 from apex.instruct.openrouter_generator import build_openrouter_generator
@@ -144,6 +147,30 @@ app.add_middleware(
 # not "1"; spans export to console (or OTLP collector when
 # OTEL_EXPORTER_OTLP_ENDPOINT is set).
 _tracer = setup_observability(app)
+
+
+# Live-metrics fallback for the /judges observability cockpit. When OTel is
+# active (production HF Space), apex/observability.py's span middleware
+# records each request WITH its Honeycomb trace_id. When OTel is off
+# (CI/local/dev), this lightweight middleware still feeds the live panel so
+# `GET /api/observability/summary` is never empty in development. Gated on
+# `_tracer is None` to avoid double-counting when the OTel middleware runs.
+if _tracer is None:
+
+    @app.middleware("http")
+    async def _apex_metrics_fallback_middleware(request: Request, call_next):
+        path = request.url.path
+        if path in {"/healthz", "/favicon.ico", "/api/observability/summary"}:
+            return await call_next(request)
+        started = time.perf_counter()
+        response = await call_next(request)
+        observability_metrics.record_request(
+            route=path,
+            method=request.method,
+            status=response.status_code,
+            duration_ms=(time.perf_counter() - started) * 1000.0,
+        )
+        return response
 
 
 @app.get("/healthz", response_model=HealthzResp)
@@ -648,6 +675,41 @@ async def post_critics_verdict(request: Request) -> dict[str, Any]:
             detail="payload must contain non-empty string 'report_summary'",
         )
     return run_tri_agent_critics(report_summary)
+
+
+# ---- GET /api/observability/summary -----------------------------------
+
+@app.get("/api/observability/summary")
+def get_observability_summary() -> dict[str, Any]:
+    """Live in-process request telemetry for the /judges observability cockpit.
+
+    Honest in-product mirror of the same spans this service exports to
+    Honeycomb over OTLP (see apex/observability.py). Every number is REAL
+    traffic served since process boot; a cold start reports zeroes, never
+    fabricated values. Each recent request carries its Honeycomb trace_id so
+    the frontend can deep-link into the real trace waterfall.
+    """
+    otel_enabled = os.environ.get("APEX_OTEL_ENABLED", "").strip().lower() in {
+        "1",
+        "true",
+        "yes",
+    }
+    otlp_endpoint = os.environ.get("OTEL_EXPORTER_OTLP_ENDPOINT", "").strip()
+    otlp_active = bool(otel_enabled and otlp_endpoint)
+    if otlp_active:
+        exporter = "otlp"
+    elif otel_enabled:
+        exporter = "console"
+    else:
+        exporter = "none"
+    return {
+        "service_name": os.environ.get("OTEL_SERVICE_NAME", "apex-backend"),
+        "otel_enabled": otel_enabled,
+        "otlp_active": otlp_active,
+        "exporter": exporter,
+        "captured_at": time.time(),
+        **observability_metrics.snapshot(),
+    }
 
 
 __all__ = ["app"]
