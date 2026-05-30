@@ -16,6 +16,10 @@
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+// Two sequential 20s-timeout pings can run ~40s against a cold HF Space; raise
+// the function ceiling above the platform default so a cold-start warm-up is
+// not truncated mid-ping.
+export const maxDuration = 60;
 
 const DEFAULT_BACKEND = "https://ssookra-apex-backend.hf.space";
 const PING_TIMEOUT_MS = 20_000;
