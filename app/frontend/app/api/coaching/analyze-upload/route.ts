@@ -54,17 +54,23 @@ export async function POST(request: Request): Promise<Response> {
     return jsonResponse({ ok: false, source: "bad-request" }, "bad-request");
   }
 
+  // Duck-type file-like entries instead of `instanceof File`: under the jsdom
+  // test environment the File/Blob globals differ from undici's parsed
+  // FormData entries, so instanceof is unreliable across that boundary. A
+  // file entry exposes arrayBuffer(); a string field does not.
+  const isFileLike = (v: unknown): v is File =>
+    typeof v === "object" && v !== null && typeof (v as Blob).arrayBuffer === "function";
   const telemetry = form.get("telemetry");
   const coa = form.get("coa");
   const debrief = form.get("debrief");
-  if (!(telemetry instanceof File) || !(coa instanceof File)) {
+  if (!isFileLike(telemetry) || !isFileLike(coa)) {
     return jsonResponse({ ok: false, source: "bad-request" }, "bad-request");
   }
 
   const forward = new FormData();
-  forward.append("telemetry", telemetry, telemetry.name);
-  forward.append("coa", coa, coa.name);
-  if (debrief instanceof File) forward.append("debrief", debrief, debrief.name);
+  forward.append("telemetry", telemetry, telemetry.name || "telemetry.csv");
+  forward.append("coa", coa, coa.name || "coa");
+  if (isFileLike(debrief)) forward.append("debrief", debrief, debrief.name || "debrief.md");
 
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), TIMEOUT_MS);
