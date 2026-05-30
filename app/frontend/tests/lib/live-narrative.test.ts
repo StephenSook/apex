@@ -128,6 +128,24 @@ describe("applyLiveNarrative wave-64 merge helper", () => {
     expect(result.corners[1].recommendation).toBe("FIXTURE expert prose for sector 2.");
   });
 
+  it("labels 'fixture' when ok:true but every corner's live prose is empty", async () => {
+    stubFetch(() =>
+      jsonResponse({
+        ok: true,
+        source: "granite-live",
+        corners: [
+          { name: "Sector 1 corner", recommendation: "   ", recommendation_beginner: "", reasoning_chain: [] },
+          { name: "Sector 2 corner", recommendation: "", recommendation_beginner: "", reasoning_chain: [] },
+        ],
+        summary: "s",
+      }),
+    );
+    const result = await applyLiveNarrative(baseReport(), "d");
+    // No corner received live prose, so this is a fixture, not live output.
+    expect(result.narrative_source).toBe("fixture");
+    expect(result.corners[0].recommendation).toBe("FIXTURE expert prose for sector 1.");
+  });
+
   it("degrades to fixture when fetch rejects", async () => {
     stubFetch(() => Promise.reject(new Error("network down")));
     const result = await applyLiveNarrative(baseReport(), "d");
