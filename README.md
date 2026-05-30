@@ -9,8 +9,15 @@
 [![Built on IBM Granite](https://img.shields.io/badge/Built%20on-IBM%20Granite-052FAD.svg)](https://www.ibm.com/granite)
 [![Vercel](https://img.shields.io/badge/Live-Vercel%20Production-0A2818.svg)](https://apex-one-black.vercel.app)
 [![IBM SkillsBuild](https://img.shields.io/badge/IBM%20SkillsBuild-May%202026%20Challenge-052FAD.svg)](https://ibmskillsbuildchallenge-hub.bemyapp.com/)
+[![CI](https://github.com/StephenSook/apex/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/StephenSook/apex/actions/workflows/ci.yml)
 
 Built for the **IBM SkillsBuild AI Builders Challenge, May 2026** (theme: "AI Beyond the Finish Line").
+
+**The one-liner.** APEX reads a driver's telemetry, their FIA Certificate of Adaptations, and a written debrief, then returns a corner-by-corner coaching report. It is the first AI race-engineer workflow we found that treats the FIA Certificate of Adaptations as a binding safety input, so it can coach adaptive racers whose hand controls do things that able-bodied-tuned tools flag as errors.
+
+**At a glance.** 14 IBM Granite tools (2 wired, 10 integrated, 2 accelerators) · 192 backend tests in CI · 12 public pages and 20 API routes live · WCAG 2.1 AA · Apache 2.0, public from day one.
+
+**For judges, start here.** [Live app](https://apex-one-black.vercel.app) · [Judges' tour](https://apex-one-black.vercel.app/judges) · [Status dashboard](https://apex-one-black.vercel.app/status) · [What is live right now](#what-is-live-right-now-honest-tiering) · [The AI approach](#the-ai-approach)
 
 ---
 
@@ -22,7 +29,14 @@ Per the BeMyApp pinned submission rubric, every project must clearly answer thre
 - **The AI approach.** A frozen Granite TimeSeries TTM forecaster wrapped in a two-stage validator (differentiable convex QP for friction-ellipse + forward-Euler + jerk-bound constraints, plus a post-projection feasibility filter for the nonconvex bicycle-model coupling and COA-parameterized brake-throttle simultaneity gate) and audited by Granite Guardian. The COA-parameterized simultaneity gate is, to the best of our literature review through 2026-Q2, the first public AI race-engineer workflow we found that reads FIA Certificate of Adaptations data as a binding regulatory input; if a prior workflow is identified, the claim narrows accordingly (full scoping in paper §5.3). See [The AI approach](#the-ai-approach).
 - **Why it matters in racing.** The FIA lifted its single-seater ban on disabled drivers in December 2017, but the regulatory barrier was replaced by an economic one. Adaptive racing is a real audience that current AI race-engineer tools systematically misdiagnose because they hard-code a brake-throttle mutual-exclusion that the driver's FIA Certificate of Adaptations actually permits. See [Why it matters in racing](#why-it-matters-in-racing).
 
-**Judging-rubric self-assessment.** Per the 4-axis BeMyApp rubric reaffirmed on the May Challenge Discord on 2026-05-27 (Technical Execution + Innovation + Challenge Fit + Implementation & Feasibility), APEX maps as follows: Technical Execution covered by 14 IBM Granite tools tracked at `app/frontend/lib/ibm-stack.ts` + 192 backend tests + Vercel production deploy + Apache 2.0 public from inception. Innovation covered by the COA-parameterized simultaneity gate killshot + frozen-TSFM-plus-differentiable-physics-projection composition + byte-equality serializer regression contract. Challenge Fit covered by the adaptive-racer + veteran-team-driver + grassroots-competitor tri-persona ladder anchored against Mission 44 + Team BRIT engineering-director review and per-surface citation consent + MME Motorsport per-surface consent. Implementation + Feasibility covered by all 20 production API routes responding (zero 5xx) and every public page returning 200 + APEX-Bench v0.1.0 LIPS evaluation harness (canned scaffold at `/lips-harness`; live eval numbers at camera-ready) + named swap-points for every honesty-tier INTEGRATION tool + live production observability (an OpenTelemetry span per backend request exported to Honeycomb, mirrored in an embedded live telemetry panel on `/judges` with deep-links into the real trace waterfalls).
+**Judging-rubric self-assessment.** Per the 4-axis BeMyApp rubric reaffirmed on the May Challenge Discord on 2026-05-27:
+
+| Rubric axis | How APEX covers it |
+|---|---|
+| **Technical Execution** | 14 IBM Granite tools with per-tool honesty tiers (tracked at `app/frontend/lib/ibm-stack.ts`); 192 backend tests running in CI plus frontend tsc, lint, vitest, build, and Playwright in CI; Vercel production deploy; Apache 2.0, public from inception. |
+| **Innovation** | The COA-parameterized brake-throttle simultaneity gate (the killshot); a frozen-TSFM-plus-differentiable-physics-projection composition; a byte-equality serializer regression contract enforced by tests. |
+| **Challenge Fit** | An adaptive-racer, veteran-team-driver, and grassroots-competitor tri-persona ladder, grounded against Mission 44 and a Team BRIT engineering-director review, with per-surface citation consent and MME Motorsport per-surface consent. |
+| **Implementation & Feasibility** | All 20 production API routes respond (zero 5xx) and every public page returns 200; a named backend swap-point for every INTEGRATION-tier tool; APEX-Bench v0.1.0 LIPS harness (canned scaffold at `/lips-harness`, live numbers at camera-ready); live production observability (an OpenTelemetry span per backend request to Honeycomb, mirrored on `/judges`). |
 
 ---
 
@@ -39,7 +53,7 @@ APEX changes that.
 ## Live demo
 
 - **App:** [https://apex-one-black.vercel.app](https://apex-one-black.vercel.app) (Vercel production deploy)
-- **Video:** *(YouTube unlisted URL pending Day 10 record per `deliverables/demo-video-script-3min.md`)*
+- **Video:** *(3-minute walkthrough; public link added at submission)*
 - **Colab (zero install, browser-side):** `deliverables/apex-demo.ipynb`
 - **Judges' tour:** [https://apex-one-black.vercel.app/judges](https://apex-one-black.vercel.app/judges)
 - **Status dashboard:** [https://apex-one-black.vercel.app/status](https://apex-one-black.vercel.app/status)
@@ -273,3 +287,9 @@ Thanks to Team BRIT, a professional team that races disabled drivers in UK endur
 ## License
 
 Apache 2.0. See [LICENSE](./LICENSE).
+
+---
+
+## Contributing
+
+Contributions welcome under Apache 2.0. See [CONTRIBUTING.md](./CONTRIBUTING.md) and our [Code of Conduct](./CODE_OF_CONDUCT.md).
