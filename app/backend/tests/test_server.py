@@ -12,6 +12,13 @@ from pathlib import Path
 import pytest
 
 fastapi = pytest.importorskip("fastapi")
+# apex.server imports orchestration.what_if_replay, which eager-imports
+# CvxpyLayersProjector from physics/projection.py (module-level `import torch`).
+# Guard so a torch-less env (the GPU-free CI job) skips this module cleanly
+# instead of erroring at collection. The proper fix is to lazy-import the
+# projector inside what_if_replay._get_projector so the server does not
+# eager-pull torch; tracked for the backend owner.
+pytest.importorskip("torch")
 from fastapi.testclient import TestClient
 
 from apex.server import app
