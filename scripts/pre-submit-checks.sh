@@ -85,12 +85,12 @@ soft_or_fail() { if (( SOFT_MODE )); then warn "$1" "$2"; else fail "$1" "$2"; f
 final_or_warn() { if (( FINAL_MODE )); then fail "$1" "$2"; else warn "$1" "$2"; fi; }
 
 # Build the prose-sweep path list dynamically; skip paths that don't exist yet
-# (paper/, deliverables/, bob-sessions/ are Day-9+ artifacts). Verified existing
-# paths only, so grep does not silently swallow "No such file" warnings.
+# (paper/, deliverables/ are Day-9+ artifacts). Verified existing paths only, so
+# grep does not silently swallow "No such file" warnings.
 ALL_PROSE_PATHS=(
   README.md PLAN.md CLAUDE.md SUBMISSION.md STATUS_DAY1.md STATUS_DAY2.md STATUS_TEMPLATE.md
   docs/ app/frontend/app/ app/frontend/components/
-  paper/ deliverables/ bob-sessions/
+  paper/ deliverables/
 )
 PROSE_PATHS=()
 for p in "${ALL_PROSE_PATHS[@]}"; do
