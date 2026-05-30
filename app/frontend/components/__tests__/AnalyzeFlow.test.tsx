@@ -236,4 +236,60 @@ describe("AnalyzeFlow integration", () => {
       screen.getByText(/Live Granite coaching for sector one, grounded in your debrief/i),
     ).toBeInTheDocument();
   });
+
+  // Wave-69 live-backend canonical demo: clicking "Run the canonical demo"
+  // calls /api/coaching/analyze-demo; when it returns a backend-live report,
+  // it renders with the backend-live provenance label.
+  it("renders the backend-live report + label when the canonical demo route returns one", async () => {
+    vi.stubGlobal(
+      "fetch",
+      fetchReturning({
+        ok: true,
+        source: "backend-live",
+        report: {
+          driver_id: "sarah-reynolds-britcar-2026",
+          corners: [
+            {
+              name: "Turn 1 Hairpin",
+              sector: 1,
+              current_delta_s: 0.248,
+              recommendation: "Backend-computed trail-brake recommendation for Turn 1.",
+              citations: [{ fia_article: "Appendix L", coa_section: "coa_sec_hand_controls" }],
+            },
+          ],
+          tuning_delta: {
+            parameter: "brake_bias",
+            current: 58,
+            recommended: 58,
+            unit: "%",
+            citation: { fia_article: "Appendix L", coa_section: "coa_sec_hand_controls" },
+          },
+          forecast: [{ sector_idx: 0, mean: 57.2, low: 54.2, high: 58.0 }],
+          audit: { verdict: "flag", reasoning_trace: ["t"], flagged_concerns: ["c"], audit_id: "a1" },
+          provenance: {
+            model_versions: {
+              granite_docling: "ibm-granite/granite-docling-258M",
+              granite_vision: "ibm-granite/granite-vision-3.2-2b",
+              granite_ttm: "ibm-granite/granite-timeseries-ttm-r2",
+              granite_instruct: "ibm-granite/granite-4.0-8b-instruct",
+              granite_guardian: "ibm-granite/granite-guardian-4.1",
+            },
+            commit_sha: "container",
+            generated_at_iso: "2026-05-30T19:10:32+00:00",
+          },
+          narrative_source: "backend-live",
+        },
+      }),
+    );
+
+    const user = userEvent.setup();
+    render(<AnalyzeFlow />);
+    await user.click(screen.getByRole("button", { name: /Run the canonical demo \(live backend\)/i }));
+
+    await screen.findByRole("heading", { name: /Corner-by-corner coaching/i }, { timeout: 2000 });
+    expect(await screen.findByText(/computed live by the deployed APEX backend/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Backend-computed trail-brake recommendation for Turn 1/i),
+    ).toBeInTheDocument();
+  });
 });

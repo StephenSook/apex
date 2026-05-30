@@ -472,8 +472,16 @@ export interface CoachingReport {
    * fixture-sourced citations enforce this). Optional for backwards
    * compat: fixtures + decoders that omit it render as before (the
    * consumer treats `undefined` as "fixture").
+   *
+   * Wave-69 adds "backend-live": the ENTIRE report (numbers, forecast,
+   * tuning, Guardian audit, AND coaching prose) was computed live by the
+   * deployed APEX FastAPI backend's LangGraph pipeline (real physics
+   * projection + Granite Guardian audit + Granite coaching) on the
+   * canonical telemetry, decoded at the wire boundary. This is the only
+   * source where the numbers themselves are live-computed rather than
+   * fixture-sourced.
    */
-  readonly narrative_source?: "granite-live" | "fixture";
+  readonly narrative_source?: "granite-live" | "fixture" | "backend-live";
 }
 
 // ---------------------------------------------------------------------------

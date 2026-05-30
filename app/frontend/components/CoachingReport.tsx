@@ -124,7 +124,17 @@ export default function CoachingReport({ report }: CoachingReportProps) {
           <p className="max-w-2xl text-base leading-relaxed text-ink-soft">
             Generated for{" "}
             <span className="font-mono text-sm text-ink">{report.driver_id}</span>.
-            {report.narrative_source === "granite-live" ? (
+            {report.narrative_source === "backend-live" ? (
+              <>
+                {" "}
+                This entire report was computed live by the deployed APEX backend
+                on the canonical telemetry: real physics projection, Granite
+                Guardian audit, and Granite coaching. The deltas, forecast
+                envelope, and tuning numbers are live-computed, not fixtures, and
+                every recommendation cites the FIA Appendix L provision and COA
+                section that authorises it.
+              </>
+            ) : report.narrative_source === "granite-live" ? (
               <>
                 {" "}
                 The corner-by-corner coaching below was written live by Granite
