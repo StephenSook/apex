@@ -521,7 +521,7 @@ function Differentiators() {
       lead:
         "Fourteen IBM Granite tools across a per-tool honesty ladder.",
       body:
-        "Two WIRED at HEAD, ten at INTEGRATION with canonical type contracts + backend swap-points, two build-time accelerators (Docling library + Mellea v0.5.0 IVR-loop slot; Mellea is build-time architectural inspiration only, not a runtime dependency). Per the IBM × Scuderia Ferrari case-study precedent.",
+        "Three WIRED at HEAD, nine at INTEGRATION with canonical type contracts + backend swap-points, two build-time accelerators (Docling library + Mellea v0.5.0 IVR-loop slot; Mellea is build-time architectural inspiration only, not a runtime dependency). Per the IBM × Scuderia Ferrari case-study precedent.",
     },
   ];
 
@@ -577,7 +577,7 @@ function StackBadges() {
             <em className="italic text-racing-green"> Per-tool wire-up status, honest.</em>
           </h2>
           <p className="text-base text-ink-soft leading-relaxed">
-            Two tools wired end-to-end at HEAD (Granite Instruct 4.1 8B coaching narration + Granite 4.0 Nano 350M WebGPU edge model). Ten tools at frontend-integration phase with canonical type contracts + backend swap-points documented (per Stream M.3 spec handoff + wave-46 D-058 expansion adding Granite Instruct 4.1 3B chat-routing + Granite Speech 4.1 2B-Plus Watson STT proxy preview; LangGraph + Granite MCP Gateway + ContextForge as the orchestration runtime per D-017 G7 + D-054; render path stays identical across mock and real; Langflow retained as the export-graph artifact). Two build-time accelerators (Docling library + Mellea v0.5.0 IVR-loop slot; Mellea is build-time architectural inspiration only, not a runtime dependency). No runtime tool listed without a runtime role in the pipeline.
+            Three tools wired end-to-end at HEAD (Granite Instruct 4.1 8B coaching narration + Granite 4.0 Nano 350M WebGPU edge model + Granite Embedding R2 live dense RAG rerank via HF Inference Providers). Nine tools at frontend-integration phase with canonical type contracts + backend swap-points documented (per Stream M.3 spec handoff + wave-46 D-058 expansion adding Granite Instruct 4.1 3B chat-routing + Granite Speech 4.1 2B-Plus Watson STT proxy preview; LangGraph + Granite MCP Gateway + ContextForge as the orchestration runtime per D-017 G7 + D-054; render path stays identical across mock and real; Langflow retained as the export-graph artifact). Two build-time accelerators (Docling library + Mellea v0.5.0 IVR-loop slot; Mellea is build-time architectural inspiration only, not a runtime dependency). No runtime tool listed without a runtime role in the pipeline.
           </p>
         </div>
         <ul className="grid gap-px bg-rule sm:grid-cols-2 lg:grid-cols-4">
