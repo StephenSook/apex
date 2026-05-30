@@ -43,13 +43,18 @@ describe("/api/tspulse/anomaly wave-46 Phase 4.4 TSPulse swap-point", () => {
     expect(data.engine).toBe("tspulse-v7-canned-fallback");
   });
 
-  it("returns real engine when env flag on + base URL set + upstream OK", async () => {
+  it("preserves the backend's honest engine label (does NOT relabel a stub as real)", async () => {
+    // Wave-72 honesty fix: the deployed backend returns engine "tspulse-stub"
+    // when APEX_ENABLE_TSPULSE is off. The frontend must surface that stub
+    // label, not overwrite it with "tspulse-v7-real" (which presented a stub
+    // as live). Verify both the stub label and the real-head label pass
+    // through unchanged.
     vi.stubEnv("NEXT_PUBLIC_USE_REAL_TSPULSE", "1");
     vi.stubEnv("NEXT_PUBLIC_VINH_BACKEND_BASE_URL", "https://vinh.example/api-root");
     vi.spyOn(globalThis, "fetch").mockResolvedValue(
       new Response(
         JSON.stringify({
-          engine: "will-be-overwritten",
+          engine: "tspulse-stub",
           compute_ms: 99,
           state: { status: "clean", window_index: 22, score: 0.12, threshold_p95: 0.732, detection_ms: 12 },
           swap_point: "real swap-point payload",
@@ -59,10 +64,30 @@ describe("/api/tspulse/anomaly wave-46 Phase 4.4 TSPulse swap-point", () => {
     );
     const res = await GET(mockRequest() as unknown as Parameters<typeof GET>[0]);
     const data = (await res.json()) as { engine: string; state: { status: string; window_index?: number } };
-    expect(data.engine).toBe("tspulse-v7-real");
+    expect(data.engine).toBe("tspulse-stub");
     expect(data.state.status).toBe("clean");
     expect(data.state.window_index).toBe(22);
-    expect(res.headers.get("X-Apex-Tspulse-Engine")).toBe("tspulse-v7-real");
+    expect(res.headers.get("X-Apex-Tspulse-Engine")).toBe("tspulse-stub");
+  });
+
+  it("passes through the real polyphase-head engine label when the backend ran it", async () => {
+    vi.stubEnv("NEXT_PUBLIC_USE_REAL_TSPULSE", "1");
+    vi.stubEnv("NEXT_PUBLIC_VINH_BACKEND_BASE_URL", "https://vinh.example/api-root");
+    vi.spyOn(globalThis, "fetch").mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          engine: "tspulse-r1-anomaly",
+          compute_ms: 21,
+          state: { status: "anomaly", window_index: 18, score: 0.84, threshold_p95: 0.732, detection_ms: 21 },
+          swap_point: "real swap-point payload",
+        }),
+        { status: 200 },
+      ),
+    );
+    const res = await GET(mockRequest() as unknown as Parameters<typeof GET>[0]);
+    const data = (await res.json()) as { engine: string };
+    expect(data.engine).toBe("tspulse-r1-anomaly");
+    expect(res.headers.get("X-Apex-Tspulse-Engine")).toBe("tspulse-r1-anomaly");
   });
 
   it("falls back to canned when env flag on + base URL set + upstream 5xx", async () => {

@@ -63,7 +63,14 @@ async function fetchRealBackend(t0: number): Promise<TSPulseResponse | null> {
     const body = (await upstream.json()) as TSPulseResponse;
     return {
       ...body,
-      engine: "tspulse-v7-real",
+      // Wave-72 honesty fix: PRESERVE the backend's own engine label
+      // ("tspulse-stub" when APEX_ENABLE_TSPULSE is off on the Space, or
+      // "tspulse-r1-anomaly" when the real polyphase head ran). The prior
+      // hardcoded "tspulse-v7-real" overwrote the backend's stub label and
+      // presented a stub as live on the deployed app, defeating the
+      // honest-tier intent documented on TSPulseResponse.engine. Only fall
+      // back to the generic fixture tag if the backend omitted an engine.
+      engine: body.engine ?? "tspulse-v7-canned-fallback",
       compute_ms: Math.round(performance.now() - t0),
     };
   } catch (err) {
