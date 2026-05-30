@@ -97,6 +97,11 @@ function tabPaneClass(): string {
   return "rounded-sm border border-rule bg-paper p-5";
 }
 
+// Wave-69: canonical debrief used for the live-backend demo + its fixture
+// fallback. Mirrors the Sarah Reynolds persona debrief from the pitch.
+const CANONICAL_DEMO_DEBRIEF =
+  "Lost the rears mid Old Hairpin again, could not trail-brake on the lever the way she did at Croft last month.";
+
 export default function AnalyzeFlow() {
   const [report, setReport] = useState<CoachingReportType | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -135,6 +140,44 @@ export default function AnalyzeFlow() {
     }
   }, []);
 
+  const handleRunCanonicalDemo = useCallback(async () => {
+    setIsSubmitting(true);
+    try {
+      // Wave-69: run the canonical Sarah Reynolds demo through the deployed
+      // APEX backend's real LangGraph pipeline (real physics projection +
+      // Granite Guardian audit + Granite coaching on the canonical
+      // telemetry). The server-side /api/coaching/analyze-demo route
+      // strict-decodes the backend payload and stamps it "backend-live".
+      // On ANY failure (backend down, timeout, decode mismatch) we degrade
+      // to the illustrative fixture report with live Granite narrative, so
+      // the demo never breaks and the rendered label always tells the truth.
+      try {
+        const res = await fetch("/api/coaching/analyze-demo", { method: "POST" });
+        if (res.ok) {
+          const data = (await res.json()) as { ok?: boolean; report?: CoachingReportType };
+          if (data.ok === true && data.report) {
+            setReport(data.report);
+            setActiveTab("coaching");
+            return;
+          }
+        }
+      } catch {
+        // Network / abort: fall through to the fixture path below.
+      }
+      const sarah: DropzoneSubmission = {
+        driver_id: "sarah-reynolds-britcar-2026",
+        debrief: CANONICAL_DEMO_DEBRIEF,
+        telemetry_csv: new File([], "sarah-lap-17.csv", { type: "text/csv" }),
+        coa_pdf: new File([], "sarah-coa.pdf", { type: "application/pdf" }),
+      };
+      const next = await applyLiveNarrative(buildMockReport(sarah), CANONICAL_DEMO_DEBRIEF);
+      setReport(next);
+      setActiveTab("coaching");
+    } finally {
+      setIsSubmitting(false);
+    }
+  }, []);
+
   useEffect(() => {
     // Focus-steal guard: only steal focus + scroll on the first report after a
     // null state. Resubmits update content in place without yanking focus from
@@ -149,6 +192,32 @@ export default function AnalyzeFlow() {
   return (
     <>
       <Dropzone onAnalyze={handleAnalyze} isSubmitting={isSubmitting} />
+      {/*
+        Wave-69 live-backend canonical demo. Skips upload + runs the
+        canonical Sarah Reynolds telemetry through the deployed APEX
+        backend's real LangGraph pipeline (real physics + Granite Guardian
+        + Granite coaching). Honest fallback to the illustrative fixture
+        report if the backend is unreachable; the rendered provenance label
+        distinguishes "backend-live" from the fixture path.
+      */}
+      <div className="mx-auto max-w-6xl px-6 pb-2 lg:px-10">
+        <div className="flex flex-col gap-3 rounded-sm border border-rule bg-paper-warm p-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
+          <p className="text-sm leading-relaxed text-ink-soft">
+            <span className="font-display text-ink">No telemetry handy?</span> Run the
+            canonical Sarah Reynolds session through the deployed APEX backend: real
+            physics projection, Granite Guardian audit, and Granite coaching, computed
+            live. Falls back to an illustrative report if the backend is unreachable.
+          </p>
+          <button
+            type="button"
+            onClick={handleRunCanonicalDemo}
+            disabled={isSubmitting}
+            className="inline-flex shrink-0 items-center gap-2 rounded-sm border border-racing-green bg-paper px-4 py-2 font-mono text-xs uppercase tracking-wider text-racing-green transition-colors hover:bg-racing-green hover:text-paper focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-paper disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {isSubmitting ? "Running..." : "Run the canonical demo (live backend)"}
+          </button>
+        </div>
+      </div>
       {report && (
         <>
           {/*
