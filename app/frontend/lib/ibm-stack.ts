@@ -176,7 +176,7 @@ export const IBM_GRANITE_STACK: ReadonlyArray<GraniteStackTool> = [
   {
     name: "Granite Instruct",
     version: "4.1 8B",
-    role: "Race-engineer narrator producing the coaching report",
+    role: "Race-engineer narrator: live /analyze coaching report + chat via OpenRouter (wave-64; verified phase=real in prod)",
     status: "WIRED",
   },
   {
