@@ -204,9 +204,9 @@ export default function AnalyzeFlow() {
         <div className="flex flex-col gap-3 rounded-sm border border-rule bg-paper-warm p-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
           <p className="text-sm leading-relaxed text-ink-soft">
             <span className="font-display text-ink">No telemetry handy?</span> Run the
-            canonical Sarah Reynolds session through the deployed APEX backend: real
-            physics projection, Granite Guardian audit, and Granite coaching, computed
-            live. Falls back to an illustrative report if the backend is unreachable.
+            canonical reference session through the deployed APEX backend: real physics
+            projection, Granite Guardian audit, and Granite coaching, computed live.
+            Falls back to an illustrative report if the backend is unreachable.
           </p>
           <button
             type="button"
