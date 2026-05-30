@@ -71,6 +71,7 @@ function merge(
   base: CoachingReport,
   liveCorners: ReadonlyArray<LiveCornerPayload>,
 ): CoachingReport {
+  let appliedCount = 0;
   const corners: CornerInsight[] = base.corners.map((corner, i) => {
     const live = liveCorners[i];
     if (
@@ -80,6 +81,7 @@ function merge(
     ) {
       return corner;
     }
+    appliedCount += 1;
     const chain = toReasoningChain(live.reasoning_chain);
     return {
       ...corner,
@@ -94,6 +96,10 @@ function merge(
       reasoning_chain: chain ?? corner.reasoning_chain,
     };
   });
+  // Only claim "granite-live" when at least one corner actually received live
+  // prose. An ok:true response whose corners are all empty leaves 100% base
+  // prose, which is a fixture, not live output; label it honestly.
+  if (appliedCount === 0) return fixture(base);
   return { ...base, corners, narrative_source: "granite-live" };
 }
 
