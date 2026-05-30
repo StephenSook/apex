@@ -48,7 +48,12 @@ from typing import Callable, Final, Optional
 
 logger = logging.getLogger(__name__)
 
-_DEFAULT_MODEL: Final[str] = "ibm-granite/granite-4.1-8b-instruct"
+# Wave-75: OpenRouter serves the IBM Granite 8B model as
+# "ibm-granite/granite-4.1-8b" (NO "-instruct" suffix; verified against the
+# live catalog). The prior "-instruct" default 404'd, silently dropping the
+# backend narrator + the COA Docling bridge to their fallbacks. Override via
+# APEX_NARRATOR_MODEL if needed.
+_DEFAULT_MODEL: Final[str] = "ibm-granite/granite-4.1-8b"
 _DEFAULT_ENDPOINT: Final[str] = "https://openrouter.ai/api/v1/chat/completions"
 _DEFAULT_TIMEOUT_S: Final[float] = 25.0
 _DEFAULT_MAX_TOKENS: Final[int] = 800
