@@ -9,8 +9,23 @@ function makeFile(name: string, size: number, type: string): File {
 }
 
 function fetchReturning(payload: unknown): typeof fetch {
+  // Resolve on a real macrotask (setTimeout), not a microtask, so the
+  // "Analyzing..." submitting state is committed to the DOM long enough
+  // for the intermediate-state assertion to observe it. An immediately
+  // resolving (microtask) stub lets the submit handler run to completion
+  // inside a single act() flush, so the idle -> report transition skips a
+  // committed "Analyzing..." frame. The production path's latency comes
+  // from the real OpenRouter round-trip; this only models that gap in the
+  // jsdom suite.
   return vi.fn(
-    async () => ({ ok: true, status: 200, json: async () => payload }) as unknown as Response,
+    () =>
+      new Promise<Response>((resolve) =>
+        setTimeout(
+          () =>
+            resolve({ ok: true, status: 200, json: async () => payload } as unknown as Response),
+          200,
+        ),
+      ),
   ) as unknown as typeof fetch;
 }
 
