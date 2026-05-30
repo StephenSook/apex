@@ -92,9 +92,9 @@ export default async function JudgeTourPage({ searchParams }: JudgeTourPageProps
             body={
               <>
                 <p>
-                  Two tools wired at HEAD (Granite Instruct 4.1 8B coaching narration + Granite 4.0 Nano 350M
-                  WebGPU edge model). Ten at integration with canonical type contracts and backend swap-points
-                  per Vinh M3-V1 through M3-V15 (Granite-Docling + Vision + TTM + FlowState + TSPulse + Embedding +
+                  Three tools wired at HEAD (Granite Instruct 4.1 8B coaching narration + Granite 4.0 Nano 350M
+                  WebGPU edge model + Granite Embedding R2 via HF Inference Providers). Nine at integration with
+                  canonical type contracts and backend swap-points per Vinh M3-V1 through M3-V15 (Granite-Docling + Vision + TTM + FlowState + TSPulse +
                   Guardian + LangGraph + 3B routing + Granite Speech; Langflow retained as the export-graph
                   artifact per D-017 G7 + D-054). Two build-time accelerators (Docling library + Mellea v0.5.0
                   IVR-loop architectural slot). Wave-46 D-058 expansion brought Granite 4.1 3B Instruct

@@ -76,8 +76,8 @@ If the SDK breaks against a Google internal-API change, do it by hand.
    > review through 2026-Q2, no prior public AI race-engineer workflow
    > reads COA data as a binding regulatory input.
    > Four: the fourteen-tool IBM Granite stack honesty tier ladder.
-   > Two tools wired end-to-end at HEAD (Granite Instruct 4.1 8B and
-   > Granite 4.0 Nano 350M). Ten at frontend-integration with canonical
+   > Three tools wired end-to-end at HEAD (Granite Instruct 4.1 8B,
+   > Granite 4.0 Nano 350M, and Granite Embedding R2 via HF Inference). Nine at frontend-integration with canonical
    > type contracts and backend swap-points. Two build-time
    > accelerators. Walk the ladder and explain why honest tier labels
    > beat marketing tool counts.

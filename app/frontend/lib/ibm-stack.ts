@@ -70,8 +70,10 @@ export interface GraniteStackTool {
    * IBM_STACK panel to render an explicit "WIRED" / "INTEGRATION"
    * pill per tool so README + page copy + paper match runtime reality.
    * Avoids the credibility-hit of "14 tools every one load-bearing"
-   * narrative when 10 of 14 are still backend swap-points (INTEGRATION
-   * tier) + 2 are build-time accelerators (ACCELERATOR tier).
+   * narrative when 9 of 14 are still backend swap-points (INTEGRATION
+   * tier) + 2 are build-time accelerators (ACCELERATOR tier). Wave-72:
+   * 3 WIRED (Instruct + Nano + Embedding R2 via HF Inference) / 9
+   * INTEGRATION / 2 ACCELERATOR.
    */
   readonly status: GraniteStackToolStatus;
 }
@@ -161,8 +163,17 @@ export const IBM_GRANITE_STACK: ReadonlyArray<GraniteStackTool> = [
   {
     name: "Granite Embedding R2",
     version: "149M + 47M",
-    role: "Hybrid dense + sparse RAG over setup + theory + COA (D-016)",
-    status: "INTEGRATION",
+    role: "Live dense RAG rerank via HF Inference Providers (granite-embedding-30m-english feature-extraction); lexical fallback (D-016)",
+    status: "WIRED",
+    // Wave-72: reclassified INTEGRATION -> WIRED on verified live-smoke. The
+    // /api/rag-retrieve route calls HF Inference Providers
+    // (router.huggingface.co/hf-inference/.../granite-embedding-30m-english/
+    // pipeline/feature-extraction, Bearer HF_TOKEN) to cosine-rerank the
+    // lexical pre-filter; prod returned engine "granite-embedding-r2-hf-
+    // inference" 3/3 probes (lib/granite-embedding-r2.ts). This is the real
+    // Granite embedding path, distinct from the Vinh M3-V8 backend swap-point
+    // the comment below anticipated (that backend route is not deployed). On
+    // HF rate-limit / missing token it falls back to lexical honestly.
     // Wave-44 Phase 6b: frontend RAG retrieval surface live on the
     // AICopilotChat path via lexical TF-IDF retrieval over inline
     // corpus chunks (architecture-spec + decision-log + methodology

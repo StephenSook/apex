@@ -157,7 +157,7 @@ Cm-devvit lesson: "Read each beat as a separate clip. Don't try to nail the whol
 
 **Scene.** 14-tool IBM Granite stack grid. Each cell a badge with model name + honesty-tier pill. Each tool highlights once (100 ms each) as Vinh names it.
 
-**Vinh.** "Fourteen IBM Granite tools, each with an honest status pill: two wired live, ten integrated behind a documented swap-point, two build-time accelerators. Granite-Docling, Granite Vision, Granite TimeSeries TTM, Granite FlowState, IBM TSPulse, Granite Embedding R2, Granite Guardian, Granite Instruct 4.1 8B, Granite Instruct 4.1 3B chat-routing, Granite Speech 4.1 2B-Plus, Granite 4.0 Nano WebGPU edge, LangGraph plus Granite MCP Gateway plus ContextForge orchestration, Docling library and Mellea v0.5.0 as build-time accelerators."
+**Vinh.** "Fourteen IBM Granite tools, each with an honest status pill: three wired live, nine integrated behind a documented swap-point, two build-time accelerators. Granite-Docling, Granite Vision, Granite TimeSeries TTM, Granite FlowState, IBM TSPulse, Granite Embedding R2, Granite Guardian, Granite Instruct 4.1 8B, Granite Instruct 4.1 3B chat-routing, Granite Speech 4.1 2B-Plus, Granite 4.0 Nano WebGPU edge, LangGraph plus Granite MCP Gateway plus ContextForge orchestration, Docling library and Mellea v0.5.0 as build-time accelerators."
 
 (2:38 transition: cut to two-card team panel · Stephen + Vinh. Feasibility proof chip.)
 
