@@ -1,6 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { openRouterChatCompletion } from "../../lib/openrouter-client";
+import {
+  normalizeGraniteModelSlug,
+  openRouterChatCompletion,
+} from "../../lib/openrouter-client";
 
 describe("openRouterChatCompletion", () => {
   let fetchMock: ReturnType<typeof vi.fn>;
@@ -239,5 +242,57 @@ describe("openRouterChatCompletion", () => {
     );
     setTimeout(() => controller.abort("consumer-cancel"), 10);
     await expect(promise).rejects.toThrow();
+  });
+
+  // Wave-65 self-heal: a stale "-instruct" OPENROUTER_MODEL is rewritten to
+  // the OpenRouter-served slug on the wire so live Granite fires even when
+  // the env value carries the bad suffix.
+  it("normalizes a stale -instruct OPENROUTER_MODEL on the request body", async () => {
+    process.env.OPENROUTER_MODEL = "ibm-granite/granite-4.1-8b-instruct";
+    fetchMock.mockResolvedValueOnce(
+      new Response(
+        JSON.stringify({
+          id: "x",
+          model: "ibm-granite/granite-4.1-8b",
+          created: 0,
+          choices: [
+            { index: 0, message: { role: "assistant", content: "ok" }, finish_reason: "stop" },
+          ],
+          usage: { prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 },
+        }),
+        { status: 200 },
+      ),
+    );
+    await openRouterChatCompletion({ messages: [{ role: "user", content: "hi" }] });
+    const sentBody = JSON.parse((fetchMock.mock.calls[0][1] as { body: string }).body) as {
+      model: string;
+    };
+    expect(sentBody.model).toBe("ibm-granite/granite-4.1-8b");
+  });
+});
+
+describe("normalizeGraniteModelSlug", () => {
+  it("strips a stale -instruct suffix from an ibm-granite slug", () => {
+    expect(normalizeGraniteModelSlug("ibm-granite/granite-4.1-8b-instruct")).toBe(
+      "ibm-granite/granite-4.1-8b",
+    );
+  });
+
+  it("leaves the verified slug untouched", () => {
+    expect(normalizeGraniteModelSlug("ibm-granite/granite-4.1-8b")).toBe(
+      "ibm-granite/granite-4.1-8b",
+    );
+    expect(normalizeGraniteModelSlug("ibm-granite/granite-4.0-h-micro")).toBe(
+      "ibm-granite/granite-4.0-h-micro",
+    );
+  });
+
+  it("does not touch non-granite or watsonx-namespace slugs", () => {
+    expect(normalizeGraniteModelSlug("ibm/granite-3-8b-instruct")).toBe(
+      "ibm/granite-3-8b-instruct",
+    );
+    expect(normalizeGraniteModelSlug("anthropic/claude-3.5-sonnet")).toBe(
+      "anthropic/claude-3.5-sonnet",
+    );
   });
 });
