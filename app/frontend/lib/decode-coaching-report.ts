@@ -109,7 +109,10 @@ function decodeForecast(raw: unknown): NextSessionForecast | null {
     if (!isObj(p) || !num(p.sector_idx) || !num(p.mean) || !num(p.low) || !num(p.high)) return null;
     out.push({ sector_idx: p.sector_idx, mean: p.mean, low: p.low, high: p.high });
   }
-  return out;
+  // Reject an empty forecast: matches the corners-length guard and stops the
+  // AnalyzeFlow summary tab from rendering Math.min(...[]) = Infinity on a
+  // sparse backend payload. Empty -> null -> honest fixture fallback upstream.
+  return out.length > 0 ? out : null;
 }
 
 function strArray(raw: unknown): ReadonlyArray<string> | null {
