@@ -1,7 +1,7 @@
-// Runs in the default jsdom environment (the shared vitest.setup.ts touches
-// Element.prototype, which does not exist under @vitest-environment node). The
-// route mocks fetch + returns new Response(JSON.stringify(...)), all
-// jsdom-compatible, matching the narrate/analyze-demo route tests.
+// Runs in the default jsdom environment. The shared vitest.setup.ts touches
+// Element.prototype (a jsdom-only global), so a non-jsdom test environment
+// would crash there. The route mocks fetch + returns new Response, all
+// jsdom-compatible, matching the narrate / analyze-demo route tests.
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { GET } from "../route";
