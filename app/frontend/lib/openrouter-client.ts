@@ -348,6 +348,36 @@ function decodeChatCompletionResponse(raw: unknown): ChatCompletionResponse {
 }
 
 /**
+ * Wave-65 self-heal: OpenRouter's IBM Granite catalog uses NO "-instruct"
+ * suffix (verified 2026-05-30 against GET /api/v1/models: the only Granite
+ * slugs are "ibm-granite/granite-4.1-8b" and "ibm-granite/granite-4.0-h-
+ * micro"). The wave-30 architecture spec + early env config assumed an
+ * "-instruct" slug, which 404s upstream and silently degrades every LLM
+ * route to its canned stub / fixture fallback (diagnosed in prod: both
+ * /api/openrouter-stream and /api/coaching/narrate sat at phase
+ * "upstream-error" despite a populated key).
+ *
+ * Normalize a stale "-instruct" suffix on any `ibm-granite/` slug at the
+ * call boundary so a misconfigured OPENROUTER_MODEL self-heals at runtime
+ * rather than killing live Granite. A correct slug is returned untouched,
+ * and non-Granite slugs (e.g. the watsonx `ibm/...` namespace) are not
+ * matched, so this can never rewrite a working configuration. The warn
+ * keeps the misconfig visible so the env value still gets fixed at source.
+ */
+const GRANITE_INSTRUCT_SUFFIX_RE = /^(ibm-granite\/.+?)-instruct$/i;
+
+export function normalizeGraniteModelSlug(slug: string): string {
+  const match = slug.match(GRANITE_INSTRUCT_SUFFIX_RE);
+  if (match) {
+    console.warn(
+      `apex.openrouter-client: OPENROUTER_MODEL "${slug}" carries an "-instruct" suffix OpenRouter does not serve for IBM Granite; routing to "${match[1]}". Fix the env value to silence this.`,
+    );
+    return match[1];
+  }
+  return slug;
+}
+
+/**
  * POST /chat/completions to OpenRouter. Retries on 5xx + 429 per the
  * policy documented at the file header. Aborts after the timeout.
  * Throws on non-recoverable errors with structured `apex.openrouter-
@@ -368,7 +398,7 @@ export async function openRouterChatCompletion(
 
   const url = `${baseUrl}/chat/completions`;
   const body = JSON.stringify({
-    model: request.model ?? defaultModel,
+    model: normalizeGraniteModelSlug(request.model ?? defaultModel),
     messages: request.messages,
     temperature: request.temperature ?? DEFAULT_TEMPERATURE,
     max_tokens: request.max_tokens ?? DEFAULT_MAX_TOKENS,
