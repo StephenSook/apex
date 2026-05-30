@@ -1,3 +1,10 @@
+// @vitest-environment node
+//
+// This route does request.formData() (undici) then builds + appends to a new
+// FormData to forward to the backend. Under the default jsdom environment,
+// undici's parsed entries are not valid Blobs for jsdom's FormData.append, so
+// the forward throws spuriously. The Vercel Node runtime uses undici for both
+// sides, so the node test environment matches production exactly.
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { POST } from "../route";
