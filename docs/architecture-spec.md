@@ -241,7 +241,7 @@ See `app/frontend/` for the live code.
 ## Deployment
 
 - **Frontend:** Vercel (free tier) at `https://apex-one-black.vercel.app` (domain pending). Build via `pnpm build`. Turbopack production builds.
-- **Backend:** Hugging Face Space (free tier). Dockerfile in `app/backend/Dockerfile` (Day 5). Keep-alive cron during the judging window (May 28-31).
+- **Backend:** Hugging Face Space (free tier). Dockerfile at `app/backend/Dockerfile`. Keep-alive cron during the judging window (May 28-31). The 192 backend tests also run a GPU-free subset in CI.
 - **Colab notebook:** `deliverables/apex-demo.ipynb` published Day 9.
 
 ---
@@ -250,8 +250,8 @@ See `app/frontend/` for the live code.
 
 - `pnpm build` (Next.js 16 production build, includes TypeScript)
 - `pnpm lint` (ESLint 9, eslint-config-next)
-- `pytest` (Day 2+ backend tests)
-- `pytest --cov=apex --cov-fail-under=70` (Day 5+ when Phase 2 ships)
+- `pytest` (192 backend tests; a GPU-free subset runs in CI on every push per `.github/workflows/ci.yml`, with the torch/cvxpy tests `importorskip`)
+- frontend tsc + lint + vitest + build + Playwright fidelity also run as CI jobs
 - `scripts/ai-tone-sweep.sh` (em-dash + blocklist sweep, Day 11 pre-submit)
 - Live curl smoke: `curl -s http://localhost:3000 | grep "APEX"`
 

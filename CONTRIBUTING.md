@@ -30,7 +30,7 @@ pnpm tsc --noEmit && pnpm lint && pnpm test && pnpm build
 pnpm dev   # http://localhost:3000
 ```
 
-Backend is Vinh Le's lane (Python 3.12 + FastAPI + Granite stack); see `app/backend/README.md` once it lands (Day 5-6).
+Backend (Python + FastAPI + the Granite stack) is complete; see `app/backend/README.md`. Its 192 tests run a GPU-free subset in CI on every push (`.github/workflows/ci.yml`); the torch/cvxpy tests `importorskip`.
 
 ## Branching + commits
 
@@ -59,7 +59,7 @@ bash scripts/pre-submit-checks.sh           # default Day-2-through-10 regressio
 bash scripts/pre-submit-checks.sh --final   # Day-11 strict mode (HF Space, video, coverage all required)
 ```
 
-The script runs 21 checks: em-dash sweep, AI-tone blocklist sweep, en-dash + smart-quote sweep, operator-attribution sweep, commit-subject em-dash sweep, CI per-job green, tsc clean, lint clean, vitest pass + coverage, HF Space health, demo video length, 30-second highlight clip, backup demo, deck PDF, README demo URL, LICENSE Apache 2.0, all 8 IBM tools cited in README, manual Q&A flashcards, manual track checkboxes, manual stakeholder quotes, git in sync, submission-payload checkboxes ticked.
+The script runs 21 checks: em-dash sweep, AI-tone blocklist sweep, en-dash + smart-quote sweep, operator-attribution sweep, commit-subject em-dash sweep, CI per-job green, tsc clean, lint clean, vitest pass + coverage, HF Space health, demo video length, 30-second highlight clip, backup demo, deck PDF, README demo URL, LICENSE Apache 2.0, core IBM Granite tools cited in README, manual Q&A flashcards, manual track checkboxes, manual stakeholder quotes, git in sync, submission-payload checkboxes ticked.
 
 If `--final` returns any HARD-FAIL, DO NOT submit until resolved.
 
