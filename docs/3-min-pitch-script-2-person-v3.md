@@ -133,7 +133,7 @@ Cm-devvit lesson: "Read each beat as a separate clip. Don't try to nail the whol
 
 **Scene.** Live APEX `/analyze` UI capture. Corner-by-corner coaching report on screen. Three corner cards (Old Hairpin / McLeans / Coppice) visible.
 
-**Stephen.** "Sixty seconds after Sarah uploads her telemetry, APEX returns a corner-by-corner coaching report,"
+**Stephen.** "Sixty seconds after Sarah uploads her telemetry, Granite reads the debrief she just typed and writes a corner-by-corner coaching report live,"
 
 (2:08 transition: scroll UI down to tuning card. Highlight brake-lever-travel delta and COA section citation.)
 
