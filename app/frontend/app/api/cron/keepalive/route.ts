@@ -51,8 +51,11 @@ export async function GET(request: Request): Promise<Response> {
   const healthz = await pingOk(`${base}/healthz`);
   const orchestration = healthz === "ok" ? await pingOk(`${base}/api/orchestration`) : "skipped";
 
-  return Response.json(
-    { pinged: base, healthz, orchestration, ms: Date.now() - started },
-    { headers: { "Cache-Control": "no-store" } },
+  return new Response(
+    JSON.stringify({ pinged: base, healthz, orchestration, ms: Date.now() - started }),
+    {
+      status: 200,
+      headers: { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store" },
+    },
   );
 }
