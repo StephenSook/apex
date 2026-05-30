@@ -127,12 +127,14 @@ export default function CoachingReport({ report }: CoachingReportProps) {
             {report.narrative_source === "backend-live" ? (
               <>
                 {" "}
-                This entire report was computed live by the deployed APEX backend
-                on the canonical telemetry: real physics projection, Granite
-                Guardian audit, and Granite coaching. The deltas, forecast
-                envelope, and tuning numbers are live-computed, not fixtures, and
-                every recommendation cites the FIA Appendix L provision and COA
-                section that authorises it.
+                Computed live by the deployed APEX backend on the canonical
+                telemetry: a real differentiable-QP physics projection + the
+                COA-parsed simultaneity gate, a deterministic Guardian
+                rule-audit, and a seasonal-naive pace forecast. The deltas,
+                tuning, and FIA Appendix L / COA citations are live-computed, not
+                fixtures. The frozen Granite TTM and the Granite Guardian model
+                are documented backend swap-points; the coaching narrative runs
+                live Granite 4.1 8B when the backend narrator key is set.
               </>
             ) : report.narrative_source === "granite-live" ? (
               <>
