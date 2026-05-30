@@ -80,10 +80,12 @@ from apex.tspulse import detect_anomaly
 # free-tier RAM budget.
 
 _MAX_TELEMETRY_BYTES: int = 10 * 1024 * 1024   # 10 MiB CSV
-_MAX_COA_BYTES: int = 1 * 1024 * 1024          # 1 MiB JSON
+_MAX_COA_BYTES: int = 4 * 1024 * 1024          # 4 MiB (JSON COA or PDF COA; wave-74)
 _MAX_DEBRIEF_BYTES: int = 256 * 1024           # 256 KiB markdown
 _ALLOWED_TELEMETRY_SUFFIX: set[str] = {".csv"}
-_ALLOWED_COA_SUFFIX: set[str] = {".json"}
+# Wave-74: PDF accepted + bridged to canonical COA JSON via the Granite-Docling
+# bridge (apex/instruct/docling_bridge.py) before pipeline execution.
+_ALLOWED_COA_SUFFIX: set[str] = {".json", ".pdf"}
 _ALLOWED_DEBRIEF_SUFFIX: set[str] = {".md", ".txt"}
 
 # ---- Singletons -------------------------------------------------------
@@ -454,6 +456,32 @@ async def post_analyze_upload(
         allowed_suffix=_ALLOWED_DEBRIEF_SUFFIX,
         max_bytes=_MAX_DEBRIEF_BYTES,
     )
+
+    # Wave-74: when the COA arrives as a PDF, bridge it to the canonical COA
+    # JSON via apex/instruct/docling_bridge (pypdf text + Granite Instruct
+    # structuring) BEFORE the JSON sanity-check below, so the rest of the
+    # pipeline is unchanged. Never guesses the simultaneity gate:
+    # CoaBridgeUndetermined -> 422. STATUS: needs HF Space verification + prompt
+    # tuning; the frontend route that uploads here is flag-gated OFF
+    # (NEXT_PUBLIC_USE_REAL_ANALYZE_UPLOAD) until then, so this is dormant in
+    # production until deliberately enabled.
+    coa_suffix = Path(coa.filename or "").suffix.lower()
+    if coa_suffix == ".pdf":
+        from apex.instruct.docling_bridge import (
+            CoaBridgeError,
+            CoaBridgeUndetermined,
+            pdf_to_coa_dict,
+        )
+
+        try:
+            coa_dict = pdf_to_coa_dict(coa_bytes)
+        except CoaBridgeUndetermined as exc:
+            raise HTTPException(status_code=422, detail=str(exc)) from exc
+        except CoaBridgeError as exc:
+            raise HTTPException(
+                status_code=422, detail=f"COA PDF could not be parsed: {exc}"
+            ) from exc
+        coa_bytes = json.dumps(coa_dict).encode("utf-8")
 
     # JSON sanity-check on the COA payload before pipeline execution so
     # the 400 fires HERE instead of deep inside the parser.

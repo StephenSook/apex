@@ -82,6 +82,9 @@ pydantic_core==2.46.4
 Pygments==2.20.0
 PyJWT==2.13.0
 pyparsing==3.3.2
+# wave-74: PDF text extraction for the COA PDF -> JSON bridge (apex/instruct/docling_bridge.py).
+# Lightweight, CPU-only, pure-Python; chosen over Granite-Docling for HF free-tier build safety.
+pypdf==5.1.0
 pytest==9.0.3
 python-dateutil==2.9.0.post0
 pytz==2026.2

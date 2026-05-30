@@ -102,6 +102,37 @@ function tabPaneClass(): string {
 const CANONICAL_DEMO_DEBRIEF =
   "Lost the rears mid Old Hairpin again, could not trail-brake on the lever the way she did at Croft last month.";
 
+/**
+ * Wave-74: forward the driver's actual uploaded files to the backend's full
+ * real pipeline via the server-side /api/coaching/analyze-upload proxy (which
+ * runs the Granite-Docling COA bridge for a PDF). Returns the decoded
+ * backend-live report, or null on ANY failure (gate undetermined 422, PDF not
+ * yet accepted 415, backend down, decode mismatch) so the caller falls back to
+ * the fixture + live-narrative path. Call site is gated by
+ * NEXT_PUBLIC_USE_REAL_ANALYZE_UPLOAD so this is dormant until the backend
+ * bridge is deployed + verified.
+ */
+async function tryBackendAnalyzeUpload(
+  submission: DropzoneSubmission,
+): Promise<CoachingReportType | null> {
+  try {
+    const form = new FormData();
+    form.append("telemetry", submission.telemetry_csv, submission.telemetry_csv.name);
+    form.append("coa", submission.coa_pdf, submission.coa_pdf.name);
+    form.append(
+      "debrief",
+      new File([submission.debrief], "debrief.md", { type: "text/markdown" }),
+      "debrief.md",
+    );
+    const res = await fetch("/api/coaching/analyze-upload", { method: "POST", body: form });
+    if (!res.ok) return null;
+    const data = (await res.json()) as { ok?: boolean; report?: CoachingReportType };
+    return data.ok === true && data.report ? data.report : null;
+  } catch {
+    return null;
+  }
+}
+
 export default function AnalyzeFlow() {
   const [report, setReport] = useState<CoachingReportType | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -112,6 +143,22 @@ export default function AnalyzeFlow() {
   const handleAnalyze = useCallback(async (submission: DropzoneSubmission) => {
     setIsSubmitting(true);
     try {
+      // Wave-74: when NEXT_PUBLIC_USE_REAL_ANALYZE_UPLOAD is "1" (set only
+      // after the backend Granite-Docling COA bridge is deployed + verified),
+      // POST the driver's ACTUAL files to the backend for the full real
+      // pipeline (real physics + Granite on the uploaded telemetry + PDF/JSON
+      // COA). OFF by default; any failure (incl. a 422 undetermined COA gate,
+      // or a 415 before the bridge is deployed) returns null and falls through
+      // to the live-narrative + fixture path below, so the surface never
+      // breaks and the rendered provenance label always tells the truth.
+      if (process.env.NEXT_PUBLIC_USE_REAL_ANALYZE_UPLOAD === "1") {
+        const backendReport = await tryBackendAnalyzeUpload(submission);
+        if (backendReport !== null) {
+          setReport(backendReport);
+          setActiveTab("coaching");
+          return;
+        }
+      }
       // Wave-64 live-coaching wiring. Build the structurally-complete
       // base report (real deltas, forecast envelope, tuning delta, and
       // FIA / COA citations from the physics / fixture layer), then ask
