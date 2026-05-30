@@ -93,7 +93,7 @@ Cm-devvit lesson: "Read each beat as a separate clip. Don't try to nail the whol
 
 (0:58 transition: physics projection card highlights; animated math: friction ellipse, bicycle model, forward-Euler kinematic step.)
 
-**Vinh.** "Layer two is a differentiable Cvxpylayers physics projection at constant mu. Friction ellipse plus bicycle model plus forward-Euler kinematic step plus a circuit-conditional friction lookup. The wave-49 ship lit the V12 first-order 8-tier Pacejka residual trace plus the V13 three-iterate SCP outer-loop behind the DifferentiableProjector Protocol; jerk-bound enforcement is the remaining named swap-point in the D-031 staged ladder."
+**Vinh.** "Layer two is a differentiable Cvxpylayers physics projection. It enforces the friction ellipse, the bicycle model, and a forward-Euler kinematic step on every forecast, so the model never proposes a physically impossible lap. The deeper non-convex physics, the full Pacejka tire model and an iterative convex solve, are staged behind named swap-points."
 
 (1:08 transition: Guardian card highlights; animated text-log entries scroll past with check marks.)
 
@@ -145,7 +145,7 @@ Cm-devvit lesson: "Read each beat as a separate clip. Don't try to nail the whol
 
 (2:22 transition: scroll to Guardian audit panel. Highlight verdict stamp + reasoning trace items. Reproducibility footer enters from below.)
 
-**Stephen.** "and a Granite Guardian safety stamp with the reasoning trace visible. Every claim cites a specific Certificate of Adaptations section and a specific FIA Appendix L provision. Provenance on every line."
+**Stephen.** "and a Granite Guardian safety stamp with the reasoning trace visible. Every claim cites a specific Certificate of Adaptations section and a specific FIA Appendix L provision. Provenance on every line, in an interface built to WCAG AA for the racers who need it."
 
 **Visual overlays.** Plex Mono callout at 2:08: `38 mm → 34 mm · Section 3(c) hardware spec`. Subtitle at 2:16: `Forecast envelope · 30 mini-sectors`. Final overlay at 2:22 in racing green: `Verdict: APPROVED · audit-id sarah-langgraph-<ms>`. Reproducibility footer from below: `Granite Guardian 4.1 8B + commit SHA <head>`.
 
@@ -157,17 +157,17 @@ Cm-devvit lesson: "Read each beat as a separate clip. Don't try to nail the whol
 
 **Scene.** 14-tool IBM Granite stack grid. Each cell a badge with model name + honesty-tier pill. Each tool highlights once (100 ms each) as Vinh names it.
 
-**Vinh.** "Fourteen IBM Granite tools on a per-tool honesty ladder. Granite-Docling, Granite Vision, Granite TimeSeries TTM, Granite FlowState, IBM TSPulse, Granite Embedding R2, Granite Guardian, Granite Instruct 4.1 8B, Granite Instruct 4.1 3B chat-routing, Granite Speech 4.1 2B-Plus, Granite 4.0 Nano WebGPU edge, LangGraph plus Granite MCP Gateway plus ContextForge orchestration, Docling library and Mellea v0.5.0 as build-time accelerators."
+**Vinh.** "Fourteen IBM Granite tools, each with an honest status pill: two wired live, ten integrated behind a documented swap-point, two build-time accelerators. Granite-Docling, Granite Vision, Granite TimeSeries TTM, Granite FlowState, IBM TSPulse, Granite Embedding R2, Granite Guardian, Granite Instruct 4.1 8B, Granite Instruct 4.1 3B chat-routing, Granite Speech 4.1 2B-Plus, Granite 4.0 Nano WebGPU edge, LangGraph plus Granite MCP Gateway plus ContextForge orchestration, Docling library and Mellea v0.5.0 as build-time accelerators."
 
-(2:38 transition: cut to two-card team panel · Stephen + Vinh. Day-12-of-12 indicator chip.)
+(2:38 transition: cut to two-card team panel · Stephen + Vinh. Feasibility proof chip.)
 
-**Stephen.** "Stephen Sookra and Vinh Le. Kennesaw State University. Twelve days. Public from Day 1. Apache 2.0."
+**Stephen.** "Stephen Sookra and Vinh Le. Kennesaw State University. A hundred and ninety-two backend tests run in CI on every push. Public from Day 1. Apache 2.0."
 
 (2:44 transition: audience-aggregate text reveal centered on cream paper.)
 
 **Stephen.** "The audience: adaptive racers, veteran-team drivers, and grassroots competitors. Adjacent operator engagement with MME Motorsport in Slovenia and adaptive-racing programmes in the United Kingdom."
 
-**Visual overlays.** Stagger highlight on each tool 100 ms. Day-N chip at 2:38: `Day 12 of 12`. Three Fraunces italic lines at 2:44, top-aligned reveal.
+**Visual overlays.** Stagger highlight on each tool 100 ms. Proof chip at 2:38: `192 backend tests in CI · 12 public pages live`. Three Fraunces italic lines at 2:44, top-aligned reveal.
 
 **Cut.** Soft cross-fade to Beat 8.
 
@@ -329,4 +329,4 @@ For judges who watch only the first 30 s of a submission, the highlight cut comp
 
 ---
 
-_Last updated 2026-05-27 evening Day 8 of 12 by Stephen. v3 supersedes v0 single-narrator + v2 2-person draft. Production tooling adapted from cm-devvit `docs/submission/demo-video-runbook.md` + `scripts/demo/stitch.sh` per the same-workflow-Vinh-knows directive._
+_Last updated 2026-05-29 by Stephen. v3 reflects waves 57-62: the honest 2/10/2 tier split verbalized in Beat 7, a 192-backend-tests-in-CI feasibility line, a WCAG AA accessibility clause in Beat 6, and the Beat-7 day-count chip retired for a durable proof chip. v3 supersedes the v0 single-narrator and v2 2-person drafts. Production tooling adapted from cm-devvit `docs/submission/demo-video-runbook.md` + `scripts/demo/stitch.sh` per the same-workflow-Vinh-knows directive._
