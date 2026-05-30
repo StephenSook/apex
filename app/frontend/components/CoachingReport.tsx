@@ -124,9 +124,23 @@ export default function CoachingReport({ report }: CoachingReportProps) {
           <p className="max-w-2xl text-base leading-relaxed text-ink-soft">
             Generated for{" "}
             <span className="font-mono text-sm text-ink">{report.driver_id}</span>.
-            Illustrative report at HEAD; the live Granite analyze path is a
-            documented backend swap-point. Every recommendation cites the FIA
-            Appendix L provision and COA section that authorises it.
+            {report.narrative_source === "granite-live" ? (
+              <>
+                {" "}
+                The corner-by-corner coaching below was written live by Granite
+                4.1 8B Instruct from your debrief. The deltas, forecast envelope,
+                and FIA Appendix L / COA citations are sourced from the physics
+                layer, not the model; the full numeric pipeline is a documented
+                backend swap-point.
+              </>
+            ) : (
+              <>
+                {" "}
+                Illustrative report at HEAD; the live Granite analyze path is a
+                documented backend swap-point. Every recommendation cites the FIA
+                Appendix L provision and COA section that authorises it.
+              </>
+            )}
           </p>
           <ReadingLevelToggle level={readingLevel} onChange={setReadingLevel} />
         </header>

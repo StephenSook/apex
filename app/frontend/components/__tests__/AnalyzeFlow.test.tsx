@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
@@ -8,8 +8,27 @@ function makeFile(name: string, size: number, type: string): File {
   return new File([new Uint8Array(size)], name, { type });
 }
 
+function fetchReturning(payload: unknown): typeof fetch {
+  return vi.fn(
+    async () => ({ ok: true, status: 200, json: async () => payload }) as unknown as Response,
+  ) as unknown as typeof fetch;
+}
+
 describe("AnalyzeFlow integration", () => {
   // scrollIntoView stub is set globally in vitest.setup.ts.
+
+  beforeEach(() => {
+    // Wave-64: the analyze flow now calls /api/coaching/narrate. Default
+    // the suite to the honest fixture path (route ok:false) so the
+    // existing assertions exercise the canned narrative deterministically,
+    // independent of real fetch behavior in CI. Individual tests override
+    // this stub to exercise the live-generated path.
+    vi.stubGlobal("fetch", fetchReturning({ ok: false, source: "stub" }));
+  });
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    vi.restoreAllMocks();
+  });
 
   it("mounts the Dropzone before any submission", () => {
     render(<AnalyzeFlow />);
@@ -147,5 +166,59 @@ describe("AnalyzeFlow integration", () => {
     const coachingTab = screen.getByRole("button", { name: /^Coaching/i });
     await user.click(coachingTab);
     expect(visibleHeading(/Corner-by-corner coaching/i)).not.toBeNull();
+  });
+
+  // Wave-64 live-coaching wiring: when /api/coaching/narrate returns
+  // Granite output, the merged prose renders + the header label tells the
+  // truth ("written live by Granite"). buildMockReport ships 3 corners, so
+  // the live mock returns 3 to align the index-based merge.
+  it("renders live-generated coaching prose + the live provenance label when the route returns Granite output", async () => {
+    vi.stubGlobal(
+      "fetch",
+      fetchReturning({
+        ok: true,
+        source: "granite-live",
+        corners: [
+          {
+            name: "Sector 1 corner",
+            recommendation: "Live Granite coaching for sector one, grounded in your debrief.",
+            recommendation_beginner: "Live simple coaching one.",
+            reasoning_chain: [],
+          },
+          {
+            name: "Sector 2 corner",
+            recommendation: "Live Granite coaching for sector two.",
+            recommendation_beginner: "Live simple coaching two.",
+            reasoning_chain: [],
+          },
+          {
+            name: "Sector 3 corner",
+            recommendation: "Live Granite coaching for sector three.",
+            recommendation_beginner: "Live simple coaching three.",
+            reasoning_chain: [],
+          },
+        ],
+        summary: "live session summary",
+      }),
+    );
+
+    const user = userEvent.setup();
+    const { container } = render(<AnalyzeFlow />);
+    const fileInputs = container.querySelectorAll<HTMLInputElement>('input[type="file"]');
+    await user.upload(fileInputs[0], makeFile("session.csv", 4096, "text/csv"));
+    await user.upload(fileInputs[1], makeFile("coa.pdf", 8192, "application/pdf"));
+    await user.type(screen.getByRole("textbox", { name: /Your debrief/i }), "Lost the rears.");
+    await user.type(screen.getByRole("textbox", { name: /Driver identifier/i }), "live-driver");
+    await user.click(screen.getByRole("button", { name: /Generate coaching report/i }));
+
+    await screen.findByRole(
+      "heading",
+      { name: /Corner-by-corner coaching/i },
+      { timeout: 2000 },
+    );
+    expect(await screen.findByText(/written live by Granite/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Live Granite coaching for sector one, grounded in your debrief/i),
+    ).toBeInTheDocument();
   });
 });

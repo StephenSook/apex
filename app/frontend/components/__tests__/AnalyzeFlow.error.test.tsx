@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
@@ -8,6 +8,23 @@ import Dropzone from "../Dropzone";
 function makeFile(name: string, size: number, type: string): File {
   return new File([new Uint8Array(size)], name, { type });
 }
+
+beforeEach(() => {
+  // Wave-64: AnalyzeFlow's submit now calls /api/coaching/narrate. Default
+  // to the honest fixture path (route ok:false) so the error-path
+  // assertions exercise the canned narrative deterministically.
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(
+      async () =>
+        ({ ok: true, status: 200, json: async () => ({ ok: false, source: "stub" }) }) as unknown as Response,
+    ),
+  );
+});
+
+afterEach(() => {
+  vi.unstubAllGlobals();
+});
 
 async function fillAndSubmit(
   user: ReturnType<typeof userEvent.setup>,

@@ -451,6 +451,29 @@ export interface CoachingReport {
   readonly forecast: NextSessionForecast;
   readonly audit: GuardianAudit;
   readonly provenance: ProvenanceFooter;
+  /**
+   * Wave-64 live-coaching wiring: provenance of the corner-by-corner
+   * coaching NARRATIVE (the `recommendation` prose + `reasoning_chain`
+   * per corner + the beginner variant).
+   *
+   *   - "granite-live": the narrative was generated live by Granite 4.1
+   *     8B Instruct via the OpenRouter-wired `/api/coaching/narrate`
+   *     route, from the driver's typed debrief, grounded in the
+   *     structured deltas on this report.
+   *   - "fixture": the illustrative authored narrative shipped at HEAD.
+   *     The live path was unavailable (no OPENROUTER_API_KEY / upstream
+   *     error / JSON parse failure) so the surface degraded honestly to
+   *     the canned prose rather than failing.
+   *
+   * The structured numbers (`current_delta_s`, `forecast`,
+   * `tuning_delta`) and the FIA / COA citations are NEVER LLM-generated
+   * regardless of source: the model writes coaching, not telemetry, and
+   * never asserts regulatory article numbers (server-side scrubber +
+   * fixture-sourced citations enforce this). Optional for backwards
+   * compat: fixtures + decoders that omit it render as before (the
+   * consumer treats `undefined` as "fixture").
+   */
+  readonly narrative_source?: "granite-live" | "fixture";
 }
 
 // ---------------------------------------------------------------------------
