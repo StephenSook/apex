@@ -329,4 +329,4 @@ For judges who watch only the first 30 s of a submission, the highlight cut comp
 
 ---
 
-_Last updated 2026-05-29 by Stephen. v3 reflects waves 57-62: the honest 2/10/2 tier split verbalized in Beat 7, a 192-backend-tests-in-CI feasibility line, a WCAG AA accessibility clause in Beat 6, and the Beat-7 day-count chip retired for a durable proof chip. v3 supersedes the v0 single-narrator and v2 2-person drafts. Production tooling adapted from cm-devvit `docs/submission/demo-video-runbook.md` + `scripts/demo/stitch.sh` per the same-workflow-Vinh-knows directive._
+_Last updated 2026-05-29 by Stephen. v3 reflects waves 57-62: the honest 3/9/2 tier split verbalized in Beat 7, a 192-backend-tests-in-CI feasibility line, a WCAG AA accessibility clause in Beat 6, and the Beat-7 day-count chip retired for a durable proof chip. v3 supersedes the v0 single-narrator and v2 2-person drafts. Production tooling adapted from cm-devvit `docs/submission/demo-video-runbook.md` + `scripts/demo/stitch.sh` per the same-workflow-Vinh-knows directive._
