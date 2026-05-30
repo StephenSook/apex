@@ -111,6 +111,10 @@ describe("decodeCoachingReport (wave-69 live-backend wire-boundary decoder)", ()
     ).toBeNull();
   });
 
+  it("returns null on an empty forecast (no Math.min(...[]) = Infinity render)", () => {
+    expect(decodeCoachingReport({ ...backendPayload(), forecast: [] })).toBeNull();
+  });
+
   it("returns null when an audit verdict is unknown", () => {
     expect(
       decodeCoachingReport({ ...backendPayload(), audit: { verdict: "maybe", reasoning_trace: [], audit_id: "z" } }),
