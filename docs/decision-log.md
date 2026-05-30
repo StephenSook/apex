@@ -1575,3 +1575,17 @@ Wave-43 plan locked under no-time-pressure rule + galaxy-ambition (calendar date
 **Affected.** Consent-log §2 + the surfaces above. Numbered D-072 (follows D-071).
 
 ---
+
+## D-073: waves 57-62 accessibility, honesty, and backend-in-CI (2026-05-29)
+
+**Decision.** Consolidated record of the 2026-05-29 polish + review arc (PRs #8-#16, all merged green, each post-merge main run verified).
+
+- **Accessibility (wave-57).** APEX is built FOR adaptive + disabled racers, so the UI must be exemplary. Added `--amber-ink #8A5A12` text token (amber-as-text was 1.9:1 on cream, fails WCAG AA) + 58 swaps; darkened `--accent` to #B23E22 (4.9:1); demoted AnalyzeFlow's broken `role=tab` widget to a labelled button group; scoped the COA-gate live region; `useId` for a duplicate DOM id; NotebookLM audio `transcript` prop (WCAG 1.2.1).
+- **Honesty (waves 56-60).** Reframed the Ferrari claim ("same stack" to "built on IBM Granite, the same platform"); softened cost to "several hundred (industry estimate)"; removed mock-as-real claims (the AnalyzeFlow audit trace no longer claims it parsed the uploaded COA; the CoachingReport header no longer says "on Granite"; the all-zeros `commit_sha` renders "demo fixture"); removed invented "FIA Appendix L Article N" phrasing in favour of "COA section under FIA Appendix L"; and relabelled the staged-ladder physics engines `pacejka-v12` / `scp-v13` / `lips-v15` from `-real` to `-staged` (honest: backend-served but not the full algorithm; aligns with the D-031 staged-ladder naming).
+- **Backend tests in CI (wave-62).** The backend job had been omitted since the Vinh era, so the 192 tests + the byte-equality serializer contract only ran locally. Added a GPU-free CI job (filtered install; torch/cvxpy tests `importorskip`): 159 passed / 8 GPU-skipped on every push.
+- **Verification.** A 19-agent deep code review (Codex + Gemini + pr-review-toolkit + sweeps, every CRITICAL/HIGH adversarially refuted) confirmed the honesty system is intact, the 80 `@ts-expect-error` are exemplary negative-type-tests, and no secrets are exposed.
+- **Ownership.** Stephen took over and completed the backend from Vinh.
+
+**Affected.** README + PLAN + SUBMISSION + architecture-spec + CONTRIBUTING + pitch-v3 + decision-log; app/frontend (a11y + honesty), app/backend (engine labels), `.github/workflows/ci.yml`. Numbered D-073 (follows D-072).
+
+---

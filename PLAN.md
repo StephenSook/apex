@@ -66,6 +66,19 @@
 
 ---
 
+## Status snapshot (2026-05-29 wave-58-63 audit + deep-review + backend-in-CI + repo-polish)
+
+**Waves 58-63 close-out (PRs #12-#16 + repo-polish, all merged green; each post-merge main run verified).**
+
+- **wave-58 hostile-judge audit (PR #12):** fixed an a11y contrast regression introduced in wave-57 (page.tsx amber-on-green), invented-FIA-Article phrasing, factual drift (FlowState version, tool count); removed the stale wave-43 deck pair (overclaim + invented Article). Audit confirmed honesty intact.
+- **wave-59 audit-queue (PR #13):** gated Vercel Analytics behind an env flag (killed the console 404), synced the route-count claim to the verified truth (20 API routes, zero 5xx), added a NotebookLM audio `transcript` prop (WCAG 1.2.1), added clarifying headers to the council transcripts.
+- **wave-60-62 deep code review (19-agent workflow, PRs #14/#15/#16):** verdict = honesty system intact, the 80 `@ts-expect-error` are exemplary negative-type-tests (not slop), no exposed secrets. Fixed 4 honesty-label slips (mock-as-real claims) + the broken README run-local + the pre-submit gate; relabelled the staged-ladder engines `pacejka-v12` / `scp-v13` / `lips-v15` from `-real` to `-staged`; and **added a GPU-free backend CI job so the 192 tests run on every push (159 passed / 8 GPU-skipped)** instead of local-only.
+- **wave-63 repo polish:** removed the empty `bob-sessions/` cruft; README front-door polish (CI badge + at-a-glance stats + judges link cluster + rubric table); freshened CONTRIBUTING + architecture-spec + pitch-v3 (tier split, tests-in-CI, WCAG AA, day-count retired) for the backend-in-CI reality.
+
+**Backend ownership: Stephen took over the backend from Vinh and completed it (2026-05-29).** The "Vinh (backend)" checklist below is now Stephen's; CI verifies backend changes (Claude cannot run cvxpy/torch locally).
+
+---
+
 ## Status snapshot (2026-05-29 wave-57 a11y + honesty-sweep + CI-discipline)
 
 **Wave-57 close-out (PRs #8, #9, #10 merged to main, all green).**
@@ -93,7 +106,7 @@ Stephen (frontend + ops):
 - [x] Repo polish (wave-57): GitHub topics added; the 4 stale branches were already gone; stray root `.log` files removed. Root scratch-file moves (council-transcript*, STATUS_DAY*, physics-ttm-neurips-methods.md) SKIPPED on purpose: inbound links across 8+ docs make a pre-submission move a broken-link risk for cosmetic gain.
 
 Vinh (backend; INTEGRATION -> WIRED swap-points, honest gaps per the wave-56 completeness audit):
-- [x] ALREADY SATISFIED (wave-57 verified read-only): the suite collects clean in a torch-less env. `test_server` only needs fastapi (importorskip-guarded); all torch/cvxpy deps are lazy or importorskip-guarded. No change needed. (192 test functions across 18 files.)
+- [x] DONE (wave-62, PR #16): the 192 backend tests now RUN IN CI via a dedicated GPU-free job in `.github/workflows/ci.yml` (159 passed / 8 GPU-skipped; torch/cvxpy/llama/granite-tsfm/fastf1 tests `importorskip`). The byte-equality serializer contract is enforced. `test_server` is torch-guarded; proper follow-up is to lazy-import `CvxpyLayersProjector` in `what_if_replay._get_projector` so the server stops eager-pulling torch (which would let `test_server` run in CI too).
 - [ ] Real 8-tier Pacejka physics in `projection_pacejka.py` (currently a deterministic residual trace with hardcoded fallback constants wrapping the real V2 constant-mu cvxpylayers projector).
 - [ ] Real successive-convexification loop in `projection_scp.py` (currently a deterministic multiplicative-shrink convergence trace).
 - [ ] Frozen-TTM as the live forecast engine (ships behind `APEX_ENABLE_TTM=1`; default seasonal-naive after the G4 FAIL; needs the D-010 channel-mix fine-tune to be defensible as a forecaster).
