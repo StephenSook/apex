@@ -83,8 +83,14 @@ def extract_pdf_text(pdf_bytes: bytes) -> str:
         ) from exc
     import io
 
-    reader = PdfReader(io.BytesIO(pdf_bytes))
-    text = "\n".join((page.extract_text() or "") for page in reader.pages)
+    try:
+        reader = PdfReader(io.BytesIO(pdf_bytes))
+        text = "\n".join((page.extract_text() or "") for page in reader.pages)
+    except Exception as exc:  # noqa: BLE001 - pypdf raises PdfReadError/DependencyError on corrupt, encrypted, or truncated PDFs
+        raise CoaBridgeError(
+            "could not read the PDF (corrupt, encrypted, or unsupported format); "
+            "upload a structured COA or a clearer certificate"
+        ) from exc
     if not text.strip():
         raise CoaBridgeError(
             "no extractable text in the PDF (likely a scanned image; needs OCR or the "
@@ -125,13 +131,24 @@ def coa_dict_from_text(text: str, generator: Callable[[str, int], str]) -> dict:
     malformed or fails the existing `parse_coa_payload` schema validation.
     """
     prompt = f"{_EXTRACTION_SYSTEM}\n\nDOCUMENT:\n{text[:_MAX_PROMPT_CHARS]}"
-    raw = generator(prompt, 0)
+    try:
+        raw = generator(prompt, 0)
+    except Exception as exc:  # noqa: BLE001 - external LLM/network boundary; re-raise generically so no upstream response text leaks
+        raise CoaBridgeError(
+            "COA extraction generator failed (upstream LLM or network error)"
+        ) from exc
     payload = _extract_json(raw)
     if not isinstance(payload, dict):
         raise CoaBridgeError("Granite extraction returned non-object JSON")
 
     explicit = payload.get("simultaneity_permission_flag")
-    if explicit is None and not _has_simultaneity_approval(payload):
+    # Never-guess gate. Treat null AND an uncorroborated non-True value (e.g.
+    # the model emitting `false` for an ambiguous certificate instead of the
+    # instructed `null`) as undetermined when no approval anchor is present, so
+    # a hallucinated negative cannot silently close the gate on an adaptive
+    # driver. An affirmative `true` (or any flag backed by the approval anchor)
+    # passes here and is consistency-checked by parse_coa_payload below.
+    if explicit is not True and not _has_simultaneity_approval(payload):
         raise CoaBridgeUndetermined(
             "COA simultaneity gate could not be determined from the PDF. Upload a "
             "structured COA or a clearer certificate; APEX will not guess a "

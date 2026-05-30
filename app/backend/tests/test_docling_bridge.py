@@ -91,3 +91,25 @@ def test_fenced_json_is_extracted():
     fenced = "```json\n" + json.dumps(_valid_coa()) + "\n```"
     result = coa_dict_from_text("doc text", _gen_returning(fenced))
     assert result["driver_id"] == "sarah-reynolds-britcar-2026"
+
+
+def test_explicit_false_without_anchor_raises_undetermined():
+    # wave-78: a model that emits an affirmative `false` (instead of the
+    # instructed `null`) for an ambiguous certificate must NOT silently close
+    # the gate; with no approval anchor it is undetermined, never gate-closed.
+    coa = _valid_coa()
+    coa["simultaneity_permission_flag"] = False
+    coa["fia_appendix_l_conditional_approvals"] = []
+    with pytest.raises(CoaBridgeUndetermined):
+        coa_dict_from_text("doc text", _gen_returning(coa))
+
+
+def test_generator_exception_becomes_bridge_error():
+    # wave-78: an upstream LLM/network failure inside the generator must surface
+    # as CoaBridgeError (-> 422), not an uncaught 500 whose detail could leak the
+    # upstream response text.
+    def _boom(prompt: str, attempt: int) -> str:
+        raise RuntimeError("OpenRouter 502: upstream secret-bearing detail")
+
+    with pytest.raises(CoaBridgeError):
+        coa_dict_from_text("doc text", _boom)
