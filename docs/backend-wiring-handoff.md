@@ -36,19 +36,18 @@ NEXT_PUBLIC_VINH_BACKEND_BASE_URL = https://ssookra-apex-backend.hf.space
 
 Then flip the per-tool flags. Every frontend route falls back to its canned fixture on any backend failure, so a flag flip can never 5xx the UI. Flip and verify the response `engine` field per route (a `*-real` engine = genuinely live; a `*-stub` engine = the backend is honestly stubbed for that tool until its model is enabled).
 
-| Vercel flag | Frontend surface | Backend route | Status when flipped |
-|---|---|---|---|
-| `NEXT_PUBLIC_USE_REAL_BACKEND_V14=1` | /judges orchestration | `GET /api/orchestration` | **Real** (`langgraph-v14-real`) |
-| `NEXT_PUBLIC_USE_REAL_SESSION_CONTEXT=1` | session context tiles | `GET /api/session-context` | Real tiles |
-| `NEXT_PUBLIC_USE_REAL_AUDIT_LOG=1` | Guardian audit log | `POST /api/audit-log` | Real |
-| `NEXT_PUBLIC_USE_REAL_WHAT_IF_REPLAY=1` | what-if replay | `POST /api/what-if-replay` | Real |
-| `NEXT_PUBLIC_USE_REAL_TSPULSE=1` | TSPulse anomaly | `GET /api/tspulse/anomaly` | Honest stub until `APEX_ENABLE_TSPULSE=1` on the backend Space |
-| `NEXT_PUBLIC_USE_REAL_TIMING_SHEET=1` | Granite Vision timing-sheet | timing-sheet route | Verify engine label; needs the vision model enabled on the backend |
-| `NEXT_PUBLIC_USE_REAL_RAG=1` | Granite Embedding RAG | `POST /api/rag-retrieve` | Verify engine label; needs the embedding model enabled |
-| `NEXT_PUBLIC_USE_REAL_FLOWSTATE=1` | FlowState | flowstate route | Verify engine label |
-| `NEXT_PUBLIC_USE_REAL_BACKEND_V12/V13/V15=1` | additional /judges panels | matching routes | Verify engine label per route |
+Per-route probe results (each backend route hit directly 2026-05-30):
 
-**Recommended for submission:** flip `V14`, `SESSION_CONTEXT`, `AUDIT_LOG`, `WHAT_IF_REPLAY` (confirmed real), set the backend URL, redeploy, and walk `/judges` confirming each panel shows a `*-real` engine pill. Leave a flag off (honest fixture) for any route whose engine label still reads `*-stub`. This moves several tools from INTEGRATION to genuinely WIRED without faking anything.
+| Vercel flag | Backend route | Probe result | Flip? |
+|---|---|---|---|
+| `NEXT_PUBLIC_USE_REAL_BACKEND_V14=1` | `GET /api/orchestration` | HTTP 200, `engine=langgraph-v14-real` | **YES, verified real** |
+| `NEXT_PUBLIC_USE_REAL_SESSION_CONTEXT=1` | `GET /api/session-context` | HTTP 200, real tiles | **YES, verified real** |
+| `NEXT_PUBLIC_USE_REAL_AUDIT_LOG=1` | `POST /api/audit-log` | HTTP 500 to a generic probe body (payload-shape sensitive) | Optional. Safe to flip (frontend falls back to fixture on 500) but verify the panel shows real data before relying on it |
+| `NEXT_PUBLIC_USE_REAL_WHAT_IF_REPLAY=1` | `POST /api/what-if-replay` | HTTP 500 to a generic probe body | Optional, same caveat as audit-log |
+| `NEXT_PUBLIC_USE_REAL_TSPULSE=1` | `GET /api/tspulse/anomaly` | HTTP 200, `engine=tspulse-stub` | Honest stub; no real gain until `APEX_ENABLE_TSPULSE=1` on the backend Space |
+| `NEXT_PUBLIC_USE_REAL_TIMING_SHEET` / `_RAG` / `_FLOWSTATE` / `_BACKEND_V12` / `_V13` / `_V15` | (no matching route) | **HTTP 404 (not implemented on this Space)** | NO. Flipping makes the frontend fetch a 404 and fall back to fixture; no gain |
+
+**Recommended for submission (verified safe + real):** set `NEXT_PUBLIC_VINH_BACKEND_BASE_URL=https://ssookra-apex-backend.hf.space`, flip `NEXT_PUBLIC_USE_REAL_BACKEND_V14=1` and `NEXT_PUBLIC_USE_REAL_SESSION_CONTEXT=1`, redeploy. That moves the /judges orchestration panel + session-context to the genuinely-live backend (`langgraph-v14-real`). Leave the 404 and stub flags OFF: the honest fixture is the correct state for those until the backend implements / enables them. The headline live pipeline is already shipped via the "Run the canonical demo (live backend)" CTA on /analyze (no flag needed; defaults to this Space).
 
 ## The COA contract gap (blocks full user-upload wiring)
 
