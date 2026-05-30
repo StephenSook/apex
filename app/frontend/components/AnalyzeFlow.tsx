@@ -18,7 +18,17 @@
  * 2026 driver_id text + "Corners (3)" rendering continue to work
  * because Coaching is the default activeTab after submit.
  *
- * Ships against canned mock data; Vinh's backend wires `/api/analyze` per Stream M.3 spec extension.
+ * Wave-64 live-coaching wiring: the corner-by-corner coaching NARRATIVE
+ * is now generated live by Granite 4.1 8B Instruct (via the
+ * OpenRouter-wired /api/coaching/narrate route) from the driver's typed
+ * debrief, grounded in the structured deltas below. The structured
+ * numbers (deltas, forecast envelope, tuning delta) and the FIA / COA
+ * citations remain sourced from the physics / fixture layer; the model
+ * writes coaching, never telemetry or regulatory anchors. On any failure
+ * the surface degrades honestly to the authored fixture narrative,
+ * labelled "fixture" on the rendered report. The full numeric pipeline
+ * (Granite-Docling COA parse + TTM forecast + cvxpylayers projection)
+ * remains a documented backend swap-point per Stream M.3.
  * Wave-43 Lane K (Sookra Methodology rule lock 2026-05-24): the mock is
  * a GENERIC illustrative report parameterized from the user-typed
  * driver_id + uploaded file metadata, NOT a Sarah Reynolds persona
@@ -37,6 +47,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import type { CoachingReport as CoachingReportType } from "../../shared/types";
+import { applyLiveNarrative } from "../lib/live-narrative";
 
 import AICopilotChat from "./AICopilotChat";
 import CoachingReport from "./CoachingReport";
@@ -96,8 +107,20 @@ export default function AnalyzeFlow() {
   const handleAnalyze = useCallback(async (submission: DropzoneSubmission) => {
     setIsSubmitting(true);
     try {
-      await delay(900);
-      setReport(buildMockReport(submission));
+      // Wave-64 live-coaching wiring. Build the structurally-complete
+      // base report (real deltas, forecast envelope, tuning delta, and
+      // FIA / COA citations from the physics / fixture layer), then ask
+      // the OpenRouter-wired Granite 4.1 8B Instruct narrator to
+      // regenerate the corner-by-corner coaching prose live from the
+      // driver's typed debrief via /api/coaching/narrate. The numbers and
+      // citations are never sent to the model for regeneration; it writes
+      // coaching, not telemetry. On any failure (no API key, upstream
+      // error, parse failure) applyLiveNarrative returns the base report
+      // labelled "fixture", so the surface degrades honestly and the
+      // rendered provenance label always tells the truth.
+      const base = buildMockReport(submission);
+      const next = await applyLiveNarrative(base, submission.debrief);
+      setReport(next);
       setActiveTab("coaching");
     } catch (err) {
       // Real fetch errors land here once the backend swap-point per
@@ -347,10 +370,6 @@ function EdgeModeCallout() {
       </Link>
     </aside>
   );
-}
-
-function delay(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 /**
