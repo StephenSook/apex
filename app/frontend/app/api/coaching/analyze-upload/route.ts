@@ -1,15 +1,18 @@
 /**
  * POST /api/coaching/analyze-upload
  *
- * Wave-74: server-side proxy that forwards the driver's ACTUAL uploaded files
- * (telemetry CSV + COA PDF/JSON + optional debrief) to the deployed APEX
- * backend's /api/analyze-upload, which runs the full real pipeline (real
- * physics projection + Granite Guardian audit + Granite coaching) and, for a
- * PDF COA, the wave-74 Granite-Docling bridge. Returns the strict-decoded
- * CoachingReport stamped narrative_source "backend-live".
+ * Wave-74: server-side transparent proxy that streams the driver's uploaded
+ * multipart body (telemetry CSV + COA PDF/JSON + optional debrief) straight to
+ * the deployed APEX backend's /api/analyze-upload, which runs the full real
+ * pipeline (real physics projection + Granite Guardian audit + Granite
+ * coaching) and, for a PDF COA, the wave-74 Granite-Docling bridge. Returns the
+ * strict-decoded CoachingReport stamped narrative_source "backend-live".
  *
  * Why a proxy: the browser cannot POST multipart to the HF Space cross-origin
- * without CORS, so the forward happens here on the Node runtime.
+ * without CORS, so the forward happens here on the Node runtime. The body is
+ * streamed through verbatim (same content-type + boundary) rather than parsed
+ * and rebuilt, which keeps the route a thin pipe (the backend does all field
+ * validation) and avoids any FormData re-serialization.
  *
  * Activation: the /analyze client only calls this when
  * NEXT_PUBLIC_USE_REAL_ANALYZE_UPLOAD === "1" (OFF by default). Until the
@@ -47,46 +50,30 @@ function jsonResponse(payload: unknown, phase: string): Response {
 }
 
 export async function POST(request: Request): Promise<Response> {
-  let form: FormData;
-  try {
-    form = await request.formData();
-  } catch {
+  const contentType = request.headers.get("content-type") ?? "";
+  if (!contentType.includes("multipart/form-data") || request.body === null) {
     return jsonResponse({ ok: false, source: "bad-request" }, "bad-request");
   }
-
-  // Duck-type file-like entries instead of `instanceof File`: under the jsdom
-  // test environment the File/Blob globals differ from undici's parsed
-  // FormData entries, so instanceof is unreliable across that boundary. A
-  // file entry exposes arrayBuffer(); a string field does not.
-  const isFileLike = (v: unknown): v is File =>
-    typeof v === "object" && v !== null && typeof (v as Blob).arrayBuffer === "function";
-  const telemetry = form.get("telemetry");
-  const coa = form.get("coa");
-  const debrief = form.get("debrief");
-  if (!isFileLike(telemetry) || !isFileLike(coa)) {
-    return jsonResponse({ ok: false, source: "bad-request" }, "bad-request");
-  }
-
-  const forward = new FormData();
-  forward.append("telemetry", telemetry, telemetry.name || "telemetry.csv");
-  forward.append("coa", coa, coa.name || "coa");
-  if (isFileLike(debrief)) forward.append("debrief", debrief, debrief.name || "debrief.md");
 
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), TIMEOUT_MS);
   const onAbort = () => controller.abort();
   request.signal.addEventListener("abort", onAbort, { once: true });
   try {
+    // Stream the incoming multipart body verbatim to the backend (duplex
+    // "half" is required when sending a ReadableStream body on the Node
+    // fetch). The backend validates the individual fields.
     const res = await fetch(`${backendBaseUrl()}/api/analyze-upload`, {
       method: "POST",
-      body: forward,
+      headers: { "content-type": contentType },
+      body: request.body,
       signal: controller.signal,
-    });
+      duplex: "half",
+    } as RequestInit & { duplex: "half" });
     if (!res.ok) {
       // 415 (PDF not yet accepted, pre-bridge-deploy), 422 (COA gate
-      // undetermined), 5xx -> degrade honestly. 422 carries the backend's
-      // "upload a structured COA" message for the client to surface if it
-      // wants; the client otherwise falls back to the fixture path.
+      // undetermined), 4xx/5xx -> degrade honestly; the client falls back to
+      // the fixture + live-narrative path.
       console.warn(`apex.analyze-upload: backend HTTP ${res.status}; client degrades to fixture`);
       return jsonResponse({ ok: false, source: "backend-error", status: res.status }, `backend-${res.status}`);
     }

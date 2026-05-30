@@ -1,13 +1,12 @@
-// @vitest-environment node
-//
-// This route does request.formData() (undici) then builds + appends to a new
-// FormData to forward to the backend. Under the default jsdom environment,
-// undici's parsed entries are not valid Blobs for jsdom's FormData.append, so
-// the forward throws spuriously. The Vercel Node runtime uses undici for both
-// sides, so the node test environment matches production exactly.
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { POST } from "../route";
+
+// The route is a transparent stream-proxy: it checks the multipart
+// content-type + body presence, streams the body to the backend, and decodes
+// the response. So the test only needs a multipart content-type + any body
+// (no FormData round-trip), which keeps it env-agnostic. The backend forward
+// is mocked.
 
 function coachingReport(): Record<string, unknown> {
   return {
@@ -44,16 +43,21 @@ function coachingReport(): Record<string, unknown> {
   };
 }
 
-function multipartReq(opts?: { omitCoa?: boolean }): Request {
-  const form = new FormData();
-  form.append("telemetry", new File(["t,v\n1,2"], "telemetry.csv", { type: "text/csv" }));
-  if (!opts?.omitCoa) {
-    form.append("coa", new File(["%PDF-1.4 fake"], "coa.pdf", { type: "application/pdf" }));
-  }
-  form.append("debrief", new File(["lost the rears"], "debrief.md", { type: "text/markdown" }));
-  return new Request("https://apex-one-black.vercel.app/api/coaching/analyze-upload", {
+const URL = "https://apex-one-black.vercel.app/api/coaching/analyze-upload";
+
+function multipartReq(): Request {
+  return new Request(URL, {
     method: "POST",
-    body: form,
+    headers: { "content-type": "multipart/form-data; boundary=----apextest" },
+    body: '------apextest\r\nContent-Disposition: form-data; name="telemetry"; filename="t.csv"\r\n\r\nt,v\r\n1,2\r\n------apextest--\r\n',
+  });
+}
+
+function nonMultipartReq(): Request {
+  return new Request(URL, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: "{}",
   });
 }
 
@@ -87,8 +91,8 @@ describe("/api/coaching/analyze-upload wave-74 live-backend upload proxy", () =>
     expect(data.report?.narrative_source).toBe("backend-live");
   });
 
-  it("returns ok:false bad-request when the COA file is missing", async () => {
-    const res = await POST(multipartReq({ omitCoa: true }));
+  it("returns ok:false bad-request when the request is not multipart", async () => {
+    const res = await POST(nonMultipartReq());
     const data = (await res.json()) as { ok: boolean; source: string };
     expect(data.ok).toBe(false);
     expect(data.source).toBe("bad-request");
