@@ -132,9 +132,11 @@ export default function CoachingReport({ report }: CoachingReportProps) {
                 COA-parsed simultaneity gate, a deterministic Guardian
                 rule-audit, and a seasonal-naive pace forecast. The deltas,
                 tuning, and FIA Appendix L / COA citations are live-computed, not
-                fixtures. The frozen Granite TTM and the Granite Guardian model
-                are documented backend swap-points; the coaching narrative runs
-                live Granite 4.1 8B when the backend narrator key is set.
+                fixtures. The corner coaching on this path is APEX's
+                deterministic rule-based narration of those live numbers; the
+                live Granite 4.1 8B narrative runs on the default Analyze
+                submission. The frozen Granite TTM and the Granite Guardian model
+                are documented backend swap-points.
               </>
             ) : report.narrative_source === "granite-live" ? (
               <>
