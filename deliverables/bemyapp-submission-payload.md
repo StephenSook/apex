@@ -26,11 +26,13 @@ Editorial-paddock palette. APEX wordmark (Fraunces display) + tagline + hero vis
 APEX
 ```
 
-### 1-2 sentence summary (immediately under banner)
+### Project description / 1-line summary (under banner; BeMyApp caps this field around 100 characters)
 
 ```
-APEX is the IBM Granite-stack AI race engineer for adaptive racers, veterans, and grassroots competitors. It reads each driver's FIA Certificate of Adaptations at the tensor level, so adaptive driving stops being misdiagnosed as driver error.
+The IBM Granite AI race engineer for adaptive, veteran, and grassroots racers who don't have one.
 ```
+
+~96 chars, fits the cap. The project NAME field already says "APEX", so the description does not repeat it. The COA / adaptive-misdiagnosis differentiator lives in the Issue + Magic Solution panels (separate, longer fields). Fuller one-liner if a field ever allows ~240 chars: "APEX is the IBM Granite AI race engineer for adaptive, veteran, and grassroots racers. It reads each driver's FIA Certificate of Adaptations at the tensor level, so adaptive driving is not misread as driver error."
 
 ### Challenges tag
 
