@@ -29,6 +29,7 @@ import dynamic from "next/dynamic";
 
 import CoachVoicePlayback from "./CoachVoicePlayback";
 import GraniteCitationFooter from "./GraniteCitationFooter";
+import RecommendationStabilityBadge from "./RecommendationStabilityBadge";
 import GuardianAudit from "./GuardianAudit";
 import TuningCard from "./TuningCard";
 import WatsonTtsRadio from "../lib/watson-tts-radio";
@@ -174,6 +175,7 @@ export default function CoachingReport({ report }: CoachingReportProps) {
 
         <div className="grid gap-10 lg:grid-cols-3 lg:gap-12">
           <div className="lg:col-span-2 flex flex-col gap-6">
+            <RecommendationStabilityBadge corners={report.corners} />
             <CornerList corners={report.corners} readingLevel={readingLevel} />
             <ForecastChart forecast={report.forecast} />
             <CoachingReportLiveCharts report={report} />
