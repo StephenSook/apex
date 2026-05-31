@@ -12,6 +12,15 @@ describe("assessRecommendationStability (wave-82 stability probe)", () => {
     expect(assessRecommendationStability([corner("Turn 1", 0.4)])).toBeNull();
   });
 
+  it("returns null when a delta is non-finite (un-assessable; self-defending)", () => {
+    expect(
+      assessRecommendationStability([corner("a", Number.NaN), corner("b", 0.2)]),
+    ).toBeNull();
+    expect(
+      assessRecommendationStability([corner("a", Number.POSITIVE_INFINITY), corner("b", 0.2)]),
+    ).toBeNull();
+  });
+
   it("STABLE when the priority corner has a margin wider than the perturbation budget", () => {
     const s = assessRecommendationStability([
       corner("Turn 1 Hairpin", 0.5),

@@ -52,8 +52,8 @@ export default function RecommendationStabilityBadge({
       </p>
       <p className="mt-2 font-mono text-[10px] leading-relaxed text-muted">
         Local stability probe: re-ranks the corner time-loss under a bounded{" "}
-        {stability.perturbationS.toFixed(2)} s input perturbation (
-        {stability.flipCount} of {stability.totalProbes} probes change the
+        {stability.perturbationS.toFixed(2)} s drift of any single corner reading
+        ({stability.flipCount} of {stability.totalProbes} probes change the
         priority). Not a global guarantee.
       </p>
     </section>
