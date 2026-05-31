@@ -75,7 +75,10 @@ export function assessRecommendationStability(
     for (const eps of EPSILONS_S) {
       for (const sign of [1, -1] as const) {
         const probe = deltas.slice();
-        probe[i] += sign * eps;
+        // Round to kill float-representation dust (0.2 + 0.1 = 0.30000000000000004)
+        // so a perturbation that exactly closes the margin reads as a tie, not a
+        // spurious flip. The grid is in 0.05 s steps, exact at 6 decimals.
+        probe[i] = Math.round((probe[i] + sign * eps) * 1e6) / 1e6;
         totalProbes += 1;
         if (priorityIndex(probe) !== base) flipCount += 1;
       }
