@@ -66,7 +66,15 @@ export function assessRecommendationStability(
 ): RecommendationStability | null {
   if (corners.length < 2) return null;
 
-  const deltas = corners.map((c) => c.current_delta_s);
+  // Round every delta to the 0.05 s grid (exact at 6 decimals) so base ranking,
+  // probing, and the margin all compare on the same float-clean values, not just
+  // the perturbed coordinate. Kills representation dust that could otherwise
+  // register a spurious flip near an exact boundary.
+  const deltas = corners.map((c) => Math.round(c.current_delta_s * 1e6) / 1e6);
+  // Self-defending: a non-finite reading is un-assessable, so degrade to no badge
+  // rather than render "NaN s". The strict decoder already blocks this on every
+  // production path; this keeps the probe correct for any future caller too.
+  if (deltas.some((d) => !Number.isFinite(d))) return null;
   const base = priorityIndex(deltas);
 
   let flipCount = 0;
@@ -99,6 +107,11 @@ export function assessRecommendationStability(
 
   const m = marginS.toFixed(2);
   const p = perturbationS.toFixed(2);
+  const probes = `${flipCount} of ${totalProbes}`;
+  // Removing the priority corner's reading makes the next-most-costly corner
+  // (the runner-up) the new priority by definition. This is exact, unlike a
+  // perturbation flip, which can land on any near-tied corner, so the copy
+  // names a specific destination only here.
   const dropout =
     runnerUpCorner !== null
       ? ` If the ${priorityCorner} reading itself drops out, the focus moves to ${runnerUpCorner}.`
@@ -106,11 +119,11 @@ export function assessRecommendationStability(
 
   let detail: string;
   if (verdict === "stable") {
-    detail = `Stable. ${priorityCorner} stays the priority focus across a bounded ${p} s perturbation of every corner reading (a ${m} s margin to the next corner), so the call holds under realistic input noise.${dropout}`;
+    detail = `Stable. ${priorityCorner} stays the priority focus when any single corner reading drifts within a bounded ${p} s probe: none of the ${totalProbes} single-corner probes change it, and the margin to the next corner (${runnerUpCorner}) is ${m} s.${dropout}`;
   } else if (verdict === "moderate") {
-    detail = `Moderate. ${priorityCorner} stays the priority under small input noise, but the margin to ${runnerUpCorner} is only ${m} s, so a larger sensor drift could move the focus. Treat it as the leading call, not the only one.${dropout}`;
+    detail = `Moderate. ${priorityCorner} is the priority, but it flips in ${probes} single-corner drift probes, and the margin to the next corner (${runnerUpCorner}) is only ${m} s. Treat it as the leading call, not the only one.${dropout}`;
   } else {
-    detail = `Fragile. The priority focus would shift to ${runnerUpCorner} if a recent reading drifted within the bounded ${p} s probe (margin only ${m} s). Treat this as a provisional call and confirm the reading.${dropout}`;
+    detail = `Fragile. The priority flips in ${probes} single-corner drift probes; the next-closest corner (${runnerUpCorner}) is only ${m} s behind. Treat this as a provisional call and confirm the reading.${dropout}`;
   }
 
   return {
