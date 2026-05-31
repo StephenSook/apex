@@ -315,8 +315,8 @@ function FooterStrip() {
       }}
     >
       <span>github.com/StephenSook/apex</span>
-      <span style={{ color: AMBER }}>Built on IBM Granite - 8 tools, all load-bearing</span>
-      <span>Apache 2.0</span>
+      <span style={{ color: AMBER }}>14 IBM Granite tools - 3 wired live, 9 integrated, 2 accelerators</span>
+      <span>Live demo - 192 tests in CI</span>
     </div>
   );
 }
