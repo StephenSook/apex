@@ -171,3 +171,30 @@ scripts/private-denylist.txt
 app/backend/.fastf1_cache/
 .vercel
 .claude/
+
+# --- AI-assistant instruction + config files (kept LOCAL for the tools, not published) ---
+# Per the global GitHub-hygiene rule: a strategy-laden CLAUDE.md / internal AI
+# scaffolding should not be public on a competition/portfolio repo. The agent
+# still reads these locally (untracked); the public repo stays clean. A neutral,
+# judge-friendly build-guide AGENTS.md can be re-added deliberately later if wanted.
+CLAUDE.md
+AGENTS.md
+GEMINI.md
+.cursorrules
+.windsurfrules
+.aider*
+.github/copilot-instructions.md
+
+# --- Internal strategy / outreach (third-party PII) / AI-build-process docs ---
+# Same precedent as the recon PDFs + wave-45 self-review above: a judge browsing
+# the public repo should not see third-party email addresses + private email
+# bodies (consent-log, outreach-drafts), the prize-track-stacking playbook, or
+# the AI-council / cold-review transcripts. Kept in private memory + Obsidian only.
+docs/consent-log.md
+docs/outreach-drafts/
+docs/stephen-action-prompts.md
+docs/apex-lite-contingency.md
+deliverables/per-track-submission-framing.md
+deliverables/multi-track-checklist.md
+council-transcript-*.md
+*cold-review*.md
