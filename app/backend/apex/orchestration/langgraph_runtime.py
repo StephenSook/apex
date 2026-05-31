@@ -241,10 +241,14 @@ class LangGraphRuntime:
         )
         active_narrator = narrator or Narrator()
         narrator_out = active_narrator.narrate(narrator_inputs)
-        narrator_engine = (
-            "granite-4.1-8b-openrouter"
-            if narrator is not None else "deterministic-floor"
-        )
+        # The instruct node calls Narrator.narrate(), which composes the
+        # coaching report deterministically (derive_corner_insights) and does
+        # not invoke the wired text generator. Label the prose engine honestly
+        # as the deterministic floor regardless of whether a generator was
+        # supplied; the live Granite 4.1 8B narrative is produced by the
+        # frontend /api/coaching/narrate route, layered over these backend
+        # numbers (frontend provenance "backend-granite-live").
+        narrator_engine = "deterministic-floor"
         steps.append(NodeExecutionTrace(
             node="instruct",
             status="ok",
