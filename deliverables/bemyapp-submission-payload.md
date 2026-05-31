@@ -57,7 +57,7 @@ The category of AI race engineering exists. The drivers who need it most have no
 ### Our Magic Solution (3 paragraphs, ~190 words; depth-matched to NeuroPit's panel)
 
 ```
-APEX is a live, deployed AI race engineer built on IBM Granite, pointed at the drivers who need one most. It reads a driver's telemetry, their FIA Certificate of Adaptations, and a written debrief, and returns a corner-by-corner coaching report with a tuning recommendation, a next-session pace forecast, and a Granite Guardian safety audit.
+APEX is a live, deployed AI race engineer built on IBM Granite, pointed at the drivers who need one most. It reads a driver's telemetry, their FIA Certificate of Adaptations, and a written debrief, and returns a corner-by-corner coaching report with a tuning recommendation, a next-session pace forecast, a Granite Guardian safety audit, and a recommendation-stability check that flags when a coaching call is fragile to sensor drift.
 
 The pipeline is real and runs end to end on a deployed FastAPI backend: a frozen Granite TimeSeries forecaster, a differentiable convex-QP physics projection that enforces the friction ellipse and the COA-parameterized brake-throttle simultaneity gate, a deterministic Guardian rule-audit, and a live Granite 4.1 8B narrator. One click of the canonical demo on /analyze runs real telemetry through that backend and writes the coaching live with Granite.
 
