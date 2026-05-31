@@ -292,4 +292,81 @@ describe("AnalyzeFlow integration", () => {
       screen.getByText(/Backend-computed trail-brake recommendation for Turn 1/i),
     ).toBeInTheDocument();
   });
+
+  // Wave-79: the canonical demo layers live Granite corner prose over the real
+  // backend numbers. analyze-demo returns the backend-live report; the
+  // /api/coaching/narrate route then returns live corners, so the card renders
+  // with the fully-live "backend-granite-live" provenance.
+  it("upgrades the canonical demo to backend-granite-live when narrate returns live prose", async () => {
+    const backendReport = {
+      driver_id: "sarah-reynolds-britcar-2026",
+      corners: [
+        {
+          name: "Turn 1 Hairpin",
+          sector: 1,
+          current_delta_s: 0.248,
+          recommendation: "Backend-computed trail-brake recommendation for Turn 1.",
+          citations: [{ fia_article: "Appendix L", coa_section: "coa_sec_hand_controls" }],
+        },
+      ],
+      tuning_delta: {
+        parameter: "brake_bias",
+        current: 58,
+        recommended: 58,
+        unit: "%",
+        citation: { fia_article: "Appendix L", coa_section: "coa_sec_hand_controls" },
+      },
+      forecast: [{ sector_idx: 0, mean: 57.2, low: 54.2, high: 58.0 }],
+      audit: { verdict: "flag", reasoning_trace: ["t"], flagged_concerns: ["c"], audit_id: "a1" },
+      provenance: {
+        model_versions: {
+          granite_docling: "ibm-granite/granite-docling-258M",
+          granite_vision: "ibm-granite/granite-vision-3.2-2b",
+          granite_ttm: "ibm-granite/granite-timeseries-ttm-r2",
+          granite_instruct: "ibm-granite/granite-4.0-8b-instruct",
+          granite_guardian: "ibm-granite/granite-guardian-4.1",
+        },
+        commit_sha: "container",
+        generated_at_iso: "2026-05-30T19:10:32+00:00",
+      },
+      narrative_source: "backend-live",
+    };
+    vi.stubGlobal(
+      "fetch",
+      vi.fn((input: RequestInfo | URL) => {
+        const url = typeof input === "string" ? input : input.toString();
+        const payload = url.includes("/api/coaching/narrate")
+          ? {
+              ok: true,
+              source: "granite-live",
+              corners: [
+                {
+                  name: "Turn 1 Hairpin",
+                  recommendation: "Live Granite trail-brake coaching for Turn 1.",
+                  recommendation_beginner: "Brake a touch later into Turn 1.",
+                  reasoning_chain: [],
+                },
+              ],
+              summary: "s",
+            }
+          : { ok: true, source: "backend-live", report: backendReport };
+        return new Promise<Response>((resolve) =>
+          setTimeout(
+            () => resolve({ ok: true, status: 200, json: async () => payload } as unknown as Response),
+            50,
+          ),
+        );
+      }) as unknown as typeof fetch,
+    );
+
+    const user = userEvent.setup();
+    render(<AnalyzeFlow />);
+    await user.click(screen.getByRole("button", { name: /Run the canonical demo \(live backend\)/i }));
+
+    await screen.findByRole("heading", { name: /Corner-by-corner coaching/i }, { timeout: 2000 });
+    expect(await screen.findByText(/the narrative is live Granite/i)).toBeInTheDocument();
+    expect(
+      await screen.findByText(/Live Granite trail-brake coaching for Turn 1/i),
+    ).toBeInTheDocument();
+  });
 });

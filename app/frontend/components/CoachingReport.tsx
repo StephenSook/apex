@@ -124,7 +124,19 @@ export default function CoachingReport({ report }: CoachingReportProps) {
           <p className="max-w-2xl text-base leading-relaxed text-ink-soft">
             Generated for{" "}
             <span className="font-mono text-sm text-ink">{report.driver_id}</span>.
-            {report.narrative_source === "backend-live" ? (
+            {report.narrative_source === "backend-granite-live" ? (
+              <>
+                {" "}
+                Computed live by the deployed APEX backend on the canonical
+                telemetry: a real differentiable-QP physics projection + the
+                COA-parsed simultaneity gate, a deterministic Guardian
+                rule-audit, and a seasonal-naive pace forecast, with the corner
+                coaching written live by Granite 4.1 8B Instruct from the
+                canonical debrief. The numbers and FIA Appendix L / COA
+                citations are backend-computed; the narrative is live Granite.
+                Everything on this card is live.
+              </>
+            ) : report.narrative_source === "backend-live" ? (
               <>
                 {" "}
                 Computed live by the deployed APEX backend on the canonical

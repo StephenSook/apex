@@ -473,15 +473,26 @@ export interface CoachingReport {
    * compat: fixtures + decoders that omit it render as before (the
    * consumer treats `undefined` as "fixture").
    *
-   * Wave-69 adds "backend-live": the ENTIRE report (numbers, forecast,
-   * tuning, Guardian audit, AND coaching prose) was computed live by the
-   * deployed APEX FastAPI backend's LangGraph pipeline (real physics
-   * projection + Granite Guardian audit + Granite coaching) on the
-   * canonical telemetry, decoded at the wire boundary. This is the only
-   * source where the numbers themselves are live-computed rather than
-   * fixture-sourced.
+   * Wave-69 adds "backend-live": the report NUMBERS (deltas, forecast,
+   * tuning, Guardian audit) and citations were computed live by the
+   * deployed APEX FastAPI backend's LangGraph pipeline (real
+   * differentiable-QP physics projection + deterministic Guardian
+   * rule-audit + seasonal-naive forecast) on the canonical telemetry,
+   * decoded at the wire boundary. This is the only source where the
+   * numbers themselves are live-computed rather than fixture-sourced. The
+   * backend's own corner prose is the deterministic floor
+   * (derive_corner_insights), NOT a live model.
+   *
+   * Wave-79 adds "backend-granite-live": the same backend-computed numbers
+   * with live Granite 4.1 8B corner prose layered over them by the frontend
+   * /api/coaching/narrate route (the canonical demo's fully-live state).
+   * Degrades to "backend-live" if the narrate route is unreachable.
    */
-  readonly narrative_source?: "granite-live" | "fixture" | "backend-live";
+  readonly narrative_source?:
+    | "granite-live"
+    | "fixture"
+    | "backend-live"
+    | "backend-granite-live";
 }
 
 // ---------------------------------------------------------------------------
