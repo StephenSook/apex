@@ -134,7 +134,8 @@ export default function CoachingReport({ report }: CoachingReportProps) {
                 coaching written live by Granite 4.1 8B Instruct from the
                 canonical debrief. The numbers and FIA Appendix L / COA
                 citations are backend-computed; the narrative is live Granite.
-                Everything on this card is live.
+                Both layers are computed live on the canonical telemetry, not a
+                fixture.
               </>
             ) : report.narrative_source === "backend-live" ? (
               <>
