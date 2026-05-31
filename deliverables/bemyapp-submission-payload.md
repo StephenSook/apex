@@ -1,6 +1,6 @@
 # BeMyApp Submission Payload, APEX
 
-> Verbatim copy for each field on the BeMyApp submission form for IBM SkillsBuild AI Builders Challenge May 2026. Draft Day 2 PM from the live BeMyApp form structure pulled 2026-05-21 PM; wave-42 Day 6 refresh applied to reflect 12-tool IBM stack + 5 shouldn't-be-possible moves + Phase 0 contracts shipped + cascade-#11 brand-propagation + wave-42 Lane E.M.1/M.2 type-spec PRs; wave-46 D-058 refresh expands the stack to 14 tools (added Granite 4.1 3B Instruct fast-path AICopilotChat routing + Granite Speech 4.1 2B-Plus speaker-attributed ASR + Mellea Instruct-Validate-Repair critic loop; IBM Bob removed 2026-05-26, 15 -> 14); refine Day 10-11 with the live demo URL + recorded video link.
+> Verbatim copy for each field on the BeMyApp submission form (IBM SkillsBuild AI Builders Challenge, May). Refreshed 2026-05-31 (submission day) to the verified live state: the Issue + Magic Solution panels now lead with the problem-matters numbers and the honest 3 WIRED / 9 INTEGRATION / 2 ACCELERATOR tier framing (no stack-overclaim), the fully-live canonical demo, the deployed backend + Docling COA bridge, and the live URLs. The form-aligned section below is the authoritative paste copy. GitHub handles confirmed: StephenSook + vinhbin. Only fill-in left: Vin's demo-video link.
 >
 > **Owner:** Stephen Sookra. **Submission window opens:** TBD. **Hard deadline:** 2026-05-31, 11:59 PM ET.
 >
@@ -47,33 +47,35 @@ https://github.com/StephenSook/apex
 ### The Issue (3 paragraphs, ~140 words; depth-matched to NeuroPit's panel)
 
 ```
-A professional race engineer costs several hundred pounds per day (industry estimate). Every Formula 1 driver has one. Most adaptive racers, veteran motorsport rehabilitation programme drivers, and grassroots competitors do not. The FIA lifted its single-seater ban on disabled drivers in December 2017. The regulatory barrier dropped. **The economic barrier stayed.**
+Every Formula 1 driver has a race engineer in their ear. At club level that role runs several hundred pounds a day (industry estimate), so most adaptive racers, veteran-programme drivers, and grassroots competitors race without one. In December 2017 the FIA lifted its single-seater ban on disabled drivers. The regulatory barrier dropped. The economic one did not.
 
-Existing AI race-engineer tools hard-code `throttle * brake = 0`. But simultaneous brake and throttle is a real racing technique: able-bodied drivers do it when they left-foot-brake or trail-brake, and adaptive drivers running hand-control systems do it within the envelope their FIA Certificate of Adaptations homologates. **Tools that assume mutual exclusion read the technique as driver error and prescribe corrections the driver should not execute.**
+For adaptive drivers it is worse than cost. Existing AI race-engineer tools hard-code "throttle times brake equals zero." But simultaneous brake and throttle is a real technique, and adaptive drivers running hand controls do it inside the envelope their FIA Certificate of Adaptations homologates. Tools that assume mutual exclusion read the technique as driver error and coach the driver to stop doing what their equipment is built to do.
 
-The category of AI race engineering exists. The drivers who need it most have no product that respects the binding regulatory document they carry. **The gap is identity-aware coaching.**
+The category of AI race engineering exists. The drivers who need it most have no product that respects the binding regulatory document they carry. The gap is identity-aware coaching.
 ```
 
 ### Our Magic Solution (3 paragraphs, ~190 words; depth-matched to NeuroPit's panel)
 
 ```
-APEX is the IBM Granite-stack AI race engineer for adaptive racers, veteran-team drivers, and grassroots competitors. It reads each driver's FIA Certificate of Adaptations at the tensor level, so adaptive driving stops being misdiagnosed as driver error.
+APEX is a live, deployed AI race engineer built on IBM Granite, pointed at the drivers who need one most. It reads a driver's telemetry, their FIA Certificate of Adaptations, and a written debrief, and returns a corner-by-corner coaching report with a tuning recommendation, a next-session pace forecast, and a Granite Guardian safety audit.
 
-The pipeline runs three layers. **Layer 1**: a frozen Granite TimeSeries TTM forecaster from NeurIPS 2024 turns 1-Hz mini-sector telemetry into a next-session pace envelope without retraining. **Layer 2**: a two-stage projection-and-audit layer. Stage 1 is a differentiable CvxpyLayer convex QP that enforces the friction ellipse, the forward-Euler kinematic step, and a jerk bound on every forecast step. Stage 2 is a post-projection feasibility filter that audits the bicycle-model coupling and the COA-parameterized brake-throttle simultaneity gate (the two nonconvex constraints that cannot live inside the CvxpyLayer). **Layer 3**: Granite Guardian 4.1 audits the combined Stage 1 + Stage 2 structured text log under custom Bring-Your-Own-Classifier rules, with the 14-fixture Convergence 14 catalogue (visible on /judges) as the unit-tested safety contract. Granite 4.1 8B Instruct narrates the coaching report in race-engineer voice.
+The pipeline is real and runs end to end on a deployed FastAPI backend: a frozen Granite TimeSeries forecaster, a differentiable convex-QP physics projection that enforces the friction ellipse and the COA-parameterized brake-throttle simultaneity gate, a deterministic Guardian rule-audit, and a live Granite 4.1 8B narrator. One click of the canonical demo on /analyze runs real telemetry through that backend and writes the coaching live with Granite.
 
-Fourteen IBM Granite tools per the wave-30 D-016 stack expansion + wave-46 D-058 + wave-46-final IBM Bob retirement. Granite TimeSeries TTM r2.1 as Track 1 forecaster, Granite FlowState r1.1 18.5M as Track 2, IBM TSPulse 1M for polyphase anomaly detection, Granite Guardian 4.1 as the audit gate, Granite Embedding R2 149M + 47M as the RAG retrieval layer, Granite-Docling 258M + Granite Vision 4.1 4B + Docling library for document parsing, Granite 4.1 8B Instruct as the narrator, Granite 4.1 3B Instruct for AICopilotChat fast-path routing, Granite Speech 4.1 2B-Plus for speaker-attributed ASR, Granite 4.0 Nano 350M as the in-browser WebGPU edge model per D-021, LangGraph + Granite MCP Gateway + ContextForge for orchestration (Langflow retained as exported graph artifact), Mellea v0.5.0 as IVR-loop build-time accelerator. **Three firsts**: first application of a pretrained time-series foundation model to adaptive motorsport telemetry, first public AI race-engineer workflow we found that reads the FIA Certificate of Adaptations as a binding regulatory input, first COA-parameterized brake-throttle simultaneity gate. **Five shouldn't-be-possible moves** compose on top: WebGPU Granite Nano on-device inference, Activated LoRA per-driver fine-tune, GEPA evolutionary prompt optimization, EAGLE-3 speculative decoding for sub-15s local latency, and a tri-agent Agent-as-Judge critic loop (Physics-Critic + Pedagogy-Critic + Guardian-Safety) gating the final report. Every coaching claim cites a specific COA section and the FIA Appendix L regulatory anchor (per published revision). Provenance is on every line. **Audit first, always.**
+What sets APEX apart is honesty a judge can verify in the code. We integrate fourteen IBM Granite tools across three labeled tiers: three wired live in production (the Granite 4.1 8B narrator, a Granite 4.0 Nano model running in-browser on WebGPU, and Granite Embedding R2 via HuggingFace Inference, all verified responding live), nine at full UI integration with documented backend swap-points, and two build-time accelerators. Every tool carries its real status on the /judges page. 192 backend tests gate every commit in CI, and a malformed upload returns an honest error rather than a guessed answer.
+
+The architectural first is the COA-parameterized brake-throttle simultaneity gate. When a driver's Certificate of Adaptations permits simultaneous brake and throttle, the physics layer permits it; when it does not, the constraint enforces. Same pipeline, identity-aware output. Every coaching line cites the COA section and the FIA Appendix L provision that authorizes it. Audit first, always.
 ```
 
 ### Presentation Video Link (YouTube or public platform)
 
 ```
-[Day 10 fill: YouTube unlisted URL once production take is rendered]
+[Paste Vin's YouTube demo-video link here before submitting]
 ```
 
 ### Team Members GitHub Usernames (comma-separated)
 
 ```
-StephenSook, [Vinh's GitHub handle, need to confirm with Vinh before Day 12]
+StephenSook, vinhbin
 ```
 
 ---
@@ -145,7 +147,7 @@ Three constituencies share one product gap. Adaptive racers running hand-control
 ## Demo video link
 
 ```
-[Day 10 fill: YouTube unlisted URL once production take is rendered]
+[Paste Vin's YouTube demo-video link here before submitting]
 ```
 
 ## GitHub repository
@@ -159,7 +161,7 @@ Public from Day 1. Apache 2.0 license. Atomic-commit discipline (220+ commits ac
 ## Live demo URL
 
 ```
-[Day 11 fill: https://apex-one-black.vercel.app or https://apex-race.vercel.app]
+https://apex-one-black.vercel.app
 ```
 
 Judges' tour single page at `/judges`. Live status dashboard at `/status`. Upload-and-analyze flow at `/analyze`.
@@ -208,4 +210,4 @@ Before clicking Submit on 2026-05-31:
 
 ---
 
-_Last updated: 2026-05-21 PM by Stephen. Day-2 alignment pass against the live BeMyApp project-page template (pulled from the live IBM SkillsBuild Challenge Hub example project today). Form-aligned section is the authoritative copy for Day-12 submission; reference long-form drafts retained for deck + video + README cross-use. Day 10-11 final-pass fill in the real video URL + live demo URL + Vinh GitHub handle. PLAN task 5.14 owns the 1920x600 banner asset; PLAN task 5.15 owns the 3-example gallery calibration pass once URLs land._
+_Last updated 2026-05-31 (submission day): Issue + Magic Solution rewritten to lead with the problem-matters numbers and the honest live-tier framing (3 WIRED / 9 INTEGRATION / 2 ACCELERATOR, no stack-overclaim); live demo + backend URLs filled. The detailed 14-tool enumeration further down is reference-only (the /judges page is the authoritative per-tool live status); the Magic Solution panel carries the honest tier counts. Only operator fill-in left before clicking Submit: Vin's demo-video YouTube link (GitHub handles confirmed: StephenSook + vinhbin)._
