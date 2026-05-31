@@ -140,3 +140,29 @@ export async function applyLiveNarrative(
     return fixture(base);
   }
 }
+
+/**
+ * Wave-79: upgrade an already-backend-live report (real backend numbers +
+ * deterministic backend prose) with live Granite corner prose from the same
+ * /api/coaching/narrate route, keeping the backend numbers verbatim. On
+ * success the provenance becomes "backend-granite-live" (numbers
+ * backend-computed, narrative live Granite). On ANY failure the backend
+ * report is returned unchanged, so it stays honestly "backend-live" (real
+ * numbers, deterministic prose) and the canonical demo never breaks or
+ * downgrades to a fixture.
+ */
+export async function applyLiveNarrativeToBackend(
+  backendReport: CoachingReport,
+  debrief: string,
+  options?: { readonly signal?: AbortSignal },
+): Promise<CoachingReport> {
+  const upgraded = await applyLiveNarrative(backendReport, debrief, options);
+  if (upgraded.narrative_source === "granite-live") {
+    // Live prose merged over the real backend numbers: relabel so the
+    // provenance reflects that both layers are live.
+    return { ...upgraded, narrative_source: "backend-granite-live" };
+  }
+  // No live prose landed (route down, empty, or malformed). Keep the backend
+  // report as-is; the decoder already stamped it "backend-live".
+  return backendReport;
+}

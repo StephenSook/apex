@@ -47,7 +47,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import type { CoachingReport as CoachingReportType } from "../../shared/types";
-import { applyLiveNarrative } from "../lib/live-narrative";
+import { applyLiveNarrative, applyLiveNarrativeToBackend } from "../lib/live-narrative";
 
 import AICopilotChat from "./AICopilotChat";
 import CoachingReport from "./CoachingReport";
@@ -203,7 +203,13 @@ export default function AnalyzeFlow() {
         if (res.ok) {
           const data = (await res.json()) as { ok?: boolean; report?: CoachingReportType };
           if (data.ok === true && data.report) {
-            setReport(data.report);
+            // Wave-79: layer live Granite 4.1 8B corner coaching over the real
+            // backend numbers via the verified /api/coaching/narrate route. On
+            // any narrate failure this returns the backend report unchanged, so
+            // the card stays honestly backend-live (real numbers, deterministic
+            // prose) and the demo never breaks.
+            const live = await applyLiveNarrativeToBackend(data.report, CANONICAL_DEMO_DEBRIEF);
+            setReport(live);
             setActiveTab("coaching");
             return;
           }

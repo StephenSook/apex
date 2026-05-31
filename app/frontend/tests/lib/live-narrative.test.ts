@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { applyLiveNarrative } from "../../lib/live-narrative";
+import { applyLiveNarrative, applyLiveNarrativeToBackend } from "../../lib/live-narrative";
 import type { CoachingReport } from "../../../shared/types";
 
 function baseReport(): CoachingReport {
@@ -157,5 +157,46 @@ describe("applyLiveNarrative wave-64 merge helper", () => {
     stubFetch(() => jsonResponse({ error: "boom" }, false, 500));
     const result = await applyLiveNarrative(baseReport(), "d");
     expect(result.narrative_source).toBe("fixture");
+  });
+});
+
+describe("applyLiveNarrativeToBackend wave-79 canonical-demo prose upgrade", () => {
+  beforeEach(() => {
+    vi.restoreAllMocks();
+  });
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    vi.restoreAllMocks();
+  });
+
+  function backendBase(): CoachingReport {
+    return { ...baseReport(), narrative_source: "backend-live" };
+  }
+
+  it("upgrades backend-live to backend-granite-live when live prose lands, keeping backend numbers", async () => {
+    stubFetch(() =>
+      jsonResponse({
+        ok: true,
+        source: "granite-live",
+        corners: [
+          { name: "Sector 1 corner", recommendation: "LIVE sector 1.", recommendation_beginner: "b1", reasoning_chain: [] },
+          { name: "Sector 2 corner", recommendation: "LIVE sector 2.", recommendation_beginner: "b2", reasoning_chain: [] },
+        ],
+        summary: "s",
+      }),
+    );
+    const result = await applyLiveNarrativeToBackend(backendBase(), "d");
+    expect(result.narrative_source).toBe("backend-granite-live");
+    expect(result.corners[0].recommendation).toBe("LIVE sector 1.");
+    // Backend numbers + citations are preserved verbatim.
+    expect(result.corners[0].current_delta_s).toBe(0.34);
+    expect(result.forecast[0].mean).toBe(47.42);
+  });
+
+  it("stays backend-live when the narrate route fails (no downgrade to fixture)", async () => {
+    stubFetch(() => jsonResponse({ error: "boom" }, false, 500));
+    const result = await applyLiveNarrativeToBackend(backendBase(), "d");
+    expect(result.narrative_source).toBe("backend-live");
+    expect(result.corners[0].recommendation).toBe("FIXTURE expert prose for sector 1.");
   });
 });
