@@ -147,9 +147,7 @@ function IssueSlide() {
             display: "flex",
           }}
         >
-          Every car on a pro grid has a race engineer. Adaptive, veteran, and
-          grassroots drivers do not. Generic telemetry tools never read the
-          driver's hardware, so they flag COA-permitted inputs as mistakes.
+          {"Every car on a pro grid has a race engineer. Adaptive, veteran, and grassroots drivers do not. Generic telemetry tools never read the driver's hardware, so they flag COA-permitted inputs as mistakes."}
         </div>
         <div style={{ display: "flex", flexDirection: "row", gap: 36 }}>
           <ContrastCard
